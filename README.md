@@ -5,11 +5,11 @@
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
 | Julian Pagcaliwagan | jspagcal | @jspagcal     |
-| Alissa Pepino | alissama | @AlissaPepino     |
-| Hiteshwari Nanda| hiteshwa | @hnanda7     |
-| Selena Chainani | chainani | @Xenocynic     |
-| Shaian Shariatzadeh | shaian | @ShaianSh     |
-| [Full Name] | [CCID] | [@username]     |
+|             |       |                  |
+|             |       |
+|             |       |                  |
+|             |       |                  |
+|             |       |                  |
 
 ## Project Description
 
