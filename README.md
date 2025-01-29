@@ -1,14 +1,14 @@
-# CMPUT 301 W25 - Team [Team Name]
+# CMPUT 301 W25 - Team TangClan
 
 ## Team Members
 
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
-| [Full Name] | [CCID] | [@username]     |
-| [Full Name] | [CCID] | [@username]     |
-| [Full Name] | [CCID] | [@username]     |
-| [Full Name] | [CCID] | [@username]     |
-| [Full Name] | [CCID] | [@username]     |
+| Julian Pagcaliwagan | jspagcal | @jspagcal     |
+| Alissa Pepino | alissama | [@AlissaPepino]     |
+| Hiteshwari Nanda| hiteshwa | @hnanda7     |
+| Selena Chainani | chainani | @Xenocynic     |
+| Shaian Shariatzadeh | shaian | @ShaianSh     |
 | [Full Name] | [CCID] | [@username]     |
 
 ## Project Description
