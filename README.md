@@ -5,7 +5,7 @@
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
 | Julian Pagcaliwagan | jspagcal | @jspagcal     |
-|             |       |                  |
+| Komal Jot           | kjot     |  @Kjot18               |
 |             |       |
 |             |       |                  |
 |             |       |                  |
