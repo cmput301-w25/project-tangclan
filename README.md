@@ -6,7 +6,7 @@
 | ----------- | ------ | --------------- |
 | Julian Pagcaliwagan | jspagcal | @jspagcal     |
 | Komal Jot           | kjot     |  @Kjot18               |
-| Hiteshwari Nanda      hiteshwa      |@hnanda7       |
+| Hiteshwari Nanda         |hiteshwa       |@hnanda7
 |             |       |                  |
 |             |       |                  |
 |             |       |                  |
