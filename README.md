@@ -4,12 +4,12 @@
 
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
-| Julian Pagcaliwagan | jspagcal | @jspagcal     |
-|             |       |                  |
-|             |       |
-|             |       |                  |
-|             |       |                  |
-|             |       |                  |
+| [Full Name] | [CCID] | [@username]     |
+| [Full Name] | [CCID] | [@username]     |
+| [Full Name] | [CCID] | [@username]     |
+| [Full Name] | [CCID] | [@username]     |
+| [Full Name] | [CCID] | [@username]     |
+| [Full Name] | [CCID] | [@username]     |
 
 ## Project Description
 
