@@ -2,12 +2,12 @@
 
 ## Team Members
 
-| Name        | CCID   | GitHub Username |
-| ----------- | ------ | --------------- |
+| Name | CCID   | GitHub Username |
+|  | ------ | --------------- |
 | Alissa Pepino | alissama | AlissaPepino     |
 | Hiteshwari Nanda | hiteshwa | @hnanda7     |
 | Julian Pagcaliwagan | jspagcal | @jpagcal     |
-| [Full Name] | [CCID] | [@username]     |
+| Shaian Shariatzadeh | shaian | @ShaianSh    |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 
