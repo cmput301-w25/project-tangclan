@@ -6,7 +6,7 @@
 | ----------- | ------ | --------------- |
 | Alissa Pepino | alissama | AlissaPepino     |
 | Hiteshwari Nanda | hiteshwa | @hnanda7     |
-| [Full Name] | [CCID] | [@username]     |
+| Julian Pagcaliwagan | jspagcal | @jpagcal     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
