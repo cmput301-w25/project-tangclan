@@ -9,7 +9,7 @@
 | Julian Pagcaliwagan | jspagcal | @jpagcal     |
 | Shaian Shariatzadeh | shaian | @ShaianSh     |
 | Selena Chainani | chainani | @Xenocynic     |
-| [Full Name] | [CCID] | [@username]     |
+| Komal Jot | kjot | @Kjot18     |
 
 ## Project Description
 
