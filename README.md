@@ -5,7 +5,7 @@
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
 | Alissa Pepino | alissama | AlissaPepino     |
-| [Full Name] | [CCID] | [@username]     |
+| Hiteshwari Nanda | hiteshwa | @hnanda7     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
