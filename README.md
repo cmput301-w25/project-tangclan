@@ -4,7 +4,7 @@
 
 | Name | CCID   | GitHub Username |
 | ------ | ------ | --------------- |
-| Alissa Pepino | alissama | AlissaPepino     |
+| Alissa Pepino | alissama | @AlissaPepino     |
 | Hiteshwari Nanda | hiteshwa | @hnanda7     |
 | Julian Pagcaliwagan | jspagcal | @jpagcal     |
 | Shaian Shariatzadeh | shaian | @ShaianSh     |
@@ -29,7 +29,7 @@
 
 ## Documentation
 
-- [Wiki Link]
-- [Scrum Board]
+- https://github.com/cmput301-w25/project-tangclan/wiki
+- https://github.com/orgs/cmput301-w25/projects/55/views/1
 - [UI Mockups]
 - [UML]
