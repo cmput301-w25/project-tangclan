@@ -1,9 +1,10 @@
 package com.example.tangclan;
 
-import android.util.Log;
 
+import android.util.Log;
 import com.google.firebase.firestore.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class DatabaseBestie {
@@ -35,8 +36,8 @@ public class DatabaseBestie {
      * @param user
      *      This is the user to be added
      */
-    public void addUser(User user) {
-        db.collection("users").document(user.getUID()).set(user);
+    public void addUser(Profile user) {
+        db.collection("users").document(user.getUid()).set(user);
     }
 
     /**
@@ -46,39 +47,12 @@ public class DatabaseBestie {
      * @return
      *      a User object with the corresponding data of an existing user
      */
-    public User getUser(String uid) {
-
+    public Profile getUser(String uid) {
+        final Profile[] user = new Profile[1];
+        DocumentReference usersRef = db.collection("users").document(uid);
+        usersRef.get().addOnSuccessListener(documentSnapshot -> user[0] = documentSnapshot.toObject(Profile.class));
+        return user[0];
     }
-
-    // MOOD COLLECTION METHODS ---------------------------------------------------------------------
-
-    /**
-     * This adds a mood's details to the "moods" collection
-     * @param mood
-     *      This is the mood to be added
-     */
-    public void addMood(Mood mood) {
-        db.collection("moods").document(mood.getState()).set(mood);
-    }
-
-    /**
-     * This returns data of the mood with the corresponding emotional state
-     *      @param emotionalState
-     *           This is the emotional state (ex. 'Happy', 'Sad') of the mood whose data we want to obtain
-     *      @return
-     *           a Mood object with the specified emotion state and its associated data
-     */
-    public Mood getMood(String emotionalState) {
-        db.collection("moods").document(emotionalState).get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Map<String, Object> fields = documentSnapshot.getData();
-
-                        // create a mood object with the data to return
-                    }}
-        );
-        // return mood;
-    }
-
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
 
     /**
@@ -88,20 +62,20 @@ public class DatabaseBestie {
      * @param month
      *      This is the month (ex. sep-2025) that holds the collection that the mood event will be added to
      */
-    public void addMoodEvent(moodEvent event, String month) {
-        db.collection("moodEvents").document(month).collection(month).document(event.getMID()).set(event);
+    public void addMoodEvent(MoodEvent event, String month) {
+        db.collection("moodEvents").document(month).collection(month).document(event.getMid()).set(event);
     }
 
 
     /**
      * This updates the data in an existing mood event
-     * @param mid
-     *      This is the MID of the mood event whose data will be updated
+     * @param event
+     *      This is the event to be updated
      * @param month
      *      This is the month (ex. sep-2025) of when the to-be-updated mood event was initially added
      */
-    public void updateMoodEvent(String mid, String month) {
-
+    public void updateMoodEvent(MoodEvent event, String month) {
+        db.collection("moodEvents").document(month).collection(month).document(event.getMid()).update(event);
     }
 
     /**
@@ -116,17 +90,33 @@ public class DatabaseBestie {
     }
 
     /**
-     * This returns a mood event
-     * @param mid
-     *      This is the MID of the mood event to be returned
+     * This returns a list of MIDs of mood events created by a specific user during the given month
+     * @param uid
+     *      This is the uid of the user who created the mood events in the returned list
      * @param month
-     *      This is the month (ex. sep-2025) of when the to-be-returned mood event was initially added
-     * @return
-     *      A MoodEvent object with the specified mid and its associated data
+     *      This is the month of when all the mood events in the returned list were created
      */
-    public MoodEvent getMoodEvent(String mid, String month) {
+    public ArrayList<String> getMoodEvents(String uid, String month) {
+        ArrayList<String> mids = new ArrayList<>();
+        db.collection("moodEvents").document(month).collection(month)
+                .whereEqualTo("postedBy",uid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Add to list of mids
+                            Map<String, Object> data = document.getData();
+                            mids.add((String) data.get("mid"));
 
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+        return mids;
     }
+
 
     // FOLLOWS COLLECTION METHODS ------------------------------------------------------------------
 
@@ -136,17 +126,71 @@ public class DatabaseBestie {
      *      This is the relationship to be added
      */
     public void addFollowRelationship(FollowRelationship followRelationship) {
-        db.collection("follows").document(followRelationship.getID()).set(followRelationship);
+        db.collection("follows").document(followRelationship.getId()).set(followRelationship);
     }
 
     /**
-     * This returns data of the followRelationship with the corresponding id
+     * This removes an existing relationship from the "follows" collection
      * @param id
-     *      This is the id of the relationship whose data will be obtained
-     * @return
-     *      a FollowRelationShip object with the corresponding id
+     *      This is the ID of the relationship to be deleted
      */
-    public FollowRelationship getFollowRelationship(String id) {
+    public void deleteFollowRelationship(String id) {
+        db.collection("follows").document(id).delete();
+    }
 
+    /**
+     * This returns a list of UIDs identifying users that follow a specified user
+     * @param uid
+     *      This is the uid of the user being followed by users in the returned list
+     * @return
+     *      This is the list of followers of uid
+     */
+    public ArrayList<String> getFollowers(String uid) {
+        ArrayList<String> followers = new ArrayList<>();
+        db.collection("follows")
+                .whereEqualTo("uidFollowee",uid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Add to list of followers
+                            Map<String, Object> data = document.getData();
+                            followers.add((String) data.get("uidFollower"));
+
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+        return followers;
+    }
+
+    /**
+     * This returns a list of UIDs identifying users that a specified user follows
+     * @param uid
+     *      This is the uid of the user that follows users in the returned list
+     * @return
+     *      This is the list of uids of users being followed
+     */
+    public ArrayList<String> getFollowing(String uid) {
+        ArrayList<String> following = new ArrayList<>();
+        db.collection("follows")
+                .whereEqualTo("uidFollower",uid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Add to list of followers
+                            Map<String, Object> data = document.getData();
+                            following.add((String) data.get("uidFollowee"));
+
+                            Log.d(TAG, document.getId() + " => " + document.getData());
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+        return following;
     }
 }
