@@ -4,6 +4,8 @@ package com.example.tangclan;
 import android.util.Log;
 import com.google.firebase.firestore.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -90,14 +92,14 @@ public class DatabaseBestie {
     }
 
     /**
-     * This returns a list of MIDs of mood events created by a specific user during the given month
+     * This returns a list of dictionaries containing details of mood events created by a specific user during the given month
      * @param uid
      *      This is the uid of the user who created the mood events in the returned list
      * @param month
      *      This is the month of when all the mood events in the returned list were created
      */
-    public ArrayList<String> getMoodEvents(String uid, String month) {
-        ArrayList<String> mids = new ArrayList<>();
+    public ArrayList<MoodEvent> getMoodEvents(String uid, String month) {
+        ArrayList<MoodEvent> events = new ArrayList<>();
         db.collection("moodEvents").document(month).collection(month)
                 .whereEqualTo("postedBy",uid)
                 .get()
@@ -105,8 +107,9 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             // Add to list of mids
-                            Map<String, Object> data = document.getData();
-                            mids.add((String) data.get("mid"));
+                            MoodEvent mood = document.toObject(MoodEvent.class);
+                            events.add(mood);
+
 
                             Log.d(TAG, document.getId() + " => " + document.getData());
                         }
@@ -114,7 +117,29 @@ public class DatabaseBestie {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
-        return mids;
+        return events;
+    }
+
+    /**
+     * This return 1 mood event given its creator, date posted, time posted
+     * @param uid
+     * @param month
+     * @param date
+     * @param time
+     * @return
+     */
+    public MoodEvent getMoodEvent(String uid, String month, LocalDate date, LocalTime time) {
+        MoodEvent post = null;
+        ArrayList<MoodEvent> moodEvents = getMoodEvents(uid, month);
+        for (MoodEvent event: moodEvents) {
+            if ((event.getPostDate() == date) && (event.getPostTime() == time)) {
+                post = event;
+            }
+            else {
+                Log.d(TAG, "No Mood Event found");
+            }
+        }
+        return post;
     }
 
 
@@ -174,7 +199,9 @@ public class DatabaseBestie {
      *      This is the list of uids of users being followed
      */
     public ArrayList<String> getFollowing(String uid) {
+        ArrayList<Profile> users = new ArrayList<>();
         ArrayList<String> following = new ArrayList<>();
+
         db.collection("follows")
                 .whereEqualTo("uidFollower",uid)
                 .get()
@@ -191,6 +218,20 @@ public class DatabaseBestie {
                         Log.d(TAG, "Error getting documents: ", task.getException());
                     }
                 });
+
+        for (String userId : following) {
+            DocumentReference userRef = db.collection("users").document(userId);
+            DocumentSnapshot document = userRef.get().getResult();
+
+            if (document.exists()) {
+                Profile user = document.toObject(Profile.class);
+                user.setUid(document.getId()); // Set the ID manually
+                users.add(user);
+            } else {
+                System.out.println("No user found with ID: " + userId);
+                return null;
+            }
+        }
         return following;
     }
 }
