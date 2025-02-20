@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257823113159",
+    "project_id": "tangclan-database-2",
+    "storage_bucket": "tangclan-database-2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257823113159:android:77a0ea749f5d5ab2cba3e2",
+        "android_client_info": {
+          "package_name": "com.example.tangclan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAshiXvRNZZR946hmheqZ8vN08VzJyU_go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
