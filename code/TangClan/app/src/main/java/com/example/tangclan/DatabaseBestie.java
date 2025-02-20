@@ -7,18 +7,23 @@ import com.google.firebase.firestore.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
 
 public class DatabaseBestie {
     private static final String TAG = "DatabaseBestie";
     private static DatabaseBestie instance;
     private FirebaseFirestore db;
+    private DocumentReference moodEventCounterRef;
+    private DocumentReference userCounterRef;
 
     /**
      * This gets an instance of the database
      */
     private DatabaseBestie() {
         db = FirebaseFirestore.getInstance();
+        moodEventCounterRef = db.collection("Counters").document("mood_event_counter");
+        userCounterRef = db.collection("Counters").document("user_counter");
     }
 
     /**
@@ -31,6 +36,75 @@ public class DatabaseBestie {
         return instance;
     }
 
+    // UNIVERSAL ID GEN SYSTEM ---------------------------------------------------------------------
+
+    /**
+     * Callback interface for retrieving gen. uniwue ids
+     */
+
+    public interface IdCallback {
+        /**
+         * Called when a unique id has been successfully generated
+         *
+         * @param id
+         *      The generated unique id
+         */
+        void onIdGenerated(int id);
+    }
+
+    /**
+     * Generates a unique ID by retrieving the last used ID from Firestore,
+     * incrementing it, and updating Firestore to maintain uniqueness
+     *
+     * @param counterRef
+     *      Reference to the Firestore document storing the last used id
+     * @param field
+     *      The field name storing the last used id in the Firestore doc
+     * @param callback
+     *      Callback to handle the generated unique id async
+     */
+    private void generateUniqueId(DocumentReference counterRef, String field, IdCallback callback) {
+        counterRef.get().addOnSuccessListener(document -> {
+            if (document.exists()) {
+                Long lastId = document.getLong(field);
+                if (lastId == null) lastId = 0L;
+                int newId = lastId.intValue() + 1;
+
+                // Update Firestore with the new ID
+                counterRef.update(field, newId).addOnSuccessListener(aVoid -> {
+                    callback.onIdGenerated(newId);
+                }).addOnFailureListener(e -> Log.e(TAG, "Failed to update counter", e));
+
+            } else {
+                // If document doesn't exist, initialize it
+                counterRef.set(Collections.singletonMap(field, 1))
+                        .addOnSuccessListener(aVoid -> callback.onIdGenerated(1))
+                        .addOnFailureListener(e -> Log.e(TAG, "Failed to initialize counter", e));
+            }
+        }).addOnFailureListener(e -> Log.e(TAG, "Failed to retrieve counter", e));
+    }
+
+    /**
+     * Generates a unique mid and provides it through a callback.
+     *
+     * @param callback
+     *       Callback to handle the generated mid
+     */
+    public void generateMid(IdCallback callback) {
+        generateUniqueId(moodEventCounterRef, "last_mid", callback);
+    }
+
+    /**
+     * Generates a unique uid and provides it through a callback.
+     *
+     * @param callback
+     *      Callback to handle the generated `uid
+     */
+    public void generateUid(IdCallback callback) {
+        generateUniqueId(userCounterRef, "last_uid", callback);
+    }
+
+    //----------------------------------------------------------------------------------------------
     // USER COLLECTION METHODS ---------------------------------------------------------------------
 
     /**
@@ -39,7 +113,14 @@ public class DatabaseBestie {
      *      This is the user to be added
      */
     public void addUser(Profile user) {
-        db.collection("users").document(user.getUid()).set(user);
+        generateUid(uid -> {
+            user.setUid(String.valueOf(uid));
+            db.collection("users").document(user.getUid()).set(user);
+        });
+    }
+
+    public interface UserCallback {
+        void onUserRetrieved(Profile user);
     }
 
     /**
@@ -49,12 +130,20 @@ public class DatabaseBestie {
      * @return
      *      a User object with the corresponding data of an existing user
      */
-    public Profile getUser(String uid) {
-        final Profile[] user = new Profile[1];
+    public void getUser(String uid, UserCallback callback) {
         DocumentReference usersRef = db.collection("users").document(uid);
-        usersRef.get().addOnSuccessListener(documentSnapshot -> user[0] = documentSnapshot.toObject(Profile.class));
-        return user[0];
+        usersRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                callback.onUserRetrieved(documentSnapshot.toObject(Profile.class));
+            } else {
+                callback.onUserRetrieved(null);
+            }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error retrieving user", e);
+            callback.onUserRetrieved(null);
+        });
     }
+
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
 
     /**
@@ -65,20 +154,27 @@ public class DatabaseBestie {
      *      This is the month (ex. sep-2025) that holds the collection that the mood event will be added to
      */
     public void addMoodEvent(MoodEvent event, String month) {
-        db.collection("moodEvents").document(month).collection(month).document(event.getMid()).set(event);
+        generateMid(mid -> {
+            event.setMid(mid);
+            db.collection("moodEvents").document(month).collection(month).document(String.valueOf(mid)).set(event);
+        });
     }
 
 
-    /**
+     /**
      * This updates the data in an existing mood event
      * @param event
      *      This is the event to be updated
      * @param month
      *      This is the month (ex. sep-2025) of when the to-be-updated mood event was initially added
      */
-    public void updateMoodEvent(MoodEvent event, String month) {
-        db.collection("moodEvents").document(month).collection(month).document(event.getMid()).update(event);
-    }
+     public void updateMoodEvent(MoodEvent event, String month) {
+         db.collection("moodEvents").document(month).collection(month)
+                 .document(String.valueOf(event.getMid()))
+                 .set(event)
+                 .addOnSuccessListener(aVoid -> Log.d(TAG, "MoodEvent successfully updated!"))
+                 .addOnFailureListener(e -> Log.e(TAG, "Error updating MoodEvent", e));
+     }
 
     /**
      * This removes an existing mood event from the "moodEvents" collection
@@ -92,58 +188,92 @@ public class DatabaseBestie {
     }
 
     /**
-     * This returns a list of dictionaries containing details of mood events created by a specific user during the given month
+     * Retrieves a list of MoodEvent objects created by a specific user during a given month
+     *
      * @param uid
-     *      This is the uid of the user who created the mood events in the returned list
+     *      The uid of the user who created the mood events
      * @param month
-     *      This is the month of when all the mood events in the returned list were created
+     *      The month (e.g., "sep-2025") for which mood events should be retrieved
+     * @param callback
+     *      Callback to handle the retrieved list of MoodEvent objects
      */
-    public ArrayList<MoodEvent> getMoodEvents(String uid, String month) {
-        ArrayList<MoodEvent> events = new ArrayList<>();
+    public void getMoodEvents(String uid, String month, MoodEventsCallback callback) {
         db.collection("moodEvents").document(month).collection(month)
-                .whereEqualTo("postedBy",uid)
+                .whereEqualTo("postedBy", uid)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        ArrayList<MoodEvent> events = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Add to list of mids
-                            MoodEvent mood = document.toObject(MoodEvent.class);
-                            events.add(mood);
-
-
-                            Log.d(TAG, document.getId() + " => " + document.getData());
+                            MoodEvent moodEvent = document.toObject(MoodEvent.class);
+                            events.add(moodEvent);
                         }
+                        callback.onMoodEventsRetrieved(events);
                     } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
+                        Log.e(TAG, "Error getting mood events: ", task.getException());
+                        callback.onMoodEventsRetrieved(new ArrayList<>()); // Return empty list on failure
                     }
                 });
-        return events;
     }
 
     /**
-     * This return 1 mood event given its creator, date posted, time posted
-     * @param uid
-     * @param month
-     * @param date
-     * @param time
-     * @return
+     * Callback interface for handling retrieved MoodEvent objects async
      */
-    public MoodEvent getMoodEvent(String uid, String month, LocalDate date, LocalTime time) {
-        MoodEvent post = null;
-        ArrayList<MoodEvent> moodEvents = getMoodEvents(uid, month);
-        for (MoodEvent event: moodEvents) {
-            if ((event.getPostDate() == date) && (event.getPostTime() == time)) {
-                post = event;
+    public interface MoodEventsCallback {
+        /**
+         * Called when the list of MoodEvents is successfully retrieved
+         *
+         * @param events The list of MoodEvent objects
+         */
+        void onMoodEventsRetrieved(ArrayList<MoodEvent> events);
+    }
+
+    /**
+     * Retrieves a single MoodEvent based on creator, date, and time
+     *
+     * @param uid
+     *      The uid of the user who created the mood event
+     * @param month
+     *      The month (e.g., "sep-2025") in which the mood event was created
+     * @param date
+     *      The exact date the mood event was posted
+     * @param time
+     *      The exact time the mood event was posted
+     * @param callback
+     *      Callback to handle the retrieved MoodEvent
+     */
+    public void getMoodEvent(String uid, String month, LocalDate date, LocalTime time, MoodEventCallback callback) {
+        getMoodEvents(uid, month, events -> {
+            MoodEvent post = null;
+            for (MoodEvent event : events) {
+                if (event.getPostDate().equals(date) && event.getPostTime().equals(time)) {
+                    post = event;
+                    break;
+                }
             }
-            else {
-                Log.d(TAG, "No Mood Event found");
-            }
-        }
-        return post;
+            callback.onMoodEventRetrieved(post);
+        });
+    }
+
+    /**
+     * Callback interface for retrieving a single MoodEvent async
+     */
+    public interface MoodEventCallback {
+        /**
+         * Called when a MoodEvent is retrieved
+         *
+         * @param event
+         *      The retrieved MoodEvent, or null if not found
+         */
+        void onMoodEventRetrieved(MoodEvent event);
     }
 
 
     // FOLLOWS COLLECTION METHODS ------------------------------------------------------------------
+
+    public interface FollowersCallback {
+        void onFollowersRetrieved(ArrayList<String> followers);
+    }
 
     /**
      * This adds a follow relationship to the "follows" collection
@@ -170,25 +300,18 @@ public class DatabaseBestie {
      * @return
      *      This is the list of followers of uid
      */
-    public ArrayList<String> getFollowers(String uid) {
-        ArrayList<String> followers = new ArrayList<>();
-        db.collection("follows")
-                .whereEqualTo("uidFollowee",uid)
-                .get()
+    public void getFollowers(String uid, FollowersCallback callback) {
+        db.collection("follows").whereEqualTo("uidFollowee", uid).get()
                 .addOnCompleteListener(task -> {
+                    ArrayList<String> followers = new ArrayList<>();
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Add to list of followers
                             Map<String, Object> data = document.getData();
                             followers.add((String) data.get("uidFollower"));
-
-                            Log.d(TAG, document.getId() + " => " + document.getData());
                         }
-                    } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
                     }
+                    callback.onFollowersRetrieved(followers);
                 });
-        return followers;
     }
 
     /**
@@ -198,40 +321,34 @@ public class DatabaseBestie {
      * @return
      *      This is the list of uids of users being followed
      */
-    public ArrayList<String> getFollowing(String uid) {
-        ArrayList<Profile> users = new ArrayList<>();
-        ArrayList<String> following = new ArrayList<>();
-
+    public void getFollowing(String uid, FollowingCallback callback) {
         db.collection("follows")
-                .whereEqualTo("uidFollower",uid)
+                .whereEqualTo("uidFollower", uid)
                 .get()
                 .addOnCompleteListener(task -> {
+                    ArrayList<String> following = new ArrayList<>();
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            // Add to list of followers
                             Map<String, Object> data = document.getData();
                             following.add((String) data.get("uidFollowee"));
-
-                            Log.d(TAG, document.getId() + " => " + document.getData());
                         }
+                        callback.onFollowingRetrieved(following);
                     } else {
-                        Log.d(TAG, "Error getting documents: ", task.getException());
+                        Log.e(TAG, "Error getting following: ", task.getException());
+                        callback.onFollowingRetrieved(new ArrayList<>()); // Return empty list if error
                     }
                 });
+    }
 
-        for (String userId : following) {
-            DocumentReference userRef = db.collection("users").document(userId);
-            DocumentSnapshot document = userRef.get().getResult();
-
-            if (document.exists()) {
-                Profile user = document.toObject(Profile.class);
-                user.setUid(document.getId()); // Set the ID manually
-                users.add(user);
-            } else {
-                System.out.println("No user found with ID: " + userId);
-                return null;
-            }
-        }
-        return following;
+    /**
+     * Callback interface for retrieving a list of users that a specified user follows.
+     */
+    public interface FollowingCallback {
+        /**
+         * Called when the list of followed users is retrieved.
+         *
+         * @param following List of user UIDs that the user follows.
+         */
+        void onFollowingRetrieved(ArrayList<String> following);
     }
 }
