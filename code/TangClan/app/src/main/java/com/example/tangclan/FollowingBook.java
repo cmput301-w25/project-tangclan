@@ -56,26 +56,26 @@ public class FollowingBook {
     // Fetch recent mood events from followed users
     public List<MoodEvent> getRecentMoodEvents() {
         return following.stream()
-                .flatMap(profile -> profile.getMoodEventBook().getRecentEvents().stream())
+                .flatMap(profile -> MoodEventBook.getMoodEvent().getRecentEvents().stream())
                 .collect(Collectors.toList());
     }
 
     // Filter mood events
     public List<MoodEvent> filterMoodEventsByDate(String date) {
         return getRecentMoodEvents().stream()
-                .filter(event -> event.getDate().equals(date))
+                .filter(event -> MoodEvent.getPostDate().equals(date))
                 .collect(Collectors.toList());
     }
 
     public List<MoodEvent> filterMoodEventsByMoodType(String moodType) {
         return getRecentMoodEvents().stream()
-                .filter(event -> event.getMoodType().equals(moodType))
+                .filter(event -> MoodEvent.getMood().equals(moodType))
                 .collect(Collectors.toList());
     }
 
     public List<MoodEvent> filterMoodEventsByKeyword(String keyword) {
         return getRecentMoodEvents().stream()
-                .filter(event -> event.getTextExplanation().contains(keyword))
+                .filter(event -> MoodEvent.getTextExplanation().contains(keyword))
                 .collect(Collectors.toList());
     }
 

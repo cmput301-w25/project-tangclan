@@ -96,7 +96,7 @@ public class MoodEvent {
     }
 
     // getters, setters
-    public LocalDate getPostDate() {
+    public static LocalDate getPostDate() {
         return this.postDate;
     }
 
