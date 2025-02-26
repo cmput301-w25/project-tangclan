@@ -23,8 +23,8 @@ public class MoodEvent {
     private ArrayList<String> triggers;
     private Mood mood;
     private String situation;
-    private double latitude;
-    private double longitude;
+    private Double latitude = null;
+    private Double longitude = null;
 
 
     /**
@@ -231,6 +231,10 @@ public class MoodEvent {
         }
 
         this.situation = situation;
+    }
+
+    public boolean hasGeolocation() {
+        return (this.latitude != null && this.longitude != null);
     }
 
 
