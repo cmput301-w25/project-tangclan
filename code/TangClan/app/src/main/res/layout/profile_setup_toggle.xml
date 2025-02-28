@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFFFF">
+
+
+    <TextView
+        android:id="@+id/almost_ther"
+        android:layout_width="321dp"
+        android:layout_height="88dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/almost_ther"
+        android:textAppearance="@style/almost_ther"
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="33dp" />
+
+    <TextView
+        android:id="@+id/toggle_mood"
+        android:layout_width="335dp"
+        android:layout_height="82dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/toggle_mood"
+        android:textAppearance="@style/toggle_mood"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="92dp" />
+
+    <TextView
+        android:id="@+id/you_can_upd"
+        android:layout_width="361dp"
+        android:layout_height="87dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/you_can_upd"
+        android:textAppearance="@style/you_can_upd"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="186dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/location_switch_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/trigger_switch_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/location_switch_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/graphic_switch_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/trigger_switch_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_location"
+        android:layout_width="361dp"
+        android:layout_height="44dp"
+        android:text="@string/show_locati"
+        android:textAppearance="@style/show_locati"
+        tools:layout_editor_absoluteX="25dp"
+        tools:layout_editor_absoluteY="290dp" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_trigger"
+        android:layout_width="364dp"
+        android:layout_height="44dp"
+        android:text="@string/show_trigge"
+        android:textAppearance="@style/show_trigge"
+        tools:layout_editor_absoluteX="23dp"
+        tools:layout_editor_absoluteY="343dp" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_graphic"
+        android:layout_width="364dp"
+        android:layout_height="43dp"
+        android:text="@string/show_graphi"
+        android:textAppearance="@style/show_graphi"
+        tools:layout_editor_absoluteX="22dp"
+        tools:layout_editor_absoluteY="394dp" />
+
+    <Button
+        android:id="@+id/button_veri"
+        android:layout_width="100dp"
+        android:layout_height="38dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:clipToOutline="true"
+        android:text="Next"
+        tools:layout_editor_absoluteX="295dp"
+        tools:layout_editor_absoluteY="446dp" />
+
+    <View
+        android:id="@+id/untitled_31"
+        android:layout_width="266dp"
+        android:layout_height="282dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/untitled_36"
+        tools:layout_editor_absoluteX="72dp"
+        tools:layout_editor_absoluteY="423dp" />
+
+    <TextView
+        android:id="@+id/step_4_of_4"
+        android:layout_width="169dp"
+        android:layout_height="41dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/step_4_of_4"
+        android:textAppearance="@style/step_4_of_4"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="683dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
