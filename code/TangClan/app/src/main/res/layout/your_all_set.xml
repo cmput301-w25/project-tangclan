@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/you_re_all_"
+        android:layout_width="321dp"
+        android:layout_height="88dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/you_re_all_"
+        android:textAppearance="@style/you_re_all_"
+        tools:layout_editor_absoluteX="45dp"
+        tools:layout_editor_absoluteY="140dp" />
+
+    <ImageView
+        android:id="@+id/untitled_31"
+        android:layout_width="347dp"
+        android:layout_height="343dp"
+        android:background="@drawable/own_picture_signup"
+        tools:layout_editor_absoluteX="32dp"
+        tools:layout_editor_absoluteY="194dp" />
+
+    <Button
+        android:id="@+id/button_veri"
+        android:layout_width="207dp"
+        android:layout_height="41dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:clipToOutline="true"
+        android:text="Post my first moodle"
+        tools:layout_editor_absoluteX="102dp"
+        tools:layout_editor_absoluteY="523dp" />
+
+    <Button
+        android:id="@+id/button_veri2"
+        android:layout_width="127dp"
+        android:layout_height="46dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:clipToOutline="true"
+        android:text="Maybe later"
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="573dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/moodly"
+        android:layout_width="293dp"
+        android:layout_height="96dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/moodly"
+        android:textAppearance="@style/moodly"
+        tools:layout_editor_absoluteX="59dp"
+        tools:layout_editor_absoluteY="185dp" />
+
+    <TextView
+        android:id="@+id/a_verificat"
+        android:layout_width="364dp"
+        android:layout_height="36dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/a_verificat"
+        android:textAppearance="@style/a_verificat"
+        tools:layout_editor_absoluteX="23dp"
+        tools:layout_editor_absoluteY="292dp" />
+
+    <RelativeLayout
+        android:id="@+id/form_verifi"
+        android:layout_width="364dp"
+        android:layout_height="39dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/form_verifi"
+        android:clipToOutline="true"
+        tools:layout_editor_absoluteX="23dp"
+        tools:layout_editor_absoluteY="346dp" >
+
+        <TextView
+            android:id="@+id/verificatio"
+            android:layout_width="122dp"
+            android:layout_height="19dp"
+            android:layout_centerInParent="true"
+            android:text="@string/verificatio"
+            android:textAppearance="@style/verificatio"
+            android:gravity="center_horizontal|top"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/resend_code"
+        android:layout_width="72dp"
+        android:layout_height="15dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/resend_code"
+        android:textAppearance="@style/resend_code"
+        tools:layout_editor_absoluteX="295dp"
+        tools:layout_editor_absoluteY="393dp" />
+
+    <Button
+        android:id="@+id/button_veri"
+        android:layout_width="364dp"
+        android:layout_height="61dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:clipToOutline="true"
+        android:text="Verify"
+        tools:layout_editor_absoluteX="23dp"
+        tools:layout_editor_absoluteY="423dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
