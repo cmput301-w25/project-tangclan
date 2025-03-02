@@ -1,0 +1,145 @@
+<!-- fragment_add_emotion.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_owl"
+            android:contentDescription="Owl icon" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="moodly"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Close"
+            android:id="@+id/closeIcon" />
+    </LinearLayout>
+
+    <!-- Question -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="How are you feeling today?"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp" />
+
+    <!-- Emoticons (just an example with a horizontal layout) -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/emotionHappy"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_happy"
+                android:contentDescription="Happy" />
+            <ImageButton
+                android:id="@+id/emotionCalm"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_calm"
+                android:contentDescription="Calm" />
+            <ImageButton
+                android:id="@+id/emotionSurprised"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_surprised"
+                android:contentDescription="Surprised" />
+            <ImageButton
+                android:id="@+id/emotionDisgusted"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_disgusted"
+                android:contentDescription="Disgusted" />
+            <ImageButton
+                android:id="@+id/emotionAngry"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_angry"
+                android:contentDescription="Angry" />
+            <ImageButton
+                android:id="@+id/emotionConfused"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_confused"
+                android:contentDescription="Confused" />
+            <ImageButton
+                android:id="@+id/emotionAnxious"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_anxious"
+                android:contentDescription="Anxious" />
+            <ImageButton
+                android:id="@+id/emotionSad"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_sad"
+                android:contentDescription="Sad" />
+            <ImageButton
+                android:id="@+id/emotionAshamed"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_ashamed"
+                android:contentDescription="Ashamed" />
+            <ImageButton
+                android:id="@+id/emotionNoIdea"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_no_idea"
+                android:contentDescription="No Idea" />
+            <ImageButton
+                android:id="@+id/emotionTerrfied"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_emotion_terrified"
+                android:contentDescription="Terrified" />
+
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- Bottom row (Cancel, Next) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="space_between"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/btnCancelEmotion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/btnNextEmotion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+    </LinearLayout>
+</LinearLayout>
