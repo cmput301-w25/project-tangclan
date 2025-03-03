@@ -45,12 +45,12 @@
         <item name="android:letterSpacing">-0.03</item>
         <item name="android:textColor">#49311E</item>
     </style>
-    <application
+    <!-- <application
         android:allowBackup="true"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         tools:targetApi="23">
-    </application>
+    </application> -->
     <style name="forgot_pass">
         <item name="android:textSize">12sp</item>
         <item name="android:letterSpacing">-0.03</item>
@@ -86,7 +86,7 @@
         <item name="android:letterSpacing">-0.03</item>
         <item name="android:textColor">#49311E</item>
     </style>
-    <style name="back_to_log">
+    <style name="back_to_logi">
         <item name="android:textSize">12sp</item>
         <item name="android:letterSpacing">-0.03</item>
         <item name="android:textColor">#49311E</item>
