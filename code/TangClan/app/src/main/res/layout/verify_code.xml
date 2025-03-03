@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:id="@+id/frame_29"
+        android:layout_width="46dp"
+        android:layout_height="62dp"
+        android:background="@drawable/frame_29"
+        android:clipToOutline="true"
+        tools:layout_editor_absoluteX="310dp"
+        tools:layout_editor_absoluteY="400dp" />
+
+    <RelativeLayout
+        android:id="@+id/frame_29"
+        android:layout_width="46dp"
+        android:layout_height="62dp"
+        android:background="@drawable/frame_29"
+        android:clipToOutline="true"
+        tools:layout_editor_absoluteX="182dp"
+        tools:layout_editor_absoluteY="400dp" >
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/frame_29"
+        android:layout_width="46dp"
+        android:layout_height="62dp"
+        android:background="@drawable/frame_29"
+        android:clipToOutline="true"
+        tools:layout_editor_absoluteX="118dp"
+        tools:layout_editor_absoluteY="400dp" />
+
+    <TextView
+        android:id="@+id/we_ve_sent_"
+        android:layout_width="364dp"
+        android:layout_height="29dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/we_ve_sent_"
+        android:textAppearance="@style/we_ve_sent_"
+        tools:layout_editor_absoluteX="23dp"
+        tools:layout_editor_absoluteY="285dp" />
+
+    <TextView
+        android:id="@+id/enter_in_th"
+        android:layout_width="369dp"
+        android:layout_height="51dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal|top"
+        android:text="@string/enter_in_th"
+        android:textAppearance="@style/enter_in_th"
+        tools:layout_editor_absoluteX="21dp"
+        tools:layout_editor_absoluteY="328dp" />
+
+    <RelativeLayout
+        android:id="@+id/frame_29"
+        android:layout_width="46dp"
+        android:layout_height="62dp"
+        android:background="@drawable/frame_29"
+        android:clipToOutline="true"
+        tools:layout_editor_absoluteX="54dp"
+        tools:layout_editor_absoluteY="400dp" />
+
+    <RelativeLayout
+        android:id="@+id/frame_29"
+        android:layout_width="46dp"
+        android:layout_height="62dp"
+        android:background="@drawable/frame_29"
+        android:clipToOutline="true"
+        tools:layout_editor_absoluteX="248dp"
+        tools:layout_editor_absoluteY="400dp" />
+
+    <Button
+        android:id="@+id/button_logi"
+        android:layout_width="364dp"
+        android:layout_height="61dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/button_logi"
+        android:clipToOutline="true"
+        android:text="Continue"
+        tools:layout_editor_absoluteX="23dp"
+        tools:layout_editor_absoluteY="482dp" />
+
+    <TextView
+        android:id="@+id/back_to_log"
+        android:layout_width="161dp"
+        android:layout_height="33dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="@string/back_to_log"
+        android:textAppearance="@style/back_to_log"
+        tools:layout_editor_absoluteX="126dp"
+        tools:layout_editor_absoluteY="552dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
