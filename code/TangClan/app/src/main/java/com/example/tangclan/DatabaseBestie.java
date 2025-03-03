@@ -1,13 +1,16 @@
 package com.example.tangclan;
 
 
+import android.graphics.Movie;
 import android.util.Log;
 import com.google.firebase.firestore.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.EventListener;
 import java.util.Map;
 
 public class DatabaseBestie {
@@ -17,13 +20,26 @@ public class DatabaseBestie {
     private DocumentReference moodEventCounterRef;
     private DocumentReference userCounterRef;
 
+    private DocumentReference followRelCounterRef;
+
+    private CollectionReference usersRef;
+    private CollectionReference moodEventsRef;
+    private CollectionReference followsRef;
+
     /**
      * This gets an instance of the database
      */
-    private DatabaseBestie() {
+    DatabaseBestie() {
         db = FirebaseFirestore.getInstance();
+        // counter references
         moodEventCounterRef = db.collection("Counters").document("mood_event_counter");
         userCounterRef = db.collection("Counters").document("user_counter");
+        followRelCounterRef = db.collection("Counters").document("follow_counter");
+
+        // collection references
+        usersRef = db.collection("users");
+        moodEventsRef = db.collection("moodEvents");
+        followsRef = db.collection("follows");
     }
 
     /**
@@ -39,7 +55,7 @@ public class DatabaseBestie {
     // UNIVERSAL ID GEN SYSTEM ---------------------------------------------------------------------
 
     /**
-     * Callback interface for retrieving gen. uniwue ids
+     * Callback interface for retrieving gen. unique ids
      */
 
     public interface IdCallback {
@@ -104,9 +120,19 @@ public class DatabaseBestie {
         generateUniqueId(userCounterRef, "last_uid", callback);
     }
 
+    /**
+     * Generates a unique fid and provides it through a callback.
+     *
+     * @param callback
+     *      Callback to handle the generated fid
+     */
+    public void generateFid(IdCallback callback) {
+        generateUniqueId(followRelCounterRef, "last_fid", callback);
+    }
+
     //----------------------------------------------------------------------------------------------
     // USER COLLECTION METHODS ---------------------------------------------------------------------
-
+    //checked
     /**
      * This adds a user's data to the "users" collection
      * @param user
@@ -115,7 +141,7 @@ public class DatabaseBestie {
     public void addUser(Profile user) {
         generateUid(uid -> {
             user.setUid(String.valueOf(uid));
-            db.collection("users").document(user.getUid()).set(user);
+            usersRef.document(user.getUid()).set(user);
         });
     }
 
@@ -131,8 +157,8 @@ public class DatabaseBestie {
      *      a User object with the corresponding data of an existing user
      */
     public void getUser(String uid, UserCallback callback) {
-        DocumentReference usersRef = db.collection("users").document(uid);
-        usersRef.get().addOnSuccessListener(documentSnapshot -> {
+        DocumentReference userRef = usersRef.document(uid);
+        userRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 callback.onUserRetrieved(documentSnapshot.toObject(Profile.class));
             } else {
@@ -145,7 +171,7 @@ public class DatabaseBestie {
     }
 
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
-
+    // checked
     /**
      * This adds a mood event details to the "moodEvents" collection
      * @param event
@@ -156,11 +182,10 @@ public class DatabaseBestie {
     public void addMoodEvent(MoodEvent event, String month) {
         generateMid(mid -> {
             event.setMid(mid);
-            db.collection("moodEvents").document(month).collection(month).document(String.valueOf(mid)).set(event);
+            moodEventsRef.document(month).collection("events").document(String.valueOf(mid)).set(event);
         });
     }
-
-
+     //checked
      /**
      * This updates the data in an existing mood event
      * @param event
@@ -168,14 +193,14 @@ public class DatabaseBestie {
      * @param month
      *      This is the month (ex. sep-2025) of when the to-be-updated mood event was initially added
      */
-     public void updateMoodEvent(MoodEvent event, String month) {
-         db.collection("moodEvents").document(month).collection(month)
-                 .document(String.valueOf(event.getMid()))
+     public void updateMoodEvent(String mid, MoodEvent event, String month) {
+         moodEventsRef.document(month).collection("events")
+                 .document(String.valueOf(mid))
                  .set(event)
                  .addOnSuccessListener(aVoid -> Log.d(TAG, "MoodEvent successfully updated!"))
                  .addOnFailureListener(e -> Log.e(TAG, "Error updating MoodEvent", e));
      }
-
+    //checked
     /**
      * This removes an existing mood event from the "moodEvents" collection
      * @param mid
@@ -184,7 +209,7 @@ public class DatabaseBestie {
      *      This is the month (ex. sep-2025) of when the to-be-deleted mood event was initially added
      */
     public void deleteMoodEvent(String mid, String month) {
-        db.collection("moodEvents").document(month).collection(month).document(mid).delete();
+        moodEventsRef.document(month).collection("events").document(String.valueOf(mid)).delete();
     }
 
     /**
@@ -198,7 +223,7 @@ public class DatabaseBestie {
      *      Callback to handle the retrieved list of MoodEvent objects
      */
     public void getMoodEvents(String uid, String month, MoodEventsCallback callback) {
-        db.collection("moodEvents").document(month).collection(month)
+        moodEventsRef.document(month).collection("events")
                 .whereEqualTo("postedBy", uid)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -281,7 +306,10 @@ public class DatabaseBestie {
      *      This is the relationship to be added
      */
     public void addFollowRelationship(FollowRelationship followRelationship) {
-        db.collection("follows").document(followRelationship.getId()).set(followRelationship);
+        generateFid(uid -> {
+            followRelationship.setId(String.valueOf(uid));
+            followsRef.document(followRelationship.getId()).set(followRelationship);
+        });
     }
 
     /**
@@ -290,7 +318,7 @@ public class DatabaseBestie {
      *      This is the ID of the relationship to be deleted
      */
     public void deleteFollowRelationship(String id) {
-        db.collection("follows").document(id).delete();
+        followsRef.document(id).delete();
     }
 
     /**
@@ -301,7 +329,7 @@ public class DatabaseBestie {
      *      This is the list of followers of uid
      */
     public void getFollowers(String uid, FollowersCallback callback) {
-        db.collection("follows").whereEqualTo("uidFollowee", uid).get()
+        followsRef.whereEqualTo("uidFollowee", uid).get()
                 .addOnCompleteListener(task -> {
                     ArrayList<String> followers = new ArrayList<>();
                     if (task.isSuccessful()) {
@@ -322,8 +350,7 @@ public class DatabaseBestie {
      *      This is the list of uids of users being followed
      */
     public void getFollowing(String uid, FollowingCallback callback) {
-        db.collection("follows")
-                .whereEqualTo("uidFollower", uid)
+        followsRef.whereEqualTo("uidFollower", uid)
                 .get()
                 .addOnCompleteListener(task -> {
                     ArrayList<String> following = new ArrayList<>();

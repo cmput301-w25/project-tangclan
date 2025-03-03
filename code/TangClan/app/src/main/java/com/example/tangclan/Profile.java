@@ -1,7 +1,9 @@
 package com.example.tangclan;
 
+import java.io.Serializable;
+
 // This has info pertaining to a user that they may edit through 'Edit Profile'
-public class Profile extends User {//NOTE: EXTENDS MoodEventBook and FollowingBook
+public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodEventBook and FollowingBook
     private String username;
     private String password;
     private String email;
