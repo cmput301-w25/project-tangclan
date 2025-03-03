@@ -2,7 +2,6 @@ package com.example.tangclan;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 
@@ -196,6 +195,15 @@ public class MoodEvent {
     public String getMoodEmotionalState() {
         return this.mood.getEmotion();
     }
+
+    public String getMoodColor() {
+        return this.mood.getColor();
+    }
+
+    public String getMoodEmoticon() {
+        return this.mood.getEmoticon();
+    }
+
 
     public ArrayList<String> getTriggers() {
         return this.triggers;
