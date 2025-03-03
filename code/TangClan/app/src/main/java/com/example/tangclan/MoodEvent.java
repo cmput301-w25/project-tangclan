@@ -1,17 +1,9 @@
 package com.example.tangclan;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.function.Consumer;
+import java.util.List;
 
 /**
  * Represents a Mood Event
@@ -23,39 +15,26 @@ public class MoodEvent {
     private ArrayList<String> triggers;
     private Mood mood;
     private String situation;
-    private Double latitude = null;
-    private Double longitude = null;
 
+    /**
+     * Default constructor (required for Firestore)
+     */
+    public MoodEvent() {
+        this.mid = -1; // Placeholder, should be set later
+        this.postTime = LocalTime.now();
+        this.postDate = LocalDate.now();
+    }
 
     /**
      * default constructor for MoodEvent
      * @param emotionalState
      *      emotional state used for the Mood constructor
      */
-    public MoodEvent(String emotionalState, Context context) {
+    public MoodEvent(String emotionalState) {
+        this.mid = mid;
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
-
         this.mood = new Mood(emotionalState);
-
-        // create an instance of the LocationManager
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
     }
 
     /**
@@ -65,31 +44,12 @@ public class MoodEvent {
      * @param trigger
      *      optional list of strings representing the triggers for the MoodEvent
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger, Context context) {
+    public MoodEvent(String emotionalState, ArrayList<String> trigger) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
         this.triggers = trigger;
-
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
-
     }
 
     /**
@@ -99,14 +59,14 @@ public class MoodEvent {
      * @param situation
      *      optional string representing a social situation (20 char or 3 word max)
      */
-    public MoodEvent(String emotionalState, String situation, Context context) {
+    public MoodEvent(String emotionalState, String situation) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
 
         // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count(); //cast to int because .count returns long
+        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
 
         // raise an exception if the social situation exceeds length or word limit
         if ((situation.length() > 20) || (spaceCount > 2)) {
@@ -114,24 +74,6 @@ public class MoodEvent {
         }
 
         this.situation = situation;
-
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
     }
 
     /**
@@ -143,7 +85,7 @@ public class MoodEvent {
      * @param situation
      *      optional string representing a social situation (20 char or 3 word max)
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger, String situation, Context context) {
+    public MoodEvent(String emotionalState, ArrayList<String> trigger, String situation) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
@@ -159,24 +101,6 @@ public class MoodEvent {
         }
 
         this.situation = situation;
-
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
     }
 
     // getters, setters
@@ -221,6 +145,14 @@ public class MoodEvent {
         this.triggers = triggers;
     }
 
+    public int getMid() {
+        return mid;
+    }
+
+    public void setMid(int mid) {
+        this.mid = mid;
+    }
+
     public void setSituation(String situation) {
         // convert into stream and count the number of spaces
         int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
@@ -231,10 +163,6 @@ public class MoodEvent {
         }
 
         this.situation = situation;
-    }
-
-    public boolean hasGeolocation() {
-        return (this.latitude != null && this.longitude != null);
     }
 
 
