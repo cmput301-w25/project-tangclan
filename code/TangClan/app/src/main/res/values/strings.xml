@@ -51,9 +51,8 @@
     <string name="show_graphi">Show graphic content</string>
     <string name="you_won_t_b">You won\'t be warned of potentially NSFW content on your feed.</string>
     <string name="step_4_of_4">Step 4 of 4</string>
-    <string name="you_re_all_">You\'re all set!</string><string name="following">Following</string>
-
-
+    <string name="you_re_all_">You\'re all set!</string>
+    <string name="following">Following</string>
 
 
 </resources>
