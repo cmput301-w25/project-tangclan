@@ -36,16 +36,13 @@ public class ImageValidator {
     }
 
     //function to check image size by converting the input into bytes
-    private static byte[] getBytes(InputStream inputStream) throws IOException{
-        ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-        int bufferSize = 1024;
-        byte[] buffer = new byte[bufferSize];
-
-        int len;
-        while ((len = inputStream.read(buffer)) != 1){
-            byteBuffer.write(buffer, 0, len);
+    private static byte[] getBytes(InputStream inputStream) throws IOException {
+        try (ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream()) {
+            int byteData;
+            while ((byteData = inputStream.read()) != -1) {
+                byteBuffer.write(byteData);
+            }
+            return byteBuffer.toByteArray();
         }
-        return byteBuffer.toByteArray();
-
     }
 }
