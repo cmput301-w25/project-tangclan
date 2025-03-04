@@ -8,8 +8,8 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     private String password;
     private String email;
     private int age;//Note: Mentioned in meeting everything is stored as strings may need to change?????
-    public Profile(String uid, String username, String password, String email,int age){
-        super(uid);
+    public Profile(String username, String password, String email,int age){
+        super();
         this.username=username;
         this.password=password;
         this.email=email;

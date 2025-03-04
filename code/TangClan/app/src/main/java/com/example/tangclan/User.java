@@ -8,8 +8,8 @@ public class User {
     private Date dateAccCreated;
     private Date lastPosted;
 
-    public User(String uid) {
-        this.uid = uid;
+    public User() {
+        this.uid = null;
         this.dateAccCreated = new Date(); // gets current Date, probably should be formatted
         this.lastPosted = null;  // null for a new user
     }

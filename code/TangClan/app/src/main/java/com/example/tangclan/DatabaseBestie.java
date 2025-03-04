@@ -1,22 +1,23 @@
 package com.example.tangclan;
 
 
-import android.graphics.Movie;
 import android.util.Log;
+
 import com.google.firebase.firestore.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.EventListener;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DatabaseBestie {
     private static final String TAG = "DatabaseBestie";
     private static DatabaseBestie instance;
     private FirebaseFirestore db;
+
     private DocumentReference moodEventCounterRef;
     private DocumentReference userCounterRef;
 
@@ -130,8 +131,10 @@ public class DatabaseBestie {
         generateUniqueId(followRelCounterRef, "last_fid", callback);
     }
 
+
     //----------------------------------------------------------------------------------------------
     // USER COLLECTION METHODS ---------------------------------------------------------------------
+
     //checked
     /**
      * This adds a user's data to the "users" collection
@@ -168,6 +171,32 @@ public class DatabaseBestie {
             Log.e(TAG, "Error retrieving user", e);
             callback.onUserRetrieved(null);
         });
+    }
+
+    /**
+     * returns email corresponding to username or null if username is not taken
+     * @param username
+     * @param callback
+     */
+    public void findEmailByUsername(String username, findEmailCallback callback) {
+        usersRef.whereEqualTo("username", username)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                        String email = document.getString("email");
+                        callback.onEmailFound(email);
+                    } else {
+                        callback.onEmailFound(null);
+                    }
+                });
+    }
+
+    public interface findEmailCallback {
+        /**
+         * Called when email is successfully found by username
+         */
+        void onEmailFound(String email);
     }
 
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------

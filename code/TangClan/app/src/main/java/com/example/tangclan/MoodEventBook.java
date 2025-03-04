@@ -79,20 +79,6 @@ public class MoodEventBook {
             System.out.println(event);
         }
     }
-
-    public void displayMoodEventsOnMap(){ //displays events with geolocation
-        for (MoodEvent event: moodEvents){
-            if (event.hasGeolocation()){
-                System.out.println("Displaying on map: " + event);
-            }
-        }
-    }
-
-
-
-
-
-
 }
 
 //https://developer.android.com/guide/topics/resources/drawable-resource#Shape
