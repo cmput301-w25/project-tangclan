@@ -1,48 +1,55 @@
 package com.example.tangclan;
 
+import static android.Manifest.permission.READ_MEDIA_IMAGES;
 import static com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.io.FilenameUtils.getPath;
 import static com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.util.EncodingUtils.getBytes;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Insets;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ImageValidator {
+public class ImageValidator extends AppCompatActivity {
 
-    private static final long MAX_IMAGE_SIZE = 65536;
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.profile_setup);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.profile_picture), (v, insets)->{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars()).toPlatformInsets();
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
 
-    public static boolean isValidImageSize(Context context, Uri imageUri) {
-
-        if (imageUri == null) return false; //if no image is selected
-
-        try {
-            InputStream inputStream = context.getContentResolver().openInputStream(imageUri); //converts image to raw data
-            byte[] imageBytes = getBytes(inputStream); //stream into byte array
-
-            if (imageBytes.length > MAX_IMAGE_SIZE) { //checks image size
-                Toast.makeText(context, "Image is too large! Please select an image under 65536 bytes.", Toast.LENGTH_LONG).show();
-                return false;
+                ActivityCompat.requestPermissions(this, new String[]{READ_MEDIA_IMAGES}, PackageManager.PERMISSION_GRANTED);
             }
-            return true;
-        } catch (IOException e) { //if file is not found error is printed and false is returned
-            e.printStackTrace();
-            return false;
+            return insets;
+        });
+
         }
+
+        public void buttonImageToBytes{
+
+    }
     }
 
-    //function to check image size by converting the input into bytes
-    private static byte[] getBytes(InputStream inputStream) throws IOException {
-        try (ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream()) {
-            int byteData;
-            while ((byteData = inputStream.read()) != -1) {
-                byteBuffer.write(byteData);
-            }
-            return byteBuffer.toByteArray();
-        }
-    }
-}
+
+
+
+
+
+
