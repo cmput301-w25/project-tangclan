@@ -10,6 +10,10 @@ import android.graphics.Insets;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -22,8 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 
 public class ImageValidator extends AppCompatActivity {
+
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -42,9 +49,23 @@ public class ImageValidator extends AppCompatActivity {
 
         }
 
-        public void buttonImageToBytes{
+        public void buttonImageToBytes(View view){
+            StorageManager storageManager = (StorageManager) getSystemService(STORAGE_SERVICE);
+            StorageVolume storageVolume = storageManager.getStorageVolumes().get(0);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                File fileImage = new File(storageVolume.getDirectory().getPath() + "/Download/images.jpg");
+                try{
+                    byte[] bytes = Files.readAllBytes(fileImage.toPath());
+                    textView.setText(bytes.length);
+                } catch (IOException e){
+                    throw new RuntimeException(e);
 
-    }
+                }
+
+            }
+
+
+        }
     }
 
 
