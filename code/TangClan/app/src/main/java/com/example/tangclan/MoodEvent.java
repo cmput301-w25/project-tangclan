@@ -2,17 +2,13 @@ package com.example.tangclan;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.location.LocationManager;
 
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 /**
  * Represents a Mood Event

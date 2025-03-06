@@ -17,7 +17,7 @@ import java.util.Objects;
  * The Mood class is tied to a single emotional state, which is used to request system resources for color and emoticon
  */
 public class Mood {
-    private final String emotion;
+    private String emotion;
 
     /**
      * Constructor for the mood class
@@ -42,6 +42,31 @@ public class Mood {
         }
 
         this.emotion = emotion;
+    }
+
+    /**
+     * Sets the emotional state of the mood
+     * @param emotionalState
+     *      The emotional state of the mood
+     */
+    public void setEmotion(String emotionalState) {
+        ArrayList<String> emotionsList = new ArrayList<>(List.of(
+                "happy",
+                "sad",
+                "angry",
+                "anxious",
+                "ashamed",
+                "calm",
+                "confused",
+                "disgusted",
+                "neutral",
+                "surprised",
+                "terrified"));
+        if (!(emotionsList.contains(emotion))) {
+            throw new IllegalArgumentException();
+        }
+
+        this.emotion = emotionalState;
     }
 
     /**
