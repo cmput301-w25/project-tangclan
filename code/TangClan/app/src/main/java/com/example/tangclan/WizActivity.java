@@ -40,7 +40,7 @@ public class WizActivity extends AppCompatActivity {
                 break;
             case 2:
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new AddEnvironmentFragment())
+                        .replace(R.id.fragment_container, new AddSocialSituation())
                         .addToBackStack(null)
                         .commit();
                 break;
@@ -50,8 +50,12 @@ public class WizActivity extends AppCompatActivity {
         }
     }
 
+    // write to database/local cache
+
     // Optionally, a method to go back or to finish the wizard
     public void navigateBack() {
         onBackPressed();
     }
+
+
 }
