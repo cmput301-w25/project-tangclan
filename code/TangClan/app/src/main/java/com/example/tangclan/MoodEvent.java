@@ -8,7 +8,9 @@ import androidx.core.app.ActivityCompat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * Represents a Mood Event
@@ -17,9 +19,9 @@ public class MoodEvent {
     private int mid;
     private final LocalTime postTime;
     private final LocalDate postDate;
-    private ArrayList<String> triggers;
+    private ArrayList<String> triggers = null;
     private Mood mood;
-    private String situation;
+    private String situation = null;
     private Double latitude = null;
     private Double longitude = null;
 
@@ -177,38 +179,102 @@ public class MoodEvent {
     }
 
     // getters, setters
+
+    /**
+     * Getter for the Mood Event ID
+     * @return
+     *  the ID of the Mood Event in the database
+     */
+    public int getMid() {
+        return this.mid;
+    }
+
+    /**
+     * Getter for the post date
+     * @return
+     *      The date the MoodEvent was posted
+     */
     public LocalDate getPostDate() {
         return this.postDate;
     }
 
+    /**
+     * Getter for the post time
+     * @return
+     *      the time the MoodEvent was posted
+     */
     public LocalTime getPostTime() {
         return this.postTime;
     }
 
+    /**
+     * Getter for the mood object of the Mood Event
+     * @return
+     *      the MoodEvent's associated Mood object
+     */
     public Mood getMood() {
         return this.mood;
     }
 
+    /**
+     * Getter for the emotional state of the mood
+     * @return
+     *      The Mood Event's associated emotional state, in the Mood object
+     */
     public String getMoodEmotionalState() {
         return this.mood.getEmotion();
     }
 
-    public ArrayList<String> getTriggers() {
-        return this.triggers;
+    /**
+     * Getter for the optional triggers of the mood
+     * @return
+     *      an Optional object possibly containing a list of triggers.
+     */
+    public Optional<ArrayList<String>> getTriggers() {
+        return Optional.ofNullable(this.triggers);
     }
 
-    public String getSituation() {
-        return this.situation;
+    /**
+     * Getter for the optional situation of the mood
+     * @return
+     *      an Optional object possibly containing a situation
+     */
+    public Optional<String> getSituation() {
+        return Optional.ofNullable(this.situation);
     }
 
+    /**
+     * Setter for the MoodEvent ID of the MoodEvent
+     * @param id
+     *      the id of the Mood Event to be set to
+     */
+    public void setMid(int id) {
+        this.mid = id;
+    }
+
+    /**
+     * Setter for the Mood object for the MoodEvent
+     * @param emotionalState
+     *      the emotionalState that distinguishes the Mood
+     */
     public void setMood(String emotionalState) {
         this.mood.setEmotion(emotionalState);
     }
 
+    /**
+     * Setter for the Mood event triggers
+     * @param triggers
+     *      The list of triggers for the triggers attribute to be set to
+     */
     public void setTriggers(ArrayList<String> triggers) {
         this.triggers = triggers;
     }
 
+    /**
+     * Setter for the MoodEvent situation
+     * @param situation
+     *      The String situation for the situation attribute to be set to
+     */
     public void setSituation(String situation) {
         // convert into stream and count the number of spaces
         int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
@@ -221,10 +287,38 @@ public class MoodEvent {
         this.situation = situation;
     }
 
+    /**
+     * Checks if the MoodEvent has a geolocation
+     * @return
+     *      A boolean value indicating whether the MoodEvent has a geolocation
+     */
     public boolean hasGeolocation() {
         return (this.latitude != null && this.longitude != null);
     }
 
 
     // helpers
+
+    /**
+     * Creates a string-formatted date of the form "{DAY-OF-WEEK}, {MONTH} {DATE}, {YEAR}"
+     * @return
+     *      the string date of the MoodEvent date
+     */
+    public String returnFormattedDate() {
+        // format the
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM, d, uuuu");
+
+        return this.postDate.format(formatter);
+    }
+
+    /**
+     * Creates a string-formatted time of the form "{HOUR}:{MINUTES}{DAY-SEGMENT}"
+     * @return
+     *      the string time of the MoodEventTime e.g. '10:30PM'
+     */
+    public String returnFormattedTime() {
+        // format the time with an hour (no leading 0), minutes (leading 0) and the time segment (AM PM)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mma");
+        return this.postTime.format(formatter);
+    }
 }
