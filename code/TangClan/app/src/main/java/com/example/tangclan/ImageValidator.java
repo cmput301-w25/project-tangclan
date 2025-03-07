@@ -12,7 +12,7 @@ import java.io.InputStream;
 
 public class ImageValidator {
 
-    private static final int MAX_IMAGE_SIZE = 65536;
+    private static final int MAX_IMAGE_SIZE = 65536; // 64 KB
 
     private ImageValidator() {
     }
@@ -40,11 +40,11 @@ public class ImageValidator {
 
 
     static byte[] compressBitmapToSize(Bitmap bitmap, int maxSize) {
-        int quality = 100;
+        int quality = 100; // Start with max quality
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         do {
-            outputStream.reset();
+            outputStream.reset(); // Clear buffer before retrying
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
 
             if (outputStream.toByteArray().length <= maxSize) {
