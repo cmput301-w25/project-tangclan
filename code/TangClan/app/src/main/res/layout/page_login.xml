@@ -34,7 +34,8 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
-            android:text="@string/username"
+            android:hint="@string/username"
+            android:background="@android:color/transparent"
             android:textAppearance="@style/username" />
     </RelativeLayout>
 
@@ -54,8 +55,10 @@
             android:layout_width="220dp"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
             android:gravity="center_horizontal|top"
-            android:text="@string/password"
+            android:hint="@string/password"
+            android:password="true"
             android:textAppearance="@style/password" />
     </RelativeLayout>
 
@@ -92,6 +95,7 @@
         android:layout_width="364dp"
         android:layout_height="61dp"
         android:background="@drawable/button_logi"
+        android:clickable="true"
         android:clipToOutline="true"
         android:gravity="center"
         android:text="Log in"

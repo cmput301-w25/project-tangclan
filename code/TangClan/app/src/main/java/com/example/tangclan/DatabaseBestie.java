@@ -156,8 +156,6 @@ public class DatabaseBestie {
      * This returns data of the user with the corresponding uid
      * @param uid
      *      This is the uid of the user whose data we want to obtain
-     * @return
-     *      a User object with the corresponding data of an existing user
      */
     public void getUser(String uid, UserCallback callback) {
         DocumentReference userRef = usersRef.document(uid);

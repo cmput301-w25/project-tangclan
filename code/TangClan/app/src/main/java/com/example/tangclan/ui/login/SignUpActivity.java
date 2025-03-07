@@ -58,7 +58,8 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email, password, username;
+                String displayName, email, password, username;
+                displayName = editName.getText().toString();
                 email = editEmail.getText().toString();
                 username = editUsername.getText().toString();
                 password = editPassword.getText().toString();
@@ -74,11 +75,25 @@ public class SignUpActivity extends AppCompatActivity {
                     editPassword.setError("Enter password");
                     return;
                 }
+                boolean containsUpper = password.matches(".+[A-Z].+");
+                boolean containsLower = password.matches(".+[a-z].+");
+                boolean containsNum = password.matches(".+[1-9].+");
+                boolean containsSpecial = password.matches(".+[!#$%^&*|].+");
+                boolean valid = ((containsUpper && containsLower) && containsNum) && containsSpecial;
+                if (!valid && password.length() < 8) {
+                    editPassword.setError("Password must be at least 8 characters long and must contain one of each:\n" +
+                            " - Capital letter\n" +
+                            " - Lowercase letter\n" +
+                            " - One of the special characters: !,#,$,%,^,&,*,|\n");
+                    return;
+                }
+
                 boolean passwordsMatch = password.equals(editConfirmedPassword.getText().toString());
                 if (!passwordsMatch) {
                     editConfirmedPassword.setError("Entered password does not match");
                     return;
                 }
+
                 bestie.findEmailByUsername(username, e -> {
                     if (e != null) {
                         editUsername.setError("Username already exists");
@@ -88,7 +103,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            bestie.addUser(new Profile(username, password, email,-1));
+                                            bestie.addUser(new Profile(displayName, username, password, email));
                                             Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
                                                     Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);

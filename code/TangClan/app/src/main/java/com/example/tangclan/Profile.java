@@ -1,14 +1,25 @@
 package com.example.tangclan;
 
+import static java.lang.Integer.parseInt;
+
 import java.io.Serializable;
 
 // This has info pertaining to a user that they may edit through 'Edit Profile'
 public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodEventBook and FollowingBook
+    private String displayName;
     private String username;
     private String password;
     private String email;
-    private int age;//Note: Mentioned in meeting everything is stored as strings may need to change?????
-    public Profile(String username, String password, String email,int age){
+    private String age;
+
+    public Profile(String displayName, String username, String password, String email){
+        super();
+        this.username=username;
+        this.password=password;
+        this.email=email;
+    }
+
+    public Profile(String displayName, String username, String password, String email, String age){
         super();
         this.username=username;
         this.password=password;
@@ -25,11 +36,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         if ((username.length()>15) || (username.length()<=0)){
             throw new IllegalArgumentException();
         }
-
-        //TODO:
-        //Idea for "Storing Unique username"
-        //Looping through the database check if any matching.
-
         this.username = username;
     }
 
@@ -60,10 +66,10 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         if (password.matches(".+[1-9].+")){
             isDigit = true;
         }
-        if (SPECIAL_CHARACTERS.contains(password)){
+        if (password.matches(".+[!#$%^&*|].+")){
             spChar = true;
         }
-        if((password.length()<=20&&password.length()>0)){
+        if((password.length()>=8)){
             isLength=true;
         }
 
@@ -87,19 +93,17 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.email = email;
     }
 
-    public int getAge() {
-
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        if(age<18){
+    public void setAge(String age) {
+        if(parseInt(age) <18){
             throw new IllegalArgumentException();
         }
         this.age = age;//may need to do conversion to string before setting
     }
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
-
 
 
     //TODO:
