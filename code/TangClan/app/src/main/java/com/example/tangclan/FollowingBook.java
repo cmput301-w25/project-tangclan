@@ -69,13 +69,13 @@ public class FollowingBook {
 
     public List<MoodEvent> filterMoodEventsByMoodType(String moodType) {
         return getRecentMoodEvents().stream()
-                .filter(event -> MoodEvent.getMood().equals(moodType))
+                .filter(event -> MoodEvent.getMood().getEmotion().equals(moodType))
                 .collect(Collectors.toList());
     }
 
     public List<MoodEvent> filterMoodEventsByKeyword(String keyword) {
         return getRecentMoodEvents().stream()
-                .filter(event -> MoodEvent.getTextExplanation().contains(keyword))
+                .filter(event -> MoodEvent.getSituation().contains(keyword))
                 .collect(Collectors.toList());
     }
 
