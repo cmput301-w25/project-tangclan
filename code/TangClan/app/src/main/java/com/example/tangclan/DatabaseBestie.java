@@ -195,6 +195,19 @@ public class DatabaseBestie {
         void onEmailFound(String email);
     }
 
+    /**
+     * This updates the details of an existing user
+     * @param user
+     *      This is the user with updated info
+     */
+    public void updateUser(String uid, Profile user) {
+        usersRef.document(String.valueOf(uid))
+                .set(user)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "User details successfully updated!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating User details", e));
+    }
+
+
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
     // checked
     /**
@@ -403,4 +416,5 @@ public class DatabaseBestie {
          */
         void onFollowingRetrieved(ArrayList<String> following);
     }
+
 }

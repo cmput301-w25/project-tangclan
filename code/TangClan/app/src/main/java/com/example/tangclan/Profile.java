@@ -3,6 +3,7 @@ package com.example.tangclan;
 import static java.lang.Integer.parseInt;
 
 import java.io.Serializable;
+import java.sql.Blob;
 
 // This has info pertaining to a user that they may edit through 'Edit Profile'
 public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodEventBook and FollowingBook
@@ -12,19 +13,23 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     private String email;
     private String age;
 
-    public Profile(String displayName, String username, String password, String email){
+    private Blob profilePic;
+
+    public Profile(String displayName, String username, String password, String email, Blob photo){
         super();
         this.username=username;
         this.password=password;
         this.email=email;
+        this.profilePic = photo;
     }
 
-    public Profile(String displayName, String username, String password, String email, String age){
+    public Profile(String displayName, String username, String password, String email, String age, Blob photo){
         super();
         this.username=username;
         this.password=password;
         this.email=email;
         this.age=age;
+        this.profilePic = photo;
     }
 
     public String getUsername() {

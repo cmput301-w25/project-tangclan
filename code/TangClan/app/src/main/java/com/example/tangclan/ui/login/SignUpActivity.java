@@ -101,7 +101,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            bestie.addUser(new Profile(displayName, username, password, email));
+                                            bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
                                             Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
                                                     Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
