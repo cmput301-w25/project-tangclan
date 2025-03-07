@@ -31,6 +31,14 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         return username;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
     public void setUsername(String username) {
         //Limit length of username to 15
         if ((username.length()>15) || (username.length()<=0)){
