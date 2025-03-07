@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,7 +53,7 @@ public class AddEmotionFragment extends Fragment {
         Button btnNext = view.findViewById(R.id.btnNextEmotion);
         btnNext.setOnClickListener(v -> {
             if (selectedEmotion == null) {
-                // You might show a Toast or a Snackbar to prompt selection
+                Toast.makeText(getContext(), "Please select an emotion", Toast.LENGTH_SHORT).show();
                 return;
             }
             // Save selected emotion in ViewModel
