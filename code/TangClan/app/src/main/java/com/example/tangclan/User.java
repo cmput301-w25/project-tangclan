@@ -52,11 +52,14 @@ public class User {
     }
 
     /**
-     * initializes the user's FollowinbBook by querying the database for all user followers,
+     * initializes the user's FollowingBook by querying the database for all user followers,
      * following, and any outstanding follow requests
      * @param db
      */
     public void initializeFollowingBookFromDatabase(DatabaseBestie db) {
         db.getFollowers(this.uid, followers -> User.this.followingBook.setFollowers(followers));
+        //TODO: mechanism to initialize followers
+        //TODO: grab any outstanding follow requests(?)
+        //TODO: this method doesn't need to be completed until Project part 4 tbh
     }
 }
