@@ -1,0 +1,87 @@
+<!-- fragment_add_triggers.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_owl"
+            android:contentDescription="Owl icon" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="moodly"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_close"
+            android:contentDescription="Close"
+            android:id="@+id/closeIcon" />
+    </LinearLayout>
+
+    <!-- Question -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Any triggers you want to keep track of?"
+        android:textSize="18sp"
+        android:layout_marginTop="24dp" />
+
+    <!-- A simple EditText for adding triggers -->
+    <EditText
+        android:id="@+id/editTextTrigger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter trigger and tap 'Add'"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/btnAddTrigger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Trigger"
+        android:layout_marginTop="8dp" />
+
+    <!-- A TextView to display the triggers added -->
+    <TextView
+        android:id="@+id/triggersDisplay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No triggers added yet"
+        android:layout_marginTop="16dp" />
+
+    <!-- Bottom row (Back, Next) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="24dp">
+
+        <Button
+            android:id="@+id/btnBackTrigger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/btnNextTrigger"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+    </LinearLayout>
+</LinearLayout>
