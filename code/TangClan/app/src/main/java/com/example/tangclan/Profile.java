@@ -100,8 +100,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     }
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
 
-
-
     //TODO:
     //On CRC cards "Manages Permissions for followers" Referring to this user story?: "As a participant, I want to grant another participant permission to follow my most recent moodevent
     //Idea:

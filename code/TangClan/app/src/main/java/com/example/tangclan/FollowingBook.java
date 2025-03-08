@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FollowingBook {
-    private List<Profile> following;
-    private List<Profile> followers;
-    private List<FollowRequest> followRequests;
+    private ArrayList<String> following;
+    private ArrayList<String> followers;
+    private ArrayList<Followers> followRequests;
 
     public FollowingBook() {
         this.following = new ArrayList<>();
@@ -56,7 +56,7 @@ public class FollowingBook {
     // Fetch recent mood events from followed users
     public List<MoodEvent> getRecentMoodEvents() {
         return following.stream()
-                .flatMap(profile -> MoodEventBook.getMoodEvent().getRecentEvents().stream())
+                .flatMap(userFollowed -> MoodEventBook.getMoodEvent().getRecentEvents().stream())
                 .collect(Collectors.toList());
     }
 
@@ -98,6 +98,11 @@ public class FollowingBook {
 
     public List<FollowRequest> getFollowRequests() {
         return new ArrayList<>(followRequests);
+    }
+
+    // setters
+    public void setFollowers(ArrayList<String> followers) {
+        this.followers = followers;
     }
 
     private Profile getOwnerProfile() {

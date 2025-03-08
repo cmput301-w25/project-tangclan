@@ -269,6 +269,34 @@ public class DatabaseBestie {
     }
 
     /**
+     * Retrieves all mood events of the user
+     * @param uid
+     *      the user ID of the current user
+     * @param callback
+     *      function to be called when the task is successful.
+     */
+    public void getAllMoodEvents(String uid, MoodEventsCallback callback) {
+        // query should search all collections with id 'events' regardless of month
+        db.collectionGroup("events")
+                .whereEqualTo("postedBy", uid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<MoodEvent> moodEvents = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            MoodEvent moodEvent = document.toObject(MoodEvent.class);
+                            moodEvents.add(moodEvent);
+                        }
+                        callback.onMoodEventsRetrieved(moodEvents);
+                    }
+                    else {
+                        Log.e(TAG, "Error getting mood events: ", task.getException());
+                        callback.onMoodEventsRetrieved(new ArrayList<>());
+                    }
+                });
+    }
+
+    /**
      * Callback interface for handling retrieved MoodEvent objects async
      */
     public interface MoodEventsCallback {
