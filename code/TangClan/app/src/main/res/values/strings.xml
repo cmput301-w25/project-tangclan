@@ -7,7 +7,7 @@
     <string name="password">Password</string>
     <string name="confirm_pas">Confirm Password</string>
     <string name="sign_up">Sign up</string>
-    <string name="some_id"><![CDATA[??]]></string>
+    <string name="some_id">Question Mark</string>
     <string name="forgot_pass">Forgot Password?</string>
     <string name="don_t_have_">Don\'t have an account? <font color='#FFD261'>Sign up</font></string>
     <string name="forgot_username">Forgot Username?</string>
@@ -51,9 +51,8 @@
     <string name="show_graphi">Show graphic content</string>
     <string name="you_won_t_b">You won\'t be warned of potentially NSFW content on your feed.</string>
     <string name="step_4_of_4">Step 4 of 4</string>
-    <string name="you_re_all_">You\'re all set!</string><string name="following">Following</string>
-
-
+    <string name="you_re_all_">You\'re all set!</string>
+    <string name="following">Following</string>
 
 
 </resources>

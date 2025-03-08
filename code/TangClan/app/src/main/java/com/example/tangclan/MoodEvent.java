@@ -1,5 +1,8 @@
 package com.example.tangclan;
 
+import android.content.Context;
+import android.net.Uri;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -15,6 +18,8 @@ public class MoodEvent {
     private ArrayList<String> triggers;
     private Mood mood;
     private String situation;
+
+    private Uri imageUri;
 
 
     /**
@@ -148,6 +153,8 @@ public class MoodEvent {
 
         this.situation = situation;
     }
+
+
 
 
     // helpers
