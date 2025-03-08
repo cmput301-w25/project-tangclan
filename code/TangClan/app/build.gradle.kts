@@ -36,8 +36,12 @@ android {
 }
 
 dependencies {
+    implementation("io.github.cdimascio:java-dotenv:5.2.2")
+    implementation ("com.sun.mail:android-mail:1.6.2")
+    implementation ("com.sun.mail:android-activation:1.6.2")
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-firestore:25.1.1")
+    implementation ("com.google.android.gms:play-services-auth:20.0.0")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

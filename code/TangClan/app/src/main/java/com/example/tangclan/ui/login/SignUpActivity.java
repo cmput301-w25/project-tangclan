@@ -3,6 +3,7 @@ package com.example.tangclan.ui.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.base.Verify;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -65,6 +67,10 @@ public class SignUpActivity extends AppCompatActivity {
                     editEmail.setError("Enter email");
                     return;
                 }
+                if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                    editEmail.setError("Wrong format");
+                    return;
+                }
                 if (TextUtils.isEmpty(username)) {
                     editUsername.setError("Enter username");
                     return;
@@ -73,12 +79,7 @@ public class SignUpActivity extends AppCompatActivity {
                     editPassword.setError("Enter password");
                     return;
                 }
-                boolean containsUpper = password.matches(".+[A-Z].+");
-                boolean containsLower = password.matches(".+[a-z].+");
-                boolean containsNum = password.matches(".+[1-9].+");
-                boolean containsSpecial = password.matches(".+[!#$%^&*|].+");
-                boolean valid = ((containsUpper && containsLower) && containsNum) && containsSpecial;
-                if (!valid && password.length() < 8) {
+                if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
                     editPassword.setError("Password must be at least 8 characters long and must contain one of each:\n" +
                             " - Capital letter\n" +
                             " - Lowercase letter\n" +
@@ -101,12 +102,10 @@ public class SignUpActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
-                                            Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
-                                                    Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
+                                            Log.d("Signup", "User created successfully");
+                                            bestie.addUser(new Profile(displayName.trim(), username.trim(), password.trim(), email.trim(), null));  // replace null with default image
+                                            Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                             startActivity(intent);
-                                            finish();
                                         } else {
                                             // Could not create account
                                             Toast.makeText(SignUpActivity.this, "Authentication failed.",

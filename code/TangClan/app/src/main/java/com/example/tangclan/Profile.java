@@ -17,6 +17,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
 
     public Profile(String displayName, String username, String password, String email, Blob photo){
         super();
+        this.displayName = displayName;
         this.username=username;
         this.password=password;
         this.email=email;
@@ -25,6 +26,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
 
     public Profile(String displayName, String username, String password, String email, String age, Blob photo){
         super();
+        this.displayName = displayName;
         this.username=username;
         this.password=password;
         this.email=email;
