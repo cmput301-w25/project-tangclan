@@ -24,7 +24,7 @@ public class MoodEventBook {
         moodEvents.remove(event);
     }
 
-    public static MoodEvent getMoodEvent(int index){ //obtains moodevent by its index in the list
+    public MoodEvent getMoodEvent(int index){ //obtains moodevent by its index in the list
         if (index>=0 && index < moodEvents.size()){
             return moodEvents.get(index);
         }
