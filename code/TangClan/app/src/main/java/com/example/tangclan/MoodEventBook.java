@@ -1,5 +1,6 @@
 package com.example.tangclan;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -43,7 +44,7 @@ public class MoodEventBook {
         moodEvents.sort(Comparator.comparing(MoodEvent::getPostDate).reversed());  //https://www.geeksforgeeks.org/comparator-reversed-method-in-java-with-examples/
     }
 
-    public List<MoodEvent> filterByDate(Date date){ //filter events by date
+    public List<MoodEvent> filterByDate(LocalDate date){ //filter events by date
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event: moodEvents){
             if (event.getPostDate().equals(date)){
@@ -66,14 +67,20 @@ public class MoodEventBook {
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords){ //filter by keywords that user inputs
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents){
-            String explanation = event.getSituation();
-            for (String keyword : keywords){
-                if (explanation != null && explanation.toLowerCase().contains(keyword.toLowerCase())){
-                    result.add(event);
-                    break;
+            // we check for each mood event if the situation is present
+            if (event.getSituation().isPresent()) {
+
+                // get the mood event situation
+                String explanation = event.getSituation().get();
+
+                // parse the situation and match the first keyword
+                for (String keyword : keywords) {
+                    if (explanation.toLowerCase().contains(keyword.toLowerCase())) {
+                        result.add(event);
+                        break;
+                    }
                 }
             }
-
         }
         return result;
     }
