@@ -1,102 +1,93 @@
 package com.example.tangclan;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Date;
-
 
 public class MoodEventBook {
+    private ArrayList<MoodEvent> moodEvents;
 
-    private ArrayList<MoodEvent> moodEvents; //list stores all mood event objects
-
-
-    //constructor
-    public MoodEventBook(){
-        this.moodEvents = new ArrayList<>(); //initalizes empty array list of mood events
+    // Constructor
+    public MoodEventBook() {
+        this.moodEvents = new ArrayList<>();
     }
 
     public void setMoodEvents(ArrayList<MoodEvent> moodEvents) {
         this.moodEvents = moodEvents;
     }
 
-    public void addMoodEvent(MoodEvent event){ //adds new MoodEvent to the list
+    public void addMoodEvent(MoodEvent event) {
         moodEvents.add(event);
     }
 
-    public void deleteMoodEvent(MoodEvent event){ //removes mood event from the list
+    public void deleteMoodEvent(MoodEvent event) {
         moodEvents.remove(event);
     }
 
-    public MoodEvent getMoodEvent(int index){ //obtains moodevent by its index in the list
-        if (index>=0 && index < moodEvents.size()) {
+    public MoodEvent getMoodEvent(int index) {
+        if (index >= 0 && index < moodEvents.size()) {
             return moodEvents.get(index);
         }
         return null;
     }
 
-    public int getMoodEventCount(){ //count the MoodEvents in the list
+    public int getMoodEventCount() {
         return moodEvents.size();
     }
 
-    public void sortMoodEvents(){ //sorts mood events in descending order
-        moodEvents.sort(Comparator.comparing(MoodEvent::getPostDate).reversed());  //https://www.geeksforgeeks.org/comparator-reversed-method-in-java-with-examples/
+    public void sortMoodEvents() {
+        moodEvents.sort(Comparator.comparing(MoodEvent::getPostDate).reversed()
+                .thenComparing(MoodEvent::getPostTime).reversed());
     }
 
-    public List<MoodEvent> filterByDate(Date date){ //filter events by date
+    public List<MoodEvent> filterByDate(LocalDate date) {
         List<MoodEvent> result = new ArrayList<>();
-        for (MoodEvent event: moodEvents){
-            if (event.getPostDate().equals(date)){
+        for (MoodEvent event : moodEvents) {
+            if (event.getPostDate().equals(date)) {
                 result.add(event);
             }
         }
         return result;
     }
 
-    public List<MoodEvent> filterByMoodType(String moodType){ //filter by specific type of mood
+    public List<MoodEvent> filterByMoodType(String moodType) {
         List<MoodEvent> result = new ArrayList<>();
-        for (MoodEvent event: moodEvents){
-            if (event.getMoodEmotionalState().equalsIgnoreCase(moodType)){  //https://www.geeksforgeeks.org/java-string-equalsignorecase-method-with-examples/
+        for (MoodEvent event : moodEvents) {
+            if (event.getMoodEmotionalState().equalsIgnoreCase(moodType)) {
                 result.add(event);
             }
         }
         return result;
     }
 
-    public List<MoodEvent> filterByExplanationKeywords(List<String> keywords){ //filter by keywords that user inputs
+    public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
-        for (MoodEvent event : moodEvents){
+        for (MoodEvent event : moodEvents) {
             String explanation = event.getSituation();
-            for (String keyword : keywords){
-                if (explanation != null && explanation.toLowerCase().contains(keyword.toLowerCase())){
-                    result.add(event);
-                    break;
+            if (explanation != null) {
+                for (String keyword : keywords) {
+                    if (explanation.toLowerCase().contains(keyword.toLowerCase())) {
+                        result.add(event);
+                        break;
+                    }
                 }
             }
-
         }
         return result;
     }
 
-    public void displayMoodEvents(){ //displays the moodevents to console
-        for (MoodEvent event : moodEvents){
+    public void displayMoodEvents() {
+        for (MoodEvent event : moodEvents) {
             System.out.println(event);
         }
     }
 
-    public void displayMoodEventsOnMap(){ //displays events with geolocation
-        for (MoodEvent event: moodEvents){
-            if (event.hasGeolocation()){
+    public void displayMoodEventsOnMap() {
+        for (MoodEvent event : moodEvents) {
+            if (event.hasGeolocation()) {
                 System.out.println("Displaying on map: " + event);
             }
         }
     }
-
-
-
-
-
-
 }
-
-//https://developer.android.com/guide/topics/resources/drawable-resource#Shape

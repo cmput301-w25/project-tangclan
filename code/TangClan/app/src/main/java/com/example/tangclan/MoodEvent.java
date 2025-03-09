@@ -237,6 +237,17 @@ public class MoodEvent {
         return (this.latitude != null && this.longitude != null);
     }
 
+    public Double getLatitude() {
+        return this.latitude;
+    }
+
+    public Double getLongitude() {
+        return this.longitude;
+    }
+
+
+
+
 
     // helpers
 }
