@@ -69,6 +69,7 @@ public class SignUpActivity extends AppCompatActivity {
                     editEmail.setError("Wrong format");
                     return;
                 }
+
                 if (TextUtils.isEmpty(username)) {
                     editUsername.setError("Enter username");
                     return;
@@ -91,29 +92,35 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                bestie.findEmailByUsername(username, e -> {
-                    if (e != null) {
+                bestie.findEmailByUsername(username, em -> {
+                    if (em != null) {
                         editUsername.setError("Username already exists");
                     } else {
-                        mAuth.createUserWithEmailAndPassword(email, password)
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
+                        bestie.checkEmailExists(email, ema -> {
+                            if (ema != null) {
+                                editEmail.setError("An account with this email already exists");
+                            } else {
+                                mAuth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (task.isSuccessful()) {
+                                                    bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
 
-                                            Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
-                                                    Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
-                                            startActivity(intent);
-                                            finish();
-                                        } else {
-                                            // Could not create account
-                                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                                                    Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
+                                                            Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    // Could not create account
+                                                    Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        });
                     }
                 });
             }

@@ -196,6 +196,23 @@ public class DatabaseBestie {
     }
 
     /**
+     * finds email
+     * @param email
+     * @param callback
+     */
+    public void checkEmailExists(String email, findEmailCallback callback) {
+        usersRef.whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        callback.onEmailFound(email);
+                    } else {
+                        callback.onEmailFound(null);
+                    }
+                });
+    }
+
+    /**
      * This updates the details of an existing user
      * @param user
      *      This is the user with updated info
