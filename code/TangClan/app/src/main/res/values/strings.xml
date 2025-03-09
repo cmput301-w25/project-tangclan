@@ -7,7 +7,7 @@
     <string name="password">Password</string>
     <string name="confirm_pas">Confirm Password</string>
     <string name="sign_up">Sign up</string>
-    <string name="some_id"><![CDATA[??]]></string>
+    <string name="some_id">Question Mark</string>
     <string name="forgot_pass">Forgot Password?</string>
     <string name="don_t_have_">Don\'t have an account? <font color='#FFD261'>Sign up</font></string>
     <string name="forgot_username">Forgot Username?</string>
@@ -56,6 +56,7 @@
     <string name="placeholder_date">Wednesday, July 21</string>
     <string name="placeholder_username_emotion">Julian is feeling happy</string>
     <string name="placeholder_situation">crumbl cookies</string>
+    <string name="for_you">For you</string>
 
 
 </resources>
