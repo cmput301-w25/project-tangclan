@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:paddingTop="70dp">
 
     <TextView
         android:id="@+id/moodly"
@@ -14,8 +16,10 @@
         android:gravity="center_horizontal|top"
         android:text="@string/moodly"
         android:textAppearance="@style/moodly"
-        tools:layout_editor_absoluteX="59dp"
-        tools:layout_editor_absoluteY="185dp" />
+        app:layout_constraintBottom_toTopOf="@+id/a_verificat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/a_verificat"
@@ -26,29 +30,33 @@
         android:gravity="center_horizontal|top"
         android:text="@string/a_verificat"
         android:textAppearance="@style/a_verificat"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="292dp" />
+        app:layout_constraintBottom_toTopOf="@+id/form_verifi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/moodly" />
+    />
 
     <RelativeLayout
         android:id="@+id/form_verifi"
         android:layout_width="364dp"
-        android:layout_height="39dp"
+        android:layout_height="59dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/form_verifi"
         android:clipToOutline="true"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="346dp" >
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/a_verificat">
 
-        <TextView
+        <EditText
             android:id="@+id/verificatio"
-            android:layout_width="122dp"
-            android:layout_height="19dp"
+            android:layout_width="337dp"
+            android:layout_height="46dp"
             android:layout_centerInParent="true"
-            android:text="@string/verificatio"
-            android:textAppearance="@style/verificatio"
             android:gravity="center_horizontal|top"
-            />
+            android:hint="@string/verificatio"
+            android:inputType="number"
+            android:textAppearance="@style/verificatio" />
     </RelativeLayout>
 
     <TextView
@@ -57,11 +65,12 @@
         android:layout_height="15dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:gravity="center_horizontal|top"
         android:text="@string/resend_code"
         android:textAppearance="@style/resend_code"
-        tools:layout_editor_absoluteX="295dp"
-        tools:layout_editor_absoluteY="393dp" />
+        app:layout_constraintEnd_toEndOf="@+id/form_verifi"
+        app:layout_constraintTop_toBottomOf="@+id/form_verifi" />
 
     <Button
         android:id="@+id/button_veri"
@@ -71,7 +80,9 @@
         android:layout_alignParentTop="true"
         android:clipToOutline="true"
         android:text="Verify"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="423dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resend_code" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

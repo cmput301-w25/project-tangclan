@@ -12,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.tangclan.ui.login.VerifyEmail;
 import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,6 +36,9 @@ public class TempFeedActivity extends AppCompatActivity {
 
         Button logout = findViewById(R.id.logout);
         user = auth.getCurrentUser();
+
+
+
         if (user == null) {
             Intent intent = new Intent(TempFeedActivity.this, LoginOrSignupActivity.class);
             startActivity(intent);

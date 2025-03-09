@@ -61,7 +61,8 @@
             android:gravity="center"
             android:hint="@string/email_addre"
             android:background="@android:color/transparent"
-            android:textAppearance="@style/email_addre" />
+            android:textAppearance="@style/email_addre"
+            android:inputType="textEmailAddress"/>/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -105,7 +106,7 @@
             android:background="@android:color/transparent"
             android:gravity="center_horizontal|top"
             android:hint="@string/password"
-            android:password="true"
+            android:inputType="textPassword"
             android:textAppearance="@style/password" />
     </RelativeLayout>
 
@@ -128,6 +129,7 @@
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
             android:hint="@string/confirm_pas"
+            android:inputType="textPassword"
             android:background="@android:color/transparent"
             android:textAppearance="@style/confirm_pas" />
 

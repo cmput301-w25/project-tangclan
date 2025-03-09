@@ -77,7 +77,7 @@ public class LogIn extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
+                                            Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                             startActivity(intent);
                                             finish();
                                         } else {
