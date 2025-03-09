@@ -42,10 +42,13 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     }
 
     /**
-     *
+     *  Creates and recycles the view for the ListView item
      * @param position
+     *      position of the item
      * @param convertView
+     *      view to be used as a recycling/regenerating view
      * @param parent
+     *      parent ViewGroup
      * @return
      */
     @Override
