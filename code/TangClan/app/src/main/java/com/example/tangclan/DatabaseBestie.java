@@ -4,6 +4,7 @@ package com.example.tangclan;
 import android.util.Log;
 
 import com.google.firebase.firestore.*;
+import com.google.firestore.v1.WriteResult;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -211,6 +212,25 @@ public class DatabaseBestie {
                     }
                 });
     }
+
+    public void updatePasswordSameAsFirebaseAuth(String email, String password) {
+        usersRef.whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                        String uid = document.getString("uid");
+                        if (uid != null) {
+                            DocumentReference user = usersRef.document(uid);
+
+                            user.update("password", password)
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Password updated successfully"))
+                                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
+                        }
+                    }
+                });
+    }
+
 
     /**
      * This updates the details of an existing user

@@ -87,6 +87,7 @@ public class LogIn extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
+                                            bestie.updatePasswordSameAsFirebaseAuth(email,password);
                                             Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                             startActivity(intent);
                                             finish();

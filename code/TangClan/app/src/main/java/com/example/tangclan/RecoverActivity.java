@@ -13,18 +13,10 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.tangclan.ui.login.LogIn;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RecoverActivity extends AppCompatActivity {
@@ -44,10 +36,10 @@ public class RecoverActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         EditText editEmail = findViewById(R.id.email_addre);
-        Button goToReset = findViewById(R.id.cont_to_reset);
+        Button sendReset = findViewById(R.id.send_password_reset);
         TextView backToLogin = findViewById(R.id.back_to_log);
 
-        goToReset.setOnClickListener(new View.OnClickListener() {
+        sendReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String email = editEmail.getText().toString();
@@ -65,25 +57,22 @@ public class RecoverActivity extends AppCompatActivity {
                     if (em==null) {
                         Toast.makeText(RecoverActivity.this, "Couldn't find an account with this email", Toast.LENGTH_SHORT).show();
                     } else {
-                        Intent intent = getIntent();
-                        String emailLink = mAuth.ge;
-
-                        if (mAuth.isSignInWithEmailLink(emailLink)) {
-                            Log.e(TAG, "emailLink is sign in with email");
-                            mAuth.signInWithEmailLink(email, emailLink)
-                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                // user is signed in
-                                                Intent goToSetNewPass = new Intent(getApplicationContext(), ResetPassword.class);
-                                                startActivity(goToSetNewPass);
-                                            } else {
-                                                Log.e(TAG, "Error signing in with email link", task.getException());
-                                            }
-                                        }
-                                    });
-                        }
+                        mAuth.sendPasswordResetEmail(email)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.e(TAG,"password sent");
+                                        Toast.makeText(RecoverActivity.this, "Reset Password link has been sent to your registered email", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(RecoverActivity.this, LogIn.class);
+                                        startActivity(intent);
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(RecoverActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     }
                 });
             }
