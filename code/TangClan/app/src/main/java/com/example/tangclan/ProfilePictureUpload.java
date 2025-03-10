@@ -23,7 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ProfilePictureUpload extends AppCompatActivity {
-
+    //profilepictureupload activity
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
     private static final int CROP_IMAGE_REQUEST = 3;
@@ -105,7 +105,7 @@ public class ProfilePictureUpload extends AppCompatActivity {
             if (requestCode == PICK_IMAGE_REQUEST && data.getData() != null) {
                 imageUri = data.getData();
                 // Validate the image size before continuing
-                if (com.example.myapplication.ImageValidator.isImageSizeValid(this, imageUri)) {
+                if (ImageValidator.isImageSizeValid(this, imageUri)) {
                     startCropActivity(imageUri);
                 }
             } else if (requestCode == CAMERA_REQUEST && data.getExtras() != null) {
@@ -114,7 +114,7 @@ public class ProfilePictureUpload extends AppCompatActivity {
                     imageUri = getImageUri(photo);
                     if (imageUri != null) {
 
-                        if (com.example.myapplication.ImageValidator.isImageSizeValid(this, imageUri)) {
+                        if (ImageValidator.isImageSizeValid(this, imageUri)) {
                             startCropActivity(imageUri);
                         }
                     } else {
