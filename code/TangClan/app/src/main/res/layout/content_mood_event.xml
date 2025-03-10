@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp">
-
+<!--Text view-->
     <LinearLayout
         android:id="@+id/container_drawable_name_emotional_state"
         android:layout_width="match_parent"

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
-    //moodeventarray adapter
+    //moodeventarray adapterrr
 
     private Map<MoodEvent, String> moodToUsernameMap; // Maps MoodEvent to corresponding username
 
