@@ -1,7 +1,9 @@
 package com.example.tangclan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FollowingBook {
@@ -67,28 +69,43 @@ public class FollowingBook {
         }
     }
 
-    public List<MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
+    /**
+     * queries the database for latest MoodEvents and places them in a Map where the key is the uid
+     * of a user
+     * @param db
+     *      database wrapper with capability to grab latest MoodEvent
+     * @return
+     *      Map with keys = uid and values = Latest Mood Event
+     */
+    public Map<String, MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
+        Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
+        for (String followingUid : following) {
+            db.getLatestMoodEvent(followingUid, latestEvent -> {
+                uidToMoodEvent.put(followingUid, latestEvent);
+            });
+        }
 
+        return uidToMoodEvent;
     }
 
     // Filter mood events
-    public List<MoodEvent> filterMoodEventsByDate(String date) {
-        return getRecentMoodEvents().stream()
-                .filter(event -> MoodEvent.getPostDate().equals(date))
-                .collect(Collectors.toList());
-    }
+    //public List<MoodEvent> filterMoodEventsByDate(String date) {
+    //    return getRecentMoodEvents().stream()
+    //            .filter(event -> MoodEvent.getPostDate().equals(date))
+    //            .collect(Collectors.toList());
+    //}
 
-    public List<MoodEvent> filterMoodEventsByMoodType(String moodType) {
-        return getRecentMoodEvents().stream()
-                .filter(event -> MoodEvent.getMood().getEmotion().equals(moodType))
-                .collect(Collectors.toList());
-    }
+    //public List<MoodEvent> filterMoodEventsByMoodType(String moodType) {
+    //    return getRecentMoodEvents().stream()
+    //            .filter(event -> MoodEvent.getMood().getEmotion().equals(moodType))
+    //            .collect(Collectors.toList());
+    //}
 
-    public List<MoodEvent> filterMoodEventsByKeyword(String keyword) {
-        return getRecentMoodEvents().stream()
-                .filter(event -> MoodEvent.getSituation().contains(keyword))
-                .collect(Collectors.toList());
-    }
+    //public List<MoodEvent> filterMoodEventsByKeyword(String keyword) {
+    //    return getRecentMoodEvents().stream()
+    //            .filter(event -> MoodEvent.getSituation().contains(keyword))
+    //            .collect(Collectors.toList());
+    //}
 
     // Getters
     public int getFollowerCount() {
@@ -99,12 +116,12 @@ public class FollowingBook {
         return following.size();
     }
 
-    public List<Profile> getFollowing() {
-        return new ArrayList<>(following);
+    public ArrayList<String> getFollowing() {
+        return following;
     }
 
-    public List<Profile> getFollowers() {
-        return new ArrayList<>(followers);
+    public ArrayList<String> getFollowers() {
+        return followers;
     }
 
     //public List<FollowRequest> getFollowRequests() {
@@ -120,8 +137,8 @@ public class FollowingBook {
         this.following = following;
     }
 
-    private Profile getOwnerProfile() {
-        // Implement logic to return the profile owning this FollowingBook
-        return null;
-    }
+    //private Profile getOwnerProfile() {
+    //    // Implement logic to return the profile owning this FollowingBook
+    //    return null;
+    //}
 }

@@ -321,7 +321,29 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         ArrayList<MoodEvent> moodEvents = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            MoodEvent moodEvent = document.toObject(MoodEvent.class);
+                            int mid = parseInt(document.getString("mid")); // will never return null as mid is set when adding an event
+                            String emotionalState = document.getString("emotionalState");
+                            String situation = document.getString("situation");
+                            ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                            String postDate = document.getString("datePosted");
+                            String postTime = document.getString("timePosted");
+
+                            // mechanism to revert a string back into the bitmap
+                            String imageString = document.getString("image");
+                            Bitmap image;
+                            if (imageString != null) {
+                                byte[] imgByteArray = Base64.decode(imageString, Base64.DEFAULT);
+                                image = BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.length);
+                            } else {
+                                image = null;
+                            }
+
+                            MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                            moodEvent.setPostDate(postDate);
+                            moodEvent.setPostTime(postTime);
+                            moodEvent.setImage(image);
+
+
                             moodEvents.add(moodEvent);
                         }
                         callback.onMoodEventsRetrieved(moodEvents);
@@ -370,6 +392,52 @@ public class DatabaseBestie {
             }
             callback.onMoodEventRetrieved(post);
         });
+    }
+
+    /**
+     * Given the uid of a user, retrieve their latest MoodEvent
+     * @param uid
+     *      uid of the user which we want to retrieve the latest MoodEvent from
+     * @param callback
+     *      callback to handle the retrieved MoodEvent
+     */
+    public void getLatestMoodEvent(String uid, MoodEventCallback callback) {
+         db.collectionGroup("events")
+                .whereEqualTo("postedBy", uid)
+                .orderBy("postDate")
+                .limit(1) // limit only to the latest post
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+
+                        int mid = parseInt(document.getString("mid"));
+                        String emotionalState = document.getString("emotionalState");
+                        String situation = document.getString("situation");
+                        ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                        String postDate = document.getString("datePosted");
+                        String postTime = document.getString("timePosted");
+
+                        // mechanism to revert a string back into the bitmap
+                        String imageString = document.getString("image");
+                        Bitmap image;
+                        if (imageString != null) {
+                            byte[] imgByteArray = Base64.decode(imageString, Base64.DEFAULT);
+                            image = BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.length);
+                        } else {
+                            image = null;
+                        }
+
+                        MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                        moodEvent.setPostDate(postDate);
+                        moodEvent.setPostTime(postTime);
+                        moodEvent.setImage(image);
+
+                        callback.onMoodEventRetrieved(moodEvent);
+                    }
+                });
+
+         // do nothing in the vacuous case
     }
 
     /**
