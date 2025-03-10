@@ -2,16 +2,17 @@ package com.example.tangclan;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.graphics.Bitmap;
 import android.location.LocationManager;
 
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.function.Consumer;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents a Mood Event
@@ -20,42 +21,32 @@ public class MoodEvent {
     private int mid;
     private final LocalTime postTime;
     private final LocalDate postDate;
-    private ArrayList<String> triggers;
+    private ArrayList<String> triggers = null;
     private Mood mood;
-    private String situation;
+    private String situation = null;
+    private Bitmap image;
     private Double latitude = null;
     private Double longitude = null;
 
+    /**
+     * Default constructor (required for Firestore)
+     */
+    public MoodEvent() {
+        this.mid = -1; // Placeholder, should be set later
+        this.postTime = LocalTime.now();
+        this.postDate = LocalDate.now();
+    }
 
     /**
      * default constructor for MoodEvent
      * @param emotionalState
      *      emotional state used for the Mood constructor
      */
-    public MoodEvent(String emotionalState, Context context) {
+    public MoodEvent(String emotionalState) {
+        this.mid = mid;
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
-
         this.mood = new Mood(emotionalState);
-
-        // create an instance of the LocationManager
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
     }
 
     /**
@@ -65,31 +56,12 @@ public class MoodEvent {
      * @param trigger
      *      optional list of strings representing the triggers for the MoodEvent
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger, Context context) {
+    public MoodEvent(String emotionalState, ArrayList<String> trigger) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
         this.triggers = trigger;
-
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
-
     }
 
     /**
@@ -99,14 +71,14 @@ public class MoodEvent {
      * @param situation
      *      optional string representing a social situation (20 char or 3 word max)
      */
-    public MoodEvent(String emotionalState, String situation, Context context) {
+    public MoodEvent(String emotionalState, String situation) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
 
         // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count(); //cast to int because .count returns long
+        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
 
         // raise an exception if the social situation exceeds length or word limit
         if ((situation.length() > 20) || (spaceCount > 2)) {
@@ -114,24 +86,6 @@ public class MoodEvent {
         }
 
         this.situation = situation;
-
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
     }
 
     /**
@@ -143,7 +97,7 @@ public class MoodEvent {
      * @param situation
      *      optional string representing a social situation (20 char or 3 word max)
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger, String situation, Context context) {
+    public MoodEvent(String emotionalState, ArrayList<String> trigger, String situation) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
@@ -159,39 +113,51 @@ public class MoodEvent {
         }
 
         this.situation = situation;
-
-        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
-            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
-            moodLocationManager.getCurrentLocation(
-                    LocationManager.GPS_PROVIDER,
-                    null,
-                    context.getApplicationContext().getMainExecutor(),
-                    location -> {
-                        this.latitude = location.getLatitude();
-                        this.longitude = location.getLongitude();
-                    }
-            );
-        }
     }
 
     // getters, setters
-    public  LocalDate getPostDate() {
+
+    /**
+     * Getter for the Mood Event ID
+     * @return
+     *  the ID of the Mood Event in the database
+     */
+    public int getMid() {
+        return this.mid;
+    }
+
+    /**
+     * Getter for the post date
+     * @return
+     *      The date the MoodEvent was posted
+     */
+    public LocalDate getPostDate() {
         return this.postDate;
     }
 
+    /**
+     * Getter for the post time
+     * @return
+     *      the time the MoodEvent was posted
+     */
     public LocalTime getPostTime() {
         return this.postTime;
     }
 
+    /**
+     * Getter for the mood object of the Mood Event
+     * @return
+     *      the MoodEvent's associated Mood object
+     */
     public Mood getMood() {
         return this.mood;
     }
 
+    /**
+     * Getter for the emotional state of the mood
+     * @return
+     *      The Mood Event's associated emotional state, in the Mood object
+     */
     public String getMoodEmotionalState() {
         return this.mood.getEmotion();
     }
@@ -213,14 +179,40 @@ public class MoodEvent {
         return this.situation;
     }
 
+    /**
+     * Setter for the Mood object for the MoodEvent
+     * @param emotionalState
+     *      the emotionalState that distinguishes the Mood
+     */
     public void setMood(String emotionalState) {
         this.mood.setEmotion(emotionalState);
     }
 
+    /**
+     * Setter for the Mood event triggers
+     * @param triggers
+     *      The list of triggers for the triggers attribute to be set to
+     */
     public void setTriggers(ArrayList<String> triggers) {
         this.triggers = triggers;
     }
 
+
+    /**
+     *
+     * Setter for the MoodEvent ID of the MoodEvent
+     * @param id
+     *      the id of the Mood Event to be set to
+     */
+    public void setMid(int id) {
+        this.mid = id;
+    }
+
+    /**
+     * Setter for the MoodEvent situation
+     * @param situation
+     *      The String situation for the situation attribute to be set to
+     */
     public void setSituation(String situation) {
         // convert into stream and count the number of spaces
         int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
@@ -233,6 +225,28 @@ public class MoodEvent {
         this.situation = situation;
     }
 
+    /**
+     * Setter for the image attribute
+     * @param image
+     *      an image in bitmap form
+     */
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public Bitmap getImage() {
+        return this.image;
+    }
+
+
+
+
+
+    /**
+     * Checks if the MoodEvent has a geolocation
+     * @return
+     *      A boolean value indicating whether the MoodEvent has a geolocation
+     */
     public boolean hasGeolocation() {
         return (this.latitude != null && this.longitude != null);
     }
@@ -250,4 +264,27 @@ public class MoodEvent {
 
 
     // helpers
+
+    /**
+     * Creates a string-formatted date of the form "{DAY-OF-WEEK}, {MONTH} {DATE}, {YEAR}"
+     * @return
+     *      the string date of the MoodEvent date
+     */
+    public String returnFormattedDate() {
+        // format the
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM, d, uuuu");
+
+        return this.postDate.format(formatter);
+    }
+
+    /**
+     * Creates a string-formatted time of the form "{HOUR}:{MINUTES}{DAY-SEGMENT}"
+     * @return
+     *      the string time of the MoodEventTime e.g. '10:30PM'
+     */
+    public String returnFormattedTime() {
+        // format the time with an hour (no leading 0), minutes (leading 0) and the time segment (AM PM)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mma");
+        return this.postTime.format(formatter);
+    }
 }

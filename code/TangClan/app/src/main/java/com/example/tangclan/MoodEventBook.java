@@ -72,6 +72,7 @@ public class MoodEventBook {
                 .comparing(MoodEvent::getPostDate, Comparator.nullsLast(Comparator.reverseOrder()))
                 .thenComparing(MoodEvent::getPostTime, Comparator.nullsLast(Comparator.reverseOrder()))
         );
+
     }
 
     /**
@@ -149,6 +150,10 @@ public class MoodEventBook {
 
     public List<MoodEvent> getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
+    }
+
+    public List<MoodEvent> getMoodEventList() {
+        return moodEvents;
     }
 
 
