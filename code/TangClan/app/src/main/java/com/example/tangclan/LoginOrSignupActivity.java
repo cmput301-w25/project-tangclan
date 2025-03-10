@@ -21,7 +21,7 @@ public class LoginOrSignupActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
+            Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
             startActivity(intent);
             finish();
         }

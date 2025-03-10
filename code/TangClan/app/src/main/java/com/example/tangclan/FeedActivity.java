@@ -2,14 +2,11 @@ package com.example.tangclan;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.ImageButton;
+import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentTransaction;
-
 
 import java.util.List;
 
@@ -17,8 +14,6 @@ public class FeedActivity extends AppCompatActivity {
 
     private ListView listViewFeed;
     private Feed feed;
-    private FollowingBook followingBook;
-    private MoodEventBook moodEventBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +22,10 @@ public class FeedActivity extends AppCompatActivity {
 
         listViewFeed = findViewById(R.id.listViewFeed);
 
-        followingBook = new FollowingBook();
-        moodEventBook = new MoodEventBook();
+        FollowingBook followingBook = new FollowingBook();
+        MoodEventBook moodEventBook = new MoodEventBook();
 
-        feed = new Feed(followingBook);
+        feed = new Feed(followingBook, moodEventBook);
 
         loadFeed();
 
@@ -43,7 +38,6 @@ public class FeedActivity extends AppCompatActivity {
             transaction.commit();
         });
 
-        // Set OnItemLongClickListener to display MoodEvent details
         listViewFeed.setOnItemLongClickListener((parent, view, position, id) -> {
             MoodEvent moodEvent = feed.getFeedEvents().get(position);
             showMoodEventDetails(moodEvent);
@@ -52,15 +46,9 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void loadFeed() {
-        // Load the current user's mood events first
         feed.loadFeed();
         List<MoodEvent> feedEvents = feed.getFeedEvents();
 
-        // Load the recent mood events from the people the user follows
-        List<MoodEvent> followedUserEvents = followingBook.getRecentMoodEvents();
-        feedEvents.addAll(followedUserEvents);
-
-        // Use the custom MoodEventAdapter instead of the ArrayAdapter
         MoodEventAdapter adapter = new MoodEventAdapter(this, feedEvents);
         listViewFeed.setAdapter(adapter);
     }

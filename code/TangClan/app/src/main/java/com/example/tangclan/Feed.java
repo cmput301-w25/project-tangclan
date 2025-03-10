@@ -9,21 +9,25 @@ import java.util.stream.Collectors;
 public class Feed {
 
     private FollowingBook followingBook;
+    private MoodEventBook moodEventBook;
     private List<MoodEvent> feedEvents;
 
-    public Feed(FollowingBook followingBook) {
+    public Feed(FollowingBook followingBook, MoodEventBook moodEventBook) {
         this.followingBook = followingBook;
+        this.moodEventBook = moodEventBook;
         this.feedEvents = new ArrayList<>();
     }
 
     public void loadFeed() {
-        feedEvents = followingBook.getRecentMoodEvents();
+        feedEvents.clear();
+        feedEvents.addAll(followingBook.getRecentMoodEvents());
+        feedEvents.addAll(moodEventBook.getAllMoodEvents());
         sortFeedByDateTime();
     }
 
     public void sortFeedByDateTime() {
-        feedEvents.sort(Comparator.comparing(MoodEvent::getPostDate).reversed()
-                .thenComparing(MoodEvent::getPostTime).reversed());
+        feedEvents.sort(Comparator.comparing(MoodEvent::getPostDate, Comparator.nullsLast(Comparator.reverseOrder()))
+                .thenComparing(MoodEvent::getPostTime, Comparator.nullsLast(Comparator.reverseOrder())));
     }
 
     public List<MoodEvent> filterByDate(LocalDate date) {
@@ -64,5 +68,4 @@ public class Feed {
     public List<MoodEvent> getFeedEvents() {
         return feedEvents;
     }
-
 }
