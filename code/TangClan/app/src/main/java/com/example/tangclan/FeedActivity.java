@@ -24,6 +24,7 @@ public class FeedActivity extends AppCompatActivity {
     //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
+    private MoodEventAdapter adapter;
 
     FirebaseAuth auth;
     FirebaseUser currentUser;
@@ -88,23 +89,24 @@ public class FeedActivity extends AppCompatActivity {
         feed.loadFeed();
         List<MoodEvent> feedEvents = feed.getFeedEvents();
 
-        MoodEventAdapter adapter = new MoodEventAdapter((Context) this, (FollowingBook) feedEvents);
+        adapter = new MoodEventAdapter((Context) this, (FollowingBook) feedEvents);
         listViewFeed.setAdapter(adapter);
     }
 
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
         details.append("Emotional State: ").append(moodEvent.getMoodEmotionalState()).append("\n");
-        details.append("Mood Color: ").append(moodEvent.getMood().getColor(getApplicationContext()).toString()).append("\n");
-        // details.append("Emoticon: ").append(moodEvent.getMood().getEmoticon()).append("\n");
+        details.append("Mood Color: ").append(moodEvent.getMood().getColor(getBaseContext()).toString()).append("\n");
+        details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
-        if (moodEvent.getTriggers() != null && !moodEvent.getTriggers().isEmpty()) {
-            details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers())).append("\n");
+
+        if (moodEvent.getTriggers().isPresent() && !moodEvent.getTriggers().isEmpty()) {
+            details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers().get())).append("\n");
         } else {
             details.append("Triggers: N/A\n");
         }
 
-        if (moodEvent.getSituation() != null) {
+        if (moodEvent.getSituation().isPresent()) {
             details.append("Situation: ").append(moodEvent.getSituation()).append("\n");
         } else {
             details.append("Situation: N/A\n");
