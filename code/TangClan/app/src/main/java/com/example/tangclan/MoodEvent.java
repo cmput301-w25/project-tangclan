@@ -3,6 +3,7 @@ package com.example.tangclan;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.location.LocationManager;
 
 import androidx.core.app.ActivityCompat;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+//eventnn
 
 /**
  * Represents a Mood Event
@@ -47,6 +49,25 @@ public class MoodEvent {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
         this.mood = new Mood(emotionalState);
+
+        // create an instance of the LocationManager
+        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
+            moodLocationManager.getCurrentLocation(
+                    LocationManager.GPS_PROVIDER,
+                    null,
+                    context.getApplicationContext().getMainExecutor(),
+                    location -> {
+                        this.latitude = location.getLatitude();
+                        this.longitude = location.getLongitude();
+                    }
+            );
+        }
     }
 
     /**
@@ -62,6 +83,25 @@ public class MoodEvent {
 
         this.mood = new Mood(emotionalState);
         this.triggers = trigger;
+
+        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
+            moodLocationManager.getCurrentLocation(
+                    LocationManager.GPS_PROVIDER,
+                    null,
+                    context.getApplicationContext().getMainExecutor(),
+                    location -> {
+                        this.latitude = location.getLatitude();
+                        this.longitude = location.getLongitude();
+                    }
+            );
+        }
+
     }
 
     /**
@@ -78,6 +118,8 @@ public class MoodEvent {
         this.mood = new Mood(emotionalState);
 
         // convert into stream and count the number of spaces
+        //moodvenet
+
         int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
 
         // raise an exception if the social situation exceeds length or word limit
@@ -86,6 +128,24 @@ public class MoodEvent {
         }
 
         this.situation = situation;
+
+        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
+            moodLocationManager.getCurrentLocation(
+                    LocationManager.GPS_PROVIDER,
+                    null,
+                    context.getApplicationContext().getMainExecutor(),
+                    location -> {
+                        this.latitude = location.getLatitude();
+                        this.longitude = location.getLongitude();
+                    }
+            );
+        }
     }
 
     /**
@@ -113,6 +173,24 @@ public class MoodEvent {
         }
 
         this.situation = situation;
+
+        LocationManager moodLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        // check if the fine location and coarse location permissions have been granted by the user (enabled during account setup)
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // get the current location & bind longitude and latitude to the longitude and latitude attributes of the MoodEvent class
+            moodLocationManager.getCurrentLocation(
+                    LocationManager.GPS_PROVIDER,
+                    null,
+                    context.getApplicationContext().getMainExecutor(),
+                    location -> {
+                        this.latitude = location.getLatitude();
+                        this.longitude = location.getLongitude();
+                    }
+            );
+        }
     }
 
     // getters, setters
@@ -233,6 +311,14 @@ public class MoodEvent {
     public void setImage(Bitmap image) {
         this.image = image;
     }
+
+    public Bitmap getImage() {
+        return this.image;
+    }
+
+
+
+
 
     /**
      * Checks if the MoodEvent has a geolocation

@@ -14,6 +14,7 @@ public class User {
         this.uid = null;
         this.dateAccCreated = new Date(); // gets current Date, probably should be formatted
         this.lastPosted = null;  // null for a new user
+        this.moodEventBook = new MoodEventBook();
     }
 
     public String getUid() {
@@ -39,6 +40,13 @@ public class User {
     public void setLastPosted(Date lastPosted) {
         this.lastPosted = lastPosted;
     }
+
+    public MoodEventBook getMoodEventBook() {
+        return moodEventBook;
+    }
+
+
+
 
     /**
      * initializes the user's moodEventBook by querying the database for all user
