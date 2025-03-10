@@ -26,6 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * ArrayAdapter wrapper for the Profile History.
+ * RELATED USER STORIES:
+ *      US 01.04.01
+ *              1.04.01a Create a mechanism for showing the given mood-event on the user profile
+ *              upon creation of the mood event
+ */
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
     // for security purposes we will only grab the username for the ArrayAdapter instead of the
@@ -39,6 +46,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
      * @param profile
      *      The current user's profile object
      */
+
 
     public ProfileHistoryAdapter(Context context, FollowingBook followingBook) {
         super(context, 0, new ArrayList<>());
@@ -59,6 +67,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
     
         // Populate mood events and map usernames
+
 
 
 

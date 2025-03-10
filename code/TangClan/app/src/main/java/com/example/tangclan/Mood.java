@@ -15,6 +15,9 @@ import java.util.Objects;
 /**
  * Represents a Mood
  * The Mood class is tied to a single emotional state, which is used to request system resources for color and emoticon
+ * RELATED USER STORIES:
+ *      US 01.02.01
+ *      US 01.03.01
  */
 public class Mood {
     private String emotion;
@@ -79,7 +82,9 @@ public class Mood {
     }
 
     /**
-     * @return The corresponding drawable for the emotional state`
+     *  Gets the drawable corresponding to the emotional state
+     * @return
+     *      The corresponding drawable for the emotional state`
      */
 
     public Drawable getEmoticon (Context context) {
@@ -106,7 +111,9 @@ public class Mood {
     }
 
     /**
-     * @return The integer (hexadecimal) representation of the emotional state's color
+     * gets an integer representation of the Mood Color given the emotional State
+     * @return
+     *      The integer (hexadecimal) representation of the emotional state's color
      */
     public Integer getColor (Context context) {
         Resources res = context.getResources();

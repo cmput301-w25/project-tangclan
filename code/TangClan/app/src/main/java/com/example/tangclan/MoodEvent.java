@@ -8,6 +8,7 @@ import android.util.Base64;
 
 
 import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -17,12 +18,15 @@ import java.util.Map;
 import java.util.Optional;
 
 
-//eventnn
 
 /**
  * Represents a Mood Event
+ * RELATED USER STORIES:
+ *      US 01.01.01
+ *      1.01.01a Create a mood event class
+ * TODO: Method to get the current location
  */
-public class MoodEvent {
+public class MoodEvent implements Serializable {
     private int mid;
     private LocalTime postTime;
     private LocalDate postDate;
@@ -277,12 +281,14 @@ public class MoodEvent {
         this.image = image;
     }
 
+    /**
+     * Getter for the image attribute
+     * @return
+     *      a bitmap image
+     */
     public Bitmap getImage() {
         return this.image;
     }
-
-
-
 
 
     /**
@@ -353,6 +359,11 @@ public class MoodEvent {
         return this.postTime.format(formatter);
     }
 
+    /**
+     * preps all fields for database
+     * @return
+     *      a map with field : firestore-allowable values
+     */
     public Map<String, Object> prepFieldsForDatabase() {
         // convert the bitmap into a storeable string
         ByteArrayOutputStream output = new ByteArrayOutputStream();

@@ -6,7 +6,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import android.widget.ListView;
+
 import android.widget.ImageView;
+
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -16,14 +20,29 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Activity class for the profile view with mood history
+ * RELATED USER STORIES:
+ *      US 01.04.01
+ *      US 03.01.01
+ *      US 01.05.01
+ *              TODO: connect to fragment to be able to edit mood details in history
+ *              TODO: set a mechanism for updating on database
+ *      US 1.06.01
+ *              TODO: longclick mechanism to be able to delete mood event
+ *              TODO: remove from database
+ */
 public class profileActivity extends AppCompatActivity {
     TextView usernameText;
     TextView NameText;
     TextView FollowersText;
     TextView FollowingText;
 
+    // we get the Profile from an intent from another activity
 
     //Profile profile= new Profile("Person1", "aBcd123*","shaian@ualberta.ca","21");
 
@@ -38,8 +57,9 @@ public class profileActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        usernameText=findViewById(R.id.username);
-        NameText=findViewById(R.id.name);
+
+        usernameText = findViewById(R.id.username);
+        NameText = findViewById(R.id.name);
 
         Bundle extras = getIntent().getExtras();//Got profile object from previous activity
         assert extras != null;
@@ -62,6 +82,18 @@ public class profileActivity extends AppCompatActivity {
             }
         });
 
+
+        // instantiate the Profile's MoodEventBook
+        DatabaseBestie databaseWrapper = new DatabaseBestie();
+        profile1.initializeMoodEventBookFromDatabase(databaseWrapper);
+
+        // set up the adapter to connect to the ListView
+        ProfileHistoryAdapter profileHistoryAdapter = new ProfileHistoryAdapter(this, profile1);
+        ListView moodHistoryList = findViewById(R.id.profile_array);
+
+        // set the Adapter for the moodHistoryList
+        moodHistoryList.setAdapter(profileHistoryAdapter);
+
         // NAVBAR
         ImageView pinIcon = findViewById(R.id.imgMap);
         ImageView homeIcon = findViewById(R.id.imgHome);
@@ -75,6 +107,7 @@ public class profileActivity extends AppCompatActivity {
                 finish();
             }
         });
+
     }
 
 

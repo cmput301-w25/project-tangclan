@@ -51,6 +51,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         DatabaseBestie bestie = new DatabaseBestie();
 
         // Populate mood events and map usernames
+
         for (String uid: followingBook.getFollowing()) {
             bestie.getUser(uid, profile -> {
                 for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
@@ -58,6 +59,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     moodToUsernameMap.put(moodEvent, profile.getUsername());
                 }
             });
+
         }
 
         addAll(moodEvents);
