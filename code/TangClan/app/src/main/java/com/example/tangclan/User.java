@@ -9,7 +9,7 @@ import java.util.Date;
 public class User {
     private String uid; // apparently Firebase makes a unique id for the user DOCUMENT, we can use that
     private Date dateAccCreated;
-    private Date lastPosted;
+    private String lastPosted;
     private FollowingBook followingBook;
     private MoodEventBook moodEventBook;
 
@@ -64,7 +64,7 @@ public class User {
      * @return
      *      date of when the user last posted
      */
-    public Date getLastPosted() {
+    public String getLastPosted() {
         return lastPosted;
     }
 
@@ -73,7 +73,7 @@ public class User {
      * @param lastPosted
      *      date of when the user last posted
      */
-    public void setLastPosted(Date lastPosted) {
+    public void setLastPosted(String lastPosted) {
         this.lastPosted = lastPosted;
     }
 

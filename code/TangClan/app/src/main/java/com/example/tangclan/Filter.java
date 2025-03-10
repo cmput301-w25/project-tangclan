@@ -23,8 +23,9 @@ public class Filter {
     public static List<MoodEvent> filterByKeywords(List<MoodEvent> events, List<String> keywords) {
         return events.stream()
                 .filter(event -> {
-                    if (event.getSituation().isPresent()) {
-                        String explanation = event.getSituation().get();
+                    // if (event.getSituation().isPresent()) {
+                    if (event.getSituation() != null) {
+                        String explanation = event.getSituation();
 
                         return keywords.stream().anyMatch(keyword -> explanation.toLowerCase().contains(keyword.toLowerCase()));
                     }

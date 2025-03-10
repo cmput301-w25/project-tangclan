@@ -43,13 +43,16 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
         moodToUsernameMap = new HashMap<>();
         List<MoodEvent> moodEvents = new ArrayList<>();
+        DatabaseBestie bestie = new DatabaseBestie();
 
         // Populate mood events and map usernames
-        for (Profile profile : followingBook.getFollowing()) {
-            for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
-                moodEvents.add(moodEvent);
-                moodToUsernameMap.put(moodEvent, profile.getUsername());
-            }
+        for (String uid: followingBook.getFollowing()) {
+            bestie.getUser(uid, profile -> {
+                for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
+                    moodEvents.add(moodEvent);
+                    moodToUsernameMap.put(moodEvent, profile.getUsername());
+                }
+            });
         }
 
     /**
@@ -88,7 +91,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(Integer.parseInt(moodEvent.getMood().getColor())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext().getApplicationContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
@@ -107,35 +110,36 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         time.setText(moodEvent.getPostTime().toString());
 
         // only populate the view if situation exists - otherwise, set invisible
-        if (moodEvent.getSituation().isPresent()) {
-            situation.setText(moodEvent.getSituation().get());
+        //if (moodEvent.getSituation().isPresent()) {
+        if (moodEvent.getSituation() != null) {
+            situation.setText(moodEvent.getSituation());
         } else {
             situation.setVisibility(View.INVISIBLE);
         }
 
         // only populate the view if situation exists - otherwise, set invisible
-        if (moodEvent.getTriggers().isPresent()) {
-            for (String trigger : moodEvent.getTriggers().get()) {
-                Chip triggerChip = new Chip(getContext());
-                ViewGroup.LayoutParams chipParams = new ViewGroup
-                        .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                triggerChip.setLayoutParams(chipParams);
-                triggerChip.setText(trigger);
-                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
-                triggerChip.setTextColor(Color.BLACK);
-                triggerChip.setChipBackgroundColorResource(
-                        com.google.android.material.R.color.material_dynamic_neutral_variant70);
+        // if (moodEvent.getTriggers().isPresent()) {
+        if (moodEvent.getTriggers() != null) {
+                for (String trigger : moodEvent.getTriggers()) {
+                    Chip triggerChip = new Chip(getContext());
+                    ViewGroup.LayoutParams chipParams = new ViewGroup
+                            .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    triggerChip.setLayoutParams(chipParams);
+                    triggerChip.setText(trigger);
+                    triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
+                    triggerChip.setTextColor(Color.BLACK);
+                    triggerChip.setChipBackgroundColorResource(
+                            com.google.android.material.R.color.material_dynamic_neutral_variant70);
 
-                Typeface chipFont = getContext().getResources().getFont(R.font.inter);
-                triggerChip.setTypeface(chipFont);
-                triggerChip.setChipStrokeWidth(0);
+                    Typeface chipFont = getContext().getResources().getFont(R.font.inter);
+                    triggerChip.setTypeface(chipFont);
+                    triggerChip.setChipStrokeWidth(0);
 
-                triggers.addView(triggerChip);
+                    triggers.addView(triggerChip);
+                }
+            } else {
+                triggers.setVisibility(View.INVISIBLE);
             }
-        } else {
-            triggers.setVisibility(View.INVISIBLE);
-        }
-
         return view;
+        }
     }
-}

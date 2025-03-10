@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
-import javax.sql.rowset.serial.SerialBlob;
+// import javax.sql.rowset.serial.SerialBlob;
 
 public class ImageValidator {
     //image validation class
@@ -27,7 +27,7 @@ public class ImageValidator {
     private ImageValidator() {
     }
 
-    public static boolean isImageSizeValid(Context context, Uri imageUri, Profile profile) {
+    public static boolean isImageSizeValid(Context context, Uri imageUri) {
         try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
             if (inputStream != null) {
                 Bitmap originalBitmap = BitmapFactory.decodeStream(inputStream);
@@ -38,14 +38,14 @@ public class ImageValidator {
                     return false;
                 }
 
-                // Convert byte array to Blob
+                /* Convert byte array to Blob
                 try {
-                    Blob imageBlob = new SerialBlob(compressedBytes);
-                    profile.setProfilePic(imageBlob);  // Update the profile's image
+                    // Blob imageBlob = new SerialBlob(compressedBytes);
+                    // profile.setProfilePic(imageBlob);  // Update the profile's image
                     return true;
                 } catch (SQLException e) {
                     Toast.makeText(context, "Error processing image", Toast.LENGTH_SHORT).show();
-                }
+                } */
             }
         } catch (IOException e) {
             Toast.makeText(context, "Error reading image", Toast.LENGTH_SHORT).show();

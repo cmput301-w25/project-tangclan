@@ -37,13 +37,16 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         moodToUsernameMap = new HashMap<>();
         List<MoodEvent> moodEvents = new ArrayList<>();
+        DatabaseBestie bestie = new DatabaseBestie();
 
         // Populate mood events and map usernames
-        for (Profile profile : followingBook.getFollowing()) {
-            for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
-                moodEvents.add(moodEvent);
-                moodToUsernameMap.put(moodEvent, profile.getUsername());
-            }
+        for (String uid: followingBook.getFollowing()) {
+            bestie.getUser(uid, profile -> {
+                for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
+                    moodEvents.add(moodEvent);
+                    moodToUsernameMap.put(moodEvent, profile.getUsername());
+                }
+            });
         }
 
         addAll(moodEvents);
@@ -73,7 +76,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(Integer.parseInt(moodEvent.getMood().getColor())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext().getApplicationContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 

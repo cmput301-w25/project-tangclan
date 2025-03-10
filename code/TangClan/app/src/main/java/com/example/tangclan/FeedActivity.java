@@ -1,6 +1,8 @@
 package com.example.tangclan;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -10,7 +12,11 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.tangclan.ui.login.LogIn;
+import com.example.tangclan.ui.login.SignUpActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -18,6 +24,20 @@ public class FeedActivity extends AppCompatActivity {
     //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
+
+    FirebaseAuth auth;
+    FirebaseUser currentUser;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        if(currentUser != null) {
+            startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +95,8 @@ public class FeedActivity extends AppCompatActivity {
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
         details.append("Emotional State: ").append(moodEvent.getMoodEmotionalState()).append("\n");
-        details.append("Mood Color: ").append(moodEvent.getMoodColor()).append("\n");
-        details.append("Emoticon: ").append(moodEvent.getMoodEmoticon()).append("\n");
+        details.append("Mood Color: ").append(moodEvent.getMood().getColor(getApplicationContext()).toString()).append("\n");
+        // details.append("Emoticon: ").append(moodEvent.getMood().getEmoticon()).append("\n");
 
         if (moodEvent.getTriggers() != null && !moodEvent.getTriggers().isEmpty()) {
             details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers())).append("\n");
