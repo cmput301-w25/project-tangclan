@@ -79,6 +79,9 @@ public class VerifyEmail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 user.sendEmailVerification();
+                Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }
