@@ -8,126 +8,145 @@
 
     <TextView
         android:id="@+id/customize_y"
-        android:layout_width="355dp"
-        android:layout_height="88dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="98dp"
+        android:layout_marginEnd="28dp"
         android:gravity="center_horizontal|top"
         android:text="@string/customize_y"
         android:textAppearance="@style/customize_y"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="98dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/when_is_you"
-        android:layout_width="342dp"
-        android:layout_height="104dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="34dp"
         android:gravity="center_horizontal|top"
         android:text="@string/when_is_you"
         android:textAppearance="@style/when_is_you"
-        tools:layout_editor_absoluteX="34dp"
-        tools:layout_editor_absoluteY="204dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customize_y" />
 
     <TextView
         android:id="@+id/you_must_be"
-        android:layout_width="371dp"
-        android:layout_height="24dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="20dp"
         android:gravity="center_horizontal|top"
         android:text="@string/you_must_be"
         android:textAppearance="@style/you_must_be"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="275dp" />
-
-    <RelativeLayout
-        android:id="@+id/form_date_"
-        android:layout_width="367dp"
-        android:layout_height="50dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:alpha="0.6"
-        android:background="@drawable/form_email_"
-        android:clipToOutline="true"
-        tools:layout_editor_absoluteX="22dp"
-        tools:layout_editor_absoluteY="340dp" >
-
-        <TextView
-            android:id="@+id/date_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="08/17/2025"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:layout_centerInParent="true"/>
-
-        <ImageView
-            android:id="@+id/date_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_today"
-            android:tint="@android:color/black"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"/>
-    </RelativeLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/when_is_you" />
 
     <TextView
         android:id="@+id/label_text"
-        android:layout_width="26dp"
-        android:layout_height="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
         android:gravity="top"
         android:lineSpacingExtra="2sp"
         android:text="@string/label_text"
         android:textAppearance="@style/label_text"
         android:translationY="-0.97sp"
-        tools:layout_editor_absoluteX="28dp"
-        tools:layout_editor_absoluteY="317dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/you_must_be" />
+
+    <RelativeLayout
+        android:id="@+id/form_date_"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="22dp"
+        android:alpha="0.6"
+        android:background="@drawable/form_email_"
+        android:clipToOutline="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_text">
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="08/17/2025"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/date_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:src="@android:drawable/ic_menu_today"
+            android:tint="@android:color/black" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/supporting_"
-        android:layout_width="280dp"
-        android:layout_height="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="8dp"
         android:gravity="top"
         android:lineSpacingExtra="2sp"
         android:text="@string/supporting_"
         android:textAppearance="@style/supporting_"
         android:translationY="-0.97sp"
-        tools:layout_editor_absoluteX="22dp"
-        tools:layout_editor_absoluteY="398dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/form_date_" />
 
     <Button
         android:id="@+id/button_veri"
-        android:layout_width="100dp"
-        android:layout_height="38dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
         android:clipToOutline="true"
         android:text="Next"
-        tools:layout_editor_absoluteX="295dp"
-        tools:layout_editor_absoluteY="397dp" />
+        app:layout_constraintBottom_toBottomOf="@id/supporting_"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/supporting_"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/untitled_31"
-        android:layout_width="302dp"
+        android:layout_width="0dp"
         android:layout_height="295dp"
+        android:layout_marginStart="54dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="54dp"
         android:background="@drawable/own_picture_signup"
-        tools:layout_editor_absoluteX="54dp"
-        tools:layout_editor_absoluteY="406dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/supporting_" />
 
     <TextView
         android:id="@+id/step_1_of_4"
-        android:layout_width="169dp"
-        android:layout_height="41dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center_horizontal|top"
         android:text="@string/step_1_of_4"
         android:textAppearance="@style/step_1_of_4"
-        tools:layout_editor_absoluteX="121dp"
-        tools:layout_editor_absoluteY="660dp" />
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/untitled_31"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

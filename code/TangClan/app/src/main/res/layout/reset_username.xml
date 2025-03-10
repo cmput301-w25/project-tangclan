@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="#FFFFFF">
 
     <RelativeLayout
-        android:id="@+id/form_passwo"
+        android:id="@+id/form_passwo_1"
         android:layout_width="364dp"
         android:layout_height="39dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:background="@drawable/form_passwo"
         android:clipToOutline="true"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="401dp">
+        android:layout_marginTop="401dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/new_username2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center_horizontal|top"
+            android:gravity="center"
             android:text="Confirm New Username"
             android:textAppearance="@style/new_username" />
     </RelativeLayout>
@@ -30,59 +31,53 @@
         android:id="@+id/your_identi"
         android:layout_width="364dp"
         android:layout_height="29dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center_horizontal|top"
+        android:gravity="center"
         android:text="@string/your_identi"
         android:textAppearance="@style/your_identi"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="271dp" />
+        android:layout_marginTop="271dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/please_set_2"
         android:layout_width="364dp"
         android:layout_height="19dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center_horizontal|top"
+        android:gravity="center"
         android:text="@string/please_set_2"
         android:textAppearance="@style/please_set_2"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="318dp" />
+        android:layout_marginTop="318dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
-        android:id="@+id/form_passwo"
+        android:id="@+id/form_passwo_2"
         android:layout_width="364dp"
         android:layout_height="39dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:background="@drawable/form_passwo"
         android:clipToOutline="true"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="346dp" >
+        android:layout_marginTop="346dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/new_username"
-            android:layout_width="109dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_height="19dp"
             android:text="@string/new_username"
             android:textAppearance="@style/new_username"
-            android:gravity="center_horizontal|top"
-            />
+            android:gravity="center" />
     </RelativeLayout>
 
     <Button
         android:id="@+id/button_logi"
         android:layout_width="364dp"
         android:layout_height="61dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:background="@drawable/button_logi"
         android:clipToOutline="true"
         android:text="Log in"
-        tools:layout_editor_absoluteX="23dp"
-        tools:layout_editor_absoluteY="451dp" />
-
+        android:layout_marginTop="451dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
