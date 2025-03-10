@@ -44,6 +44,11 @@ public class WizActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
                 break;
+            case 3:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new AddImageorText())
+                        .addToBackStack(null)
+                        .commit();
             default:
                 // Could handle final submission or more pages here
                 break;
