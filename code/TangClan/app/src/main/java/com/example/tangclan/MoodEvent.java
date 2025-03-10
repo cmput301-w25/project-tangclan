@@ -256,12 +256,14 @@ public class MoodEvent implements Serializable {
         this.image = image;
     }
 
+    /**
+     * Getter for the image attribute
+     * @return
+     *      a bitmap image
+     */
     public Bitmap getImage() {
         return this.image;
     }
-
-
-
 
 
     /**

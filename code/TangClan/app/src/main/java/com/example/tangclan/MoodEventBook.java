@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Date;
+import java.util.Optional;
 
 
 /**
@@ -114,9 +115,9 @@ public class MoodEventBook {
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents) {
-            String explanation = event.getSituation();
-            if (explanation != null) {
-                String lowerCaseExplanation = explanation.toLowerCase();
+            Optional<String> explanation = event.getSituation();
+            if (explanation.isPresent()) {
+                String lowerCaseExplanation = explanation.get().toLowerCase();
                 for (String keyword : keywords) {
                     if (lowerCaseExplanation.contains(keyword.toLowerCase())) {
                         result.add(event);

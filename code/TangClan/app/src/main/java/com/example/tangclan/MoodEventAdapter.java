@@ -84,7 +84,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         ImageView imageView = view.findViewById(R.id.mood_event_image);  // Get the ImageView
 
         usernameEmotion.setText(spannableUsernameEmotion);
-        situation.setText(moodEvent.getSituation() != null ? moodEvent.getSituation() : "No situation");
+        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
 
