@@ -78,6 +78,7 @@ public class MoodEvent {
         this.mood = new Mood(emotionalState);
 
         // convert into stream and count the number of spaces
+        //moodvenet
         int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
 
         // raise an exception if the social situation exceeds length or word limit

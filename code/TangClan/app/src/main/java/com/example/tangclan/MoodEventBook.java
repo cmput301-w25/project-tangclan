@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class MoodEventBook {
     private ArrayList<MoodEvent> moodEvents;
-
+    //mooc event book
     // Constructor
     public MoodEventBook() {
         this.moodEvents = new ArrayList<>();

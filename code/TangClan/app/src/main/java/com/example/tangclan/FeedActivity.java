@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import java.util.List;
 
 public class FeedActivity extends AppCompatActivity {
-
+    //feed activity
     private ListView listViewFeed;
     private Feed feed;
 

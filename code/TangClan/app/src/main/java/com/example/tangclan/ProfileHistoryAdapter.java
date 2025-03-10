@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
-
+    //profile history adapter
     private Map<MoodEvent, String> moodToUsernameMap; // Maps MoodEvent to corresponding username
 
     /**
