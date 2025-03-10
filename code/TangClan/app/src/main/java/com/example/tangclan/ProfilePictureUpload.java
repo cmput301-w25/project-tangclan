@@ -23,7 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ProfilePictureUpload extends AppCompatActivity {
-    //profilepictureupload activity that works
+    //profilepictureupload activity that
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_REQUEST = 2;
     private static final int CROP_IMAGE_REQUEST = 3;
