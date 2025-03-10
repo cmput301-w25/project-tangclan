@@ -24,6 +24,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
+ * US 3.01.01
  * Shows the Login Form. Checks the username and password fields to allow user to Log In.
  */
 public class LogIn extends AppCompatActivity {
@@ -73,6 +74,7 @@ public class LogIn extends AppCompatActivity {
                     editUsername.setError("Enter username");
                     return;
                 }
+                //TO DO: Restrict username to be at least 4 characters, no spaces, and only allow certain special characters
                 if (TextUtils.isEmpty(password)) {
                     editPassword.setError("Enter password");
                     return;

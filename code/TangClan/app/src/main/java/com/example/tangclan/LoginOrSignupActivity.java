@@ -11,6 +11,7 @@ import com.example.tangclan.ui.login.LogIn;
 import com.example.tangclan.ui.login.SignUpActivity;
 
 /**
+ * US 3.01.01
  * Prompts the user to Log In or Sign Up
  */
 public class LoginOrSignupActivity extends AppCompatActivity {

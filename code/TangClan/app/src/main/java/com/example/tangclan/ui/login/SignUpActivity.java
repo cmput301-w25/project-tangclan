@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
+ * US 3.01.01
  * Shows the Sign Up Form.
  */
 public class SignUpActivity extends AppCompatActivity {

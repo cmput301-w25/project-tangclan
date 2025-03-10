@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
+ * US 3.01.01
  * Asks the user to verify their email, if their email is not yet verified.
  * Allows users to be directed to their Feed instead.
  */
