@@ -13,9 +13,8 @@ import java.util.Date;
  * It supports adding, removing, sorting, and filtering mood events.
  */
 public class MoodEventBook {
-
-    private List<MoodEvent> moodEvents; //list stores all mood event objects
-
+    private ArrayList<MoodEvent> moodEvents;
+    //mooc event bookkkknnn
     // Constructor
     public MoodEventBook() {
         this.moodEvents = new ArrayList<>();
@@ -114,15 +113,17 @@ public class MoodEventBook {
      */
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
-        for (MoodEvent event : moodEvents){
+        for (MoodEvent event : moodEvents) {
             String explanation = event.getSituation();
-            for (String keyword : keywords){
-                if (explanation != null && explanation.toLowerCase().contains(keyword.toLowerCase())){
-                    result.add(event);
-                    break;
+            if (explanation != null) {
+                String lowerCaseExplanation = explanation.toLowerCase();
+                for (String keyword : keywords) {
+                    if (lowerCaseExplanation.contains(keyword.toLowerCase())) {
+                        result.add(event);
+                        break;
+                    }
                 }
             }
-
         }
         return result;
     }
@@ -150,6 +151,10 @@ public class MoodEventBook {
 
     public List<MoodEvent> getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
+    }
+
+    public List<MoodEvent> getMoodEventList() {
+        return moodEvents;
     }
 
 

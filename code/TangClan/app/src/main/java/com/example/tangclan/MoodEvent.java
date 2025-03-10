@@ -1,30 +1,33 @@
 package com.example.tangclan;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.LocationManager;
 
-import androidx.core.app.ActivityCompat;
+import android.util.Base64;
 
+
+
+
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.Map;
+
+//eventnn
 
 /**
  * Represents a Mood Event
  */
 public class MoodEvent {
     private int mid;
-    private final LocalTime postTime;
-    private final LocalDate postDate;
+    private LocalTime postTime;
+    private LocalDate postDate;
     private ArrayList<String> triggers = null;
     private Mood mood;
     private String situation = null;
-    private Bitmap image;
+    private Bitmap image = null;
     private Double latitude = null;
     private Double longitude = null;
 
@@ -47,6 +50,7 @@ public class MoodEvent {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
         this.mood = new Mood(emotionalState);
+
     }
 
     /**
@@ -162,14 +166,6 @@ public class MoodEvent {
         return this.mood.getEmotion();
     }
 
-    public String getMoodColor() {
-        return this.mood.getColor();
-    }
-
-    public String getMoodEmoticon() {
-        return this.mood.getEmoticon();
-    }
-
 
     public ArrayList<String> getTriggers() {
         return this.triggers;
@@ -177,6 +173,27 @@ public class MoodEvent {
 
     public String getSituation() {
         return this.situation;
+    }
+
+    /**
+     * sets the postDate attribute from a string
+     * @param postDate
+     *      the String representation of the post Date
+     */
+    public void setPostDate(String postDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+
+        this.postDate = LocalDate.parse(postDate, formatter);
+    }
+
+    /**
+     * sets the postTime attribute from a string
+     * @param postTime
+     *      the String representation of the Post Time
+     */
+    public void setPostTime(String postTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        this.postTime = LocalTime.parse(postTime, formatter);
     }
 
     /**
@@ -234,6 +251,14 @@ public class MoodEvent {
         this.image = image;
     }
 
+    public Bitmap getImage() {
+        return this.image;
+    }
+
+
+
+
+
     /**
      * Checks if the MoodEvent has a geolocation
      * @return
@@ -262,7 +287,7 @@ public class MoodEvent {
      * @return
      *      the string date of the MoodEvent date
      */
-    public String returnFormattedDate() {
+    public String returnPostFormattedDate() {
         // format the
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM, d, uuuu");
 
@@ -274,9 +299,55 @@ public class MoodEvent {
      * @return
      *      the string time of the MoodEventTime e.g. '10:30PM'
      */
-    public String returnFormattedTime() {
+    public String returnPostFormattedTime() {
         // format the time with an hour (no leading 0), minutes (leading 0) and the time segment (AM PM)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mma");
         return this.postTime.format(formatter);
+    }
+
+    /**
+     * Creates a string-formatted date of the form "{YEAR}-{MONTH}-{DAY}"
+     * @return
+     *      The date in the formatter pattern
+     */
+    public String userFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        return this.postDate.format(formatter);
+    }
+
+    /**
+     * Creates a string-formatted time of the form "{HR}:{MINUTE}"
+     * @return
+     *      The time in the formatter pattern
+     */
+    public String userFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        return this.postTime.format(formatter);
+    }
+
+    public Map<String, Object> prepFieldsForDatabase() {
+        // convert the bitmap into a storeable string
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
+        byte[] bytes = output.toByteArray();
+        String imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+
+        // convert LocalDate and LocalTime into a storeable string
+        String dateString = userFormattedDate();
+        String timeString = userFormattedTime();
+
+        Map<String, Object> moodEventFields = Map.of(
+                "mid", this.mid,
+                "emotionalState", this.mood.getEmotion(),
+                "triggers", this.triggers,
+                "situation", this.situation,
+                "image", imageString,
+                "datePosted", dateString,
+                "timePosted", timeString
+        );
+
+        return moodEventFields;
     }
 }

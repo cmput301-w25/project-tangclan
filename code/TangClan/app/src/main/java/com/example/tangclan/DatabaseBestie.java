@@ -1,14 +1,25 @@
 package com.example.tangclan;
 
 
+import static com.google.firebase.firestore.FieldValue.serverTimestamp;
+
+import static java.lang.Integer.parseInt;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -271,10 +282,14 @@ public class DatabaseBestie {
      * @param month
      *      This is the month (ex. sep-2025) that holds the collection that the mood event will be added to
      */
-    public void addMoodEvent(MoodEvent event, String month) {
+    public void addMoodEvent(MoodEvent event, String month, String uid) {
         generateMid(mid -> {
             event.setMid(mid);
-            moodEventsRef.document(month).collection("events").document(String.valueOf(mid)).set(event);
+            Map<String, String> data = Map.of("postedBy", uid);
+            moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
+                            .set(data);
+            moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
+                    .set(event.prepFieldsForDatabase(), SetOptions.merge());
         });
     }
 
@@ -324,7 +339,29 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         ArrayList<MoodEvent> events = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            MoodEvent moodEvent = document.toObject(MoodEvent.class);
+                            int mid = parseInt(document.getString("mid")); // will never return null as mid is set when adding an event
+                            String emotionalState = document.getString("emotionalState");
+                            String situation = document.getString("situation");
+                            ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                            String postDate = document.getString("datePosted");
+                            String postTime = document.getString("timePosted");
+
+                            // mechanism to revert a string back into the bitmap
+                            String imageString = document.getString("image");
+                            Bitmap image;
+                            if (imageString != null) {
+                                byte[] imgByteArray = Base64.decode(imageString, Base64.DEFAULT);
+                                image = BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.length);
+                            } else {
+                                image = null;
+                            }
+
+                            MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                            moodEvent.setPostDate(postDate);
+                            moodEvent.setPostTime(postTime);
+                            moodEvent.setImage(image);
+
+
                             events.add(moodEvent);
                         }
                         callback.onMoodEventsRetrieved(events);
@@ -351,7 +388,29 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         ArrayList<MoodEvent> moodEvents = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            MoodEvent moodEvent = document.toObject(MoodEvent.class);
+                            int mid = parseInt(document.getString("mid")); // will never return null as mid is set when adding an event
+                            String emotionalState = document.getString("emotionalState");
+                            String situation = document.getString("situation");
+                            ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                            String postDate = document.getString("datePosted");
+                            String postTime = document.getString("timePosted");
+
+                            // mechanism to revert a string back into the bitmap
+                            String imageString = document.getString("image");
+                            Bitmap image;
+                            if (imageString != null) {
+                                byte[] imgByteArray = Base64.decode(imageString, Base64.DEFAULT);
+                                image = BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.length);
+                            } else {
+                                image = null;
+                            }
+
+                            MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                            moodEvent.setPostDate(postDate);
+                            moodEvent.setPostTime(postTime);
+                            moodEvent.setImage(image);
+
+
                             moodEvents.add(moodEvent);
                         }
                         callback.onMoodEventsRetrieved(moodEvents);
@@ -400,6 +459,52 @@ public class DatabaseBestie {
             }
             callback.onMoodEventRetrieved(post);
         });
+    }
+
+    /**
+     * Given the uid of a user, retrieve their latest MoodEvent
+     * @param uid
+     *      uid of the user which we want to retrieve the latest MoodEvent from
+     * @param callback
+     *      callback to handle the retrieved MoodEvent
+     */
+    public void getLatestMoodEvent(String uid, MoodEventCallback callback) {
+         db.collectionGroup("events")
+                .whereEqualTo("postedBy", uid)
+                .orderBy("postDate")
+                .limit(1) // limit only to the latest post
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+
+                        int mid = parseInt(document.getString("mid"));
+                        String emotionalState = document.getString("emotionalState");
+                        String situation = document.getString("situation");
+                        ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                        String postDate = document.getString("datePosted");
+                        String postTime = document.getString("timePosted");
+
+                        // mechanism to revert a string back into the bitmap
+                        String imageString = document.getString("image");
+                        Bitmap image;
+                        if (imageString != null) {
+                            byte[] imgByteArray = Base64.decode(imageString, Base64.DEFAULT);
+                            image = BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.length);
+                        } else {
+                            image = null;
+                        }
+
+                        MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                        moodEvent.setPostDate(postDate);
+                        moodEvent.setPostTime(postTime);
+                        moodEvent.setImage(image);
+
+                        callback.onMoodEventRetrieved(moodEvent);
+                    }
+                });
+
+         // do nothing in the vacuous case
     }
 
     /**

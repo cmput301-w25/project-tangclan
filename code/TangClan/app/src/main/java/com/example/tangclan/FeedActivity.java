@@ -1,8 +1,6 @@
 package com.example.tangclan;
 
 import android.app.AlertDialog;
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -17,7 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class FeedActivity extends AppCompatActivity {
-
+    //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
 
@@ -70,7 +68,7 @@ public class FeedActivity extends AppCompatActivity {
         feed.loadFeed();
         List<MoodEvent> feedEvents = feed.getFeedEvents();
 
-        MoodEventAdapter adapter = new MoodEventAdapter(this, feedEvents);
+        MoodEventAdapter adapter = new MoodEventAdapter((Context) this, (FollowingBook) feedEvents);
         listViewFeed.setAdapter(adapter);
     }
 
