@@ -12,12 +12,30 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ImageValidator {
-    //image validation class
-    private static final int MAX_IMAGE_SIZE = 65536; // 64 KB
+//for US 02.03.01
 
+/**
+ * This class provides functionality for validating image files.
+ * It ensures that the image size is within an acceptable range and compresses the image if necessary.
+ */
+public class ImageValidator {
+    // Maximum allowed image size in bytes (64 KB)
+    private static final int MAX_IMAGE_SIZE = 65536;
+
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private ImageValidator() {
     }
+
+
+    /**
+     * Validates whether the image size is below the maximum allowed size (64 KB).
+     *
+     * @param context  the context to use for accessing the content resolver
+     * @param imageUri the URI of the image to validate
+     * @return true if the image size is valid, false otherwise
+     */
 
     public static boolean isImageSizeValid(Context context, Uri imageUri) {
         try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
@@ -36,6 +54,17 @@ public class ImageValidator {
         }
         return false;
     }
+
+
+
+    /**
+     * Compresses a bitmap image to fit within the specified maximum size.
+     * The image is compressed in iterations, reducing quality until the size is below the max size.
+     *
+     * @param bitmap   the bitmap image to compress
+     * @param maxSize  the maximum allowed size in bytes
+     * @return a byte array containing the compressed image, or null if the image cannot be compressed within the size limit
+     */
 
     static byte[] compressBitmapToSize(Bitmap bitmap, int maxSize) {
         int quality = 100; // Start with max quality
