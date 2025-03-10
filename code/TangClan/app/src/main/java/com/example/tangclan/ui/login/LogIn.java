@@ -22,6 +22,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * Shows the Login Form. Checks the username and password fields to allow user to Log In.
+ */
 public class LogIn extends AppCompatActivity {
 
     @Override
@@ -74,7 +77,7 @@ public class LogIn extends AppCompatActivity {
                     return;
                 }
 
-                // find corresponding email
+                // Find Corresponding email to Log In
                 bestie.findEmailByUsername(username, (email) -> {
                     if (email == null) {
                         editUsername.setError("Cannot find an account with that username");

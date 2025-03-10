@@ -21,8 +21,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * Shows the Sign Up Form.
+ */
 public class SignUpActivity extends AppCompatActivity {
 
+    /**
+     *  Starts the Profile Setup sequence for a new user
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -32,6 +38,10 @@ public class SignUpActivity extends AppCompatActivity {
         finish();
     }
 
+    /**
+     *  Checks the user detail fields for valid input. Creates an account when entered fields are all validated.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

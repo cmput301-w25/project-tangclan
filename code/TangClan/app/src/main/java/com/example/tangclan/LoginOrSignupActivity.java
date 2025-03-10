@@ -10,8 +10,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.tangclan.ui.login.LogIn;
 import com.example.tangclan.ui.login.SignUpActivity;
 
+/**
+ * Prompts the user to Log In or Sign Up
+ */
 public class LoginOrSignupActivity extends AppCompatActivity {
 
+    /**
+     * Directs users to their chosen activity (Log in or Sign up)
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

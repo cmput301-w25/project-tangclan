@@ -4,7 +4,6 @@ package com.example.tangclan;
 import android.util.Log;
 
 import com.google.firebase.firestore.*;
-import com.google.firestore.v1.WriteResult;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,6 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * Contains wrapper functions for method calls on an instance of FireBaseFirestore.
+ * Contains Helper functions for querying existing data.
+ */
 public class DatabaseBestie {
     private static final String TAG = "DatabaseBestie";
     private static DatabaseBestie instance;
@@ -114,7 +117,7 @@ public class DatabaseBestie {
      * Generates a unique uid and provides it through a callback.
      *
      * @param callback
-     *      Callback to handle the generated `uid
+     *      Callback to handle the generated uid
      */
     public void generateUid(IdCallback callback) {
         generateUniqueId(userCounterRef, "last_uid", callback);
@@ -134,7 +137,6 @@ public class DatabaseBestie {
     //----------------------------------------------------------------------------------------------
     // USER COLLECTION METHODS ---------------------------------------------------------------------
 
-    //checked
     /**
      * This adds a user's data to the "users" collection
      * @param user
@@ -147,12 +149,15 @@ public class DatabaseBestie {
         });
     }
 
+    /**
+     * Callback interface for retrieving a user
+     */
     public interface UserCallback {
         void onUserRetrieved(Profile user);
     }
 
     /**
-     * This returns data of the user with the corresponding uid
+     * This passes data of the user with the corresponding uid to a callback function
      * @param uid
      *      This is the uid of the user whose data we want to obtain
      */
@@ -171,9 +176,11 @@ public class DatabaseBestie {
     }
 
     /**
-     * returns email corresponding to username or null if username is not taken
+     * Passes the email corresponding to a given username (or null if username is not taken) to a callback function
      * @param username
+     *      the username to check for
      * @param callback
+     *      the function that handles the email value
      */
     public void findEmailByUsername(String username, findEmailCallback callback) {
         usersRef.whereEqualTo("username", username)
@@ -189,17 +196,19 @@ public class DatabaseBestie {
                 });
     }
 
+    /**
+     * Callback function for when email is successfully
+     */
     public interface findEmailCallback {
-        /**
-         * Called when email is successfully found by username
-         */
         void onEmailFound(String email);
     }
 
     /**
-     * finds email
+     * Finds email
      * @param email
+     *      the email to look for
      * @param callback
+     *      the function that handles the email value
      */
     public void checkEmailExists(String email, findEmailCallback callback) {
         usersRef.whereEqualTo("email", email)
@@ -213,6 +222,13 @@ public class DatabaseBestie {
                 });
     }
 
+    /**
+     * updates the password in the database to match what's stored by FirebaseAuth for that user
+     * @param email
+     *      the email of the user who's password is to be updated
+     * @param password
+     *      the current password stored for that user by FirebaseAuth
+     */
     public void updatePasswordSameAsFirebaseAuth(String email, String password) {
         usersRef.whereEqualTo("email", email)
                 .get()
@@ -234,6 +250,8 @@ public class DatabaseBestie {
 
     /**
      * This updates the details of an existing user
+     * @param uid
+     *      The id for the user to update
      * @param user
      *      This is the user with updated info
      */
@@ -246,7 +264,6 @@ public class DatabaseBestie {
 
 
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
-    // checked
     /**
      * This adds a mood event details to the "moodEvents" collection
      * @param event
@@ -260,9 +277,11 @@ public class DatabaseBestie {
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid)).set(event);
         });
     }
-     //checked
-     /**
+
+    /**
      * This updates the data in an existing mood event
+     * @param mid
+     *      This is the id of the mood event to be updated
      * @param event
      *      This is the event to be updated
      * @param month
@@ -275,7 +294,7 @@ public class DatabaseBestie {
                  .addOnSuccessListener(aVoid -> Log.d(TAG, "MoodEvent successfully updated!"))
                  .addOnFailureListener(e -> Log.e(TAG, "Error updating MoodEvent", e));
      }
-    //checked
+
     /**
      * This removes an existing mood event from the "moodEvents" collection
      * @param mid
@@ -399,7 +418,15 @@ public class DatabaseBestie {
 
     // FOLLOWS COLLECTION METHODS ------------------------------------------------------------------
 
+    /**
+     * Callback interface for retrieving a user's followers
+     */
     public interface FollowersCallback {
+        /**
+         * Called when a user's followers are found
+         * @param followers
+         *      List of user UIDs beloning to users who follow a specific user.
+         */
         void onFollowersRetrieved(ArrayList<String> followers);
     }
 
@@ -428,8 +455,6 @@ public class DatabaseBestie {
      * This returns a list of UIDs identifying users that follow a specified user
      * @param uid
      *      This is the uid of the user being followed by users in the returned list
-     * @return
-     *      This is the list of followers of uid
      */
     public void getFollowers(String uid, FollowersCallback callback) {
         followsRef.whereEqualTo("uidFollowee", uid).get()
@@ -449,8 +474,6 @@ public class DatabaseBestie {
      * This returns a list of UIDs identifying users that a specified user follows
      * @param uid
      *      This is the uid of the user that follows users in the returned list
-     * @return
-     *      This is the list of uids of users being followed
      */
     public void getFollowing(String uid, FollowingCallback callback) {
         followsRef.whereEqualTo("uidFollower", uid)
