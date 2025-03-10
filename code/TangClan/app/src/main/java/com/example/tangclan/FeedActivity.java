@@ -11,10 +11,29 @@ import androidx.fragment.app.FragmentTransaction;
 
 import java.util.List;
 
+//part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
+
+/**
+ * The class is responsible for displaying the mood event feed to the user.
+ * It allows users to view the most recent mood events from participants they follow,
+ * add a new mood event, and view detailed information about any mood event in the feed.
+
+ */
+
+//TODO make sure this screen is updated after the addition of a mood event from the add emotion fragments
+
+//TODO fix the bug for loadfeed because of the List<MoodEvent> to following book, cause runtime error
+
 public class FeedActivity extends AppCompatActivity {
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
+    /**
+     * Initializes the activity, sets up the user interface, loads the mood event feed,
+     * and configures event listeners for adding and viewing mood events.
+     *
+     * @param savedInstanceState The saved instance state from a previous session, if any.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +65,10 @@ public class FeedActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Loads the mood event feed and updates the list adapter.
+     *
+     */
     private void loadFeed() {
         feed.loadFeed();
         List<MoodEvent> feedEvents = feed.getFeedEvents();
@@ -53,6 +76,12 @@ public class FeedActivity extends AppCompatActivity {
         adapter = new MoodEventAdapter((Context) this, (FollowingBook) feedEvents);
         listViewFeed.setAdapter(adapter);
     }
+
+    /**
+     * Displays the details of a selected mood event in an alert dialog.
+     *
+     * @param moodEvent The mood event whose details are to be displayed.
+     */
 
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
