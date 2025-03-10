@@ -14,6 +14,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import java.util.Map;
+import java.util.Optional;
+
 
 //eventnn
 
@@ -167,12 +169,36 @@ public class MoodEvent {
     }
 
 
-    public ArrayList<String> getTriggers() {
-        return this.triggers;
+
+
+    public Optional<ArrayList<String>> getTriggers() {
+        return Optional.of(this.triggers);
     }
 
-    public String getSituation() {
-        return this.situation;
+    public Optional<String> getSituation() {
+        return Optional.of(this.situation);
+    }
+
+    /**
+     * sets the postDate attribute from a string
+     * @param postDate
+     *      the String representation of the post Date
+     */
+    public void setPostDate(String postDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+
+
+        this.postDate = LocalDate.parse(postDate, formatter);
+    }
+
+    /**
+     * sets the postTime attribute from a string
+     * @param postTime
+     *      the String representation of the Post Time
+     */
+    public void setPostTime(String postTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        this.postTime = LocalTime.parse(postTime, formatter);
     }
 
     /**
@@ -350,4 +376,4 @@ public class MoodEvent {
 
         return moodEventFields;
     }
-}
+

@@ -1,6 +1,7 @@
 package com.example.tangclan;
 
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 
@@ -80,7 +81,7 @@ public class Mood {
     /**
      * @return The corresponding drawable for the emotional state`
      */
-    public Drawable getEmoticon () {
+    public Drawable getEmoticon(Context context) {
         Resources res = context.getResources();
 
         // initialize a map from each emotional state to the corresponding emoticon resource (drawable). 
@@ -105,7 +106,7 @@ public class Mood {
     /**
      * @return The integer (hexadecimal) representation of the emotional state's color
      */
-    public Integer getColor () {
+    public Integer getColor (Context context) {
         Resources res = context.getResources();
 
         // initialize a map from each emotional state to the corresponding color resource (Color).
