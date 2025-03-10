@@ -1,12 +1,18 @@
 package com.example.tangclan;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -43,6 +49,21 @@ public class FeedActivity extends AppCompatActivity {
             showMoodEventDetails(moodEvent);
             return true;
         });
+
+        // NAVBAR
+        ImageView pinIcon = findViewById(R.id.imgMap);
+        ImageView homeIcon = findViewById(R.id.imgHome); // do nothing but change color to white
+        ImageView searchIcon = findViewById(R.id.imgSearch);
+        ImageView profileIcon = findViewById(R.id.imgProfile);
+
+        profileIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(FeedActivity.this, profileActivity.class));
+                finish();
+            }
+        });
+
     }
 
     private void loadFeed() {

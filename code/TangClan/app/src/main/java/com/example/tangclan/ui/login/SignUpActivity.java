@@ -23,6 +23,14 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // After user is asked to verify their account
+        Intent intent = new Intent(SignUpActivity.this, WelcomeToMoodly.class);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent logIn = new Intent(SignUpActivity.this, LogIn.class);
                 startActivity(logIn);
+                finish();
             }
         });
 
@@ -108,7 +117,6 @@ public class SignUpActivity extends AppCompatActivity {
                                                             Toast.LENGTH_SHORT).show();
                                                     Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                                     startActivity(intent);
-                                                    finish();
                                                 } else {
                                                     // Could not create account
                                                     Toast.makeText(SignUpActivity.this, "Authentication failed.",

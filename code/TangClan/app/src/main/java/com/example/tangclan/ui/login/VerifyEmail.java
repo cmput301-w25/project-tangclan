@@ -56,8 +56,10 @@ public class VerifyEmail extends AppCompatActivity {
         continueText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // skip verification
                 Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 

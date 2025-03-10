@@ -16,13 +16,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.tangclan.DatabaseBestie;
 import com.example.tangclan.R;
 import com.example.tangclan.RecoverActivity;
+import com.example.tangclan.TempFeedActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LogIn extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,7 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View view) {
                 Intent signUp = new Intent(LogIn.this, SignUpActivity.class);
                 startActivity(signUp);
+                finish();
             }
         });
 
@@ -49,6 +50,7 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View view) {
                 Intent forgotPass = new Intent(LogIn.this, RecoverActivity.class);
                 startActivity(forgotPass);
+                finish();
             }
         });
 
@@ -96,6 +98,5 @@ public class LogIn extends AppCompatActivity {
                 });
             }
         });
-
     }
 }
