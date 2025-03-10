@@ -1,14 +1,17 @@
 package com.example.tangclan;
 
+import java.io.*;
 import java.io.Serializable;
 
 // This has info pertaining to a user that they may edit through 'Edit Profile'
-public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodEventBook and FollowingBook
+public class Profile extends User implements Serializable {
+  //NOTE: EXTENDS MoodEventBook and FollowingBook
     private String username;
     private String password;
     private String email;
-    private int age;//Note: Mentioned in meeting everything is stored as strings may need to change?????
-    public Profile(String username, String password, String email,int age){
+    private String age;
+    
+    public Profile(String username, String password, String email,String age){
         super();
         this.username=username;
         this.password=password;
@@ -45,29 +48,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      * @return true/false
      */
     public static boolean validPassword(String password){
-        // final String SPECIAL_CHARACTERS = "!,#,$,%,^,&,*,|";
-        boolean upCase = false;
-        boolean loCase = false;
-        boolean isDigit = false;
-        boolean spChar = false;
-        boolean isLength = false;
-        if (password.matches(".*[A-Z].*")){
-            upCase = true;
-        }
-        if (password.matches(".*[a-z].*")){
-            loCase = true;
-        }
-        if (password.matches(".*[1-9].*")){
-            isDigit = true;
-        }
-        if (password.matches(".*[!#$%^&*|_~].*"){
-            spChar = true;
-        }
-        if((password.length() >= 8)){
-            isLength=true;
-        }
-
-        return (upCase && loCase && isDigit && spChar && isLength);
+        return (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"));
     }
 
     public void setPassword(String password) {
@@ -83,26 +64,26 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     }
 
     public void setEmail(String email) {
-
         this.email = email;
     }
 
-    public int getAge() {
-
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        if(age<18){
+    public void setAge(String age) {
+        if(Integer.parseInt(age)<18){
             throw new IllegalArgumentException();
         }
         this.age = age;//may need to do conversion to string before setting
     }
+  
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
 
     //TODO:
     //On CRC cards "Manages Permissions for followers" Referring to this user story?: "As a participant, I want to grant another participant permission to follow my most recent moodevent
     //Idea:
-
+    //Told: Is done inside of followingBook
     //ASK:Mood event history? is that supposed to be stored in MoodEventBook(yes it is)
 }
+

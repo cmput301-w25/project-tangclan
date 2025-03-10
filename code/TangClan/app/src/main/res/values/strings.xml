@@ -1,4 +1,19 @@
 <resources>
+    <string name="app_name">TangClan</string>
+    <!-- strings.xml -->
+    <string name="following">3 Following</string>
+    <string name="followers">3 Followers</string>
+    <string name="name">Name</string>
+    <string name="atUsername">@username</string>
+    <string name="edit_profil_button">Edit Profile</string>
+    <string name="email">Email</string>
+    <string name="edit_full_n">Edit Full Name</string>
+    <string name="edit_email_">Edit Email Address</string>
+    <string name="new_usernam">New Username</string>
+    <string name="new_passwor">New Password</string>
+    <string name="confirm_new">Confirm New Password</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="moodly">moodly</string>
     <string name="already_hav">Already have an account? <font color='#FFD261'>Log in</font></string>
     <string name="full_name">Full Name</string>
@@ -58,6 +73,4 @@
     <string name="placeholder_username_emotion">Julian is feeling happy</string>
     <string name="placeholder_situation">crumbl cookies</string>
     <string name="for_you">For you</string>
-
-
 </resources>
