@@ -7,57 +7,68 @@ import java.util.stream.Collectors;
 public class FollowingBook {
     private ArrayList<String> following;
     private ArrayList<String> followers;
-    private ArrayList<Followers> followRequests;
+    //private ArrayList<Followers> followRequests;
 
     public FollowingBook() {
         this.following = new ArrayList<>();
         this.followers = new ArrayList<>();
-        this.followRequests = new ArrayList<>();
+        //this.followRequests = new ArrayList<>();
     }
 
     // Handle follow requests
-    public void addFollowRequest(Profile sender) {
-        followRequests.add(new FollowRequest(sender));
-    }
+    //public void addFollowRequest(Profile sender) {
+    //    followRequests.add(new FollowRequest(sender));
+    //}
 
-    public void acceptFollowRequest(Profile sender) {
-        followRequests.removeIf(request -> request.getSender().equals(sender));
-        followers.add(sender);
-    }
+    //public void acceptFollowRequest(Profile sender) {
+    //    followRequests.removeIf(request -> request.getSender().equals(sender));
+    //    followers.add(sender);
+    //}
 
-    public void rejectFollowRequest(Profile sender) {
-        followRequests.removeIf(request -> request.getSender().equals(sender));
-    }
+    //public void rejectFollowRequest(Profile sender) {
+    //   followRequests.removeIf(request -> request.getSender().equals(sender));
+    //}
 
     // Manage following relationships
-    public void follow(Profile profile) {
-        if (!following.contains(profile)) {
-            following.add(profile);
-            profile.getFollowingBook().addFollower(this);
+    //public void follow(Profile profile) {
+    //    if (!following.contains(profile)) {
+    //        following.add(profile);
+    //        profile.getFollowingBook().addFollower(this);
+    //    }
+    //}
+
+    //public void unfollow(Profile profile) {
+    //    following.remove(profile);
+    //    profile.getFollowingBook().removeFollower(this);
+    //}
+
+    /**
+     * adds a follower to the following book's follower list
+     * @param uid
+     *      the uid of the follower to be added
+     */
+    public void addFollower(String uid) {
+        if (followers.contains(uid)) {
+            throw new IllegalArgumentException("User is already followed by this uid!");
+        }
+        followers.add(uid);
+    }
+
+    /**
+     * removes a follower from the FollowingBook's follower list
+     * @param uid
+     *      the uid of the follower to be removed
+     */
+    public void removeFollower(String uid) {
+        if (followers.contains(uid)) {
+            followers.remove(uid);
+        } else {
+            throw new IllegalArgumentException("No such follower in this user's followers!");
         }
     }
 
-    public void unfollow(Profile profile) {
-        following.remove(profile);
-        profile.getFollowingBook().removeFollower(this);
-    }
+    public List<MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
 
-    public void addFollower(FollowingBook followerBook) {
-        Profile follower = followerBook.getOwnerProfile();
-        if (!followers.contains(follower)) {
-            followers.add(follower);
-        }
-    }
-
-    public void removeFollower(FollowingBook followerBook) {
-        followers.remove(followerBook.getOwnerProfile());
-    }
-
-    // Fetch recent mood events from followed users
-    public List<MoodEvent> getRecentMoodEvents() {
-        return following.stream()
-                .flatMap(userFollowed -> MoodEventBook.getMoodEvent().getRecentEvents().stream())
-                .collect(Collectors.toList());
     }
 
     // Filter mood events
@@ -96,13 +107,17 @@ public class FollowingBook {
         return new ArrayList<>(followers);
     }
 
-    public List<FollowRequest> getFollowRequests() {
-        return new ArrayList<>(followRequests);
-    }
+    //public List<FollowRequest> getFollowRequests() {
+    //    return new ArrayList<>(followRequests);
+    //}
 
     // setters
     public void setFollowers(ArrayList<String> followers) {
         this.followers = followers;
+    }
+
+    public void setFollowing(ArrayList<String> following) {
+        this.following = following;
     }
 
     private Profile getOwnerProfile() {
