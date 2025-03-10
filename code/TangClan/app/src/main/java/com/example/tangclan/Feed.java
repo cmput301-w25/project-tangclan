@@ -20,7 +20,7 @@ public class Feed {
 
     public void loadFeed() {
         feedEvents.clear();
-        feedEvents.addAll(followingBook.getRecentMoodEvents());
+        feedEvents.addAll(followingBook.getRecentMoodEvents().values());
         feedEvents.addAll(moodEventBook.getAllMoodEvents());
         sortFeedByDateTime();
     }
