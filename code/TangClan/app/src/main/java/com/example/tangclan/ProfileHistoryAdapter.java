@@ -31,13 +31,15 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     // for security purposes we will only grab the username for the ArrayAdapter instead of the
     // whole profile.
     String username;
-    private Map<MoodEvent, String> moodToUsernameMap;
 
     /**
      * Constructor for the ProfileHistoryAdapter
-     * @param context The activity context
-     * @param followingBook The FollowingBook containing users and their mood events
+     * @param context
+     *      The activity context
+     * @param profile
+     *      The current user's profile object
      */
+
     public ProfileHistoryAdapter(Context context, FollowingBook followingBook) {
         super(context, 0, new ArrayList<>());
 
@@ -55,6 +57,11 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             });
         }
 
+    
+        // Populate mood events and map usernames
+
+
+
     /**
      *  Creates and recycles the view for the ListView item
      * @param position
@@ -64,10 +71,8 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
      * @param parent
      *      parent ViewGroup
      * @return
+     *      A ListView item view
      */
-        addAll(moodEvents);
-    }
-
     @Override
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -79,10 +84,6 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             view = convertView;
         }
         MoodEvent moodEvent = getItem(position);
-        if (moodEvent == null) return view;
-
-        // Retrieve username for this mood event
-        String username = moodToUsernameMap.getOrDefault(moodEvent, "Unknown");
 
         // Format the username and mood emotion
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
@@ -91,7 +92,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext().getApplicationContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
@@ -105,9 +108,11 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         ChipGroup triggers = view.findViewById(R.id.trigger_tags);
 
         usernameEmotion.setText(spannableUsernameEmotion);
+
         situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
+
 
         // only populate the view if situation exists - otherwise, set invisible
         if (moodEvent.getSituation().isPresent()) {
