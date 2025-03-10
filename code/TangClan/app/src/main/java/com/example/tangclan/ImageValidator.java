@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ImageValidator {
-    //image validation class
+    //image validation class again
     private static final int MAX_IMAGE_SIZE = 65536; // 64 KB
 
     private ImageValidator() {
