@@ -50,7 +50,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         boolean loCase = false;
         boolean isDigit = false;
         boolean spChar = false;
-        boolean isLength=false;
+        boolean isLength = false;
         if (password.matches(".*[A-Z].*")){
             upCase = true;
         }
