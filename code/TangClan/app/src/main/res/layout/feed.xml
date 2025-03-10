@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/moodly1"
+        android:layout_width="275dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal|top"
+        android:text="@string/moodly"
+        android:textAppearance="@style/moodly1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/untitled_32"
+        android:layout_width="55dp"
+        android:layout_height="56dp"
+        android:src="@drawable/outline_filter_alt_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="5dp"
+        tools:layout_editor_absoluteY="5dp" />
+
+    <View
+        android:id="@+id/rectangle_1"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rectangle_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.327"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/moodly1" />
+
+    <TextView
+        android:id="@+id/following"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/following"
+        android:textAppearance="@style/following"
+        app:layout_constraintBottom_toBottomOf="@id/rectangle_1"
+        app:layout_constraintEnd_toEndOf="@id/rectangle_1"
+        app:layout_constraintStart_toStartOf="@id/rectangle_1"
+        app:layout_constraintTop_toTopOf="@id/rectangle_1" />
+
+    <View
+        android:id="@+id/rectangle_2"
+        android:layout_width="101dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/rectangle_2"
+        app:layout_constraintStart_toEndOf="@id/rectangle_1"
+        app:layout_constraintTop_toTopOf="@id/rectangle_1"
+        app:layout_constraintBottom_toBottomOf="@id/rectangle_1" />
+
+    <TextView
+        android:id="@+id/for_you"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/for_you"
+        android:textAppearance="@style/for_you"
+        app:layout_constraintBottom_toBottomOf="@id/rectangle_2"
+        app:layout_constraintEnd_toEndOf="@id/rectangle_2"
+        app:layout_constraintStart_toStartOf="@id/rectangle_2"
+        app:layout_constraintTop_toTopOf="@id/rectangle_2" />
+
+
+    <ListView
+        android:id="@+id/listViewFeed"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="80dp"
+        app:layout_constraintBottom_toTopOf="@id/navbarContainer"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_1"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <include
+        android:id="@+id/navbarContainer"
+        layout="@layout/navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

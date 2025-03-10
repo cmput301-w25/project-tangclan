@@ -1,12 +1,18 @@
 package com.example.tangclan;
 
 import java.io.*;
-public class Profile {//NOTE: EXTENDS MoodEventBook and FollowingBook
+import java.io.Serializable;
+
+// This has info pertaining to a user that they may edit through 'Edit Profile'
+public class Profile extends User implements Serializable {
+  //NOTE: EXTENDS MoodEventBook and FollowingBook
     private String username;
     private String password;
     private String email;
-    private String age;//Note: Mentioned in meeting everything is stored as strings may need to change?????
+    private String age;
+    
     public Profile(String username, String password, String email,String age){
+        super();
         this.username=username;
         this.password=password;
         this.email=email;
@@ -42,29 +48,7 @@ public class Profile {//NOTE: EXTENDS MoodEventBook and FollowingBook
      * @return true/false
      */
     public static boolean validPassword(String password){
-        final String SPECIAL_CHARACTERS = "!,#,$,%,^,&,*,|";
-        boolean upCase = false;
-        boolean loCase = false;
-        boolean isDigit = false;
-        boolean spChar = false;
-        boolean isLength=false;
-        if (password.matches(".+[A-Z].+")){
-            upCase = true;
-        }
-        if (password.matches(".+[a-z].+")){
-            loCase = true;
-        }
-        if (password.matches(".+[1-9].+")){
-            isDigit = true;
-        }
-        if (SPECIAL_CHARACTERS.contains(password)){
-            spChar = true;
-        }
-        if((password.length()<=20&&password.length()>0)){
-            isLength=true;
-        }
-
-        return (upCase && loCase && isDigit && spChar && isLength);
+        return (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"));
     }
 
     public void setPassword(String password) {
@@ -80,8 +64,6 @@ public class Profile {//NOTE: EXTENDS MoodEventBook and FollowingBook
     }
 
     public void setEmail(String email) {
-        //TODO:
-        //Verifying correct input(if needed)
         this.email = email;
     }
 
@@ -95,11 +77,13 @@ public class Profile {//NOTE: EXTENDS MoodEventBook and FollowingBook
         }
         this.age = age;//may need to do conversion to string before setting
     }
+  
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
+
+    //TODO:
     //On CRC cards "Manages Permissions for followers" Referring to this user story?: "As a participant, I want to grant another participant permission to follow my most recent moodevent
+    //Idea:
     //Told: Is done inside of followingBook
-    // ASK:Mood event history? is that supposed to be stored in MoodEventBook(yes it is)
-
-
-
+    //ASK:Mood event history? is that supposed to be stored in MoodEventBook(yes it is)
 }
+
