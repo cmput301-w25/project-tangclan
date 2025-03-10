@@ -6,11 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the followers, following, and any outstanding follow requests of the session user
+ */
 public class FollowingBook {
     private ArrayList<String> following;
     private ArrayList<String> followers;
     //private ArrayList<Followers> followRequests;
 
+    /**
+     * Constructor for the FollowingBook object
+     */
     public FollowingBook() {
         this.following = new ArrayList<>();
         this.followers = new ArrayList<>();

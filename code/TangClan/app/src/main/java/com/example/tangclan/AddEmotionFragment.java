@@ -13,6 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment wrapper which allows for adding an emotional state to the Mood Event being created
+ * RELATED USER STORIES:
+ *      US 01.01.01
+ */
 public class AddEmotionFragment extends Fragment {
 
     private String selectedEmotion = null;

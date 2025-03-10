@@ -13,6 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment wrapper which allows the user to add an optional list of triggers to the Mood Event
+ * being created
+ * RELATED USER STORIES:
+ *      US 01.01.01
+ */
 public class AddTriggersFragment extends Fragment {
 
     private TextView triggersDisplay;
