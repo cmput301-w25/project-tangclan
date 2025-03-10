@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -11,6 +12,10 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+=======
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+>>>>>>> main
 
     <application
         android:allowBackup="true"
@@ -23,12 +28,34 @@
         android:theme="@style/Theme.TangClan"
         tools:targetApi="31">
         <activity
+<<<<<<< HEAD
             android:name=".ProfilePictureUpload"
             android:exported="false" />
         <activity
             android:name=".BirthdayCheckScreen"
             android:exported="false" />
         <activity
+=======
+            android:name=".TempFeedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.LogIn"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.VerifyEmail"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginOrSignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login" />
+        <activity
+>>>>>>> main
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -37,6 +64,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MyNavigationService"
+            android:foregroundServiceType="location" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

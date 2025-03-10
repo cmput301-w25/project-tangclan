@@ -31,10 +31,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/moodly">
 
-        <TextView
+        <EditText
             android:id="@+id/full_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="345dp"
+            android:layout_height="36dp"
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="@string/full_name"
@@ -53,10 +53,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/form_full_n">
 
-        <TextView
+        <EditText
             android:id="@+id/email_addre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="347dp"
+            android:layout_height="34dp"
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="@string/email_addre"
@@ -74,10 +74,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/form_email">
 
-        <TextView
+        <EditText
             android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="336dp"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
             android:text="@string/username"
@@ -95,10 +95,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/form_userna">
 
-        <TextView
+        <EditText
             android:id="@+id/password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="346dp"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
             android:text="@string/password"
@@ -116,10 +116,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/form_passwo">
 
-        <TextView
+        <EditText
             android:id="@+id/confirm_pas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="335dp"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
             android:text="@string/confirm_pas"
@@ -129,7 +129,7 @@
 
 
     <Button
-        android:id="@+id/button_logi"
+        android:id="@+id/button_signup"
         android:layout_width="364dp"
         android:layout_height="61dp"
         android:layout_marginStart="28dp"
@@ -154,7 +154,7 @@
         android:textAppearance="@style/already_hav"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_logi" />
+        app:layout_constraintTop_toBottomOf="@id/button_signup" />
 
     <TextView
         android:id="@+id/some_id"
@@ -162,19 +162,22 @@
         android:layout_height="45dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="56dp"
         android:gravity="center_horizontal|top"
         android:text="@string/some_id"
         android:textAppearance="@style/some_id"
-        tools:layout_editor_absoluteX="296dp"
-        tools:layout_editor_absoluteY="630dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/untitled_31" />
 
     <ImageView
         android:id="@+id/untitled_31"
         android:layout_width="302dp"
         android:layout_height="295dp"
         android:background="@drawable/own_picture_signup"
-        tools:layout_editor_absoluteX="54dp"
-        tools:layout_editor_absoluteY="584dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_signup" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

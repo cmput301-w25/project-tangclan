@@ -112,7 +112,7 @@ public class MoodEventBook {
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents) {
-            String explanation = event.getSituation();
+            String explanation = String.valueOf(event.getSituation());
             if (explanation != null) {
                 String lowerCaseExplanation = explanation.toLowerCase();
                 for (String keyword : keywords) {
@@ -154,3 +154,5 @@ public class MoodEventBook {
 
 
 }
+
+//https://developer.android.com/guide/topics/resources/drawable-resource#Shape
