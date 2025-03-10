@@ -15,6 +15,13 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
+/**
+ * Fragment wrapper which allows the user to add an optional social situation to the Mood Event
+ * being created.
+ *
+ * RELATED USER STORIES:
+ *      US 01.01.01
+ */
 public class AddSocialSituation extends Fragment {
 
     @Nullable

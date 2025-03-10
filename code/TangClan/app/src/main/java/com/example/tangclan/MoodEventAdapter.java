@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+<<<<<<< Updated upstream
  * Adapter for displaying mood events in a ListView.
  * This class retrieves mood events from the FollowingBook and associates them with usernames.
  * It ensures that mood events are displayed with formatted text and optional images.
@@ -33,6 +34,12 @@ import java.util.Map;
 
 //TODO implement so that this event adapter shows up in feedactivity after a mood event is added
 
+=======
+ * ArrayAdapter wrapper for the feed class. Used to display on feed
+ * RELATED USER STORIES:
+ *     01.04.01
+ */
+>>>>>>> Stashed changes
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
     private Map<MoodEvent, String> moodToUsernameMap; // Maps MoodEvent to corresponding username
@@ -65,6 +72,17 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         addAll(moodEvents);
     }
 
+    /**
+     * View recycler for the ListView
+     * @param position
+     *      position of the item
+     * @param convertView
+     *      view to be recycled
+     * @param parent
+     *      parent view
+     * @return
+     *      a single recycled view to be added to the ListView
+     */
     @Override
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

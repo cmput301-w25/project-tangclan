@@ -15,9 +15,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+<<<<<<< Updated upstream
 /**
  * Contains wrapper functions for method calls on an instance of FireBaseFirestore.
  * Contains Helper functions for querying existing data.
+=======
+
+/**
+ * Database wrapper with functionality to query Mood, Followers, Users, and other information
+ * pertaining to those objects
+ * USER STORIES:
+ *      US 01.01.01
+ *      US 01.04.01
+ *      US 01.05.01
+ *      US 01.06.01
+ *      US 03.01.01
+>>>>>>> Stashed changes
  */
 public class DatabaseBestie {
     private static final String TAG = "DatabaseBestie";

@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
+<<<<<<< Updated upstream
 //part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
 
 /**
@@ -33,6 +34,13 @@ import java.util.List;
 
 //TODO fix the bug for loadfeed because of the List<MoodEvent> to following book, cause runtime error
 
+=======
+/**
+ * Represents the activity feed, with all MoodEvents of users that the session user follows
+ * USER STORIES:
+ *      US 01.04.01
+ */
+>>>>>>> Stashed changes
 public class FeedActivity extends AppCompatActivity {
     //feed activitysssnn
     private ListView listViewFeed;

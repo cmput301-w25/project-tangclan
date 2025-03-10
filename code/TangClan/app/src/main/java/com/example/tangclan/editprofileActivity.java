@@ -23,6 +23,11 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/**
+ * Activity that facilitates the edit profile information process
+ * RELATED USER STORIES: US 03.01.01
+ *      03.01.01c
+ */
 public class editprofileActivity extends AppCompatActivity {
 
     TextView usernameText;
