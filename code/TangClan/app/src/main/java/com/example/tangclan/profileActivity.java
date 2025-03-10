@@ -6,7 +6,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import android.widget.ListView;
+
+import android.widget.ImageView;
+
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -78,6 +82,7 @@ public class profileActivity extends AppCompatActivity {
             }
         });
 
+
         // instantiate the Profile's MoodEventBook
         DatabaseBestie databaseWrapper = new DatabaseBestie();
         profile1.initializeMoodEventBookFromDatabase(databaseWrapper);
@@ -88,6 +93,21 @@ public class profileActivity extends AppCompatActivity {
 
         // set the Adapter for the moodHistoryList
         moodHistoryList.setAdapter(profileHistoryAdapter);
+
+        // NAVBAR
+        ImageView pinIcon = findViewById(R.id.imgMap);
+        ImageView homeIcon = findViewById(R.id.imgHome);
+        ImageView searchIcon = findViewById(R.id.imgSearch);
+        ImageView profileIcon = findViewById(R.id.imgProfile); // do nothing but change color to white
+
+        homeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(profileActivity.this, FeedActivity.class));
+                finish();
+            }
+        });
+
     }
 
 

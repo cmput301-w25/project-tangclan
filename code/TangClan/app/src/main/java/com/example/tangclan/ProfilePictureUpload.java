@@ -22,6 +22,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+/**
+ * Activity handles user profile picture selection, capturing,
+ * cropping, and displaying within the application. Users can choose images from
+ * the gallery or capture a new photo using the camera. The selected image is then
+ * processed and displayed as the user's profile picture.
+
+ */
+//this is not specifically part of any user stories however implied by US 02.02.01 and US 03.01.01
+
+//TODO check if the cropping works across all devices
+
+//TODO set this profile picture as a permanent reference in the database rather than calling the database each time
+
 public class ProfilePictureUpload extends AppCompatActivity {
     //profilepictureupload activity that
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -139,7 +152,7 @@ public class ProfilePictureUpload extends AppCompatActivity {
         cropIntent.putExtra("outputX", 500);
         cropIntent.putExtra("outputY", 500);
         cropIntent.putExtra("return-data", true);
-        cropIntent.putExtra("circleCrop", true);  // This works on some devices
+        cropIntent.putExtra("circleCrop", true);
 
 
         if (cropIntent.resolveActivity(getPackageManager()) != null) {

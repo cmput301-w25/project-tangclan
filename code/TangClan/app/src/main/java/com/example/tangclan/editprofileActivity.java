@@ -158,7 +158,7 @@ public class editprofileActivity extends AppCompatActivity {
 
         //Setting values for profile object
         profile2.setEmail(StringEmail);
-        profile2.setUsername(StringUsername,ProfileArrayList);
+        profile2.setUsername(StringUsername);
         profile2.setPassword(StringPassword);
         profile2.setDisplayName(StringName);
 

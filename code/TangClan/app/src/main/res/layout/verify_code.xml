@@ -52,6 +52,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="285dp" />
 
+    <!--
     <TextView
         android:id="@+id/enter_in_th"
         android:layout_width="369dp"
@@ -63,6 +64,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="10dp" />
+        -->
 
     <RelativeLayout
         android:id="@+id/frame_29_4"

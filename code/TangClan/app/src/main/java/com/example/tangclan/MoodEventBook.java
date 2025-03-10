@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Date;
 import java.util.Optional;
 
-
+//part of US 01.01.01, US 01.04.01, and US 01.06.01
 /**
  * MoodEventBook manages a collection of MoodEvent objects.
  * It supports adding, removing, sorting, and filtering mood events.
  */
 public class MoodEventBook {
     private ArrayList<MoodEvent> moodEvents;
-    //mooc event bookkkknnn
+
     // Constructor
     public MoodEventBook() {
         this.moodEvents = new ArrayList<>();
@@ -36,6 +36,7 @@ public class MoodEventBook {
     public void addMoodEvent(MoodEvent event) {
         if (event != null) {
             moodEvents.add(event);
+            // TODO: Connect to the database and save the new mood event
         }
     }
 
@@ -45,6 +46,7 @@ public class MoodEventBook {
      */
     public void deleteMoodEvent(MoodEvent event) {
         moodEvents.remove(event);
+        // TODO: Connect to the database and remove the mood event
     }
 
     /**
@@ -115,9 +117,11 @@ public class MoodEventBook {
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents) {
-            Optional<String> explanation = event.getSituation();
-            if (explanation.isPresent()) {
-                String lowerCaseExplanation = explanation.get().toLowerCase();
+
+            String explanation = event.getSituation().get();
+            if (explanation != null) {
+                String lowerCaseExplanation = explanation.toLowerCase();
+
                 for (String keyword : keywords) {
                     if (lowerCaseExplanation.contains(keyword.toLowerCase())) {
                         result.add(event);

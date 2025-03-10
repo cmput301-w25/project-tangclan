@@ -22,28 +22,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Adapter for displaying mood events in a ListView.
+ * This class retrieves mood events from the FollowingBook and associates them with usernames.
+ * It ensures that mood events are displayed with formatted text and optional images.
+ *
+ */
+
+//covers US 01.03.01, US 01.04.01, US 02.02.01, US 02.04.01
+
+//TODO implement so that this event adapter shows up in feedactivity after a mood event is added
+
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
-    //moodeventarray adapterrr
 
     private Map<MoodEvent, String> moodToUsernameMap; // Maps MoodEvent to corresponding username
 
     /**
-     * Constructor for the MoodEventAdapter
+     * Constructor for the MoodEventAdapter.
+     *
      * @param context The activity context
      * @param followingBook The FollowingBook containing users and their mood events
      */
-    public MoodEventAdapter(Context context, FollowingBook followingBook) {
+    public MoodEventAdapter(Context context, List<String> followingBook) {
         super(context, 0, new ArrayList<>());
 
         moodToUsernameMap = new HashMap<>();
         List<MoodEvent> moodEvents = new ArrayList<>();
+        DatabaseBestie bestie = new DatabaseBestie();
 
         // Populate mood events and map usernames
-        for (Profile profile : followingBook.getFollowing()) {
-            for (MoodEvent moodEvent : profile.getMoodEventBook().getAllMoodEvents()) {
-                moodEvents.add(moodEvent);
-                moodToUsernameMap.put(moodEvent, profile.getUsername());
-            }
+
+        for (String uid: followingBook.getFollowing()) {
+            bestie.getUser(uid, profile -> {
+                for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
+                    moodEvents.add(moodEvent);
+                    moodToUsernameMap.put(moodEvent, profile.getUsername());
+                }
+            });
+
         }
 
         addAll(moodEvents);
@@ -73,7 +89,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(Integer.parseInt(moodEvent.getMood().getColor())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext().getApplicationContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 

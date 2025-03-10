@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
+
 /**
  * Represents a Mood Event
  * RELATED USER STORIES:
@@ -172,12 +173,36 @@ public class MoodEvent implements Serializable {
     }
 
 
+
+
     public Optional<ArrayList<String>> getTriggers() {
         return Optional.of(this.triggers);
     }
 
     public Optional<String> getSituation() {
         return Optional.of(this.situation);
+    }
+
+    /**
+     * sets the postDate attribute from a string
+     * @param postDate
+     *      the String representation of the post Date
+     */
+    public void setPostDate(String postDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+
+
+        this.postDate = LocalDate.parse(postDate, formatter);
+    }
+
+    /**
+     * sets the postTime attribute from a string
+     * @param postTime
+     *      the String representation of the Post Time
+     */
+    public void setPostTime(String postTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        this.postTime = LocalTime.parse(postTime, formatter);
     }
 
     /**
@@ -362,4 +387,4 @@ public class MoodEvent implements Serializable {
 
         return moodEventFields;
     }
-}
+
