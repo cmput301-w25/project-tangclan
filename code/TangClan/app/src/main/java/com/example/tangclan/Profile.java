@@ -5,7 +5,12 @@ import static java.lang.Integer.parseInt;
 import java.io.Serializable;
 import java.sql.Blob;
 
-// This has info pertaining to a user that they may edit through 'Edit Profile'
+/**
+ * Represents a Profile class
+ * This has info pertaining to a user that they may edit through 'Edit Profile'
+ * RELATED USER STORIES:
+ *      US 03.01.01
+ */
 public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodEventBook and FollowingBook
     private String displayName;
     private String username;
@@ -15,6 +20,9 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
 
     private Blob profilePic;
 
+    /**
+     * Constructor for database purposes
+     */
     public Profile() {
         super();
         this.username=null;
@@ -22,6 +30,19 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.email=null;
     }
 
+    /**
+     * Constructor with all fields
+     * @param displayName
+     *      The name displayed on MooodEvents
+     * @param username
+     *      Unique username of the Profile
+     * @param password
+     *      Password of the user
+     * @param email
+     * `    Email address of the user
+     * @param photo
+     *      Profile picture of the user
+     */
     public Profile(String displayName, String username, String password, String email, Blob photo){
         super();
         this.username=username;
@@ -30,6 +51,21 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.profilePic = photo;
     }
 
+    /**
+     * Constrctor with age set
+     * @param displayName
+     *      Name to be displayed on mood events
+     * @param username
+     *      Username of the user
+     * @param password
+     *      Password of the user
+     * @param email
+     *      Email address linked to the account
+     * @param age
+     *      Age of the user
+     * @param photo
+     *      Profile picture of the user
+     */
     public Profile(String displayName, String username, String password, String email, String age, Blob photo){
         super();
         this.username=username;
@@ -39,14 +75,29 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.profilePic = photo;
     }
 
+    /**
+     * Getter for the username
+     * @return
+     *      The profile's username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Getter for the display name
+     * @return
+     *      The profile's display name
+     */
     public String getDisplayName() {
         return displayName;
     }
 
+    /**
+     * Setter for the display name
+     * @param displayName
+     *      The name to display
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
