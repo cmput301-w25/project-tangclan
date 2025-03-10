@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tangclan.DatabaseBestie;
 import com.example.tangclan.R;
+import com.example.tangclan.RecoverActivity;
 import com.example.tangclan.TempFeedActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,8 +24,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LogIn extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
-    DatabaseBestie bestie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +32,8 @@ public class LogIn extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.page_login);
 
-        mAuth = FirebaseAuth.getInstance();
-        bestie = DatabaseBestie.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseBestie bestie = DatabaseBestie.getInstance();
 
         TextView goToSignUp = findViewById(R.id.don_t_have_);
         goToSignUp.setOnClickListener(new View.OnClickListener() {
@@ -42,6 +41,15 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View view) {
                 Intent signUp = new Intent(LogIn.this, SignUpActivity.class);
                 startActivity(signUp);
+            }
+        });
+
+        TextView forgotPassText = findViewById((R.id.forgot_pass));
+        forgotPassText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent forgotPass = new Intent(LogIn.this, RecoverActivity.class);
+                startActivity(forgotPass);
             }
         });
 
@@ -75,7 +83,8 @@ public class LogIn extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
+                                            bestie.updatePasswordSameAsFirebaseAuth(email,password);
+                                            Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                             startActivity(intent);
                                             finish();
                                         } else {

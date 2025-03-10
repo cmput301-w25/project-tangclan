@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,7 +28,14 @@ public class MoodEvent {
     private Double latitude = null;
     private Double longitude = null;
 
-
+    /**
+     * Default constructor (required for Firestore)
+     */
+    public MoodEvent() {
+        this.mid = -1; // Placeholder, should be set later
+        this.postTime = LocalTime.now();
+        this.postDate = LocalDate.now();
+    }
 
     /**
      * default constructor for MoodEvent
@@ -35,12 +43,10 @@ public class MoodEvent {
      *      emotional state used for the Mood constructor
      */
     public MoodEvent(String emotionalState) {
+        this.mid = mid;
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
-
         this.mood = new Mood(emotionalState);
-
-        // create an instance of the LocationManager
     }
 
     /**
@@ -56,7 +62,6 @@ public class MoodEvent {
 
         this.mood = new Mood(emotionalState);
         this.triggers = trigger;
-
     }
 
     /**
@@ -73,7 +78,7 @@ public class MoodEvent {
         this.mood = new Mood(emotionalState);
 
         // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count(); //cast to int because .count returns long
+        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
 
         // raise an exception if the social situation exceeds length or word limit
         if ((situation.length() > 20) || (spaceCount > 2)) {
@@ -157,39 +162,21 @@ public class MoodEvent {
         return this.mood.getEmotion();
     }
 
-    /**
-     * Getter for the optional triggers of the mood
-     * @return
-     *      an Optional object possibly containing a list of triggers.
-     */
-    public Optional<ArrayList<String>> getTriggers() {
-        return Optional.ofNullable(this.triggers);
+    public String getMoodColor() {
+        return this.mood.getColor();
     }
 
-    /**
-     * Getter for the optional situation of the mood
-     * @return
-     *      an Optional object possibly containing a situation
-     */
-    public Optional<String> getSituation() {
-        return Optional.ofNullable(this.situation);
+    public String getMoodEmoticon() {
+        return this.mood.getEmoticon();
     }
 
-    /**
-     * Getter for the image in bitmap form of the MoodEvent
-     * @return
-     */
-    public Bitmap getImage() {
-        return this.image;
+
+    public ArrayList<String> getTriggers() {
+        return this.triggers;
     }
 
-    /**
-     * Setter for the MoodEvent ID of the MoodEvent
-     * @param id
-     *      the id of the Mood Event to be set to
-     */
-    public void setMid(int id) {
-        this.mid = id;
+    public String getSituation() {
+        return this.situation;
     }
 
     /**
@@ -208,6 +195,17 @@ public class MoodEvent {
      */
     public void setTriggers(ArrayList<String> triggers) {
         this.triggers = triggers;
+    }
+
+
+    /**
+     *
+     * Setter for the MoodEvent ID of the MoodEvent
+     * @param id
+     *      the id of the Mood Event to be set to
+     */
+    public void setMid(int id) {
+        this.mid = id;
     }
 
     /**

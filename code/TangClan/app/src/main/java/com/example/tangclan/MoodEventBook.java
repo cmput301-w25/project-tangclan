@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Date;
 
 
 /**
@@ -12,7 +13,8 @@ import java.util.List;
  * It supports adding, removing, sorting, and filtering mood events.
  */
 public class MoodEventBook {
-    private ArrayList<MoodEvent> moodEvents;
+
+    private List<MoodEvent> moodEvents; //list stores all mood event objects
 
     // Constructor
     public MoodEventBook() {
@@ -112,17 +114,15 @@ public class MoodEventBook {
      */
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
-        for (MoodEvent event : moodEvents) {
-            String explanation = String.valueOf(event.getSituation());
-            if (explanation != null) {
-                String lowerCaseExplanation = explanation.toLowerCase();
-                for (String keyword : keywords) {
-                    if (lowerCaseExplanation.contains(keyword.toLowerCase())) {
-                        result.add(event);
-                        break;
-                    }
+        for (MoodEvent event : moodEvents){
+            String explanation = event.getSituation();
+            for (String keyword : keywords){
+                if (explanation != null && explanation.toLowerCase().contains(keyword.toLowerCase())){
+                    result.add(event);
+                    break;
                 }
             }
+
         }
         return result;
     }
