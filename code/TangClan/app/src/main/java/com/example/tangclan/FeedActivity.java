@@ -12,9 +12,9 @@ import androidx.fragment.app.FragmentTransaction;
 import java.util.List;
 
 public class FeedActivity extends AppCompatActivity {
-    //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
+    private MoodEventAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +50,15 @@ public class FeedActivity extends AppCompatActivity {
         feed.loadFeed();
         List<MoodEvent> feedEvents = feed.getFeedEvents();
 
-        MoodEventAdapter adapter = new MoodEventAdapter((Context) this, (FollowingBook) feedEvents);
+        adapter = new MoodEventAdapter((Context) this, (FollowingBook) feedEvents);
         listViewFeed.setAdapter(adapter);
     }
 
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
         details.append("Emotional State: ").append(moodEvent.getMoodEmotionalState()).append("\n");
-        details.append("Mood Color: ").append(moodEvent.getMoodColor()).append("\n");
-        details.append("Emoticon: ").append(moodEvent.getMoodEmoticon()).append("\n");
+        details.append("Mood Color: ").append(moodEvent.getMood().getColor()).append("\n");
+        details.append("Emoticon: ").append(moodEvent.getMood().getEmoticon()).append("\n");
 
         if (moodEvent.getTriggers() != null && !moodEvent.getTriggers().isEmpty()) {
             details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers())).append("\n");
