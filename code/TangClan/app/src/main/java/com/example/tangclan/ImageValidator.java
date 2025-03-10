@@ -19,7 +19,7 @@ public class ImageValidator {
     private ImageValidator() {
     }
 
-    public static boolean isImageSizeValid(Context context, Uri imageUri, Profile profile) {
+    public static boolean isImageSizeValid(Context context, Uri imageUri) {
         try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
             if (inputStream != null) {
                 Bitmap originalBitmap = BitmapFactory.decodeStream(inputStream);

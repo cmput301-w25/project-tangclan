@@ -1,8 +1,5 @@
 package com.example.tangclan;
 
-
-import static com.google.firebase.firestore.FieldValue.serverTimestamp;
-
 import static java.lang.Integer.parseInt;
 
 import android.graphics.Bitmap;
@@ -10,16 +7,12 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -212,6 +205,26 @@ public class DatabaseBestie {
      */
     public interface findEmailCallback {
         void onEmailFound(String email);
+    }
+
+    public void findProfileByUsername(String username, findProfileCallback callback) {
+        usersRef.whereEqualTo("username", username)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                        callback.onProfileFound(document.toObject(Profile.class));
+                    } else {
+                        callback.onProfileFound(null);
+                    }
+                });
+    }
+
+    /**
+     * Callback function for when profile is successfully found
+     */
+    public interface findProfileCallback {
+        void onProfileFound(Profile profile);
     }
 
     /**

@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tangclan.DatabaseBestie;
+import com.example.tangclan.LoggedInUser;
 import com.example.tangclan.R;
 import com.example.tangclan.RecoverActivity;
 import com.example.tangclan.TempFeedActivity;
@@ -78,16 +79,26 @@ public class LogIn extends AppCompatActivity {
                 }
 
                 // Find Corresponding email to Log In
-                bestie.findEmailByUsername(username, (email) -> {
-                    if (email == null) {
+                bestie.findProfileByUsername(username, (profile) -> {
+                    if (profile == null) {
                         editUsername.setError("Cannot find an account with that username");
                     } else {
-                        mAuth.signInWithEmailAndPassword(email, password)
+                        mAuth.signInWithEmailAndPassword(profile.getEmail(), password)
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            bestie.updatePasswordSameAsFirebaseAuth(email,password);
+                                            if (!password.equals(profile.getPassword())) {
+                                                bestie.updatePasswordSameAsFirebaseAuth(profile.getEmail(), password);
+                                            }
+                                            LoggedInUser loggedInUser = LoggedInUser.getInstance();
+                                            loggedInUser.setEmail(profile.getEmail());
+                                            loggedInUser.setUsername(profile.getUsername());
+                                            loggedInUser.setPassword(profile.getPassword());
+                                            loggedInUser.setDisplayName(profile.getDisplayName());
+                                            loggedInUser.setAge(profile.getAge());
+                                            // TO DO: get profile picture too
+
                                             Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                             startActivity(intent);
                                             finish();

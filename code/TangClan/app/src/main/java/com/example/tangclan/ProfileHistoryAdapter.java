@@ -105,22 +105,20 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         ChipGroup triggers = view.findViewById(R.id.trigger_tags);
 
         usernameEmotion.setText(spannableUsernameEmotion);
-        situation.setText(moodEvent.getSituation() != null ? moodEvent.getSituation() : "No situation");
+        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
 
         // only populate the view if situation exists - otherwise, set invisible
-        //if (moodEvent.getSituation().isPresent()) {
-        if (moodEvent.getSituation() != null) {
-            situation.setText(moodEvent.getSituation());
+        if (moodEvent.getSituation().isPresent()) {
+            situation.setText(moodEvent.getSituation().get());
         } else {
             situation.setVisibility(View.INVISIBLE);
         }
 
         // only populate the view if situation exists - otherwise, set invisible
-        // if (moodEvent.getTriggers().isPresent()) {
-        if (moodEvent.getTriggers() != null) {
-                for (String trigger : moodEvent.getTriggers()) {
+        if (moodEvent.getTriggers().isPresent()) {
+                for (String trigger : moodEvent.getTriggers().get()) {
                     Chip triggerChip = new Chip(getContext());
                     ViewGroup.LayoutParams chipParams = new ViewGroup
                             .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

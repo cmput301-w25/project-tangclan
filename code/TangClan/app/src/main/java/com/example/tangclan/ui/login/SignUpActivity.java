@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tangclan.DatabaseBestie;
 import com.example.tangclan.FeedActivity;
+import com.example.tangclan.LoggedInUser;
 import com.example.tangclan.MainActivity;
 import com.example.tangclan.Profile;
 import com.example.tangclan.R;
@@ -140,6 +141,12 @@ public class SignUpActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                 if (task.isSuccessful()) {
                                                     bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
+
+                                                    LoggedInUser loggedInUser = LoggedInUser.getInstance();
+                                                    loggedInUser.setEmail(email);
+                                                    loggedInUser.setUsername(username);
+                                                    loggedInUser.setPassword(password);
+                                                    loggedInUser.setDisplayName(displayName);
 
                                                     Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
                                                             Toast.LENGTH_SHORT).show();

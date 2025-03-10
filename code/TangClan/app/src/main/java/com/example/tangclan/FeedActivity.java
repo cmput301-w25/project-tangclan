@@ -89,7 +89,7 @@ public class FeedActivity extends AppCompatActivity {
         feed.loadFeed();
         List<MoodEvent> feedEvents = feed.getFeedEvents();
 
-        adapter = new MoodEventAdapter((Context) this, (FollowingBook) feedEvents);
+        adapter = new MoodEventAdapter((Context) this, feedEvents);
         listViewFeed.setAdapter(adapter);
     }
 
@@ -100,7 +100,7 @@ public class FeedActivity extends AppCompatActivity {
         details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
 
-        if (moodEvent.getTriggers().isPresent() && !moodEvent.getTriggers().isEmpty()) {
+        if (moodEvent.getTriggers().isPresent() && moodEvent.getTriggers().isPresent()) {
             details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers().get())).append("\n");
         } else {
             details.append("Triggers: N/A\n");

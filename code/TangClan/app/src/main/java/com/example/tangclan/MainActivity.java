@@ -31,13 +31,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        auth = FirebaseAuth.getInstance();
-        currentUser = auth.getCurrentUser();
-
         Handler handler = Handler.createAsync(Looper.getMainLooper());
         handler.postDelayed(() -> {
-            startActivity(new Intent(MainActivity.this, FeedActivity.class));
-            finish();
+            checkLoginStatus();
         }, 1000);
     }
 
@@ -52,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Let user Login or Signup
             startActivity(new Intent(MainActivity.this, LoginOrSignupActivity.class));
-            // finish();
+            finish();
         }
 
     }

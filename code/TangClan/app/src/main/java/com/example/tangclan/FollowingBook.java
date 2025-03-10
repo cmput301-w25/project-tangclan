@@ -75,17 +75,14 @@ public class FollowingBook {
      * @return
      *      Map with keys = uid and values = Latest Mood Event
      */
-    public ArrayList<MoodEvent> getRecentMoodEvents() {
-        ArrayList<MoodEvent> recentEvents = new ArrayList<MoodEvent>();
-        DatabaseBestie db = new DatabaseBestie();
+    public Map<String, MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
         Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
         for (String followingUid : following) {
             db.getLatestMoodEvent(followingUid, latestEvent -> {
                 uidToMoodEvent.put(followingUid, latestEvent);
-                recentEvents.add(latestEvent);
             });
         }
-        return recentEvents;
+        return uidToMoodEvent;
     }
 
     // Filter mood events

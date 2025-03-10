@@ -25,7 +25,7 @@ public class Filter {
                 .filter(event -> {
                     // if (event.getSituation().isPresent()) {
                     if (event.getSituation() != null) {
-                        String explanation = event.getSituation();
+                        String explanation = event.getSituation().get();
 
                         return keywords.stream().anyMatch(keyword -> explanation.toLowerCase().contains(keyword.toLowerCase()));
                     }
