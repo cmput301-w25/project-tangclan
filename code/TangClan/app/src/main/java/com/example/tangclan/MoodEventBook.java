@@ -116,7 +116,7 @@ public class MoodEventBook {
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents) {
-            String explanation = event.getSituation();
+            String explanation = event.getSituation().get();
             if (explanation != null) {
                 String lowerCaseExplanation = explanation.toLowerCase();
                 for (String keyword : keywords) {

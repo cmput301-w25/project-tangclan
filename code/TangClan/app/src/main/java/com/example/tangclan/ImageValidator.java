@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.example.tangclan.Profile;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +28,7 @@ public class ImageValidator {
     private ImageValidator() {
     }
 
+
     /**
      * Validates whether the image size is below the maximum allowed size (64 KB).
      *
@@ -33,14 +36,13 @@ public class ImageValidator {
      * @param imageUri the URI of the image to validate
      * @return true if the image size is valid, false otherwise
      */
+
     public static boolean isImageSizeValid(Context context, Uri imageUri) {
         try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
             if (inputStream != null) {
                 Bitmap originalBitmap = BitmapFactory.decodeStream(inputStream);
 
-
                 byte[] compressedBytes = compressBitmapToSize(originalBitmap, MAX_IMAGE_SIZE);
-
                 if (compressedBytes == null) {
                     Toast.makeText(context, "Image too large! Please select a smaller image.", Toast.LENGTH_LONG).show();
                     return false;
@@ -54,6 +56,7 @@ public class ImageValidator {
     }
 
 
+
     /**
      * Compresses a bitmap image to fit within the specified maximum size.
      * The image is compressed in iterations, reducing quality until the size is below the max size.
@@ -62,6 +65,7 @@ public class ImageValidator {
      * @param maxSize  the maximum allowed size in bytes
      * @return a byte array containing the compressed image, or null if the image cannot be compressed within the size limit
      */
+
     static byte[] compressBitmapToSize(Bitmap bitmap, int maxSize) {
         int quality = 100; // Start with max quality
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -39,11 +39,27 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
      * @param profile
      *      The current user's profile object
      */
-    public ProfileHistoryAdapter(Context context, Profile profile) {
-        super(context, 0, profile.getMoodEventBook().getAllMoodEvents());
-        this.username = profile.getUsername();
-    }
+
+    public ProfileHistoryAdapter(Context context, FollowingBook followingBook) {
+        super(context, 0, new ArrayList<>());
+
+        moodToUsernameMap = new HashMap<>();
+        List<MoodEvent> moodEvents = new ArrayList<>();
+        DatabaseBestie bestie = new DatabaseBestie();
+
         // Populate mood events and map usernames
+        for (String uid: followingBook.getFollowing()) {
+            bestie.getUser(uid, profile -> {
+                for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
+                    moodEvents.add(moodEvent);
+                    moodToUsernameMap.put(moodEvent, profile.getUsername());
+                }
+            });
+        }
+
+    
+        // Populate mood events and map usernames
+
 
 
     /**
@@ -76,7 +92,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
+
         spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
@@ -91,14 +109,10 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
         usernameEmotion.setText(spannableUsernameEmotion);
 
-        if (moodEvent.getSituation().isPresent()) {
-            situation.setText(moodEvent.getSituation().get());
-        } else {
-            situation.setVisibility(View.INVISIBLE);
-        }
+        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
+        date.setText(moodEvent.getPostDate().toString());
+        time.setText(moodEvent.getPostTime().toString());
 
-        date.setText(moodEvent.returnPostFormattedDate());
-        time.setText(moodEvent.returnPostFormattedTime());
 
         // only populate the view if situation exists - otherwise, set invisible
         if (moodEvent.getSituation().isPresent()) {
@@ -109,27 +123,26 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
         // only populate the view if situation exists - otherwise, set invisible
         if (moodEvent.getTriggers().isPresent()) {
-            for (String trigger : moodEvent.getTriggers().get()) {
-                Chip triggerChip = new Chip(getContext());
-                ViewGroup.LayoutParams chipParams = new ViewGroup
-                        .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                triggerChip.setLayoutParams(chipParams);
-                triggerChip.setText(trigger);
-                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
-                triggerChip.setTextColor(Color.BLACK);
-                triggerChip.setChipBackgroundColorResource(
-                        com.google.android.material.R.color.material_dynamic_neutral_variant70);
+                for (String trigger : moodEvent.getTriggers().get()) {
+                    Chip triggerChip = new Chip(getContext());
+                    ViewGroup.LayoutParams chipParams = new ViewGroup
+                            .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    triggerChip.setLayoutParams(chipParams);
+                    triggerChip.setText(trigger);
+                    triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
+                    triggerChip.setTextColor(Color.BLACK);
+                    triggerChip.setChipBackgroundColorResource(
+                            com.google.android.material.R.color.material_dynamic_neutral_variant70);
 
-                Typeface chipFont = getContext().getResources().getFont(R.font.inter);
-                triggerChip.setTypeface(chipFont);
-                triggerChip.setChipStrokeWidth(0);
+                    Typeface chipFont = getContext().getResources().getFont(R.font.inter);
+                    triggerChip.setTypeface(chipFont);
+                    triggerChip.setChipStrokeWidth(0);
 
-                triggers.addView(triggerChip);
+                    triggers.addView(triggerChip);
+                }
+            } else {
+                triggers.setVisibility(View.INVISIBLE);
             }
-        } else {
-            triggers.setVisibility(View.INVISIBLE);
-        }
-
         return view;
+        }
     }
-}

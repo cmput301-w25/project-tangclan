@@ -81,7 +81,9 @@ public class Mood {
     /**
      * @return The corresponding drawable for the emotional state`
      */
-    public Drawable getEmoticon(Context context) {
+
+    public Drawable getEmoticon (Context context) {
+
         Resources res = context.getResources();
 
         // initialize a map from each emotional state to the corresponding emoticon resource (drawable). 
