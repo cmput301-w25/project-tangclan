@@ -72,5 +72,9 @@
     <string name="placeholder_date">Wednesday, July 21</string>
     <string name="placeholder_username_emotion">Julian is feeling happy</string>
     <string name="placeholder_situation">crumbl cookies</string>
+    <string name="you_re_all_">You\'re all set!</string>
+    <string name="following">Following</string>
+
+
     <string name="for_you">For you</string>
 </resources>

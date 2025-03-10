@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+
 /**
  * MoodEventBook manages a collection of MoodEvent objects.
  * It supports adding, removing, sorting, and filtering mood events.
@@ -112,7 +113,7 @@ public class MoodEventBook {
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents) {
-            String explanation = event.getSituation();
+            String explanation = String.valueOf(event.getSituation());
             if (explanation != null) {
                 String lowerCaseExplanation = explanation.toLowerCase();
                 for (String keyword : keywords) {
