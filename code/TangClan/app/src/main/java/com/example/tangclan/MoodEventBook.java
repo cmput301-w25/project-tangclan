@@ -149,14 +149,13 @@ public class MoodEventBook {
         }
     }
 
+    /**
+     * Grabs all of the Mood Event objects as a List stored within the MoodEventBook
+     * @return
+     *      A list of all MoodEvents
+     */
     public List<MoodEvent> getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
     }
-
-    public List<MoodEvent> getMoodEventList() {
-        return moodEvents;
-    }
-
-
 
 }

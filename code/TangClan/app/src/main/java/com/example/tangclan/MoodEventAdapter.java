@@ -40,7 +40,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         // Populate mood events and map usernames
         for (Profile profile : followingBook.getFollowing()) {
-            for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
+            for (MoodEvent moodEvent : profile.getMoodEventBook().getAllMoodEvents()) {
                 moodEvents.add(moodEvent);
                 moodToUsernameMap.put(moodEvent, profile.getUsername());
             }
