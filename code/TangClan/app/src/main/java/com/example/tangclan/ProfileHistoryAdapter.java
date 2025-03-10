@@ -1,12 +1,14 @@
 package com.example.tangclan;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +18,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
-    //profile history adapterrrnn
-    private Map<MoodEvent, String> moodToUsernameMap; // Maps MoodEvent to corresponding username
+
+    // for security purposes we will only grab the username for the ArrayAdapter instead of the
+    // whole profile.
+    String username;
+    private Map<MoodEvent, String> moodToUsernameMap;
 
     /**
      * Constructor for the ProfileHistoryAdapter
@@ -44,6 +52,16 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             }
         }
 
+    /**
+     *  Creates and recycles the view for the ListView item
+     * @param position
+     *      position of the item
+     * @param convertView
+     *      view to be used as a recycling/regenerating view
+     * @param parent
+     *      parent ViewGroup
+     * @return
+     */
         addAll(moodEvents);
     }
 
@@ -57,7 +75,6 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         } else {
             view = convertView;
         }
-
         MoodEvent moodEvent = getItem(position);
         if (moodEvent == null) return view;
 
@@ -80,10 +97,44 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);
 
+
+        // logic for dynamically populating the ChipGroup
+        ChipGroup triggers = view.findViewById(R.id.trigger_tags);
+
         usernameEmotion.setText(spannableUsernameEmotion);
         situation.setText(moodEvent.getSituation() != null ? moodEvent.getSituation() : "No situation");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
+
+        // only populate the view if situation exists - otherwise, set invisible
+        if (moodEvent.getSituation().isPresent()) {
+            situation.setText(moodEvent.getSituation().get());
+        } else {
+            situation.setVisibility(View.INVISIBLE);
+        }
+
+        // only populate the view if situation exists - otherwise, set invisible
+        if (moodEvent.getTriggers().isPresent()) {
+            for (String trigger : moodEvent.getTriggers().get()) {
+                Chip triggerChip = new Chip(getContext());
+                ViewGroup.LayoutParams chipParams = new ViewGroup
+                        .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                triggerChip.setLayoutParams(chipParams);
+                triggerChip.setText(trigger);
+                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
+                triggerChip.setTextColor(Color.BLACK);
+                triggerChip.setChipBackgroundColorResource(
+                        com.google.android.material.R.color.material_dynamic_neutral_variant70);
+
+                Typeface chipFont = getContext().getResources().getFont(R.font.inter);
+                triggerChip.setTypeface(chipFont);
+                triggerChip.setChipStrokeWidth(0);
+
+                triggers.addView(triggerChip);
+            }
+        } else {
+            triggers.setVisibility(View.INVISIBLE);
+        }
 
         return view;
     }

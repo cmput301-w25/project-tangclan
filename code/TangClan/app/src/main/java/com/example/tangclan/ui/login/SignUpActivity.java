@@ -16,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.tangclan.DatabaseBestie;
 import com.example.tangclan.Profile;
 import com.example.tangclan.R;
-import com.example.tangclan.TempFeedActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -24,8 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
-    DatabaseBestie bestie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +30,8 @@ public class SignUpActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.page_signup);
 
-        mAuth = FirebaseAuth.getInstance();
-        bestie = DatabaseBestie.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseBestie bestie = DatabaseBestie.getInstance();
 
         TextView goToLogin = findViewById(R.id.already_hav);
 
@@ -56,7 +53,8 @@ public class SignUpActivity extends AppCompatActivity {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email, password, username;
+                String displayName, email, password, username;
+                displayName = editName.getText().toString();
                 email = editEmail.getText().toString();
                 username = editUsername.getText().toString();
                 password = editPassword.getText().toString();
@@ -64,6 +62,11 @@ public class SignUpActivity extends AppCompatActivity {
                     editEmail.setError("Enter email");
                     return;
                 }
+                if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                    editEmail.setError("Wrong format");
+                    return;
+                }
+
                 if (TextUtils.isEmpty(username)) {
                     editUsername.setError("Enter username");
                     return;
@@ -72,33 +75,49 @@ public class SignUpActivity extends AppCompatActivity {
                     editPassword.setError("Enter password");
                     return;
                 }
+                if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+                    editPassword.setError("Password must be at least 8 characters long and must contain one of each:\n" +
+                            " - Capital letter\n" +
+                            " - Lowercase letter\n" +
+                            " - One of the special characters: !,#,$,%,^,&,*,|\n");
+                    return;
+                }
+
                 boolean passwordsMatch = password.equals(editConfirmedPassword.getText().toString());
                 if (!passwordsMatch) {
                     editConfirmedPassword.setError("Entered password does not match");
                     return;
                 }
-                bestie.findEmailByUsername(username, e -> {
-                    if (e != null) {
+
+                bestie.findEmailByUsername(username, em -> {
+                    if (em != null) {
                         editUsername.setError("Username already exists");
                     } else {
-                        mAuth.createUserWithEmailAndPassword(email, password)
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        if (task.isSuccessful()) {
-                                            bestie.addUser(new Profile(username, password, email,-1));
-                                            Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
-                                                    Toast.LENGTH_SHORT).show();
-                                            Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        } else {
-                                            // Could not create account
-                                            Toast.makeText(SignUpActivity.this, "Authentication failed.",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                        bestie.checkEmailExists(email, ema -> {
+                            if (ema != null) {
+                                editEmail.setError("An account with this email already exists");
+                            } else {
+                                mAuth.createUserWithEmailAndPassword(email, password)
+                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (task.isSuccessful()) {
+                                                    bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
+
+                                                    Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
+                                                            Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    // Could not create account
+                                                    Toast.makeText(SignUpActivity.this, "Authentication failed.",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        });
                     }
                 });
             }

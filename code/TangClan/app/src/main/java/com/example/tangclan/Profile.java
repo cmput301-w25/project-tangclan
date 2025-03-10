@@ -1,23 +1,47 @@
 package com.example.tangclan;
 
+import static java.lang.Integer.parseInt;
+
 import java.io.Serializable;
+import java.sql.Blob;
 
 // This has info pertaining to a user that they may edit through 'Edit Profile'
 public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodEventBook and FollowingBook
+    private String displayName;
     private String username;
     private String password;
     private String email;
-    private int age;//Note: Mentioned in meeting everything is stored as strings may need to change?????
-    public Profile(String username, String password, String email,int age){
+    private String age;
+
+    private Blob profilePic;
+
+    public Profile(String displayName, String username, String password, String email, Blob photo){
+        super();
+        this.username=username;
+        this.password=password;
+        this.email=email;
+        this.profilePic = photo;
+    }
+
+    public Profile(String displayName, String username, String password, String email, String age, Blob photo){
         super();
         this.username=username;
         this.password=password;
         this.email=email;
         this.age=age;
+        this.profilePic = photo;
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void setUsername(String username) {
@@ -25,11 +49,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         if ((username.length()>15) || (username.length()<=0)){
             throw new IllegalArgumentException();
         }
-
-        //TODO:
-        //Idea for "Storing Unique username"
-        //Looping through the database check if any matching.
-
         this.username = username;
     }
 
@@ -45,29 +64,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      * @return true/false
      */
     public static boolean validPassword(String password){
-        final String SPECIAL_CHARACTERS = "!,#,$,%,^,&,*,|";
-        boolean upCase = false;
-        boolean loCase = false;
-        boolean isDigit = false;
-        boolean spChar = false;
-        boolean isLength=false;
-        if (password.matches(".+[A-Z].+")){
-            upCase = true;
-        }
-        if (password.matches(".+[a-z].+")){
-            loCase = true;
-        }
-        if (password.matches(".+[1-9].+")){
-            isDigit = true;
-        }
-        if (SPECIAL_CHARACTERS.contains(password)){
-            spChar = true;
-        }
-        if((password.length()<=20&&password.length()>0)){
-            isLength=true;
-        }
-
-        return (upCase && loCase && isDigit && spChar && isLength);
+        return (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"));
     }
 
     public void setPassword(String password) {
@@ -87,18 +84,18 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.email = email;
     }
 
-    public int getAge() {
-
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
-        if(age<18){
+    public void setAge(String age) {
+        if(parseInt(age) <18){
             throw new IllegalArgumentException();
         }
         this.age = age;//may need to do conversion to string before setting
     }
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
+
 
     //TODO:
     //On CRC cards "Manages Permissions for followers" Referring to this user story?: "As a participant, I want to grant another participant permission to follow my most recent moodevent

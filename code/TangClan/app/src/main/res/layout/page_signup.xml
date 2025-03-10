@@ -36,7 +36,8 @@
             android:layout_height="36dp"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="@string/full_name"
+            android:hint="Name"
+            android:background="@android:color/transparent"
             android:textAppearance="@style/full_name" />
 
     </RelativeLayout>
@@ -58,8 +59,10 @@
             android:layout_height="34dp"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="@string/email_addre"
-            android:textAppearance="@style/email_addre" />
+            android:hint="@string/email_addre"
+            android:background="@android:color/transparent"
+            android:textAppearance="@style/email_addre"
+            android:inputType="textEmailAddress"/>/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -79,7 +82,8 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
-            android:text="@string/username"
+            android:hint="@string/username"
+            android:background="@android:color/transparent"
             android:textAppearance="@style/username" />
     </RelativeLayout>
 
@@ -99,8 +103,10 @@
             android:layout_width="346dp"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
             android:gravity="center_horizontal|top"
-            android:text="@string/password"
+            android:hint="@string/password"
+            android:inputType="textPassword"
             android:textAppearance="@style/password" />
     </RelativeLayout>
 
@@ -117,11 +123,14 @@
 
         <EditText
             android:id="@+id/confirm_pas"
+            style="@style/Widget.AppCompat.AutoCompleteTextView"
             android:layout_width="335dp"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
-            android:text="@string/confirm_pas"
+            android:hint="@string/confirm_pas"
+            android:inputType="textPassword"
+            android:background="@android:color/transparent"
             android:textAppearance="@style/confirm_pas" />
 
     </RelativeLayout>
@@ -134,6 +143,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/button_logi"
+        android:clickable="true"
         android:clipToOutline="true"
         android:gravity="center"
         android:text="@string/sign_up"
@@ -173,8 +183,10 @@
         android:id="@+id/untitled_31"
         android:layout_width="302dp"
         android:layout_height="295dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/own_picture_signup"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_signup" />
 

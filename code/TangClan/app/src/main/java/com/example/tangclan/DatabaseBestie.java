@@ -4,6 +4,7 @@ package com.example.tangclan;
 import android.util.Log;
 
 import com.google.firebase.firestore.*;
+import com.google.firestore.v1.WriteResult;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -154,8 +155,6 @@ public class DatabaseBestie {
      * This returns data of the user with the corresponding uid
      * @param uid
      *      This is the uid of the user whose data we want to obtain
-     * @return
-     *      a User object with the corresponding data of an existing user
      */
     public void getUser(String uid, UserCallback callback) {
         DocumentReference userRef = usersRef.document(uid);
@@ -196,6 +195,55 @@ public class DatabaseBestie {
          */
         void onEmailFound(String email);
     }
+
+    /**
+     * finds email
+     * @param email
+     * @param callback
+     */
+    public void checkEmailExists(String email, findEmailCallback callback) {
+        usersRef.whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        callback.onEmailFound(email);
+                    } else {
+                        callback.onEmailFound(null);
+                    }
+                });
+    }
+
+    public void updatePasswordSameAsFirebaseAuth(String email, String password) {
+        usersRef.whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                        String uid = document.getString("uid");
+                        if (uid != null) {
+                            DocumentReference user = usersRef.document(uid);
+
+                            user.update("password", password)
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Password updated successfully"))
+                                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
+                        }
+                    }
+                });
+    }
+
+
+    /**
+     * This updates the details of an existing user
+     * @param user
+     *      This is the user with updated info
+     */
+    public void updateUser(String uid, Profile user) {
+        usersRef.document(String.valueOf(uid))
+                .set(user)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "User details successfully updated!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating User details", e));
+    }
+
 
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
     // checked
@@ -433,4 +481,5 @@ public class DatabaseBestie {
          */
         void onFollowingRetrieved(ArrayList<String> following);
     }
+
 }

@@ -34,7 +34,8 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center_horizontal|top"
-            android:text="@string/username"
+            android:hint="@string/username"
+            android:background="@android:color/transparent"
             android:textAppearance="@style/username" />
     </RelativeLayout>
 
@@ -54,8 +55,10 @@
             android:layout_width="220dp"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
+            android:background="@android:color/transparent"
             android:gravity="center_horizontal|top"
-            android:text="@string/password"
+            android:hint="@string/password"
+            android:password="true"
             android:textAppearance="@style/password" />
     </RelativeLayout>
 
@@ -69,36 +72,23 @@
         android:gravity="center_horizontal|top"
         android:text="@string/forgot_pass"
         android:textAppearance="@style/forgot_pass"
-        app:layout_constraintBottom_toTopOf="@+id/login"
-        app:layout_constraintEnd_toEndOf="@+id/login" />
-
-    <TextView
-        android:id="@+id/forgot_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="280dp"
-        android:layout_marginTop="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center_horizontal|top"
-        android:text="@string/forgot_username"
-        android:textAppearance="@style/forgot_pass"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/form_userna" />
+        app:layout_constraintEnd_toEndOf="@+id/form_passwo"
+        app:layout_constraintTop_toBottomOf="@+id/form_passwo" />
 
     <Button
         android:id="@+id/login"
         android:layout_width="364dp"
         android:layout_height="61dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/button_logi"
+        android:clickable="true"
         android:clipToOutline="true"
         android:gravity="center"
         android:text="Log in"
         android:textAppearance="@style/sign_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/form_passwo" />
+        app:layout_constraintTop_toBottomOf="@+id/forgot_pass" />
 
     <TextView
         android:id="@+id/don_t_have_"

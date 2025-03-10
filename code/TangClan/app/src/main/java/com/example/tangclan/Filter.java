@@ -23,11 +23,18 @@ public class Filter {
     public static List<MoodEvent> filterByKeywords(List<MoodEvent> events, List<String> keywords) {
         return events.stream()
                 .filter(event -> {
-                    String explanation = event.getSituation();
-                    if (explanation != null) {
+                    if (event.getSituation().isPresent()) {
+                        String explanation = event.getSituation().get();
+
                         return keywords.stream().anyMatch(keyword -> explanation.toLowerCase().contains(keyword.toLowerCase()));
                     }
+
                     return false;
+                    //String explanation = event.getSituation();
+                    //if (explanation != null) {
+                    //    return keywords.stream().anyMatch(keyword -> explanation.toLowerCase().contains(keyword.toLowerCase()));
+                    //}
+                    //return false;
                 })
                 .collect(Collectors.toList());
     }
@@ -42,3 +49,4 @@ public class Filter {
 }
 
 //https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
+

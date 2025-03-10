@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp">
@@ -51,6 +50,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_drawable_name_emotional_state" />
 
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/trigger_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/situation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:chipSpacingVertical="-4dp"
+        android:orientation="horizontal">
+
+    </com.google.android.material.chip.ChipGroup>
+
     <LinearLayout
         android:id="@+id/container_date_time"
         android:layout_width="match_parent"
@@ -58,7 +69,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/situation">
+        app:layout_constraintTop_toBottomOf="@id/trigger_tags">
 
         <TextView
             android:id="@+id/date_text"
