@@ -18,8 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class VerifyEmail extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
-    FirebaseUser user;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
     @Override
     public void onStart() {

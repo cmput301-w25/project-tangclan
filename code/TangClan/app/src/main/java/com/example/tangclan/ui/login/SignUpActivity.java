@@ -24,8 +24,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    FirebaseAuth mAuth;
-    DatabaseBestie bestie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +31,8 @@ public class SignUpActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.page_signup);
 
-        mAuth = FirebaseAuth.getInstance();
-        bestie = DatabaseBestie.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        DatabaseBestie bestie = DatabaseBestie.getInstance();
 
         TextView goToLogin = findViewById(R.id.already_hav);
 
