@@ -40,12 +40,13 @@
         tools:layout_editor_absoluteX="23dp"
         tools:layout_editor_absoluteY="346dp" >
 
-        <TextView
+        <EditText
             android:id="@+id/verificatio"
             android:layout_width="122dp"
             android:layout_height="19dp"
+            android:inputType="number"
             android:layout_centerInParent="true"
-            android:text="@string/verificatio"
+            android:hint="@string/verificatio"
             android:textAppearance="@style/verificatio"
             android:gravity="center_horizontal|top"
             />
