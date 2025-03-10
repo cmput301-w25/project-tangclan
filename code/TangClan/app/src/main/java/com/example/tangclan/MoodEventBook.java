@@ -8,12 +8,16 @@ import java.util.Date;
 
 public class MoodEventBook {
 
-    private List<MoodEvent> moodEvents; //list stores all mood event objects
+    private ArrayList<MoodEvent> moodEvents; //list stores all mood event objects
 
 
     //constructor
     public MoodEventBook(){
         this.moodEvents = new ArrayList<>(); //initalizes empty array list of mood events
+    }
+
+    public void setMoodEvents(ArrayList<MoodEvent> moodEvents) {
+        this.moodEvents = moodEvents;
     }
 
     public void addMoodEvent(MoodEvent event){ //adds new MoodEvent to the list
@@ -25,7 +29,7 @@ public class MoodEventBook {
     }
 
     public MoodEvent getMoodEvent(int index){ //obtains moodevent by its index in the list
-        if (index>=0 && index < moodEvents.size()){
+        if (index>=0 && index < moodEvents.size()) {
             return moodEvents.get(index);
         }
         return null;

@@ -36,9 +36,6 @@ public class TempFeedActivity extends AppCompatActivity {
 
         Button logout = findViewById(R.id.logout);
         user = auth.getCurrentUser();
-
-
-
         if (user == null) {
             Intent intent = new Intent(TempFeedActivity.this, LoginOrSignupActivity.class);
             startActivity(intent);
