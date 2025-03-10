@@ -45,25 +45,25 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      * @return true/false
      */
     public static boolean validPassword(String password){
-        final String SPECIAL_CHARACTERS = "!,#,$,%,^,&,*,|";
+        // final String SPECIAL_CHARACTERS = "!,#,$,%,^,&,*,|";
         boolean upCase = false;
         boolean loCase = false;
         boolean isDigit = false;
         boolean spChar = false;
-        boolean isLength=false;
-        if (password.matches(".+[A-Z].+")){
+        boolean isLength = false;
+        if (password.matches(".*[A-Z].*")){
             upCase = true;
         }
-        if (password.matches(".+[a-z].+")){
+        if (password.matches(".*[a-z].*")){
             loCase = true;
         }
-        if (password.matches(".+[1-9].+")){
+        if (password.matches(".*[1-9].*")){
             isDigit = true;
         }
-        if (SPECIAL_CHARACTERS.contains(password)){
+        if (password.matches(".*[!#$%^&*|_~].*"){
             spChar = true;
         }
-        if((password.length()<=20&&password.length()>0)){
+        if((password.length() >= 8)){
             isLength=true;
         }
 
