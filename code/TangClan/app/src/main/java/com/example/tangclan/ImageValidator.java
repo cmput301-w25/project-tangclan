@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.example.tangclan.Profile;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,15 +19,12 @@ public class ImageValidator {
     private ImageValidator() {
     }
 
-
     public static boolean isImageSizeValid(Context context, Uri imageUri) {
         try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
             if (inputStream != null) {
                 Bitmap originalBitmap = BitmapFactory.decodeStream(inputStream);
 
-
                 byte[] compressedBytes = compressBitmapToSize(originalBitmap, MAX_IMAGE_SIZE);
-
                 if (compressedBytes == null) {
                     Toast.makeText(context, "Image too large! Please select a smaller image.", Toast.LENGTH_LONG).show();
                     return false;
@@ -37,7 +36,6 @@ public class ImageValidator {
         }
         return false;
     }
-
 
     static byte[] compressBitmapToSize(Bitmap bitmap, int maxSize) {
         int quality = 100; // Start with max quality

@@ -29,7 +29,7 @@
             android:layout_marginLeft="136dp"
             android:layout_marginTop="131dp"
             android:gravity="center_horizontal|top"
-            android:text="@string/name"
+            android:text="@string/display_name"
             android:textAppearance="@style/nameDisplay" />
 
         <TextView
@@ -55,7 +55,7 @@
             android:layout_marginLeft="0dp"
             android:layout_marginTop="285dp"
             android:gravity="center_horizontal|top"
-            android:text="@string/name"
+            android:text="@string/display_name"
             android:textAppearance="@style/nameDisplay" />
 
         <TextView
@@ -67,7 +67,7 @@
             android:layout_marginLeft="-1dp"
             android:layout_marginTop="49dp"
             android:gravity="center_horizontal|top"
-            android:text="@string/email"
+            android:text="@string/email_addre"
             android:textAppearance="@style/email" />
 
         <TextView
@@ -112,7 +112,7 @@
                 android:id="@+id/edit_name_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/edit_full_n"
+                android:hint="@string/display_name"
                 android:inputType="text"
                 android:textAppearance="@style/edit_style_text" />
         </RelativeLayout>
@@ -134,7 +134,7 @@
                 android:id="@+id/edit_email_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/edit_email_"
+                android:hint="@string/email_addre"
                 android:inputType="text"
                 android:textAppearance="@style/edit_style_text" />
         </RelativeLayout>
@@ -156,7 +156,7 @@
                 android:id="@+id/new_username_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/new_usernam"
+                android:hint="@string/username"
                 android:inputType="text"
                 android:textAppearance="@style/edit_style_text" />
         </RelativeLayout>

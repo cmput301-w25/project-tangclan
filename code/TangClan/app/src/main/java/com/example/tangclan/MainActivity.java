@@ -11,12 +11,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
+
+    FirebaseAuth auth;
+    FirebaseUser currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.initial_page);
+        setContentView(R.layout.initial_page);  // Show splash screen
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -26,8 +33,23 @@ public class MainActivity extends AppCompatActivity {
 
         Handler handler = Handler.createAsync(Looper.getMainLooper());
         handler.postDelayed(() -> {
-            Intent login_signup = new Intent(MainActivity.this, LoginOrSignupActivity.class);
-            startActivity(login_signup);
+            checkLoginStatus();
         }, 1000);
+    }
+
+    public void checkLoginStatus() {
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+
+        if (currentUser != null){
+            // Show user feed
+            startActivity(new Intent(MainActivity.this, FeedActivity.class));
+            finish();
+        } else {
+            // Let user Login or Signup
+            startActivity(new Intent(MainActivity.this, LoginOrSignupActivity.class));
+            finish();
+        }
+
     }
 }

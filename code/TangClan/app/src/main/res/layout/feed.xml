@@ -13,7 +13,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal|top"
         android:text="@string/moodly"
-        android:textAppearance="@style/moodly1"
+        android:textAppearance="@style/moodly"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

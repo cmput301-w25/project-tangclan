@@ -72,8 +72,6 @@ public class FollowingBook {
     /**
      * queries the database for latest MoodEvents and places them in a Map where the key is the uid
      * of a user
-     * @param db
-     *      database wrapper with capability to grab latest MoodEvent
      * @return
      *      Map with keys = uid and values = Latest Mood Event
      */
@@ -84,7 +82,6 @@ public class FollowingBook {
                 uidToMoodEvent.put(followingUid, latestEvent);
             });
         }
-
         return uidToMoodEvent;
     }
 
