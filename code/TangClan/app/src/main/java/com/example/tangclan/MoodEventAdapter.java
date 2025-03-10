@@ -66,7 +66,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Retrieve username for this mood event
         String username = moodToUsernameMap.getOrDefault(moodEvent, "Unknown");
 
-        // Format the username and mood emotion
+        // Format the username and mood emotionnn
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
 
         SpannableString spannableUsername = new SpannableString(username);
