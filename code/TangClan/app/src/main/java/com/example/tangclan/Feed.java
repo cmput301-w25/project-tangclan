@@ -20,7 +20,7 @@ public class Feed {
 
     public void loadFeed() {
         feedEvents.clear();
-        feedEvents.addAll(followingBook.getRecentMoodEvents());
+        feedEvents.addAll(followingBook.getRecentMoodEvents(new DatabaseBestie()).values());
         feedEvents.addAll(moodEventBook.getAllMoodEvents());
         sortFeedByDateTime();
     }
@@ -44,14 +44,14 @@ public class Feed {
 
     public List<MoodEvent> filterByTriggers(List<String> triggers) {
         return feedEvents.stream()
-                .filter(event -> event.getTriggers() != null && event.getTriggers().stream().anyMatch(triggers::contains))
+                .filter(event -> event.getTriggers().isPresent() && event.getTriggers().stream().anyMatch(triggers::contains))
                 .collect(Collectors.toList());
     }
 
     public List<MoodEvent> filterBySituationKeywords(List<String> keywords) {
         return feedEvents.stream()
-                .filter(event -> event.getSituation() != null && keywords.stream()
-                        .anyMatch(keyword -> event.getSituation().toLowerCase().contains(keyword.toLowerCase())))
+                .filter(event -> event.getSituation().isPresent() && keywords.stream()
+                        .anyMatch(keyword -> event.getSituation().get().toLowerCase().contains(keyword.toLowerCase())))
                 .collect(Collectors.toList());
     }
 

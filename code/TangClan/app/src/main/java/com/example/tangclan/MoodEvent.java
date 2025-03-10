@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import java.util.Map;
+import java.util.Optional;
 
 //eventnn
 
@@ -167,12 +168,12 @@ public class MoodEvent {
     }
 
 
-    public ArrayList<String> getTriggers() {
-        return this.triggers;
+    public Optional<ArrayList<String>> getTriggers() {
+        return Optional.of(this.triggers);
     }
 
-    public String getSituation() {
-        return this.situation;
+    public Optional<String> getSituation() {
+        return Optional.of(this.situation);
     }
 
     /**
