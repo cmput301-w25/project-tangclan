@@ -6,7 +6,7 @@ import java.util.Date;
 public class User {
     private String uid; // apparently Firebase makes a unique id for the user DOCUMENT, we can use that
     private Date dateAccCreated;
-    private Date lastPosted;
+    private String lastPosted;
     private FollowingBook followingBook;
     private MoodEventBook moodEventBook;
 
@@ -33,11 +33,11 @@ public class User {
         this.dateAccCreated = dateAccCreated;
     }
 
-    public Date getLastPosted() {
+    public String getLastPosted() {
         return lastPosted;
     }
 
-    public void setLastPosted(Date lastPosted) {
+    public void setLastPosted(String lastPosted) {
         this.lastPosted = lastPosted;
     }
 
@@ -63,11 +63,30 @@ public class User {
      * initializes the user's FollowingBook by querying the database for all user followers,
      * following, and any outstanding follow requests
      * @param db
+     *      Moodly's database wrapper with functionality to grab follower and following
+     *      for a user
      */
     public void initializeFollowingBookFromDatabase(DatabaseBestie db) {
         db.getFollowers(this.uid, followers -> User.this.followingBook.setFollowers(followers));
-        //TODO: mechanism to initialize followers
-        //TODO: grab any outstanding follow requests(?)
-        //TODO: this method doesn't need to be completed until Project part 4 tbh
+        db.getFollowing(this.uid, following -> User.this.followingBook.setFollowing(following));
+        //TODO: get any outstanding follow requests
+        // not relevant until next project part
+    }
+
+    /**
+     * Updates the MoodEventBook and database in parallel, and sets dateLastPosted
+     * @param event
+     *      the MoodEvent to be added
+     * @param db
+     *      Moodly's database wrapper with functionality to add a MoodEvent to the database
+     */
+    public void post(MoodEvent event, DatabaseBestie db) {
+        String postDate = event.userFormattedDate();
+        // update MoodEventBook and database in parallel
+        db.addMoodEvent(event, postDate.substring(5), this.uid); // substr from 5 excludes the year
+        this.moodEventBook.addMoodEvent(event);
+
+        //update date last posted
+        this.setLastPosted(postDate);
     }
 }
