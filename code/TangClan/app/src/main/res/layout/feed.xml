@@ -83,7 +83,6 @@
         app:layout_constraintStart_toStartOf="@id/rectangle_2"
         app:layout_constraintTop_toTopOf="@id/rectangle_2" />
 
-
     <ListView
         android:id="@+id/listViewFeed"
         android:layout_width="match_parent"
@@ -95,6 +94,15 @@
         app:layout_constraintTop_toBottomOf="@id/rectangle_1"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="16dp" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_1"
+        app:layout_constraintBottom_toTopOf="@id/navbarContainer"/>
+
+
 
     <include
         android:id="@+id/navbarContainer"

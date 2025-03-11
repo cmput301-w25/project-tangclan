@@ -11,8 +11,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+
 
 import com.example.tangclan.ui.login.LogIn;
 import com.example.tangclan.ui.login.SignUpActivity;
@@ -64,7 +67,7 @@ public class FeedActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         if(currentUser == null) {
-            Log.e("FeedActivity", "Current user is not null YAYYYY");
+
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }
@@ -98,11 +101,8 @@ public class FeedActivity extends AppCompatActivity {
 
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
         addEmotionButton.setOnClickListener(v -> {
-            AddEmotionFragment addEmotionFragment = new AddEmotionFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, addEmotionFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            Intent intent = new Intent(FeedActivity.this, AddEmotionActivity.class);
+            startActivity(intent);
         });
 
         listViewFeed.setOnItemLongClickListener((parent, view, position, id) -> {
