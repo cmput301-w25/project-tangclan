@@ -171,8 +171,8 @@ public class MoodEventBook {
         return new ArrayList<>(moodEvents);
     }
 
-    public MoodEvent[] getMoodEventList() {
-        return moodEvents.toArray(new MoodEvent[0]);
+    public List<MoodEvent> getMoodEventList() {
+        return new ArrayList<>();
     }
 }
 
