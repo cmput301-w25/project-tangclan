@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -65,6 +67,7 @@ public class FeedActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         if(currentUser == null) {
+
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }
@@ -74,6 +77,18 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
+
+        Button logout = findViewById(R.id.logout_butt);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(FeedActivity.this, LoginOrSignupActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
 
         listViewFeed = findViewById(R.id.listViewFeed);
 
