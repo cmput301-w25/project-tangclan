@@ -119,4 +119,13 @@ public class Feed {
     public List<MoodEvent> getFeedEvents() {
         return feedEvents;
     }
+
+    /**
+     * Getter for FollowingBook
+     * @return
+     *      The FollowingBook object
+     */
+    public FollowingBook getFollowingBook() {
+        return followingBook;
+    }
 }

@@ -150,4 +150,3 @@ public class FollowingBook {
     //    // Implement logic to return the profile owning this FollowingBook
     //    return null;
     //}
-}
