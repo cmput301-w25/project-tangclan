@@ -145,7 +145,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+    /*@Override
     public void onStart() {
         super.onStart();
         auth = FirebaseAuth.getInstance();
@@ -154,17 +154,17 @@ public class SignUpActivity extends AppCompatActivity {
             startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
             finish();
         }
-    }
+    }*/
 
     /**
      *  Starts the Profile Setup sequence for a new user
      */
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         // After user is asked to verify their account
         Intent intent = new Intent(SignUpActivity.this, FeedActivity.class); // Change to account Setup
         startActivity(intent);
         finish();
-    }
+    }*/
 }
