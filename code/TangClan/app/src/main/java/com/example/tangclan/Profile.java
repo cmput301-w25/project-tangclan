@@ -1,7 +1,6 @@
 package com.example.tangclan;
 
 import static java.lang.Integer.parseInt;
-
 import java.io.Serializable;
 import java.sql.Blob;
 
@@ -147,7 +146,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     }
 
     public void setAge(String age) {
-        if(parseInt(age) <18){
+        if(Integer.parseInt(age) <18){
             throw new IllegalArgumentException();
         }
         this.age = age;//may need to do conversion to string before setting
