@@ -44,9 +44,11 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      */
     public Profile(String displayName, String username, String password, String email, Blob photo){
         super();
+        this.displayName = displayName;
         this.username=username;
         this.password=password;
         this.email=email;
+        this.age= null;
         this.profilePic = photo;
     }
 
@@ -67,6 +69,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      */
     public Profile(String displayName, String username, String password, String email, String age, Blob photo){
         super();
+        this.displayName = displayName;
         this.username=username;
         this.password=password;
         this.email=email;
@@ -146,10 +149,13 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     }
 
     public void setAge(String age) {
-        if(Integer.parseInt(age) <18){
+        if (age == null) {
+            return;
+        }
+        else if ((Integer.parseInt(age) < 18)) {
             throw new IllegalArgumentException();
         }
-        this.age = age;//may need to do conversion to string before setting
+        this.age = age;
     }
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
 
