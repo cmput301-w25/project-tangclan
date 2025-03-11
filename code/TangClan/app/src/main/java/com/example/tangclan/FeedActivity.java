@@ -4,13 +4,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
+
+
 
 import com.example.tangclan.ui.login.LogIn;
 import com.example.tangclan.ui.login.SignUpActivity;
@@ -61,7 +66,7 @@ public class FeedActivity extends AppCompatActivity {
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        if(currentUser != null) {
+        if(currentUser == null) {
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }
@@ -71,6 +76,18 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
+
+        Button logout = findViewById(R.id.logout_butt);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(FeedActivity.this, LoginOrSignupActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
 
         listViewFeed = findViewById(R.id.listViewFeed);
 
@@ -83,11 +100,8 @@ public class FeedActivity extends AppCompatActivity {
 
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
         addEmotionButton.setOnClickListener(v -> {
-            AddEmotionFragment addEmotionFragment = new AddEmotionFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, addEmotionFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            Intent intent = new Intent(FeedActivity.this, AddEmotionActivity.class);
+            startActivity(intent);
         });
 
         listViewFeed.setOnItemLongClickListener((parent, view, position, id) -> {

@@ -4,6 +4,7 @@ import static java.lang.Integer.parseInt;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class VerifyEmail extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null && user.isEmailVerified()){
+            Log.d("VerifyEmail", "skipping verification");
             Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
             startActivity(intent);
             finish();
@@ -50,7 +52,7 @@ public class VerifyEmail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.verify_link_sent);
-
+        Log.d("VerifyEmail", "we out here (verification step)");
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();;
 
@@ -60,7 +62,7 @@ public class VerifyEmail extends AppCompatActivity {
 
         String currentUsersEmail = user.getEmail();
 
-        guideText.setText("A verification link was sent to" + currentUsersEmail);
+        guideText.setText("Please verify your email:" + currentUsersEmail);
 
         if (!user.isEmailVerified()) {
             continueText.setText("Continue");
