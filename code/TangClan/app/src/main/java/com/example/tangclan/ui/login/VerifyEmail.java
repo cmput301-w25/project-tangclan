@@ -10,27 +10,40 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.tangclan.FeedActivity;
 import com.example.tangclan.R;
 import com.example.tangclan.TempFeedActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * US 3.01.01
+ * Asks the user to verify their email, if their email is not yet verified.
+ * Allows users to be directed to their Feed instead.
+ */
 public class VerifyEmail extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
+    /**
+     * Checks if the the user's email is already verified. If so, it skips to the feed.
+     */
     @Override
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null && user.isEmailVerified()){
-            Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
+            Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
             startActivity(intent);
             finish();
         }
     }
 
+    /**
+     * If the user's email is not verified, it prompts them to send a verification link.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -56,8 +69,10 @@ public class VerifyEmail extends AppCompatActivity {
         continueText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), TempFeedActivity.class);
+                // skip verification
+                Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -65,6 +80,9 @@ public class VerifyEmail extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 user.sendEmailVerification();
+                Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
     }

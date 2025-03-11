@@ -6,15 +6,15 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Date;
+import java.util.Optional;
 
-
+//part of US 01.01.01, US 01.04.01, and US 01.06.01
 /**
  * MoodEventBook manages a collection of MoodEvent objects.
  * It supports adding, removing, sorting, and filtering mood events.
  */
 public class MoodEventBook {
-
-    private List<MoodEvent> moodEvents; //list stores all mood event objects
+    private ArrayList<MoodEvent> moodEvents;
 
     // Constructor
     public MoodEventBook() {
@@ -36,6 +36,7 @@ public class MoodEventBook {
     public void addMoodEvent(MoodEvent event) {
         if (event != null) {
             moodEvents.add(event);
+            // TODO: Connect to the database and save the new mood event
         }
     }
 
@@ -45,6 +46,7 @@ public class MoodEventBook {
      */
     public void deleteMoodEvent(MoodEvent event) {
         moodEvents.remove(event);
+        // TODO: Connect to the database and remove the mood event
     }
 
     /**
@@ -114,15 +116,19 @@ public class MoodEventBook {
      */
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
-        for (MoodEvent event : moodEvents){
-            String explanation = event.getSituation();
-            for (String keyword : keywords){
-                if (explanation != null && explanation.toLowerCase().contains(keyword.toLowerCase())){
-                    result.add(event);
-                    break;
+        for (MoodEvent event : moodEvents) {
+
+            String explanation = event.getSituation().get();
+            if (explanation != null) {
+                String lowerCaseExplanation = explanation.toLowerCase();
+
+                for (String keyword : keywords) {
+                    if (lowerCaseExplanation.contains(keyword.toLowerCase())) {
+                        result.add(event);
+                        break;
+                    }
                 }
             }
-
         }
         return result;
     }
@@ -148,10 +154,13 @@ public class MoodEventBook {
         }
     }
 
+    /**
+     * Grabs all of the Mood Event objects as a List stored within the MoodEventBook
+     * @return
+     *      A list of all MoodEvents
+     */
     public List<MoodEvent> getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
     }
-
-
 
 }

@@ -1,30 +1,39 @@
 package com.example.tangclan;
 
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.location.LocationManager;
 
-import androidx.core.app.ActivityCompat;
+import android.util.Base64;
 
+
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Map;
 import java.util.Optional;
+
+
 
 /**
  * Represents a Mood Event
+ * RELATED USER STORIES:
+ *      US 01.01.01
+ *      1.01.01a Create a mood event class
+ * TODO: Method to get the current location
  */
-public class MoodEvent {
+public class MoodEvent implements Serializable {
     private int mid;
-    private final LocalTime postTime;
-    private final LocalDate postDate;
+    private LocalTime postTime;
+    private LocalDate postDate;
     private ArrayList<String> triggers = null;
     private Mood mood;
     private String situation = null;
-    private Bitmap image;
+    private Bitmap image = null;
     private Double latitude = null;
     private Double longitude = null;
 
@@ -47,6 +56,7 @@ public class MoodEvent {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
         this.mood = new Mood(emotionalState);
+
     }
 
     /**
@@ -162,21 +172,58 @@ public class MoodEvent {
         return this.mood.getEmotion();
     }
 
-    public String getMoodColor() {
-        return this.mood.getColor();
+
+
+
+    public Optional<ArrayList<String>> getTriggers() {
+        return Optional.of(this.triggers);
     }
 
-    public String getMoodEmoticon() {
-        return this.mood.getEmoticon();
+    public Optional<String> getSituation() {
+        return Optional.of(this.situation);
     }
 
+    /**
+     * sets the postDate attribute from a string
+     * @param postDate
+     *      the String representation of the post Date
+     */
+    public void setPostDate(String postDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
-    public ArrayList<String> getTriggers() {
-        return this.triggers;
+
+        this.postDate = LocalDate.parse(postDate, formatter);
     }
 
-    public String getSituation() {
-        return this.situation;
+    /**
+     * sets the postTime attribute from a string
+     * @param postTime
+     *      the String representation of the Post Time
+     */
+    public void setPostTime(String postTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        this.postTime = LocalTime.parse(postTime, formatter);
+    }
+
+    /**
+     * sets the postDate attribute from a string
+     * @param postDate
+     *      the String representation of the post Date
+     */
+    public void setPostDate(String postDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+
+        this.postDate = LocalDate.parse(postDate, formatter);
+    }
+
+    /**
+     * sets the postTime attribute from a string
+     * @param postTime
+     *      the String representation of the Post Time
+     */
+    public void setPostTime(String postTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        this.postTime = LocalTime.parse(postTime, formatter);
     }
 
     /**
@@ -235,6 +282,16 @@ public class MoodEvent {
     }
 
     /**
+     * Getter for the image attribute
+     * @return
+     *      a bitmap image
+     */
+    public Bitmap getImage() {
+        return this.image;
+    }
+
+
+    /**
      * Checks if the MoodEvent has a geolocation
      * @return
      *      A boolean value indicating whether the MoodEvent has a geolocation
@@ -262,7 +319,7 @@ public class MoodEvent {
      * @return
      *      the string date of the MoodEvent date
      */
-    public String returnFormattedDate() {
+    public String returnPostFormattedDate() {
         // format the
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM, d, uuuu");
 
@@ -274,9 +331,60 @@ public class MoodEvent {
      * @return
      *      the string time of the MoodEventTime e.g. '10:30PM'
      */
-    public String returnFormattedTime() {
+    public String returnPostFormattedTime() {
         // format the time with an hour (no leading 0), minutes (leading 0) and the time segment (AM PM)
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:mma");
         return this.postTime.format(formatter);
     }
-}
+
+    /**
+     * Creates a string-formatted date of the form "{YEAR}-{MONTH}-{DAY}"
+     * @return
+     *      The date in the formatter pattern
+     */
+    public String userFormattedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        return this.postDate.format(formatter);
+    }
+
+    /**
+     * Creates a string-formatted time of the form "{HR}:{MINUTE}"
+     * @return
+     *      The time in the formatter pattern
+     */
+    public String userFormattedTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        return this.postTime.format(formatter);
+    }
+
+    /**
+     * preps all fields for database
+     * @return
+     *      a map with field : firestore-allowable values
+     */
+    public Map<String, Object> prepFieldsForDatabase() {
+        // convert the bitmap into a storeable string
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
+        byte[] bytes = output.toByteArray();
+        String imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+
+        // convert LocalDate and LocalTime into a storeable string
+        String dateString = userFormattedDate();
+        String timeString = userFormattedTime();
+
+        Map<String, Object> moodEventFields = Map.of(
+                "mid", this.mid,
+                "emotionalState", this.mood.getEmotion(),
+                "triggers", this.triggers,
+                "situation", this.situation,
+                "image", imageString,
+                "datePosted", dateString,
+                "timePosted", timeString
+        );
+
+        return moodEventFields;
+    }
+

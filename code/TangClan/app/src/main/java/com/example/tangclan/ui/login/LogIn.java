@@ -14,15 +14,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tangclan.DatabaseBestie;
+import com.example.tangclan.LoggedInUser;
 import com.example.tangclan.R;
 import com.example.tangclan.RecoverActivity;
+import com.example.tangclan.TempFeedActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * US 3.01.01
+ * Shows the Login Form. Checks the username and password fields to allow user to Log In.
+ */
 public class LogIn extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,7 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View view) {
                 Intent signUp = new Intent(LogIn.this, SignUpActivity.class);
                 startActivity(signUp);
+                finish();
             }
         });
 
@@ -49,6 +55,7 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View view) {
                 Intent forgotPass = new Intent(LogIn.this, RecoverActivity.class);
                 startActivity(forgotPass);
+                finish();
             }
         });
 
@@ -67,22 +74,33 @@ public class LogIn extends AppCompatActivity {
                     editUsername.setError("Enter username");
                     return;
                 }
+                //TO DO: Restrict username to be at least 4 characters, no spaces, and only allow certain special characters
                 if (TextUtils.isEmpty(password)) {
                     editPassword.setError("Enter password");
                     return;
                 }
 
-                // find corresponding email
-                bestie.findEmailByUsername(username, (email) -> {
-                    if (email == null) {
+                // Find Corresponding email to Log In
+                bestie.findProfileByUsername(username, (profile) -> {
+                    if (profile == null) {
                         editUsername.setError("Cannot find an account with that username");
                     } else {
-                        mAuth.signInWithEmailAndPassword(email, password)
+                        mAuth.signInWithEmailAndPassword(profile.getEmail(), password)
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            bestie.updatePasswordSameAsFirebaseAuth(email,password);
+                                            if (!password.equals(profile.getPassword())) {
+                                                bestie.updatePasswordSameAsFirebaseAuth(profile.getEmail(), password);
+                                            }
+                                            LoggedInUser loggedInUser = LoggedInUser.getInstance();
+                                            loggedInUser.setEmail(profile.getEmail());
+                                            loggedInUser.setUsername(profile.getUsername());
+                                            loggedInUser.setPassword(profile.getPassword());
+                                            loggedInUser.setDisplayName(profile.getDisplayName());
+                                            loggedInUser.setAge(profile.getAge());
+                                            // TO DO: get profile picture too
+
                                             Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                             startActivity(intent);
                                             finish();
@@ -96,6 +114,5 @@ public class LogIn extends AppCompatActivity {
                 });
             }
         });
-
     }
 }

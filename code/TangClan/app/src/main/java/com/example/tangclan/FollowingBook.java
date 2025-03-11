@@ -2,13 +2,21 @@ package com.example.tangclan;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * Represents the followers, following, and any outstanding follow requests of the session user
+ */
 public class FollowingBook {
     private ArrayList<String> following;
     private ArrayList<String> followers;
     //private ArrayList<Followers> followRequests;
 
+    /**
+     * Constructor for the FollowingBook object
+     */
     public FollowingBook() {
         this.following = new ArrayList<>();
         this.followers = new ArrayList<>();
@@ -70,17 +78,16 @@ public class FollowingBook {
     /**
      * queries the database for latest MoodEvents and places them in a Map where the key is the uid
      * of a user
-     *
-     * @return Map with keys = uid and values = Latest Mood Event
+     * @return
+     *      Map with keys = uid and values = Latest Mood Event
      */
-    public Map<String, MoodEvent> getRecentMoodEvents() {
+    public Map<String, MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
         Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
         for (String followingUid : following) {
             db.getLatestMoodEvent(followingUid, latestEvent -> {
                 uidToMoodEvent.put(followingUid, latestEvent);
             });
         }
-
         return uidToMoodEvent;
     }
 
@@ -132,6 +139,12 @@ public class FollowingBook {
     public void setFollowing(ArrayList<String> following) {
         this.following = following;
     }
+
+    //private Profile getOwnerProfile() {
+    //    // Implement logic to return the profile owning this FollowingBook
+    //    return null;
+    //}
+}
 
     //private Profile getOwnerProfile() {
     //    // Implement logic to return the profile owning this FollowingBook

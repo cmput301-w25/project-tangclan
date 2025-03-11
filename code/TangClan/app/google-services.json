@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1040940876542",
+    "project_id": "moodly-7003b",
+    "storage_bucket": "moodly-7003b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040940876542:android:a6fe2ac16d046727b91baf",
+        "android_client_info": {
+          "package_name": "com.example.tangclan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe1pz3jLqRGtL1GGjWv7O4uiyNJy4_f_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

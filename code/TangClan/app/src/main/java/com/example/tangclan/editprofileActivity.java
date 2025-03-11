@@ -23,6 +23,11 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+/**
+ * Activity that facilitates the edit profile information process
+ * RELATED USER STORIES: US 03.01.01
+ *      03.01.01c
+ */
 public class editprofileActivity extends AppCompatActivity {
 
     TextView usernameText;
@@ -158,7 +163,7 @@ public class editprofileActivity extends AppCompatActivity {
 
         //Setting values for profile object
         profile2.setEmail(StringEmail);
-        profile2.setUsername(StringUsername,ProfileArrayList);
+        profile2.setUsername(StringUsername);
         profile2.setPassword(StringPassword);
         profile2.setDisplayName(StringName);
 
