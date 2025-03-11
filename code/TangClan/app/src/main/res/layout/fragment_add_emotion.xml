@@ -1,4 +1,3 @@
-<!-- fragment_add_emotion.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -58,44 +57,60 @@
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:contentDescription="Happy"
-                android:src="@drawable/ic_emotion_happy" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_emotion_happy"
+                android:clickable="true"
+                android:focusable="true" />
 
             <ImageButton
                 android:id="@+id/emotionCalm"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:contentDescription="Calm"
-                android:src="@drawable/ic_emotion_calm" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_emotion_calm"
+                android:clickable="true"
+                android:focusable="true" />
 
             <ImageButton
                 android:id="@+id/emotionSurprised"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:contentDescription="Surprised"
-                android:src="@drawable/ic_emotion_surprised" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_emotion_surprised"
+                android:clickable="true"
+                android:focusable="true" />
 
             <ImageButton
                 android:id="@+id/emotionDisgusted"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:contentDescription="Disgusted"
-                android:src="@drawable/ic_emotion_disgusted" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_emotion_disgusted"
+                android:clickable="true"
+                android:focusable="true" />
 
             <ImageButton
                 android:id="@+id/emotionAngry"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:contentDescription="Angry"
-                android:src="@drawable/ic_emotion_angry" />
-
-
-
-
-
-
-
-
-
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_emotion_angry"
+                android:clickable="true"
+                android:focusable="true" />
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -104,62 +119,84 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-    <ImageButton
-        android:id="@+id/emotionConfused"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:contentDescription="Confused"
-        android:src="@drawable/ic_emotion_confused" />
+        <ImageButton
+            android:id="@+id/emotionConfused"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:contentDescription="Confused"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_emotion_confused"
+            android:clickable="true"
+            android:focusable="true" />
 
-    <ImageButton
-        android:id="@+id/emotionTerrfied"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:contentDescription="Terrified"
-        android:src="@drawable/ic_emotion_terrified" />
+        <ImageButton
+            android:id="@+id/emotionTerrfied"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:contentDescription="Terrified"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_emotion_terrified"
+            android:clickable="true"
+            android:focusable="true" />
 
         <ImageButton
             android:id="@+id/emotionNoIdea"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:contentDescription="No Idea"
-            android:src="@drawable/ic_emotion_no_idea" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_emotion_no_idea"
+            android:clickable="true"
+            android:focusable="true" />
 
         <ImageButton
             android:id="@+id/emotionAshamed"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:contentDescription="Ashamed"
-            android:src="@drawable/ic_emotion_ashamed" />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_emotion_ashamed"
+            android:clickable="true"
+            android:focusable="true" />
 
         <ImageButton
             android:id="@+id/emotionSad"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:contentDescription="Sad"
-            android:src="@drawable/ic_emotion_sad" />
-
-
-
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_emotion_sad"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
         <ImageButton
             android:id="@+id/emotionAnxious"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:contentDescription="Anxious"
-            android:src="@drawable/ic_emotion_anxious" />
-
-
-
-
-
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_emotion_anxious"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -177,6 +214,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Next" />
-
     </LinearLayout>
 </LinearLayout>

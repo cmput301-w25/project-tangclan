@@ -86,11 +86,8 @@ public class FeedActivity extends AppCompatActivity {
 
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
         addEmotionButton.setOnClickListener(v -> {
-            AddEmotionFragment addEmotionFragment = new AddEmotionFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, addEmotionFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            Intent intent = new Intent(FeedActivity.this, AddEmotionActivity.class);
+            startActivity(intent);
         });
 
         listViewFeed.setOnItemLongClickListener((parent, view, position, id) -> {
