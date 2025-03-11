@@ -33,4 +33,3 @@ public class IntroPostLoginActivity extends AppCompatActivity {
     }
 
     }
-}

@@ -6,8 +6,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.example.tangclan.Profile;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

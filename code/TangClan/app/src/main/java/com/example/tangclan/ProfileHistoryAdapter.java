@@ -30,14 +30,12 @@ import java.util.Map;
  * ArrayAdapter wrapper for the Profile History.
  * RELATED USER STORIES:
  *      US 01.04.01
- *              1.04.01a Create a mechanism for showing the given mood-event on the user profile
- *              upon creation of the mood event
+ *
  */
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
-    // for security purposes we will only grab the username for the ArrayAdapter instead of the
-    // whole profile.
-    String username;
+    private String username;
+    private Map<MoodEvent, String> moodToUsernameMap;
 
     /**
      * Constructor for the ProfileHistoryAdapter
@@ -46,33 +44,27 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
      * @param profile
      *      The current user's profile object
      */
-
-
-    public ProfileHistoryAdapter(Context context, FollowingBook followingBook) {
-        super(context, 0, new ArrayList<>());
+    public ProfileHistoryAdapter(Context context, Profile profile) {
+        super(context, 0, new ArrayList<MoodEvent>());
 
         moodToUsernameMap = new HashMap<>();
         List<MoodEvent> moodEvents = new ArrayList<>();
-        DatabaseBestie bestie = new DatabaseBestie();
+
+        // Get the username
+        this.username = profile.getUsername();
 
         // Populate mood events and map usernames
-        for (String uid: followingBook.getFollowing()) {
-            bestie.getUser(uid, profile -> {
-                for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
-                    moodEvents.add(moodEvent);
-                    moodToUsernameMap.put(moodEvent, profile.getUsername());
-                }
-            });
+        for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
+            moodEvents.add(moodEvent);
+            moodToUsernameMap.put(moodEvent, profile.getUsername());
         }
 
-    
-        // Populate mood events and map usernames
-
-
-
+        // Add the mood events to the adapter's data source
+        addAll(moodEvents);
+    }
 
     /**
-     *  Creates and recycles the view for the ListView item
+     * Creates and recycles the view for the ListView item
      * @param position
      *      position of the item
      * @param convertView
@@ -92,6 +84,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         } else {
             view = convertView;
         }
+
         MoodEvent moodEvent = getItem(position);
 
         // Format the username and mood emotion
@@ -101,9 +94,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-
         spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
@@ -112,16 +103,13 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);
 
-
         // logic for dynamically populating the ChipGroup
         ChipGroup triggers = view.findViewById(R.id.trigger_tags);
 
         usernameEmotion.setText(spannableUsernameEmotion);
-
         situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
-
 
         // only populate the view if situation exists - otherwise, set invisible
         if (moodEvent.getSituation().isPresent()) {
@@ -130,28 +118,27 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             situation.setVisibility(View.INVISIBLE);
         }
 
-        // only populate the view if situation exists - otherwise, set invisible
+        // only populate the view if triggers exist - otherwise, set invisible
         if (moodEvent.getTriggers().isPresent()) {
-                for (String trigger : moodEvent.getTriggers().get()) {
-                    Chip triggerChip = new Chip(getContext());
-                    ViewGroup.LayoutParams chipParams = new ViewGroup
-                            .LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    triggerChip.setLayoutParams(chipParams);
-                    triggerChip.setText(trigger);
-                    triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
-                    triggerChip.setTextColor(Color.BLACK);
-                    triggerChip.setChipBackgroundColorResource(
-                            com.google.android.material.R.color.material_dynamic_neutral_variant70);
+            for (String trigger : moodEvent.getTriggers().get()) {
+                Chip triggerChip = new Chip(getContext());
+                ViewGroup.LayoutParams chipParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                triggerChip.setLayoutParams(chipParams);
+                triggerChip.setText(trigger);
+                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
+                triggerChip.setTextColor(Color.BLACK);
+                triggerChip.setChipBackgroundColorResource(com.google.android.material.R.color.material_dynamic_neutral_variant70);
 
-                    Typeface chipFont = getContext().getResources().getFont(R.font.inter);
-                    triggerChip.setTypeface(chipFont);
-                    triggerChip.setChipStrokeWidth(0);
+                Typeface chipFont = getContext().getResources().getFont(R.font.inter);
+                triggerChip.setTypeface(chipFont);
+                triggerChip.setChipStrokeWidth(0);
 
-                    triggers.addView(triggerChip);
-                }
-            } else {
-                triggers.setVisibility(View.INVISIBLE);
+                triggers.addView(triggerChip);
             }
-        return view;
+        } else {
+            triggers.setVisibility(View.INVISIBLE);
         }
+
+        return view;
     }
+}

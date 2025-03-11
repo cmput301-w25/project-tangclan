@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-<<<<<<< Updated upstream
+
 /**
  * Contains wrapper functions for method calls on an instance of FireBaseFirestore.
  * Contains Helper functions for querying existing data.

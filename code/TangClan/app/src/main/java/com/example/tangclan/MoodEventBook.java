@@ -23,6 +23,7 @@ public class MoodEventBook {
 
     /**
      * Safely replaces the mood events list with a new copy.
+     *
      * @param moodEvents The new list of mood events.
      */
     public void setMoodEvents(ArrayList<MoodEvent> moodEvents) {
@@ -31,6 +32,7 @@ public class MoodEventBook {
 
     /**
      * Adds a new mood event to the list.
+     *
      * @param event The mood event to be added.
      */
     public void addMoodEvent(MoodEvent event) {
@@ -42,6 +44,7 @@ public class MoodEventBook {
 
     /**
      * Removes a mood event from the list.
+     *
      * @param event The mood event to be removed.
      */
     public void deleteMoodEvent(MoodEvent event) {
@@ -51,6 +54,7 @@ public class MoodEventBook {
 
     /**
      * Retrieves a mood event at a given index.
+     *
      * @param index The index of the mood event.
      * @return The mood event if valid, otherwise null.
      */
@@ -63,6 +67,7 @@ public class MoodEventBook {
 
     /**
      * Returns the total number of mood events.
+     *
      * @return The count of mood events.
      */
     public int getMoodEventCount() {
@@ -81,6 +86,7 @@ public class MoodEventBook {
 
     /**
      * Filters mood events by a specific date.
+     *
      * @param date The date to filter by.
      * @return A list of mood events that match the given date.
      */
@@ -96,6 +102,7 @@ public class MoodEventBook {
 
     /**
      * Filters mood events by mood type.
+     *
      * @param moodType The mood type to filter by.
      * @return A list of mood events that match the given mood type.
      */
@@ -111,6 +118,7 @@ public class MoodEventBook {
 
     /**
      * Filters mood events that contain specific keywords in the explanation.
+     *
      * @param keywords The list of keywords to search for.
      * @return A list of mood events containing any of the keywords in the explanation.
      */
@@ -156,11 +164,16 @@ public class MoodEventBook {
 
     /**
      * Grabs all of the Mood Event objects as a List stored within the MoodEventBook
-     * @return
-     *      A list of all MoodEvents
+     *
+     * @return A list of all MoodEvents
      */
     public List<MoodEvent> getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
     }
 
+    public MoodEvent[] getMoodEventList() {
+        return moodEvents.toArray(new MoodEvent[0]);
+    }
 }
+
+

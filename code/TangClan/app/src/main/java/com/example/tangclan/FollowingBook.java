@@ -145,3 +145,8 @@ public class FollowingBook {
     //    return null;
     //}
 }
+
+    //private Profile getOwnerProfile() {
+    //    // Implement logic to return the profile owning this FollowingBook
+    //    return null;
+    //}
