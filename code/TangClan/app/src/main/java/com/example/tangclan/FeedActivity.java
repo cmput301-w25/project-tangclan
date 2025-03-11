@@ -64,7 +64,6 @@ public class FeedActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
         if(currentUser == null) {
-            Log.e("FeedActivity", "Current user is not null YAYYYY");
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }

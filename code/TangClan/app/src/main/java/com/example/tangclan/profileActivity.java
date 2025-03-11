@@ -52,32 +52,38 @@ public class profileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
 
         usernameText = findViewById(R.id.username);
         NameText = findViewById(R.id.name);
 
+        /* Commenting this out and all calls using Bundle and using the global instance of
+        Logged In user instead -Alissa
+
         Bundle extras = getIntent().getExtras();//Got profile object from previous activity
         assert extras != null;
         Profile profile1= (Profile) extras.get("Key1");
+        */
 
-        assert profile1 != null;
-        usernameText.setText(profile1.getUsername());
-        NameText.setText(profile1.getDisplayName());
+        // assert profile1 != null;
+        // usernameText.setText(profile1.getUsername());
+        // NameText.setText(profile1.getDisplayName());
+
+        usernameText.setText(loggedInUser.getUsername());
+        NameText.setText(loggedInUser.getDisplayName());
         Button EditProfileButton =(Button) findViewById(R.id.edit_profil_button);
 
         EditProfileButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-
-
-
                 Intent intent = new Intent(profileActivity.this, editprofileActivity.class);
-                intent.putExtra("Key1",profile1);
+                // intent.putExtra("Key1",profile1);
                 startActivity(intent);
             }
         });
@@ -85,10 +91,12 @@ public class profileActivity extends AppCompatActivity {
 
         // instantiate the Profile's MoodEventBook
         DatabaseBestie databaseWrapper = new DatabaseBestie();
-        profile1.initializeMoodEventBookFromDatabase(databaseWrapper);
+        // profile1.initializeMoodEventBookFromDatabase(databaseWrapper);
+
+        loggedInUser.initializeMoodEventBookFromDatabase(databaseWrapper);
 
         // set up the adapter to connect to the ListView
-        ProfileHistoryAdapter profileHistoryAdapter = new ProfileHistoryAdapter(this, profile1);
+        ProfileHistoryAdapter profileHistoryAdapter = new ProfileHistoryAdapter(this, loggedInUser);
         ListView moodHistoryList = findViewById(R.id.profile_array);
 
         // set the Adapter for the moodHistoryList
@@ -107,9 +115,5 @@ public class profileActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
-
-
-
 }
