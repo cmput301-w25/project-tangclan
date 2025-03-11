@@ -29,7 +29,7 @@
             android:layout_marginLeft="18dp"
             android:layout_marginTop="180dp"
             android:gravity="center_horizontal|top"
-            android:text="@string/username"
+            tools:text="@string/username"
             android:textAppearance="@style/username" />
 
         <TextView
@@ -46,6 +46,14 @@
 
 
         <TextView
+            android:id="@+id/follower_cnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/followers"
+            android:layout_marginBottom="131dp"
+            android:text="TextView" />
+
+        <TextView
             android:id="@+id/followers"
             android:layout_width="133dp"
             android:layout_height="25dp"
@@ -56,6 +64,12 @@
             android:gravity="center_horizontal|top"
             android:text="@string/followers"
             android:textAppearance="@style/followers" />
+
+        <TextView
+            android:id="@+id/following_cnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
 
         <TextView
             android:id="@+id/following"
@@ -77,7 +91,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="146.16dp"
             android:layout_marginTop="112dp"
-            android:text="@string/display_name"
+            tools:text="@string/display_name"
             android:textAppearance="@style/name" />
 
         <Button
