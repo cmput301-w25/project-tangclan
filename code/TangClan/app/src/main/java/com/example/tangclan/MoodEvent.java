@@ -361,4 +361,3 @@ public class MoodEvent implements Serializable {
         return moodEventFields;
     }
 }
-
