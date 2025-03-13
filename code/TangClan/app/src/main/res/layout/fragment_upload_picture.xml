@@ -30,10 +30,10 @@
 
         <ImageView
             android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_close"
+            android:layout_height="24dp" />
+          <!--  android:src="@drawable/ic_close"
             android:contentDescription="Close"
-            android:id="@+id/closeIcon" />
+            android:id="@+id/closeIcon" />-->
     </LinearLayout>
 
 

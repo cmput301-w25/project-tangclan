@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import android.widget.ImageView;
@@ -62,13 +63,26 @@ public class profileActivity extends AppCompatActivity {
         NameText = findViewById(R.id.name);
 
         Bundle extras = getIntent().getExtras();//Got profile object from previous activity
-        assert extras != null;
-        Profile profile1= (Profile) extras.get("Key1");
+        if (extras == null) {
+            Log.e("profileActivity", "Extras are null");
+            return;  // Or show an error message
+        }
 
-        assert profile1 != null;
+        Profile profile1 = (Profile) extras.get("Key1");
+        if (profile1 == null) {
+            Log.e("profileActivity", "Profile is null");
+            return;  // Or show an error message
+        }
         usernameText.setText(profile1.getUsername());
         NameText.setText(profile1.getDisplayName());
         Button EditProfileButton =(Button) findViewById(R.id.edit_profil_button);
+
+        ImageButton addEmotionButton = findViewById(R.id.fabAdd);
+        addEmotionButton.setOnClickListener(v -> {
+            Log.d("profileActivity", "Add emotion button clicked");
+            Intent intent = new Intent(profileActivity.this, AddEmotionActivity.class);
+            startActivity(intent);
+        });
 
         EditProfileButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -80,6 +94,8 @@ public class profileActivity extends AppCompatActivity {
                 intent.putExtra("Key1",profile1);
                 startActivity(intent);
             }
+
+
         });
 
 
@@ -93,6 +109,9 @@ public class profileActivity extends AppCompatActivity {
 
         // set the Adapter for the moodHistoryList
         moodHistoryList.setAdapter(profileHistoryAdapter);
+
+
+
 
         // NAVBAR
         ImageView pinIcon = findViewById(R.id.imgMap);
