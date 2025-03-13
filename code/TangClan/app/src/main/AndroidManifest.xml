@@ -72,11 +72,15 @@
             android:name=".LoginOrSignupActivity"
             android:exported="false" />
         <activity
+            android:name=".WizActivity"
+            android:exported="false"/>
+        <activity
             android:name=".profileActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

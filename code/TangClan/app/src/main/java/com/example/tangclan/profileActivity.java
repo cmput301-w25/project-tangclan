@@ -84,6 +84,7 @@ public class profileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+
         EditProfileButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
