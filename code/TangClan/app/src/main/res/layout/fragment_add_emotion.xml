@@ -11,8 +11,8 @@
         android:gravity="center_vertical">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:contentDescription="Owl icon"
             android:src="@drawable/ic_owl" />
 
@@ -207,12 +207,14 @@
             android:id="@+id/btnCancelEmotion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#49311E"
             android:text="Cancel" />
 
         <Button
             android:id="@+id/btnNextEmotion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="#49311E"
             android:text="Next" />
     </LinearLayout>
 </LinearLayout>
