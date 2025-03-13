@@ -91,7 +91,7 @@ public class FeedActivity extends AppCompatActivity {
 
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
         addEmotionButton.setOnClickListener(v -> {
-            Intent intent = new Intent(FeedActivity.this, AddEmotionActivity.class);
+            Intent intent = new Intent(FeedActivity.this, WizActivity.class);
             startActivity(intent);
         });
 
