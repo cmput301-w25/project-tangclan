@@ -25,11 +25,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+//for US US 02.02.01
+
+/**
+ * This class provides functionality for uploading images from the camera or gallery on the device.
+ * It also has methods to help with image formats, as well as for reason validation.
+ */
 public class ImageHelper {
     private final Activity activity;
     private final ActivityResultLauncher<Intent> cameraLauncher;
     private final ActivityResultLauncher<Intent> galleryLauncher;
     private Uri imageUri;
+
 
     public ImageHelper(Activity activity,
                        ActivityResultLauncher<Intent> cameraLauncher,
@@ -92,9 +99,11 @@ public class ImageHelper {
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    public void textValidation(String text) {
+    public boolean textValidation(String text) {
         if (text.length() > 200) {
             Toast.makeText(activity, "Text is too long!", Toast.LENGTH_SHORT).show();
+            return false;
         }
+        return true;
     }
 }
