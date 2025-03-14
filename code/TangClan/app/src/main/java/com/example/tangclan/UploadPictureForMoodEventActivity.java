@@ -80,6 +80,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             finish();  // Close the current activity
         });
     }
+    //
 
     // This function simulates selecting an image (You need to implement actual image selection logic)
     private void selectImage() {

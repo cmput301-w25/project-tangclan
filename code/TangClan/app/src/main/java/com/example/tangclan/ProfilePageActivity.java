@@ -26,7 +26,7 @@ public class ProfilePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_mood_event); // Ensure this matches your layout XML file
-
+//
         // Initialize views
         emotionTextView = findViewById(R.id.username_emotional_state);
         situationTextView = findViewById(R.id.situation);

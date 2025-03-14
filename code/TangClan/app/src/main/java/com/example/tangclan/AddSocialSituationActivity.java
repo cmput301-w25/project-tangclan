@@ -36,7 +36,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
 
         // Close the activity when clicking the close icon
         closeIcon.setOnClickListener(v -> finish());
-
+//
         // Navigate back
         btnBack.setOnClickListener(v -> finish());
 

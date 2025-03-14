@@ -57,7 +57,7 @@ public class MoodEvent implements Serializable {
         this.postDate = LocalDate.now();
         this.mood = new Mood(emotionalState);
 
-    }
+    } //
 
     /**
      * constructor for MoodEvent with collaborators

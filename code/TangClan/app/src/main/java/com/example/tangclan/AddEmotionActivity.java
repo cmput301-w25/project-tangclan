@@ -58,7 +58,7 @@ public class AddEmotionActivity extends AppCompatActivity {
             if (selectedEmotion == null) {
                 Toast.makeText(this, "Please select an emotion", Toast.LENGTH_SHORT).show();
                 return;
-            }
+            } //
             // Pass selected emotion to AddReasonActivity
             Intent intent = new Intent(AddEmotionActivity.this, AddSocialSituationActivity.class);
             intent.putExtra("selectedEmotion", selectedEmotion);  // Send the selected emotion to the next activity
