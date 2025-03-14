@@ -51,8 +51,8 @@ public class WizActivity extends AppCompatActivity {
                 break;
         }
     }
-    // Inside WizActivity
 
+    // Inside WizActivity
     private void finishWizard() {
         // Assuming the WizVIew ViewModel contains the data for the MoodEvent
         WizVIew vm = getWizardViewModel();
@@ -75,14 +75,8 @@ public class WizActivity extends AppCompatActivity {
         finish();
     }
 
-
-
-    // write to database/local cache
-
     // Optionally, a method to go back or to finish the wizard
     public void navigateBack() {
         onBackPressed();
     }
-
-
 }
