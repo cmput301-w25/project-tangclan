@@ -26,27 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * ArrayAdapter wrapper for the Profile History.
- * RELATED USER STORIES:
- *      US 01.04.01
- *
- */
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
     private String username;
     private Map<MoodEvent, String> moodToUsernameMap;
 
-    /**
-     * Constructor for the ProfileHistoryAdapter
-     * @param context
-     *      The activity context
-     * @param profile
-     *      The current user's profile object
-     */
     public ProfileHistoryAdapter(Context context, Profile profile) {
         super(context, 0, new ArrayList<MoodEvent>());
-
         moodToUsernameMap = new HashMap<>();
         List<MoodEvent> moodEvents = new ArrayList<>();
 
@@ -63,17 +49,6 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         addAll(moodEvents);
     }
 
-    /**
-     * Creates and recycles the view for the ListView item
-     * @param position
-     *      position of the item
-     * @param convertView
-     *      view to be used as a recycling/regenerating view
-     * @param parent
-     *      parent ViewGroup
-     * @return
-     *      A ListView item view
-     */
     @Override
     @NonNull
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -111,21 +86,19 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
 
-        // only populate the view if situation exists - otherwise, set invisible
         if (moodEvent.getSituation().isPresent()) {
             situation.setText(moodEvent.getSituation().get());
         } else {
             situation.setVisibility(View.INVISIBLE);
         }
 
-        // only populate the view if triggers exist - otherwise, set invisible
         if (moodEvent.getTriggers().isPresent()) {
             for (String trigger : moodEvent.getTriggers().get()) {
                 Chip triggerChip = new Chip(getContext());
                 ViewGroup.LayoutParams chipParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 triggerChip.setLayoutParams(chipParams);
                 triggerChip.setText(trigger);
-                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
+                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
                 triggerChip.setTextColor(Color.BLACK);
                 triggerChip.setChipBackgroundColorResource(com.google.android.material.R.color.material_dynamic_neutral_variant70);
 
@@ -140,5 +113,11 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         return view;
+    }
+
+    // Add new MoodEvent to the adapter and notify data set changed
+    public void addMoodEvent(MoodEvent newMoodEvent) {
+        add(newMoodEvent);  // Add new event to the internal list
+        notifyDataSetChanged();  // Refresh the list
     }
 }

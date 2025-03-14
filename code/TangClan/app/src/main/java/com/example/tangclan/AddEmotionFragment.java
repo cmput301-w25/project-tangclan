@@ -42,6 +42,15 @@ public class AddEmotionFragment extends Fragment {
         ImageButton btnDisgusted = view.findViewById(R.id.emotionDisgusted);
         ImageButton btnAngry = view.findViewById(R.id.emotionAngry);
         ImageButton btnConfused = view.findViewById(R.id.emotionConfused);
+        ImageButton btnTerrified = view.findViewById(R.id.emotionTerrfied);
+        ImageButton btnNoIdea = view.findViewById(R.id.emotionNoIdea);
+        ImageButton btnAshamed = view.findViewById(R.id.emotionAshamed);
+        ImageButton btnSad = view.findViewById(R.id.emotionSad);
+        ImageButton btnAnxious = view.findViewById(R.id.emotionAnxious);
+
+
+
+
 
         // Click listeners to select an emotion
         btnHappy.setOnClickListener(v -> selectedEmotion = "happy");
@@ -50,7 +59,11 @@ public class AddEmotionFragment extends Fragment {
         btnDisgusted.setOnClickListener(v -> selectedEmotion = "disgusted");
         btnAngry.setOnClickListener(v -> selectedEmotion = "angry");
         btnConfused.setOnClickListener(v -> selectedEmotion = "confused");
-
+        btnTerrified.setOnClickListener(v -> selectedEmotion = "terrified");
+        btnNoIdea.setOnClickListener(v -> selectedEmotion = "no_idea");
+        btnAshamed.setOnClickListener(v -> selectedEmotion = "ashamed");
+        btnSad.setOnClickListener(v -> selectedEmotion = "sad");
+        btnAnxious.setOnClickListener(v -> selectedEmotion = "anxious");
         // Bottom buttons
         Button btnCancel = view.findViewById(R.id.btnCancelEmotion);
         btnCancel.setOnClickListener(v -> requireActivity().finish());

@@ -111,6 +111,7 @@
                 android:src="@drawable/ic_emotion_angry"
                 android:clickable="true"
                 android:focusable="true" />
+
         </LinearLayout>
     </HorizontalScrollView>
 
