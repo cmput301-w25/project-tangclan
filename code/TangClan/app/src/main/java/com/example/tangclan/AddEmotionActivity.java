@@ -60,7 +60,7 @@ public class AddEmotionActivity extends AppCompatActivity {
                 return;
             }
             // Pass selected emotion to AddReasonActivity
-            Intent intent = new Intent(AddEmotionActivity.this, AddReasonActivity.class);
+            Intent intent = new Intent(AddEmotionActivity.this, AddSocialSituationActivity.class);
             intent.putExtra("selectedEmotion", selectedEmotion);  // Send the selected emotion to the next activity
             startActivity(intent);  // Start AddReasonActivity
         });
