@@ -67,6 +67,12 @@
             android:hint="What's going on?" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/charCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewEnd" />
+
     <Button
         android:id="@+id/buttonSaveText"
         android:layout_width="wrap_content"

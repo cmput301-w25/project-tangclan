@@ -12,11 +12,13 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -88,5 +90,11 @@ public class ImageHelper {
     public Bitmap base64ToBitmap(String base64String) {
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public void textValidation(String text) {
+        if (text.length() > 200) {
+            Toast.makeText(activity, "Text is too long!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

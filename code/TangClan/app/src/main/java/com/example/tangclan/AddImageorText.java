@@ -6,15 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 public class AddImageorText extends Fragment {
 
     private ImageView imageView;
     private ImageHelper imageHelper;
+    private WizActivity WizActivity;
+    private ImageValidator validor;
 
     @Nullable
     @Override
@@ -28,14 +33,22 @@ public class AddImageorText extends Fragment {
 
         imageView = view.findViewById(R.id.imageView);
         Button buttonSelectImage = view.findViewById(R.id.buttonSelectImage);
-        Button buttonLoadImage = view.findViewById(R.id.btnUploadImage); // New button
+        Button buttonLoadImage = view.findViewById(R.id.btnUploadImage);
+        Button buttonSaveText = view.findViewById(R.id.buttonSaveText);
+        TextView charCount = view.findViewById(R.id.charCount);
+        TextInputLayout text = view.findViewById(R.id.text203);
 
-        imageHelper = new ImageHelper(this, cameraLauncher, galleryLauncher);
+        imageHelper = new ImageHelper(WizActivity);
 
         buttonSelectImage.setOnClickListener(v -> imageHelper.showImagePickerDialog());
+        buttonLoadImage.setOnClickListener(v -> imageHelper.uriToBitmap(imageHelper.getImageUri()));
 
-        buttonLoadImage.setOnClickListener(v -> imageHelper.retrieveBase64ImageFromFirebase(imageView));
+        buttonSaveText.setOnClickListener();
+
+        text.set
 
         ImageView closeIcon = view.findViewById(R.id.closeIcon);
         closeIcon.setOnClickListener(v -> requireActivity().finish());
-}
+
+        return view;
+} }
