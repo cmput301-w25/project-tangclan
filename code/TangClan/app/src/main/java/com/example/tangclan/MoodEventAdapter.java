@@ -117,7 +117,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Set the reason (if available)
         TextView reason = view.findViewById(R.id.reason);
         reason.setText(moodEvent.getReason() != null ? moodEvent.getReason() : "No reason specified");
-
+//
         // Set the post date and time
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);

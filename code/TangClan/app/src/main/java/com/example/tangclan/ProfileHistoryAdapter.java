@@ -104,7 +104,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         ImageView moodImageView = view.findViewById(R.id.mood_event_image);
 
         // Set the emotional state
-        emotionTextView.setText(spannableUsernameEmotion);
+        emotionTextView.setText(spannableUsernameEmotion); //
 
         // Set the social situation
         situationTextView.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");

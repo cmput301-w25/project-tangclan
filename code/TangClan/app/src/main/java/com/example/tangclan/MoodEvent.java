@@ -59,7 +59,7 @@ public class MoodEvent implements Serializable {
         this.postDate = LocalDate.now();
         this.mood = new Mood(emotionalState);
 
-    }
+    } //
 
     public String getReason() {
         return reason;
