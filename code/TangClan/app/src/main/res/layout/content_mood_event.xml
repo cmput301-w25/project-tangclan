@@ -1,94 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp">
-<!--Text viewn-->
-    <LinearLayout
-        android:id="@+id/container_drawable_name_emotional_state"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    android:padding="16dp">
 
-        <TextView
-            android:id="@+id/username_emotional_state"
-            android:text="@string/placeholder_username_emotion"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_medium"
-            android:letterSpacing="-0.03"
-            android:layout_width="wrap_content"
-            android:textSize="16sp" />
-
-
-
-    </LinearLayout>
-    <ImageView
-        android:id="@+id/mood_event_image"
+    <!-- Display the emotional state -->
+    <TextView
+        android:id="@+id/username_emotional_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="Mood Event Image"
-        app:layout_constraintTop_toBottomOf="@id/container_drawable_name_emotional_state"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"/>
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
 
-
+    <!-- Display the social situation -->
     <TextView
-        android:paddingVertical="8dp"
         android:id="@+id/situation"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/inter_medium"
-        android:text="@string/placeholder_situation"
-        android:letterSpacing="-0.03"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_drawable_name_emotional_state" />
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"/>
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/trigger_tags"
-        android:layout_width="match_parent"
+    <!-- Display the reason -->
+    <TextView
+        android:id="@+id/reason"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/situation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:chipSpacingVertical="-4dp"
-        android:orientation="horizontal">
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"/>
 
-    </com.google.android.material.chip.ChipGroup>
-
-    <LinearLayout
-        android:id="@+id/container_date_time"
-        android:layout_width="match_parent"
+    <!-- Display the post date -->
+    <TextView
+        android:id="@+id/date_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/trigger_tags">
+        android:textSize="12sp"
+        android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/date_text"
-            android:layout_marginEnd="12dp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/placeholder_date"
-            android:fontFamily="@font/inter"
-            android:letterSpacing="-0.03"
-            android:textColor="@color/material_dynamic_neutral50"/>
-        <TextView
-            android:id="@+id/time_text"
-            android:layout_marginEnd="4dp"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="@string/placeholder_time"
-            android:fontFamily="@font/inter"
-            android:letterSpacing="-0.03"
-            android:textColor="@color/material_dynamic_neutral50"/>
-    </LinearLayout>
+    <!-- Display the post time -->
+    <TextView
+        android:id="@+id/time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:layout_marginBottom="8dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Display the image if available -->
+    <ImageView
+        android:id="@+id/mood_event_image"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="8dp"/>
+
+</LinearLayout>

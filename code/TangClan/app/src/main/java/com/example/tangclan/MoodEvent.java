@@ -37,6 +37,8 @@ public class MoodEvent implements Serializable {
     private Double latitude = null;
     private Double longitude = null;
 
+    private String reason;
+
     /**
      * Default constructor (required for Firestore)
      */
@@ -57,6 +59,14 @@ public class MoodEvent implements Serializable {
         this.postDate = LocalDate.now();
         this.mood = new Mood(emotionalState);
 
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     /**
@@ -170,11 +180,11 @@ public class MoodEvent implements Serializable {
 
 
     public Optional<ArrayList<String>> getTriggers() {
-        return Optional.of(this.triggers);
+        return Optional.ofNullable(this.triggers);
     }
 
     public Optional<String> getSituation() {
-        return Optional.of(this.situation);
+        return Optional.ofNullable(this.situation);
     }
 
     /**

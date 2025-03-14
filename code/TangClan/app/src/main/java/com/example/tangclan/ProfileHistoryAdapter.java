@@ -8,18 +8,15 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,45 +95,33 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
-        TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
-        TextView situation = view.findViewById(R.id.situation);
-        TextView date = view.findViewById(R.id.date_text);
-        TextView time = view.findViewById(R.id.time_text);
+        // Find views by ID
+        TextView emotionTextView = view.findViewById(R.id.username_emotional_state);
+        TextView situationTextView = view.findViewById(R.id.situation);
+        TextView reasonTextView = view.findViewById(R.id.reason);
+        TextView dateTextView = view.findViewById(R.id.date_text);
+        TextView timeTextView = view.findViewById(R.id.time_text);
+        ImageView moodImageView = view.findViewById(R.id.mood_event_image);
 
-        // logic for dynamically populating the ChipGroup
-        ChipGroup triggers = view.findViewById(R.id.trigger_tags);
+        // Set the emotional state
+        emotionTextView.setText(spannableUsernameEmotion);
 
-        usernameEmotion.setText(spannableUsernameEmotion);
-        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
-        date.setText(moodEvent.getPostDate().toString());
-        time.setText(moodEvent.getPostTime().toString());
+        // Set the social situation
+        situationTextView.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
 
-        // only populate the view if situation exists - otherwise, set invisible
-        if (moodEvent.getSituation().isPresent()) {
-            situation.setText(moodEvent.getSituation().get());
+        // Set the reason
+        reasonTextView.setText(moodEvent.getReason() != null && !moodEvent.getReason().isEmpty() ? moodEvent.getReason() : "No reason specified");
+
+        // Set the post date and time
+        dateTextView.setText(moodEvent.getPostDate().toString());
+        timeTextView.setText(moodEvent.getPostTime().toString());
+
+        // Set the image if available
+        if (moodEvent.getImage() != null) {
+            moodImageView.setImageBitmap(moodEvent.getImage());
+            moodImageView.setVisibility(View.VISIBLE);  // Ensure the ImageView is visible
         } else {
-            situation.setVisibility(View.INVISIBLE);
-        }
-
-        // only populate the view if triggers exist - otherwise, set invisible
-        if (moodEvent.getTriggers().isPresent()) {
-            for (String trigger : moodEvent.getTriggers().get()) {
-                Chip triggerChip = new Chip(getContext());
-                ViewGroup.LayoutParams chipParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                triggerChip.setLayoutParams(chipParams);
-                triggerChip.setText(trigger);
-                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
-                triggerChip.setTextColor(Color.BLACK);
-                triggerChip.setChipBackgroundColorResource(com.google.android.material.R.color.material_dynamic_neutral_variant70);
-
-                Typeface chipFont = getContext().getResources().getFont(R.font.inter);
-                triggerChip.setTypeface(chipFont);
-                triggerChip.setChipStrokeWidth(0);
-
-                triggers.addView(triggerChip);
-            }
-        } else {
-            triggers.setVisibility(View.INVISIBLE);
+            moodImageView.setVisibility(View.GONE);  // Hide the ImageView if no image is available
         }
 
         return view;

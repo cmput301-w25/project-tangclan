@@ -7,86 +7,57 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 public class AddSocialSituationActivity extends AppCompatActivity {
 
-    private WizVIew wizVIew;  // Declare the ViewModel instance
+    private WizVIew wizVIew;  // ViewModel instance
+    private String selectedEmotion;  // Store the passed emotion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_add_social_situation);  // Make sure your layout is correct
+        setContentView(R.layout.fragment_add_social_situation);
 
-        // Initialize your ViewModel using ViewModelProvider
+        // Retrieve the selected emotion from the previous activity
+        selectedEmotion = getIntent().getStringExtra("selectedEmotion");
+
+        // Initialize ViewModel
         wizVIew = new ViewModelProvider(this).get(WizVIew.class);
 
-        // Initialize your activity view
+        // Initialize UI elements
         EditText editTextSituation = findViewById(R.id.editTextSituation);
-
-        // Top bar close icon
         ImageView closeIcon = findViewById(R.id.closeIcon);
-        closeIcon.setOnClickListener(v -> finish());  // Close the activity when clicked
-
-        // Bottom row buttons
         Button btnBack = findViewById(R.id.btnBackEnvironment);
-        btnBack.setOnClickListener(v -> navigateBack());
-
         Button btnSave = findViewById(R.id.btnSaveEnvironment);
+
+        // Close the activity when clicking the close icon
+        closeIcon.setOnClickListener(v -> finish());
+
+        // Navigate back
+        btnBack.setOnClickListener(v -> finish());
+
+        // Save and navigate forward
         btnSave.setOnClickListener(v -> {
-            String situation = editTextSituation.getText().toString().trim();
-            if (!TextUtils.isEmpty(situation)) {
-                // Save the social situation into your ViewModel
-                wizVIew.setSocialSituation(situation);
+            String socialSituation = editTextSituation.getText().toString().trim();
+
+            if (TextUtils.isEmpty(socialSituation)) {
+                Toast.makeText(this, "Please enter a social situation", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            // Now create the MoodEvent
-            createMoodEvent();
+            // Save the social situation in the ViewModel
+            wizVIew.setSocialSituation(socialSituation);
 
-            // Navigate to the next activity after saving the data
-            navigateToUploadPictureForm();
+            // Navigate to the next activity
+            Intent intent = new Intent(AddSocialSituationActivity.this, UploadPictureForMoodEventActivity.class);
+            intent.putExtra("selectedEmotion", selectedEmotion);  // Pass emotion
+            intent.putExtra("selectedSituation", socialSituation);  // Pass social situation
+            startActivity(intent);
+            finish();  // Close current activity
         });
-    }
-
-    private void navigateBack() {
-        // Add logic to navigate back to the previous screen (if needed)
-        finish();  // Simply finish the activity (return to the previous screen)
-    }
-
-    private void createMoodEvent() {
-        // Use the ViewModel to get the data and create a MoodEvent
-        WizVIew vm = wizVIew; // Retrieve from ViewModel
-
-        // You might have a MoodEventBook in your Activity or a global store
-        MoodEventBook moodEventBook = new MoodEventBook();
-
-        try {
-            // Build the MoodEvent based on which fields are set
-            if (!vm.getTriggers().isEmpty() && vm.getSocialSituation() != null) {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers(), vm.getSocialSituation());
-                moodEventBook.addMoodEvent(moodEvent);
-            } else if (!vm.getTriggers().isEmpty()) {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers());
-                moodEventBook.addMoodEvent(moodEvent);
-            } else if (vm.getSocialSituation() != null) {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getSocialSituation());
-                moodEventBook.addMoodEvent(moodEvent);
-            } else {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState());
-                moodEventBook.addMoodEvent(moodEvent);
-            }
-        } catch (IllegalArgumentException e) {
-            // Show an error message if the mood event was invalid
-            // (e.g., invalid emotional state or invalid social situation)
-        }
-    }
-
-    private void navigateToUploadPictureForm() {
-        // Navigate to the UploadPictureForMoodEventActivity
-        Intent intent = new Intent(AddSocialSituationActivity.this, UploadPictureForMoodEventActivity.class);
-        startActivity(intent);
-        finish();  // Optionally finish the current activity to prevent returning to it
     }
 }
