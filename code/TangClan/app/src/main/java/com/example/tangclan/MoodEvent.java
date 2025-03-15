@@ -349,10 +349,15 @@ public class MoodEvent implements Serializable {
      */
     public Map<String, Object> prepFieldsForDatabase() {
         // convert the bitmap into a storeable string
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
-        byte[] bytes = output.toByteArray();
-        String imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+        String imageString;
+        if (image != null) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
+            byte[] bytes = output.toByteArray();
+            imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+        } else {
+            imageString = "";
+        }
 
         // convert LocalDate and LocalTime into a storeable string
         String dateString = userFormattedDate();
