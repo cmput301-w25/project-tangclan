@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentUser != null){
             // Show user feed
-            startActivity(new Intent(MainActivity.this, FeedActivity.class));
+            startActivity(new Intent(MainActivity.this, TempFeedActivity.class));
             finish();
         } else {
             // Let user Login or Signup
