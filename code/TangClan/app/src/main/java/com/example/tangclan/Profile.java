@@ -18,6 +18,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     private String age;
 
     private Blob profilePic;
+    private MoodEventBook MoodEventBook;
 
     /**
      * Constructor for database purposes
@@ -156,6 +157,24 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
             throw new IllegalArgumentException();
         }
         this.age = age;
+    }
+
+    /**
+     * Setter for the user's MoodEventBook
+     * @param moodEventBook
+     *      The MoodEventBook to assign to this profile
+     */
+    public void setMoodEventBook(MoodEventBook moodEventBook) {
+        this.MoodEventBook = moodEventBook;
+    }
+
+    /**
+     * Getter for the user's MoodEventBook
+     * @return
+     *      The MoodEventBook associated with this profile
+     */
+    public MoodEventBook getMoodEventBook() {
+        return this.MoodEventBook;
     }
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
 

@@ -60,6 +60,8 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         addAll(moodEvents);
     }
 
+
+
     /**
      * Creates and recycles the view for the ListView item
      * @param position
