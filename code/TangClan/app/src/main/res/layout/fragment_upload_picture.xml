@@ -41,31 +41,36 @@
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
         android:text="Would you like to talk about it over a moodle bowl?"
         android:textAlignment="center"
-        android:textSize="22sp" />
+        android:textSize="22sp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"/>
+
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="You can write about the reason for your experience, or show it with a picture instead."
+        android:text="You can write about you experience, or show it with a picture instead."
         android:textAlignment="textStart"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text203"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
+
             android:id="@+id/reason"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="What's going on?" />
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/charCount"
@@ -73,43 +78,33 @@
         android:layout_height="wrap_content"
         android:textAlignment="viewEnd" />
 
+
+
     <Button
         android:id="@+id/buttonSaveText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Save"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:text="Save" />
+        android:layout_marginBottom="20dp"/>
+
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_marginLeft="40dp"
+
+        android:scaleType="centerCrop"
         android:background="@android:color/darker_gray"
-        android:scaleType="centerCrop" />
+        android:layout_marginLeft="40dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:orientation="horizontal">
+    <Button
+        android:id="@+id/buttonSelectImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Image"
+        android:layout_marginTop="20dp"/>
 
-        <Button
-            android:id="@+id/buttonSelectImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Select Image" />
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_weight="0"
-            android:text="Save" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

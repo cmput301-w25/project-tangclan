@@ -6,15 +6,16 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Date;
+import java.util.Optional;
 
-
+//part of US 01.01.01, US 01.04.01, and US 01.06.01
 /**
  * MoodEventBook manages a collection of MoodEvent objects.
  * It supports adding, removing, sorting, and filtering mood events.
  */
 public class MoodEventBook {
     private ArrayList<MoodEvent> moodEvents;
-    //mooc event bookkkknnn
+
     // Constructor
     public MoodEventBook() {
         this.moodEvents = new ArrayList<>();
@@ -22,6 +23,7 @@ public class MoodEventBook {
 
     /**
      * Safely replaces the mood events list with a new copy.
+     *
      * @param moodEvents The new list of mood events.
      */
     public void setMoodEvents(ArrayList<MoodEvent> moodEvents) {
@@ -30,24 +32,29 @@ public class MoodEventBook {
 
     /**
      * Adds a new mood event to the list.
+     *
      * @param event The mood event to be added.
      */
     public void addMoodEvent(MoodEvent event) {
         if (event != null) {
             moodEvents.add(event);
+            // TODO: Connect to the database and save the new mood event
         }
     }
 
     /**
      * Removes a mood event from the list.
+     *
      * @param event The mood event to be removed.
      */
     public void deleteMoodEvent(MoodEvent event) {
         moodEvents.remove(event);
+        // TODO: Connect to the database and remove the mood event
     }
 
     /**
      * Retrieves a mood event at a given index.
+     *
      * @param index The index of the mood event.
      * @return The mood event if valid, otherwise null.
      */
@@ -60,6 +67,7 @@ public class MoodEventBook {
 
     /**
      * Returns the total number of mood events.
+     *
      * @return The count of mood events.
      */
     public int getMoodEventCount() {
@@ -78,6 +86,7 @@ public class MoodEventBook {
 
     /**
      * Filters mood events by a specific date.
+     *
      * @param date The date to filter by.
      * @return A list of mood events that match the given date.
      */
@@ -93,6 +102,7 @@ public class MoodEventBook {
 
     /**
      * Filters mood events by mood type.
+     *
      * @param moodType The mood type to filter by.
      * @return A list of mood events that match the given mood type.
      */
@@ -108,15 +118,18 @@ public class MoodEventBook {
 
     /**
      * Filters mood events that contain specific keywords in the explanation.
+     *
      * @param keywords The list of keywords to search for.
      * @return A list of mood events containing any of the keywords in the explanation.
      */
     public List<MoodEvent> filterByExplanationKeywords(List<String> keywords) {
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents) {
-            String explanation = event.getSituation();
+
+            String explanation = event.getSituation().get();
             if (explanation != null) {
                 String lowerCaseExplanation = explanation.toLowerCase();
+
                 for (String keyword : keywords) {
                     if (lowerCaseExplanation.contains(keyword.toLowerCase())) {
                         result.add(event);
@@ -149,14 +162,18 @@ public class MoodEventBook {
         }
     }
 
+    /**
+     * Grabs all of the Mood Event objects as a List stored within the MoodEventBook
+     *
+     * @return A list of all MoodEvents
+     */
     public List<MoodEvent> getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
     }
 
     public List<MoodEvent> getMoodEventList() {
-        return moodEvents;
+        return new ArrayList<>();
     }
-
-
-
 }
+
+

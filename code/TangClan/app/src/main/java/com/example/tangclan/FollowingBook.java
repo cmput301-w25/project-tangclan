@@ -6,11 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the followers, following, and any outstanding follow requests of the session user
+ */
 public class FollowingBook {
     private ArrayList<String> following;
     private ArrayList<String> followers;
     //private ArrayList<Followers> followRequests;
 
+    /**
+     * Constructor for the FollowingBook object
+     */
     public FollowingBook() {
         this.following = new ArrayList<>();
         this.followers = new ArrayList<>();
@@ -72,8 +78,6 @@ public class FollowingBook {
     /**
      * queries the database for latest MoodEvents and places them in a Map where the key is the uid
      * of a user
-     * @param db
-     *      database wrapper with capability to grab latest MoodEvent
      * @return
      *      Map with keys = uid and values = Latest Mood Event
      */
@@ -84,7 +88,6 @@ public class FollowingBook {
                 uidToMoodEvent.put(followingUid, latestEvent);
             });
         }
-
         return uidToMoodEvent;
     }
 
@@ -142,3 +145,8 @@ public class FollowingBook {
     //    return null;
     //}
 }
+
+    //private Profile getOwnerProfile() {
+    //    // Implement logic to return the profile owning this FollowingBook
+    //    return null;
+    //}

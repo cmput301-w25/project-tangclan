@@ -2,7 +2,7 @@
     <string name="app_name">moodly</string>
     <string name="moodly">moodly</string>
     <string name="already_hav">Already have an account? <font color='#FFD261'>Log in</font></string>
-    <string name="full_name">Full Name</string>
+    <string name="display_name">Display Name</string>
     <string name="email_addre">Email Address</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -70,4 +70,6 @@
 
 
     <string name="for_you">For you</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="followers">Followers</string>
 </resources>

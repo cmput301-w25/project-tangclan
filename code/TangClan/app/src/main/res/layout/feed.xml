@@ -6,14 +6,24 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <Button
+        android:id="@+id/logout_butt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#FFC107"
+        android:text="Log out"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/moodly1"
-        android:layout_width="275dp"
-        android:layout_height="55dp"
+        android:layout_width="157dp"
+        android:layout_height="49dp"
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal|top"
         android:text="@string/moodly"
-        android:textAppearance="@style/moodly1"
+        android:textAppearance="@style/moodly"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -73,7 +83,6 @@
         app:layout_constraintStart_toStartOf="@id/rectangle_2"
         app:layout_constraintTop_toTopOf="@id/rectangle_2" />
 
-
     <ListView
         android:id="@+id/listViewFeed"
         android:layout_width="match_parent"
@@ -85,6 +94,15 @@
         app:layout_constraintTop_toBottomOf="@id/rectangle_1"
         app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="16dp" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@id/rectangle_1"
+        app:layout_constraintBottom_toTopOf="@id/navbarContainer"/>
+
+
 
     <include
         android:id="@+id/navbarContainer"

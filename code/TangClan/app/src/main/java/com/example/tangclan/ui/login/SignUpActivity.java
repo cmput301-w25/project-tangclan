@@ -14,16 +14,31 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tangclan.DatabaseBestie;
+import com.example.tangclan.FeedActivity;
+import com.example.tangclan.LoggedInUser;
+import com.example.tangclan.MainActivity;
 import com.example.tangclan.Profile;
 import com.example.tangclan.R;
+import com.example.tangclan.TempFeedActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * US 3.01.01
+ * Shows the Sign Up Form.
+ */
 public class SignUpActivity extends AppCompatActivity {
 
+    FirebaseAuth auth;
+    FirebaseUser currentUser;
 
+    /**
+     *  Checks the user detail fields for valid input. Creates an account when entered fields are all validated.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent logIn = new Intent(SignUpActivity.this, LogIn.class);
                 startActivity(logIn);
+                finish();
             }
         });
 
@@ -104,11 +120,16 @@ public class SignUpActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
 
+                                                    LoggedInUser loggedInUser = LoggedInUser.getInstance();
+                                                    loggedInUser.setEmail(email);
+                                                    loggedInUser.setUsername(username);
+                                                    loggedInUser.setPassword(password);
+                                                    loggedInUser.setDisplayName(displayName);
+
                                                     Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
                                                             Toast.LENGTH_SHORT).show();
                                                     Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                                     startActivity(intent);
-                                                    finish();
                                                 } else {
                                                     // Could not create account
                                                     Toast.makeText(SignUpActivity.this, "Authentication failed.",
@@ -123,4 +144,43 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    /*@Override
+
+    /*
+    @Override
+
+    public void onStart() {
+        super.onStart();
+        auth = FirebaseAuth.getInstance();
+        currentUser = auth.getCurrentUser();
+        if(currentUser != null) {
+            startActivity(new Intent(SignUpActivity.this, FeedActivity.class));
+            finish();
+        }
+    }*/
+
+
+    /**
+     *  Starts the Profile Setup sequence for a new user
+     */
+
+    /*@Override
+
+    /*
+    @Override
+
+    protected void onResume() {
+        super.onResume();
+        // After user is asked to verify their account
+        Intent intent = new Intent(SignUpActivity.this, FeedActivity.class); // Change to account Setup
+        startActivity(intent);
+        finish();
+
+    }*/
+
+    }
+    */
+
 }
