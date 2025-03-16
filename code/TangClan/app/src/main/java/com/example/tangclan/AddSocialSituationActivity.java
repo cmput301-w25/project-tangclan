@@ -22,8 +22,11 @@ public class AddSocialSituationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_add_social_situation);
 
-        // Retrieve the selected emotion from the previous activity
-        selectedEmotion = getIntent().getStringExtra("selectedEmotion");
+        // Retrieve the selected emotion from the previous activity using the Bundle
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            selectedEmotion = extras.getString("selectedEmotion");
+        }
 
         // Initialize ViewModel
         wizVIew = new ViewModelProvider(this).get(WizVIew.class);
@@ -36,7 +39,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
 
         // Close the activity when clicking the close icon
         closeIcon.setOnClickListener(v -> finish());
-//
+
         // Navigate back
         btnBack.setOnClickListener(v -> finish());
 
@@ -52,11 +55,19 @@ public class AddSocialSituationActivity extends AppCompatActivity {
             // Save the social situation in the ViewModel
             wizVIew.setSocialSituation(socialSituation);
 
-            // Navigate to the next activity
+            // Create a bundle to carry both selectedEmotion and socialSituation
+            Bundle bundle = new Bundle();
+            bundle.putString("selectedEmotion", selectedEmotion);
+            bundle.putString("selectedSituation", socialSituation);
+
+            // Create an intent to start the next activity
             Intent intent = new Intent(AddSocialSituationActivity.this, UploadPictureForMoodEventActivity.class);
-            intent.putExtra("selectedEmotion", selectedEmotion);  // Pass emotion
-            intent.putExtra("selectedSituation", socialSituation);  // Pass social situation
-            startActivity(intent);
+
+            // Attach the bundle to the intent
+            intent.putExtras(bundle);
+
+            // Start the activity
+            startActivity(intent);  // Start UploadPictureForMoodEventActivity
             finish();  // Close current activity
         });
     }

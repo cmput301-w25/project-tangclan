@@ -5,12 +5,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,7 +20,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
     private String selectedEmotion;
     private String selectedSituation;
-    private EditText editTextReason;
     private String imagePath = null; // Optional image path (null if not uploaded)
 
     @Override
@@ -37,9 +35,12 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Retrieve passed data from AddSocialSituationActivity
-        selectedEmotion = getIntent().getStringExtra("selectedEmotion");
-        selectedSituation = getIntent().getStringExtra("selectedSituation");
+        // Retrieve passed data from AddSocialSituationActivity using the Bundle
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            selectedEmotion = extras.getString("selectedEmotion");
+            selectedSituation = extras.getString("selectedSituation");
+        }
 
         // Initialize UI components
         // User writes a reason for the mood event
@@ -48,7 +49,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         Button btnUploadImage = findViewById(R.id.btnUploadImage);
         Button btnNext = findViewById(R.id.buttonSaveText);
         TextInputEditText editTextReason = findViewById(R.id.text203).findViewById(R.id.editTextReason);
-
 
         // Close button action
         closeIcon.setOnClickListener(v -> finish());
@@ -68,19 +68,27 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
                 return;
             }
 
-            // Pass all collected data to ProfilePageActivity
-            Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ProfilePageActivity.class);
-            intent.putExtra("selectedEmotion", selectedEmotion);
-            intent.putExtra("selectedSituation", selectedSituation);
-            intent.putExtra("reason", reason);
+            // Create a bundle to carry all the collected data
+            Bundle bundle = new Bundle();
+            bundle.putString("selectedEmotion", selectedEmotion);
+            bundle.putString("selectedSituation", selectedSituation);
+            bundle.putString("reason", reason);
+
             if (imagePath != null) {
-                intent.putExtra("imagePath", imagePath);
+                bundle.putString("imagePath", imagePath);
             }
-            startActivity(intent);
+
+            // Create an intent to start the next activity
+            Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ProfilePageActivity.class);
+
+            // Attach the bundle to the intent
+            intent.putExtras(bundle);
+
+            // Start the activity
+            startActivity(intent);  // Start ProfilePageActivity
             finish();  // Close the current activity
         });
     }
-    //
 
     // This function simulates selecting an image (You need to implement actual image selection logic)
     private void selectImage() {

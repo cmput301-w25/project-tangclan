@@ -76,30 +76,27 @@ public class ProfilePageActivity extends AppCompatActivity {
 
     private void setupProfileListView() {
         if (userProfile != null && userProfile.getMoodEventBook() != null) {
-            // Create a custom adapter just for this user's mood events
-            ArrayList<MoodEvent> moodEventList = (ArrayList<MoodEvent>) userProfile.getMoodEventBook().getMoodEventList();
-
-
-
+            // Create a custom adapter using ProfileHistoryAdapter which has all the proper formatting
+            adapter = new ProfileHistoryAdapter(this, userProfile);
 
             // Set the adapter on the ListView
             profileArrayListView.setAdapter(adapter);
 
-            // Make sure the ListView has a proper height - important if it's not showing items
+            // Adjust ListView height if needed
             ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
-            params.height = 300; // Set an appropriate height or calculate based on items
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
             profileArrayListView.setLayoutParams(params);
         }
     }
 
     private void processMoodEventData() {
-        // Retrieve data passed from UploadPictureForMoodEventActivity
-        Intent intent = getIntent();
-        if (intent.hasExtra("selectedEmotion")) {
-            String selectedEmotion = intent.getStringExtra("selectedEmotion");
-            String selectedSituation = intent.getStringExtra("selectedSituation");
-            String reason = intent.getStringExtra("reason");
-            String imagePath = intent.getStringExtra("imagePath");
+        // Retrieve the Bundle data passed from UploadPictureForMoodEventActivity
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            String selectedEmotion = bundle.getString("selectedEmotion");
+            String selectedSituation = bundle.getString("selectedSituation");
+            String reason = bundle.getString("reason");
+            String imagePath = bundle.getString("imagePath");
 
             // Create a new MoodEvent
             MoodEvent newMoodEvent;

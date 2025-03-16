@@ -52,17 +52,26 @@ public class AddEmotionActivity extends AppCompatActivity {
         Button btnCancel = findViewById(R.id.btnCancelEmotion);
         btnCancel.setOnClickListener(v -> finish());
 
-        // Set up next button to navigate to AddReasonActivity
+        // Set up next button to navigate to AddSocialSituationActivity
         Button btnNext = findViewById(R.id.btnNextEmotion);
         btnNext.setOnClickListener(v -> {
             if (selectedEmotion == null) {
                 Toast.makeText(this, "Please select an emotion", Toast.LENGTH_SHORT).show();
                 return;
-            } //
-            // Pass selected emotion to AddReasonActivity
+            }
+
+            // Create a bundle to carry the selected emotion
+            Bundle bundle = new Bundle();
+            bundle.putString("selectedEmotion", selectedEmotion);  // Add selectedEmotion to the bundle
+
+            // Create an intent to start the next activity
             Intent intent = new Intent(AddEmotionActivity.this, AddSocialSituationActivity.class);
-            intent.putExtra("selectedEmotion", selectedEmotion);  // Send the selected emotion to the next activity
-            startActivity(intent);  // Start AddReasonActivity
+
+            // Attach the bundle to the intent
+            intent.putExtras(bundle);
+
+            // Start the activity
+            startActivity(intent);  // Start AddSocialSituationActivity
         });
 
         // Set up the close button (ImageView) to navigate to FeedActivity

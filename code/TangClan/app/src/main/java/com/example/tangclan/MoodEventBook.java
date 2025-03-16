@@ -172,7 +172,7 @@ public class MoodEventBook {
     }
 
     public List<MoodEvent> getMoodEventList() {
-        return new ArrayList<>();
+        return new ArrayList<>(moodEvents);
     }
 }
 

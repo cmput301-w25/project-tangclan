@@ -32,7 +32,11 @@ import java.util.Map;
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
     private String username;
+
+    private Context context;
     private Map<MoodEvent, String> moodToUsernameMap;
+
+
 
     /**
      * Constructor for the ProfileHistoryAdapter
@@ -106,24 +110,24 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         ImageView moodImageView = view.findViewById(R.id.mood_event_image);
 
         // Set the emotional state
-        emotionTextView.setText(spannableUsernameEmotion); //
+        emotionTextView.setText(spannableUsernameEmotion); // username and emotional state
 
-        // Set the social situation
-        situationTextView.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
+        // Set the social situation (if present, otherwise default message)
+        situationTextView.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation specified");
 
-        // Set the reason
+        // Set the reason (if present, otherwise default message)
         reasonTextView.setText(moodEvent.getReason() != null && !moodEvent.getReason().isEmpty() ? moodEvent.getReason() : "No reason specified");
 
         // Set the post date and time
         dateTextView.setText(moodEvent.getPostDate().toString());
         timeTextView.setText(moodEvent.getPostTime().toString());
 
-        // Set the image if available
+        // Set the image (if available)
         if (moodEvent.getImage() != null) {
             moodImageView.setImageBitmap(moodEvent.getImage());
-            moodImageView.setVisibility(View.VISIBLE);  // Ensure the ImageView is visible
+            moodImageView.setVisibility(View.VISIBLE); // Show image
         } else {
-            moodImageView.setVisibility(View.GONE);  // Hide the ImageView if no image is available
+            moodImageView.setVisibility(View.GONE); // Hide image if not available
         }
 
         return view;
