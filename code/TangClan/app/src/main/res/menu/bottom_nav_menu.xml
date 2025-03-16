@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_map"
+        android:icon="@drawable/baseline_location_on_24"/> <!-- Replace with your icon -->
+
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/baseline_home_24"/>  <!-- Replace with your icon -->
+
+
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@drawable/baseline_manage_search_24" /> <!-- Replace with your icon -->
+
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/baseline_person_24" /> <!-- Replace with your icon -->
+
+    <item
+        android:id="@+id/nav_add"
+        android:icon="@drawable/baseline_add_box_24" />
+</menu>
