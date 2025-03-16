@@ -119,7 +119,8 @@
             android:layout_height="80dp"
             android:layout_below="@+id/edit_profil_button"
             android:layout_marginTop="42dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            "/>
 
 
     </RelativeLayout>
