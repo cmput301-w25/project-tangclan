@@ -30,9 +30,9 @@ public class MoodEvent implements Serializable {
     private int mid;
     private LocalTime postTime;
     private LocalDate postDate;
-    private ArrayList<String> triggers = null;
     private Mood mood;
-    private String situation = null;
+    private String reason = null;
+    private ArrayList<String> situation = null;
     private Bitmap image = null;
     private Double latitude = null;
     private Double longitude = null;
@@ -63,62 +63,59 @@ public class MoodEvent implements Serializable {
      * constructor for MoodEvent with trigger
      *
      * @param emotionalState emotional state used for the Mood constructor
-     * @param trigger        optional list of strings representing the triggers for the MoodEvent
+     * @param collaborators  optional list of strings representing the collaborators for the MoodEvent
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger) {
+    public MoodEvent(String emotionalState, ArrayList<String> collaborators) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
-        this.triggers = trigger;
+        this.situation = collaborators;
     }
 
     /**
      * constructor for MoodEvent with social situation
      *
      * @param emotionalState emotional state used for the Mood constructor
-     * @param situation      optional string representing a social situation (20 char or 3 word max)
+     * @param reason      optional string representing a social situation (200 char max)
      */
-    public MoodEvent(String emotionalState, String situation) {
+    public MoodEvent(String emotionalState, String reason) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
 
-        // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
-
-        // raise an exception if the social situation exceeds length or word limit
-        if ((situation.length() > 20) || (spaceCount > 2)) {
+        // raise an exception if the reason exceeds length limit
+        if (reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
-        this.situation = situation;
+        this.reason = reason;
     }
 
     /**
      * constructor for MoodEvent with trigger and situation
      *
      * @param emotionalState emotional state used for the Mood constructor
-     * @param trigger        list of strings representing the triggers for the MoodEvent
-     * @param situation      optional string representing a social situation (20 char or 3 word max)
+     * @param collaborators       list of strings representing the collaborators for the MoodEvent
+     * @param reason      optional string representing a social situation (20 char or 3 word max)
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger, String situation) {
+    public MoodEvent(String emotionalState, ArrayList<String> collaborators, String reason) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
-        this.triggers = trigger;
+        this.situation = collaborators;
 
         // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
+        int spaceCount = (int) reason.chars().filter(ch -> ch == ' ').count();
 
-        // raise an exception if the social situation exceeds length or word limit
-        if ((situation.length() > 20) || (spaceCount > 2)) {
+        // raise an exception if the reason exceeds length limit
+        if (reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
-        this.situation = situation;
+        this.reason = reason;
     }
 
     // getters, setters
@@ -169,12 +166,17 @@ public class MoodEvent implements Serializable {
     }
 
 
-    public Optional<ArrayList<String>> getTriggers() {
-        return Optional.of(this.triggers);
+    /**
+     * Getter for the list of collaborators of the Mood Event
+     * @return
+     *      An optional object containing either null, or a list of collaborator usernames
+     */
+    public Optional<ArrayList<String>> getCollaborators() {
+        return Optional.of(this.situation);
     }
 
-    public Optional<String> getSituation() {
-        return Optional.of(this.situation);
+    public Optional<String> getReason() {
+        return Optional.of(this.reason);
     }
 
     /**
@@ -188,20 +190,6 @@ public class MoodEvent implements Serializable {
 
         this.postDate = LocalDate.parse(postDate, formatter);
     }
-
-    /**
-     * sets the postTime attribute from a string
-     *
-     * @param postTime the String representation of the Post Time
-     */
-
-
-    /**
-     * sets the postDate attribute from a string
-     *
-     * @param postDate the String representation of the post Date
-     */
-
 
     /**
      * sets the postTime attribute from a string
@@ -225,10 +213,10 @@ public class MoodEvent implements Serializable {
     /**
      * Setter for the Mood event triggers
      *
-     * @param triggers The list of triggers for the triggers attribute to be set to
+     * @param collaborators The list of collaborators for the situation attribute to be set to
      */
-    public void setTriggers(ArrayList<String> triggers) {
-        this.triggers = triggers;
+    public void setCollaborators(ArrayList<String> collaborators) {
+        this.situation = collaborators;
     }
 
 
@@ -244,18 +232,18 @@ public class MoodEvent implements Serializable {
     /**
      * Setter for the MoodEvent situation
      *
-     * @param situation The String situation for the situation attribute to be set to
+     * @param reason The String situation for the situation attribute to be set to
      */
-    public void setSituation(String situation) {
+    public void setReason(String reason) {
         // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
+        int spaceCount = (int) reason.chars().filter(ch -> ch == ' ').count();
 
         // raise an exception if the social situation exceeds length or word limit
-        if ((situation.length() > 20) || (spaceCount > 2)) {
+        if ((reason.length() > 20) || (spaceCount > 2)) {
             throw new IllegalArgumentException();
         }
 
-        this.situation = situation;
+        this.reason = reason;
     }
 
     /**
@@ -361,8 +349,8 @@ public class MoodEvent implements Serializable {
         Map<String, Object> moodEventFields = Map.of(
                 "mid", this.mid,
                 "emotionalState", this.mood.getEmotion(),
-                "triggers", this.triggers,
                 "situation", this.situation,
+                "reason", this.reason,
                 "image", imageString,
                 "datePosted", dateString,
                 "timePosted", timeString
