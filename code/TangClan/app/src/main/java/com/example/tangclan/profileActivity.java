@@ -38,6 +38,8 @@ import java.util.List;
  *      US 1.06.01
  *              TODO: longclick mechanism to be able to delete mood event
  *              TODO: remove from database
+ *
+ *      TODO: handle collaborators
  */
 public class profileActivity extends AppCompatActivity {
     TextView usernameText;

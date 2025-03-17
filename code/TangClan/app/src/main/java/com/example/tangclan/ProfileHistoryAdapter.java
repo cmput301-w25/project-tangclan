@@ -30,7 +30,7 @@ import java.util.Map;
  * ArrayAdapter wrapper for the Profile History.
  * RELATED USER STORIES:
  *      US 01.04.01
- *
+ *      TODO: handle collabs
  */
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
@@ -103,42 +103,18 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);
 
-        // logic for dynamically populating the ChipGroup
-        ChipGroup triggers = view.findViewById(R.id.trigger_tags);
-
         usernameEmotion.setText(spannableUsernameEmotion);
-        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
+        situation.setText(moodEvent.getReason().isPresent() ? moodEvent.getReason().get() : "No reason");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
 
         // only populate the view if situation exists - otherwise, set invisible
-        if (moodEvent.getSituation().isPresent()) {
-            situation.setText(moodEvent.getSituation().get());
+        if (moodEvent.getReason().isPresent()) {
+            situation.setText(moodEvent.getReason().get());
         } else {
             situation.setVisibility(View.INVISIBLE);
         }
-
         // only populate the view if triggers exist - otherwise, set invisible
-        if (moodEvent.getTriggers().isPresent()) {
-            for (String trigger : moodEvent.getTriggers().get()) {
-                Chip triggerChip = new Chip(getContext());
-                ViewGroup.LayoutParams chipParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                triggerChip.setLayoutParams(chipParams);
-                triggerChip.setText(trigger);
-                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
-                triggerChip.setTextColor(Color.BLACK);
-                triggerChip.setChipBackgroundColorResource(com.google.android.material.R.color.material_dynamic_neutral_variant70);
-
-                Typeface chipFont = getContext().getResources().getFont(R.font.inter);
-                triggerChip.setTypeface(chipFont);
-                triggerChip.setChipStrokeWidth(0);
-
-                triggers.addView(triggerChip);
-            }
-        } else {
-            triggers.setVisibility(View.INVISIBLE);
-        }
-
         return view;
     }
 }

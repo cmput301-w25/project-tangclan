@@ -105,13 +105,13 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
         TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
-        TextView situation = view.findViewById(R.id.situation);
+        TextView reason = view.findViewById(R.id.situation);
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);
         ImageView imageView = view.findViewById(R.id.mood_event_image);  // Get the ImageView
 
         usernameEmotion.setText(spannableUsernameEmotion);
-        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
+        reason.setText(moodEvent.getReason().isPresent() ? moodEvent.getReason().get() : "No reason");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
 
