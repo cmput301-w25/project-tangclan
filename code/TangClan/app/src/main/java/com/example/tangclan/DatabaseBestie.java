@@ -313,8 +313,6 @@ public class DatabaseBestie {
             event.setMid(mid);
             Map<String, String> data = Map.of("postedBy", uid);
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
-                            .set(data);
-            moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                     .set(event.prepFieldsForDatabase(), SetOptions.merge());
         });
     }
@@ -367,8 +365,8 @@ public class DatabaseBestie {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             int mid = parseInt(document.getString("mid")); // will never return null as mid is set when adding an event
                             String emotionalState = document.getString("emotionalState");
-                            String situation = document.getString("situation");
-                            ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                            String reason = document.getString("reason");
+                            ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
 
@@ -382,7 +380,7 @@ public class DatabaseBestie {
                                 image = null;
                             }
 
-                            MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                            MoodEvent moodEvent = new MoodEvent(emotionalState, collaborators, reason);
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
@@ -416,8 +414,8 @@ public class DatabaseBestie {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             int mid = parseInt(document.getString("mid")); // will never return null as mid is set when adding an event
                             String emotionalState = document.getString("emotionalState");
-                            String situation = document.getString("situation");
-                            ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                            String reason = document.getString("reason");
+                            ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
 
@@ -431,7 +429,7 @@ public class DatabaseBestie {
                                 image = null;
                             }
 
-                            MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                            MoodEvent moodEvent = new MoodEvent(emotionalState, collaborators, reason);
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
@@ -506,8 +504,8 @@ public class DatabaseBestie {
 
                         int mid = parseInt(document.getString("mid"));
                         String emotionalState = document.getString("emotionalState");
-                        String situation = document.getString("situation");
-                        ArrayList<String> triggers = (ArrayList<String>) document.get("triggers");
+                        String reason = document.getString("reason");
+                        ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                         String postDate = document.getString("datePosted");
                         String postTime = document.getString("timePosted");
 
@@ -521,7 +519,7 @@ public class DatabaseBestie {
                             image = null;
                         }
 
-                        MoodEvent moodEvent = new MoodEvent(emotionalState, triggers, situation);
+                        MoodEvent moodEvent = new MoodEvent(emotionalState, collaborators, reason);
                         moodEvent.setPostDate(postDate);
                         moodEvent.setPostTime(postTime);
                         moodEvent.setImage(image);

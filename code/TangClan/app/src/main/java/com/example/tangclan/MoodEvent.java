@@ -60,7 +60,7 @@ public class MoodEvent implements Serializable {
     }
 
     /**
-     * constructor for MoodEvent with trigger
+     * constructor for MoodEvent with collaborators
      *
      * @param emotionalState emotional state used for the Mood constructor
      * @param collaborators  optional list of strings representing the collaborators for the MoodEvent
@@ -94,11 +94,11 @@ public class MoodEvent implements Serializable {
     }
 
     /**
-     * constructor for MoodEvent with trigger and situation
+     * constructor for MoodEvent with collaborators and reason
      *
      * @param emotionalState emotional state used for the Mood constructor
      * @param collaborators       list of strings representing the collaborators for the MoodEvent
-     * @param reason      optional string representing a social situation (20 char or 3 word max)
+     * @param reason      optional string representing reason (200 char max)
      */
     public MoodEvent(String emotionalState, ArrayList<String> collaborators, String reason) {
         this.postTime = LocalTime.now();
@@ -175,6 +175,11 @@ public class MoodEvent implements Serializable {
         return Optional.of(this.situation);
     }
 
+    /**
+     * Getter for the reason of the MoodEvent
+     * @return
+     *      The 200-or-less reason of the MoodEvent
+     */
     public Optional<String> getReason() {
         return Optional.of(this.reason);
     }
@@ -211,7 +216,7 @@ public class MoodEvent implements Serializable {
     }
 
     /**
-     * Setter for the Mood event triggers
+     * Setter for the Mood event collaborators
      *
      * @param collaborators The list of collaborators for the situation attribute to be set to
      */
@@ -232,14 +237,11 @@ public class MoodEvent implements Serializable {
     /**
      * Setter for the MoodEvent situation
      *
-     * @param reason The String situation for the situation attribute to be set to
+     * @param reason The String reason for the reason attribute to be set to
      */
     public void setReason(String reason) {
-        // convert into stream and count the number of spaces
-        int spaceCount = (int) reason.chars().filter(ch -> ch == ' ').count();
-
-        // raise an exception if the social situation exceeds length or word limit
-        if ((reason.length() > 20) || (spaceCount > 2)) {
+        // raise an exception if the reason exceeds the length limit
+        if (reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
@@ -349,7 +351,7 @@ public class MoodEvent implements Serializable {
         Map<String, Object> moodEventFields = Map.of(
                 "mid", this.mid,
                 "emotionalState", this.mood.getEmotion(),
-                "situation", this.situation,
+                "collaborators", this.situation,
                 "reason", this.reason,
                 "image", imageString,
                 "datePosted", dateString,
