@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <!-- Top bar -->
@@ -28,11 +28,12 @@
             android:layout_weight="1" />
 
         <ImageView
+            android:id="@+id/closeIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/baseline_cancel_24"
             android:contentDescription="Close"
-            android:id="@+id/closeIcon" />
+             />
     </LinearLayout>
 
 
@@ -46,6 +47,7 @@
         android:textSize="22sp"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"/>
+
 
     <TextView
         android:id="@+id/textView7"
@@ -62,10 +64,20 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/reason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="What's going on?" />
     </com.google.android.material.textfield.TextInputLayout>
+
+
+    <TextView
+        android:id="@+id/charCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="viewEnd" />
+
+
 
     <Button
         android:id="@+id/buttonSaveText"
@@ -103,9 +115,9 @@
             android:text="Back" />
 
         <Button
-            android:id="@+id/btnUploadImage"
+            android:id="@+id/btnNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save" />
+            android:text="Next" />
     </LinearLayout>
 </LinearLayout>
