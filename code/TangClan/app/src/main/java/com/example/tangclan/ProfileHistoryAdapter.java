@@ -132,4 +132,5 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
         return view;
     }
+
 }
