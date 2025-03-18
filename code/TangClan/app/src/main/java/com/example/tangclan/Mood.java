@@ -4,6 +4,7 @@ package com.example.tangclan;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -41,6 +42,7 @@ public class Mood {
                 "surprised",
                 "terrified"));
         if (!(emotionsList.contains(emotion))) {
+            Log.e("no", emotion);
             throw new IllegalArgumentException();
         }
 

@@ -69,19 +69,6 @@ public class Feed {
     }
 
     /**
-     * Filters the Mood Events in the feed by triggers
-     * @param triggers
-     *      A list of triggers to match
-     * @return
-     *      The Mood Events with any one of the matching triggers
-     */
-    public List<MoodEvent> filterByTriggers(List<String> triggers) {
-        return feedEvents.stream()
-                .filter(event -> event.getTriggers().isPresent() && event.getTriggers().stream().anyMatch(triggers::contains))
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Filters MoodEvents whose situations match the keyword
      * @param keywords
      *      The keywords to match
@@ -90,8 +77,8 @@ public class Feed {
      */
     public List<MoodEvent> filterBySituationKeywords(List<String> keywords) {
         return feedEvents.stream()
-                .filter(event -> event.getSituation().isPresent() && keywords.stream()
-                        .anyMatch(keyword -> event.getSituation().get().toLowerCase().contains(keyword.toLowerCase())))
+                .filter(event -> event.getReason().isPresent() && keywords.stream()
+                        .anyMatch(keyword -> event.getReason().get().toLowerCase().contains(keyword.toLowerCase())))
                 .collect(Collectors.toList());
     }
 

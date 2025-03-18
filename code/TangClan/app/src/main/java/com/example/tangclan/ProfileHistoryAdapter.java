@@ -3,23 +3,21 @@ package com.example.tangclan;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.google.android.material.chip.Chip;
-import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +33,11 @@ import java.util.Map;
 public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
     private String username;
+
+    private Context context;
     private Map<MoodEvent, String> moodToUsernameMap;
+
+
 
     /**
      * Constructor for the ProfileHistoryAdapter
@@ -62,6 +64,8 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         // Add the mood events to the adapter's data source
         addAll(moodEvents);
     }
+
+
 
     /**
      * Creates and recycles the view for the ListView item
@@ -94,49 +98,46 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
-        TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
-        TextView situation = view.findViewById(R.id.situation);
-        TextView date = view.findViewById(R.id.date_text);
-        TextView time = view.findViewById(R.id.time_text);
 
-        // logic for dynamically populating the ChipGroup
-        ChipGroup triggers = view.findViewById(R.id.trigger_tags);
+        int moodColor = moodEvent.getMood().getColor(getContext());
+        int transparentMoodColor = Color.argb(178, Color.red(moodColor), Color.green(moodColor), Color.blue(moodColor)); // 128 = 50% opacity
+        view.setBackgroundColor(transparentMoodColor);
 
-        usernameEmotion.setText(spannableUsernameEmotion);
-        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
-        date.setText(moodEvent.getPostDate().toString());
-        time.setText(moodEvent.getPostTime().toString());
+        // Find views by ID
+        TextView emotionTextView = view.findViewById(R.id.username_emotional_state);
+        TextView situationTextView = view.findViewById(R.id.situation);
+        TextView reasonTextView = view.findViewById(R.id.reason);
+        TextView dateTextView = view.findViewById(R.id.date_text);
+        TextView timeTextView = view.findViewById(R.id.time_text);
+        ImageView moodImageView = view.findViewById(R.id.mood_event_image);
+        ImageView moodIcon = view.findViewById(R.id.mood_icon);
 
-        // only populate the view if situation exists - otherwise, set invisible
-        if (moodEvent.getSituation().isPresent()) {
-            situation.setText(moodEvent.getSituation().get());
-        } else {
-            situation.setVisibility(View.INVISIBLE);
+        Drawable emoticonDrawable = moodEvent.getMood().getEmoticon(getContext());
+        if (emoticonDrawable != null) {
+            moodIcon.setImageDrawable(emoticonDrawable);  // Use setImageDrawable to display the icon
         }
 
-        // only populate the view if triggers exist - otherwise, set invisible
-        if (moodEvent.getTriggers().isPresent()) {
-            for (String trigger : moodEvent.getTriggers().get()) {
-                Chip triggerChip = new Chip(getContext());
-                ViewGroup.LayoutParams chipParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                triggerChip.setLayoutParams(chipParams);
-                triggerChip.setText(trigger);
-                triggerChip.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12); // use SP to set Text Size
-                triggerChip.setTextColor(Color.BLACK);
-                triggerChip.setChipBackgroundColorResource(com.google.android.material.R.color.material_dynamic_neutral_variant70);
 
-                Typeface chipFont = getContext().getResources().getFont(R.font.inter);
-                triggerChip.setTypeface(chipFont);
-                triggerChip.setChipStrokeWidth(0);
+        // Set the emotional state
+        emotionTextView.setText(spannableUsernameEmotion); // username and emotional state
 
-                triggers.addView(triggerChip);
-            }
+        // Set the social situation (if present, otherwise default message)
+
+        // Set the reason (if present, otherwise default message)
+        reasonTextView.setText(moodEvent.getReason().isPresent() && !(moodEvent.getReason().get().isEmpty()) ? moodEvent.getReason().get() : "No reason specified");
+
+        // Set the post date and time
+        dateTextView.setText(moodEvent.getPostDate().toString());
+        timeTextView.setText(moodEvent.getPostTime().toString());
+
+        // Set the image (if available)
+        if (moodEvent.getImage() != null) {
+            moodImageView.setImageBitmap(moodEvent.getImage());
+            moodImageView.setVisibility(View.VISIBLE); // Show image
         } else {
-            triggers.setVisibility(View.INVISIBLE);
+            moodImageView.setVisibility(View.GONE); // Hide image if not available
         }
 
         return view;

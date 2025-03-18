@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -30,9 +31,9 @@ public class MoodEvent implements Serializable {
     private int mid;
     private LocalTime postTime;
     private LocalDate postDate;
-    private ArrayList<String> triggers = null;
     private Mood mood;
-    private String situation = null;
+    private String reason = null;
+    private ArrayList<String> situation = null;
     private Bitmap image = null;
     private Double latitude = null;
     private Double longitude = null;
@@ -60,65 +61,61 @@ public class MoodEvent implements Serializable {
     }
 
     /**
-     * constructor for MoodEvent with trigger
+     * constructor for MoodEvent with collaborators
      *
      * @param emotionalState emotional state used for the Mood constructor
-     * @param trigger        optional list of strings representing the triggers for the MoodEvent
+     * @param collaborators  optional list of strings representing the collaborators for the MoodEvent
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger) {
+    public MoodEvent(String emotionalState, ArrayList<String> collaborators) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
-        this.triggers = trigger;
+        this.situation = collaborators;
     }
 
     /**
      * constructor for MoodEvent with social situation
      *
      * @param emotionalState emotional state used for the Mood constructor
-     * @param situation      optional string representing a social situation (20 char or 3 word max)
+     * @param reason      optional string representing a social situation (200 char max)
      */
-    public MoodEvent(String emotionalState, String situation) {
+    public MoodEvent(String emotionalState, String reason) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
 
-        // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
-
-        // raise an exception if the social situation exceeds length or word limit
-        if ((situation.length() > 20) || (spaceCount > 2)) {
+        // raise an exception if the reason exceeds length limit
+        if (reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
-        this.situation = situation;
+        this.reason = reason;
     }
 
     /**
-     * constructor for MoodEvent with trigger and situation
+     * constructor for MoodEvent with collaborators and reason
      *
      * @param emotionalState emotional state used for the Mood constructor
-     * @param trigger        list of strings representing the triggers for the MoodEvent
-     * @param situation      optional string representing a social situation (20 char or 3 word max)
+     * @param collaborators       list of strings representing the collaborators for the MoodEvent
+     * @param reason      optional string representing reason (200 char max)
      */
-    public MoodEvent(String emotionalState, ArrayList<String> trigger, String situation) {
+    public MoodEvent(String emotionalState, ArrayList<String> collaborators, String reason) {
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
 
         this.mood = new Mood(emotionalState);
-        this.triggers = trigger;
+        this.situation = collaborators;
 
         // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
 
-        // raise an exception if the social situation exceeds length or word limit
-        if ((situation.length() > 20) || (spaceCount > 2)) {
+        // raise an exception if the reason exceeds length limit
+        if (reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
-        this.situation = situation;
+        this.reason = reason;
     }
 
     // getters, setters
@@ -169,12 +166,22 @@ public class MoodEvent implements Serializable {
     }
 
 
-    public Optional<ArrayList<String>> getTriggers() {
-        return Optional.of(this.triggers);
+    /**
+     * Getter for the list of collaborators of the Mood Event
+     * @return
+     *      An optional object containing either null, or a list of collaborator usernames
+     */
+    public Optional<ArrayList<String>> getCollaborators() {
+        return Optional.of(this.situation);
     }
 
-    public Optional<String> getSituation() {
-        return Optional.of(this.situation);
+    /**
+     * Getter for the reason of the MoodEvent
+     * @return
+     *      The 200-or-less reason of the MoodEvent
+     */
+    public Optional<String> getReason() {
+        return Optional.of(this.reason);
     }
 
     /**
@@ -183,25 +190,11 @@ public class MoodEvent implements Serializable {
      * @param postDate the String representation of the post Date
      */
     public void setPostDate(String postDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
 
 
         this.postDate = LocalDate.parse(postDate, formatter);
     }
-
-    /**
-     * sets the postTime attribute from a string
-     *
-     * @param postTime the String representation of the Post Time
-     */
-
-
-    /**
-     * sets the postDate attribute from a string
-     *
-     * @param postDate the String representation of the post Date
-     */
-
 
     /**
      * sets the postTime attribute from a string
@@ -223,12 +216,12 @@ public class MoodEvent implements Serializable {
     }
 
     /**
-     * Setter for the Mood event triggers
+     * Setter for the Mood event collaborators
      *
-     * @param triggers The list of triggers for the triggers attribute to be set to
+     * @param collaborators The list of collaborators for the situation attribute to be set to
      */
-    public void setTriggers(ArrayList<String> triggers) {
-        this.triggers = triggers;
+    public void setCollaborators(ArrayList<String> collaborators) {
+        this.situation = collaborators;
     }
 
 
@@ -244,18 +237,15 @@ public class MoodEvent implements Serializable {
     /**
      * Setter for the MoodEvent situation
      *
-     * @param situation The String situation for the situation attribute to be set to
+     * @param reason The String reason for the reason attribute to be set to
      */
-    public void setSituation(String situation) {
-        // convert into stream and count the number of spaces
-        int spaceCount = (int) situation.chars().filter(ch -> ch == ' ').count();
-
-        // raise an exception if the social situation exceeds length or word limit
-        if ((situation.length() > 20) || (spaceCount > 2)) {
+    public void setReason(String reason) {
+        // raise an exception if the reason exceeds the length limit
+        if (reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
-        this.situation = situation;
+        this.reason = reason;
     }
 
     /**
@@ -326,7 +316,7 @@ public class MoodEvent implements Serializable {
      * @return The date in the formatter pattern
      */
     public String userFormattedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
 
         return this.postDate.format(formatter);
     }
@@ -349,24 +339,27 @@ public class MoodEvent implements Serializable {
      */
     public Map<String, Object> prepFieldsForDatabase() {
         // convert the bitmap into a storeable string
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
-        byte[] bytes = output.toByteArray();
-        String imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+        String imageString = null;
+        if (this.image != null) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
+            byte[] bytes = output.toByteArray();
+            imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+        }
 
         // convert LocalDate and LocalTime into a storeable string
         String dateString = userFormattedDate();
         String timeString = userFormattedTime();
 
-        Map<String, Object> moodEventFields = Map.of(
-                "mid", this.mid,
-                "emotionalState", this.mood.getEmotion(),
-                "triggers", this.triggers,
-                "situation", this.situation,
-                "image", imageString,
-                "datePosted", dateString,
-                "timePosted", timeString
-        );
+        Map<String, Object> moodEventFields = new HashMap<>();
+        moodEventFields.put("mid", this.mid);
+        moodEventFields.put("emotionalState", this.mood.getEmotion());
+        moodEventFields.put("collaborators", this.situation);
+        moodEventFields.put("reason", this.reason);
+        moodEventFields.put("image", imageString);
+        moodEventFields.put("datePosted", dateString);
+        moodEventFields.put("timePosted", timeString);
+
 
         return moodEventFields;
     }

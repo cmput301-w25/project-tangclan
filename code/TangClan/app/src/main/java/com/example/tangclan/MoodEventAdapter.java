@@ -96,32 +96,43 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Format the username and mood emotion
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
 
+        // Formatting username as bold
         SpannableString spannableUsername = new SpannableString(username);
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+        // Formatting emotional state with color
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
         spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext().getApplicationContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
+        // Set username and emotion on the TextView
         TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
+        usernameEmotion.setText(spannableUsernameEmotion);
+
+        // Set social situation (if present) or a default message
         TextView situation = view.findViewById(R.id.situation);
+
+        // Set the reason (if available)
+        TextView reason = view.findViewById(R.id.reason);
+        reason.setText(moodEvent.getReason().isPresent() ? moodEvent.getReason().get() : "No reason specified");
+//
+        // Set the post date and time
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);
-        ImageView imageView = view.findViewById(R.id.mood_event_image);  // Get the ImageView
-
-        usernameEmotion.setText(spannableUsernameEmotion);
-        situation.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation");
         date.setText(moodEvent.getPostDate().toString());
         time.setText(moodEvent.getPostTime().toString());
 
+        // Set the optional photo (if available)
+        ImageView imageView = view.findViewById(R.id.mood_event_image);
         if (moodEvent.getImage() != null) {
-            imageView.setImageBitmap(moodEvent.getImage());  // Set the image
-            imageView.setVisibility(View.VISIBLE);  // Ensure the ImageView is visible
+            imageView.setImageBitmap(moodEvent.getImage());
+            imageView.setVisibility(View.VISIBLE);  // Make sure the ImageView is visible
         } else {
-            imageView.setVisibility(View.GONE);  // Hide the ImageView if no image
+            imageView.setVisibility(View.GONE);  // Hide the ImageView if no image is available
         }
 
         return view;
     }
+
 }

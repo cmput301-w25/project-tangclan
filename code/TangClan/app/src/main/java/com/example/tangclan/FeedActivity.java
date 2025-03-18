@@ -1,7 +1,6 @@
 package com.example.tangclan;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,20 +9,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 
-
-import com.example.tangclan.ui.login.LogIn;
-import com.example.tangclan.ui.login.SignUpActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.List;
 
 
 //part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
@@ -70,6 +63,24 @@ public class FeedActivity extends AppCompatActivity {
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }
+
+        DatabaseBestie db = new DatabaseBestie();
+
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+
+        db.getUser(currentUser.getUid(), user -> {
+           loggedInUser.setEmail(user.getEmail());
+           loggedInUser.setUsername(user.getUsername());
+           loggedInUser.setPassword(user.getPassword());
+           loggedInUser.setDisplayName(user.getDisplayName());
+           loggedInUser.setAge(user.getAge());
+           loggedInUser.setUid(currentUser.getUid());
+           loggedInUser.initializeMoodEventBookFromDatabase(db);
+
+           Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
+        });
+
+
     }
 
     @Override
@@ -119,9 +130,9 @@ public class FeedActivity extends AppCompatActivity {
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(FeedActivity.this, profileActivity.class));
+                startActivity(new Intent(FeedActivity.this, ProfilePageActivity.class));
                 finish();
-            }
+            } //
         });
 
     }
@@ -151,15 +162,8 @@ public class FeedActivity extends AppCompatActivity {
         details.append("Mood Color: ").append(moodEvent.getMood().getColor(getBaseContext()).toString()).append("\n");
         details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
-
-        if (moodEvent.getTriggers().isPresent() && moodEvent.getTriggers().isPresent()) {
-            details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers().get())).append("\n");
-        } else {
-            details.append("Triggers: N/A\n");
-        }
-
-        if (moodEvent.getSituation().isPresent()) {
-            details.append("Situation: ").append(moodEvent.getSituation()).append("\n");
+        if (moodEvent.getReason().isPresent()) {
+            details.append("Situation: ").append(moodEvent.getReason()).append("\n");
         } else {
             details.append("Situation: N/A\n");
         }

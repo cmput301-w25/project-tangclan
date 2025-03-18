@@ -118,9 +118,11 @@ public class SignUpActivity extends AppCompatActivity {
                                             @Override
                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                 if (task.isSuccessful()) {
-                                                    bestie.addUser(new Profile(displayName, username, password, email, null));  // replace null with default image
+                                                    String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                                    bestie.addUser(uid, new Profile(displayName, username, password, email, null));  // replace null with default image
 
                                                     LoggedInUser loggedInUser = LoggedInUser.getInstance();
+                                                    loggedInUser.setUid(uid);
                                                     loggedInUser.setEmail(email);
                                                     loggedInUser.setUsername(username);
                                                     loggedInUser.setPassword(password);
@@ -179,8 +181,5 @@ public class SignUpActivity extends AppCompatActivity {
         finish();
 
     }*/
-
-    }
-    */
 
 }

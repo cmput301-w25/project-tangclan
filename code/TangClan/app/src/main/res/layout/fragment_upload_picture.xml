@@ -32,7 +32,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="Close"
-            android:src="@drawable/ic_close" />
+            android:src="@drawable/baseline_cancel_24" />
     </LinearLayout>
 
 
@@ -99,7 +99,7 @@
         android:layout_marginLeft="40dp"/>
 
     <Button
-        android:id="@+id/buttonSelectImage"
+        android:id="@+id/btnUploadImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Image"
