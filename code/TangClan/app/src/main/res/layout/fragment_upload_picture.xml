@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/main"
+    android:layout_height="match_parent"
     android:padding="16dp">
-
+    <!--Change-->
     <!-- Top bar -->
 
     <LinearLayout
@@ -15,24 +16,24 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="Owl icon"
-            android:src="@drawable/ic_owl" />
+            android:src="@drawable/ic_owl"
+            android:contentDescription="Owl icon" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
             android:text="moodly"
+            android:textStyle="bold"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:gravity="center"
+            android:layout_weight="1" />
 
         <ImageView
-            android:id="@+id/closeIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:src="@drawable/baseline_cancel_24"
             android:contentDescription="Close"
-            android:src="@drawable/ic_close" />
+            android:id="@+id/closeIcon" />
     </LinearLayout>
 
 
@@ -46,7 +47,6 @@
         android:textSize="22sp"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"/>
-
 
     <TextView
         android:id="@+id/textView7"
@@ -63,22 +63,11 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
-
-            android:id="@+id/reason"
-
+            android:id="@+id/editTextReason"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="What's going on?" />
     </com.google.android.material.textfield.TextInputLayout>
-
-
-    <TextView
-        android:id="@+id/charCount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="viewEnd" />
-
-
 
     <Button
         android:id="@+id/buttonSaveText"
@@ -88,12 +77,10 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"/>
 
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="300dp"
         android:layout_height="300dp"
-
         android:scaleType="centerCrop"
         android:background="@android:color/darker_gray"
         android:layout_marginLeft="40dp"/>
@@ -102,15 +89,14 @@
         android:id="@+id/buttonSelectImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Image"
-        android:layout_marginTop="20dp"/>
-
+        android:layout_marginTop="20dp"
+        android:text="Select Image" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_marginTop="24dp">
 
         <Button
             android:id="@+id/btnBackEnvironment"
@@ -119,9 +105,9 @@
             android:text="Back" />
 
         <Button
-            android:id="@+id/btnNext"
+            android:id="@+id/btnUploadImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next" />
+            android:text="Save" />
     </LinearLayout>
 </LinearLayout>

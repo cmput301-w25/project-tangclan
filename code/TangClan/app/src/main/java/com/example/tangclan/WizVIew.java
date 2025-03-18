@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import android.graphics.Bitmap;
+
 import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 
@@ -7,6 +9,8 @@ public class WizVIew extends ViewModel {
     private String emotionalState;
     private ArrayList<String> triggers = new ArrayList<>();
     private String socialSituation;
+    private Bitmap optionalPicture;
+    private String reason;
 
     public String getEmotionalState() {
         return emotionalState;
@@ -27,6 +31,21 @@ public class WizVIew extends ViewModel {
     }
     public void setSocialSituation(String socialSituation) {
         this.socialSituation = socialSituation;
+    }
+    public Bitmap getOptionalPicture() {
+        return optionalPicture;
+    }
+
+    public void setOptionalPicture(Bitmap optionalPicture) {
+        this.optionalPicture = optionalPicture;
+    }
+
+    public void setReason(String reason){
+        this.reason = reason;
+    }
+
+    public String getReason() {
+        return reason;
     }
 }
 

@@ -112,7 +112,7 @@ public class FeedActivity extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(FeedActivity.this, profileActivity.class));
                 finish();
-            }
+            } //
         });
 
     }
