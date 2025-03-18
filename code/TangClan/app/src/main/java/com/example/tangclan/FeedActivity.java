@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,6 +24,10 @@ public class FeedActivity extends AppCompatActivity {
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
+    private TextView followingTab;
+    private TextView forYouTab;
+    private View rectangleFollowing;
+    private View rectangleForYou;
 
     FirebaseAuth auth;
     FirebaseUser currentUser;
@@ -64,6 +70,12 @@ public class FeedActivity extends AppCompatActivity {
         // Initialize the ListView
         listViewFeed = findViewById(R.id.listViewFeed);
 
+        // Initialize tab views for feed switching
+        followingTab = findViewById(R.id.following);
+        forYouTab = findViewById(R.id.for_you);
+        rectangleFollowing = findViewById(R.id.rectangle_1);
+        rectangleForYou = findViewById(R.id.rectangle_2);
+
         // Retrieve the LoggedInUser instance
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
 
@@ -82,8 +94,11 @@ public class FeedActivity extends AppCompatActivity {
         // Initialize the Feed with the user's FollowingBook and MoodEventBook
         feed = new Feed(followingBook, moodEventBook);
 
-        // Load the feed
-        loadFeed();
+        // Set up tab click listeners
+        setupTabListeners();
+
+        // Load the following feed by default (3 most recent events)
+        loadFollowingFeed();
 
         // Add Emotion button
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
@@ -115,13 +130,51 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     /**
-     * Loads the mood event feed and updates the list adapter.
+     * Sets up tab listeners for switching between Following and For You feeds
      */
-    private void loadFeed() {
-        feed.loadFeed();
-        FollowingBook followingBook = feed.getFollowingBook();  // Assuming you have this getter in Feed class.
+    private void setupTabListeners() {
+        rectangleFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadFollowingFeed();
+                // Update UI to show Following tab is active
+                rectangleFollowing.setBackgroundResource(R.drawable.rectangle_1); // Active style
+                rectangleForYou.setBackgroundResource(R.drawable.rectangle_2); // Inactive style
+            }
+        });
 
-        adapter = new MoodEventAdapter(this, followingBook);  // Pass followingBook instead of feedEvents
+        rectangleForYou.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadFullFeed();
+                // Update UI to show For You tab is active
+                rectangleFollowing.setBackgroundResource(R.drawable.rectangle_2); // Inactive style
+                rectangleForYou.setBackgroundResource(R.drawable.rectangle_1); // Active style
+            }
+        });
+    }
+
+    /**
+     * Loads only the 3 most recent mood events from followed users
+     */
+    private void loadFollowingFeed() {
+        // Load just the 3 most recent events from followed users
+        feed.loadRecentFollowingFeed();
+
+        if (feed.getFeedEvents().isEmpty()) {
+            Toast.makeText(this, "No recent mood events from people you follow", Toast.LENGTH_SHORT).show();
+        }
+
+        adapter = new MoodEventAdapter(this, feed.getFeedEvents());
+        listViewFeed.setAdapter(adapter);
+    }
+
+    /**
+     * Loads the full mood event feed
+     */
+    private void loadFullFeed() {
+        feed.loadFeed();
+        adapter = new MoodEventAdapter(this, feed.getFeedEvents());
         listViewFeed.setAdapter(adapter);
     }
 
@@ -136,14 +189,14 @@ public class FeedActivity extends AppCompatActivity {
         details.append("Mood Color: ").append(moodEvent.getMood().getColor(getBaseContext()).toString()).append("\n");
         details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
-        if (moodEvent.getTriggers().isPresent() && moodEvent.getTriggers().isPresent()) {
+        if (moodEvent.getTriggers().isPresent() && !moodEvent.getTriggers().get().isEmpty()) {
             details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers().get())).append("\n");
         } else {
             details.append("Triggers: N/A\n");
         }
 
         if (moodEvent.getSituation().isPresent()) {
-            details.append("Situation: ").append(moodEvent.getSituation()).append("\n");
+            details.append("Situation: ").append(moodEvent.getSituation().get()).append("\n");
         } else {
             details.append("Situation: N/A\n");
         }
@@ -159,5 +212,12 @@ public class FeedActivity extends AppCompatActivity {
                 .setMessage(details.toString())
                 .setPositiveButton("OK", null)
                 .show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the feed when coming back to this activity
+        loadFollowingFeed();
     }
 }

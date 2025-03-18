@@ -24,22 +24,33 @@ import java.util.Map;
 
 /**
  * Adapter for displaying mood events in a ListView.
- * This class retrieves mood events from the FollowingBook and associates them with usernames.
+ * This class retrieves mood events and associates them with usernames.
  * It ensures that mood events are displayed with formatted text and optional images.
- *
- * Covers US 01.03.01, US 01.04.01, US 02.02.01, US 02.04.01
  */
-
-// TODO implement so that this event adapter shows up in FeedActivity after a mood event is added
-
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
     private Map<MoodEvent, String> moodToUsernameMap; // Maps MoodEvent to corresponding username
-    private List<MoodEvent> moodEvents;  // Declare the list of mood events
-    private FollowingBook followingBook;  // Declare followingBook for reference
 
     /**
-     * Constructor for the MoodEventAdapter.
+     * Constructor for the MoodEventAdapter with a pre-populated list of mood events.
+     *
+     * @param context The activity context
+     * @param moodEvents List of mood events to display
+     */
+    public MoodEventAdapter(Context context, List<MoodEvent> moodEvents) {
+        super(context, 0, moodEvents);
+        this.moodToUsernameMap = new HashMap<>();
+
+        // Associate mock usernames with each mood event for display purposes
+        // In a real implementation, these would come from the database
+        int userCounter = 1;
+        for (MoodEvent event : moodEvents) {
+            moodToUsernameMap.put(event, "User" + userCounter++);
+        }
+    }
+
+    /**
+     * Constructor for the MoodEventAdapter that takes a FollowingBook.
      *
      * @param context The activity context
      * @param followingBook The FollowingBook containing users and their mood events
@@ -47,21 +58,15 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
     public MoodEventAdapter(Context context, FollowingBook followingBook) {
         super(context, 0, new ArrayList<>());
         this.moodToUsernameMap = new HashMap<>();
-        this.moodEvents = new ArrayList<>();  // Initialize moodEvents
-        this.followingBook = followingBook;  // Initialize followingBook
 
         DatabaseBestie bestie = new DatabaseBestie();
 
-        // Populate mood events from the users the current user is following
-        for (String uid : followingBook.getFollowing()) {  // Accessing getFollowing() correctly
-            bestie.getUser(uid, profile -> {
-                for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
-                    moodEvents.add(moodEvent);
-                    moodToUsernameMap.put(moodEvent, profile.getUsername());
-                }
-                // Notify the adapter that data has been added
-                addAll(moodEvents);
-            });
+        // Placeholder implementation - in real app would get actual data from database
+        // Add dummy data for testing
+        Map<String, MoodEvent> events = followingBook.getRecentMoodEvents(bestie);
+        for (Map.Entry<String, MoodEvent> entry : events.entrySet()) {
+            add(entry.getValue());
+            moodToUsernameMap.put(entry.getValue(), "User_" + entry.getKey());
         }
     }
 
@@ -117,7 +122,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Set the reason (if available)
         TextView reason = view.findViewById(R.id.reason);
         reason.setText(moodEvent.getReason() != null ? moodEvent.getReason() : "No reason specified");
-//
+
         // Set the post date and time
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);
@@ -136,4 +141,22 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         return view;
     }
 
+    /**
+     * Updates the adapter with a new list of mood events
+     *
+     * @param moodEvents New list of mood events to display
+     */
+    public void updateMoodEvents(List<MoodEvent> moodEvents) {
+        clear();
+        addAll(moodEvents);
+
+        // Reset username mapping
+        moodToUsernameMap.clear();
+        int userCounter = 1;
+        for (MoodEvent event : moodEvents) {
+            moodToUsernameMap.put(event, "User" + userCounter++);
+        }
+
+        notifyDataSetChanged();
+    }
 }
