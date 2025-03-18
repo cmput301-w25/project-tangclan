@@ -307,7 +307,7 @@ public class DatabaseBestie {
      */
     public void addMoodEvent(MoodEvent event, String month, String uid) {
         generateMid(mid -> {
-            event.setMid(mid);
+            event.setMid(String.valueOf(mid));
             Map<String, String> data = Map.of("postedBy", uid);
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                             .set(data);
@@ -326,12 +326,40 @@ public class DatabaseBestie {
      *      This is the month (ex. sep-2025) of when the to-be-updated mood event was initially added
      */
      public void updateMoodEvent(String mid, MoodEvent event, String month) {
-         moodEventsRef.document(month).collection("events")
-                 .document(String.valueOf(mid))
+         moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                  .set(event)
                  .addOnSuccessListener(aVoid -> Log.d(TAG, "MoodEvent successfully updated!"))
                  .addOnFailureListener(e -> Log.e(TAG, "Error updating MoodEvent", e));
      }
+
+    public void updateMoodEventCollaborators(String mid, String month, ArrayList<String> newCollaborators) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("collaborators", newCollaborators)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Collaborators updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating collaborators", e));
+    }
+
+    public void updateMoodEventEmotionalState(String mid, String month, String newEmotion) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("emotionalState", newEmotion)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Emotion updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating emotion", e));
+    }
+
+    public void updateMoodEventReason(String mid, String month, String newReason) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("reason", newReason)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Reason updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating reason", e));
+    }
+
+    public void updateMoodEventPhoto(String mid, String month, String photo) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("image", photo)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Photo updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating photo", e));
+    }
+
 
     /**
      * This removes an existing mood event from the "moodEvents" collection
@@ -433,6 +461,7 @@ public class DatabaseBestie {
 
                             MoodEvent moodEvent = new MoodEvent(emotionalState);
 
+                            moodEvent.setMid(midString);
                             moodEvent.setCollaborators(collaborators);
                             moodEvent.setReason(reason);
                             moodEvent.setPostDate(postDate);

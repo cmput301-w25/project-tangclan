@@ -57,9 +57,11 @@ public class TempFeedActivity extends AppCompatActivity {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditFragment form = EditFragment.newInstance("1", "Jan-2025", "happy", "Alone", "watched a movie", null, false);
-                getSupportFragmentManager()
-                        .beginTransaction().add(R.id.edit_form_container, form).commit();}
+                // EditFragment form = EditFragment.newInstance("1", "Jan-2025", "happy", "Alone", "watched a movie", null, false);
+                // getSupportFragmentManager()
+                //.beginTransaction().add(R.id.edit_form_container, form).commit();}
+
+            }
         });
     }
 }

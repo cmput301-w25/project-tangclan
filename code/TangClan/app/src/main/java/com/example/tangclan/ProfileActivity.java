@@ -20,6 +20,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.util.ArrayList;
+
 /**
  * Activity class for the profile view with mood history
  * RELATED USER STORIES:

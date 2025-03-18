@@ -2,10 +2,12 @@ package com.example.tangclan;
 
 import static androidx.core.content.ContextCompat.startActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -15,8 +17,10 @@ import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ProfilePageActivity extends AppCompatActivity {
 
@@ -88,6 +92,69 @@ public class ProfilePageActivity extends AppCompatActivity {
             ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
             profileArrayListView.setLayoutParams(params);
+
+            // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
+            profileArrayListView.setOnItemLongClickListener((parent, view, position, id) -> {
+                MoodEvent post = adapter.getItem(position); // Access from the data list
+
+                new AlertDialog.Builder(view.getContext())
+                        .setMessage("Do you want to edit or delete this mood event?")
+                        .setPositiveButton("Edit", (dialog, which) -> {
+                            // Edit mood
+                            String mid = post.getMid();
+
+                            String postDate = post.userFormattedDate();
+                            String month = postDate.substring(3);
+
+                            String emotion = post.getMoodEmotionalState();
+
+                            StringBuilder situation = new StringBuilder();
+                            Optional<ArrayList<String>> collaborators = post.getCollaborators();
+                            collaborators.ifPresent(list -> {
+                                for (String item: list ) {
+                                    situation.append(item);
+                                    situation.append(",");
+                                }
+                            });
+
+                            Optional<String> optReason = post.getReason();
+                            String reason = optReason.orElse("");
+
+                            // get Image bytes
+                            Bitmap bitmap = post.getImage();
+                            byte[] imageBytes;
+                            if (bitmap != null) {
+                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                                imageBytes = outputStream.toByteArray();
+                            } else {
+                                imageBytes = null;
+                            }
+
+                            boolean useLoc = false;
+
+                            EditFragment form = EditFragment.newInstance(mid,  month, emotion, situation.toString(), reason, imageBytes, useLoc);
+                            getSupportFragmentManager()
+                                    .beginTransaction().add(R.id.edit_form_container, form).commit();
+                        })
+                        .setNegativeButton("Delete", (dialog, which) -> {
+                            new AlertDialog.Builder(view.getContext())
+                                    .setTitle("Are you sure you want to delete this mood event?")
+                                    .setMessage("This action cannot be undone.")
+                                    .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
+                                        // Remove item from the data list, NOT the ListView itself
+                                        // moodHistoryData.remove(position);
+                                        // profileHistoryAdapter.notifyDataSetChanged(); // Notify adapter of changes
+                                        Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .setNegativeButton("No", null)
+                                    .show();
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+
+                return true; // Indicate that the long press event is consumed
+            });
         }
     }
 
