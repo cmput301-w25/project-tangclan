@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,13 +78,58 @@ public class FollowingBook {
     }
 
     /**
+     * Adds a user to the following list
+     * @param uid
+     *      the uid of the user to follow
+     */
+    public void addFollowing(String uid) {
+        if (!following.contains(uid)) {
+            following.add(uid);
+        }
+    }
+
+    /**
      * queries the database for latest MoodEvents and places them in a Map where the key is the uid
-     * of a user
-     * @return
-     *      Map with keys = uid and values = Latest Mood Event
+     * of a user. This is a temporary implementation that creates mock data until the following
+     * system is fully implemented.
+     *
+     * @param db The database connector
+     * @return Map with keys = uid and values = Latest Mood Event
      */
     public Map<String, MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
         Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
+
+        // For testing purposes until following system is implemented
+        if (following.isEmpty()) {
+            // Create some dummy events from "followed" users
+            MoodEvent event1 = new MoodEvent("Happy");
+            event1.setPostDate(String.valueOf(LocalDate.now()));
+            event1.setPostTime(LocalTime.now().minusHours(1).toString());
+            event1.setSituation("With friends");
+            uidToMoodEvent.put("user1", event1);
+
+            MoodEvent event2 = new MoodEvent("Sad");
+            event2.setPostDate(String.valueOf(LocalDate.now().minusDays(1)));
+            event2.setPostTime(LocalTime.now().toString());
+            event2.setSituation("At home");
+            uidToMoodEvent.put("user2", event2);
+
+            MoodEvent event3 = new MoodEvent("Excited");
+            event3.setPostDate(String.valueOf(LocalDate.now()));
+            event3.setPostTime(LocalTime.now().minusMinutes(30).toString());
+            event3.setSituation("Party time");
+            uidToMoodEvent.put("user3", event3);
+
+            MoodEvent event4 = new MoodEvent("Calm");
+            event4.setPostDate(String.valueOf(LocalDate.now().minusDays(2)));
+            event4.setPostTime(LocalTime.now().toString());
+            event4.setSituation("Reading");
+            uidToMoodEvent.put("user4", event4);
+
+            return uidToMoodEvent;
+        }
+
+        // Real implementation for when following is set up
         for (String followingUid : following) {
             db.getLatestMoodEvent(followingUid, latestEvent -> {
                 uidToMoodEvent.put(followingUid, latestEvent);
@@ -145,8 +192,3 @@ public class FollowingBook {
     //    return null;
     //}
 }
-
-    //private Profile getOwnerProfile() {
-    //    // Implement logic to return the profile owning this FollowingBook
-    //    return null;
-    //}

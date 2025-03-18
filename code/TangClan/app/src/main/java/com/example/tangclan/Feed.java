@@ -3,7 +3,9 @@ package com.example.tangclan;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +41,28 @@ public class Feed {
         feedEvents.addAll(followingBook.getRecentMoodEvents(new DatabaseBestie()).values());
         feedEvents.addAll(moodEventBook.getAllMoodEvents());
         sortFeedByDateTime();
+    }
+
+    /**
+     * Loads only the 3 most recent mood events from followed users
+     * Sorts by date and time in reverse chronological order
+     */
+    public void loadRecentFollowingFeed() {
+        feedEvents.clear();
+
+        // Get mood events from following users
+        Map<String, MoodEvent> followingEvents = followingBook.getRecentMoodEvents(new DatabaseBestie());
+        List<MoodEvent> sortedEvents = new ArrayList<>(followingEvents.values());
+
+        // Sort by date and time
+        sortedEvents.sort(Comparator.comparing(MoodEvent::getPostDate, Comparator.reverseOrder())
+                .thenComparing(MoodEvent::getPostTime, Comparator.reverseOrder()));
+
+        // Take only the 3 most recent events
+        int limit = Math.min(3, sortedEvents.size());
+        for (int i = 0; i < limit; i++) {
+            feedEvents.add(sortedEvents.get(i));
+        }
     }
 
     /**
