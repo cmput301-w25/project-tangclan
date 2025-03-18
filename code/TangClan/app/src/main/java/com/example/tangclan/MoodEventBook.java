@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import android.util.Log;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -33,10 +35,7 @@ public class MoodEventBook {
      * @param event The mood event to be added.
      */
     public void addMoodEvent(MoodEvent event) {
-        if (event != null) {
             moodEvents.add(event);
-            // TODO: Connect to the database and save the new mood event
-        }
     }
 
     /**

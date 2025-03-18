@@ -63,7 +63,7 @@ public class WizActivity extends AppCompatActivity {
         WizVIew vm = getWizardViewModel();
 
         // Create a MoodEvent from the ViewModel data
-        MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers(), vm.getSocialSituation());
+        //MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers(), vm.getSocialSituation());
 
         // Optionally, save it to a database or a local cache
 
@@ -71,7 +71,7 @@ public class WizActivity extends AppCompatActivity {
         Intent intent = new Intent(WizActivity.this, profileActivity.class);
 
         // Pass the MoodEvent as Serializable or Parcelable
-        intent.putExtra("moodEvent", moodEvent);
+        //intent.putExtra("moodEvent", moodEvent);
 
         // Start ProfileActivity
         startActivity(intent);

@@ -1,10 +1,11 @@
 package com.example.tangclan;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -46,6 +47,8 @@ public class ProfilePageActivity extends AppCompatActivity {
 
         // Get current user profile
         getCurrentUserProfile();
+        setupProfileListView();
+
 
         // Process incoming mood event data if it exists
         processMoodEventData();
@@ -91,9 +94,10 @@ public class ProfilePageActivity extends AppCompatActivity {
     private void processMoodEventData() {
         // Retrieve the Bundle data passed from UploadPictureForMoodEventActivity
         Bundle bundle = getIntent().getExtras();
+
         if (bundle != null) {
             String selectedEmotion = bundle.getString("selectedEmotion");
-            String selectedSituation = bundle.getString("selectedSituation");
+            ArrayList<String> selectedSituation = bundle.getStringArrayList("selectedSituation");
             String reason = bundle.getString("reason");
             String imagePath = bundle.getString("imagePath");
 
@@ -156,4 +160,5 @@ public class ProfilePageActivity extends AppCompatActivity {
         Intent intent = new Intent(this, FeedActivity.class);
         startActivity(intent);
     }
+
 }

@@ -64,12 +64,10 @@ public class FeedActivity extends AppCompatActivity {
             finish();
         }
 
-        Log.d("uid", currentUser.getUid());
-
-
         DatabaseBestie db = new DatabaseBestie();
 
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
+
         db.getUser(currentUser.getUid(), user -> {
            loggedInUser.setEmail(user.getEmail());
            loggedInUser.setUsername(user.getUsername());
@@ -78,6 +76,8 @@ public class FeedActivity extends AppCompatActivity {
            loggedInUser.setAge(user.getAge());
            loggedInUser.setUid(currentUser.getUid());
            loggedInUser.initializeMoodEventBookFromDatabase(db);
+
+           Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
         });
 
 
