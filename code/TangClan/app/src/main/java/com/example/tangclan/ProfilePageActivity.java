@@ -143,8 +143,13 @@ public class ProfilePageActivity extends AppCompatActivity {
                                     .setMessage("This action cannot be undone.")
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
-                                        // moodHistoryData.remove(position);
-                                        // profileHistoryAdapter.notifyDataSetChanged(); // Notify adapter of changes
+                                        adapter.remove(post);
+                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
+
+                                        String postDate = post.userFormattedDate();
+                                        String month = postDate.substring(3);
+
+                                        databaseBestie.deleteMoodEvent(post.getMid(), month);
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
                                     })
                                     .setNegativeButton("No", null)
