@@ -11,18 +11,18 @@
         android:layout_height="200px" />
 
 
+    <!--Change-->
+
+    <!-- Display the emotional state -->
+
     <ListView
         android:id="@+id/profile_array"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="503dp"
         android:layout_below="@+id/edit_profil_button"
         android:layout_marginTop="42dp"
         android:layout_weight="1" />
 
-
-    <!--Change-->
-
-    <!-- Display the emotional state -->
     <TextView
         android:id="@+id/username_emotional_state"
         android:layout_width="wrap_content"
