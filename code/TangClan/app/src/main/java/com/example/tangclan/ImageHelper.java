@@ -23,7 +23,10 @@ import androidx.fragment.app.Fragment;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+
 import java.io.FileOutputStream;
+
+
 import java.io.InputStream;
 
 //for US US 02.02.01
@@ -108,6 +111,7 @@ public class ImageHelper {
         return true;
     }
 
+
     /**
      * Saves a bitmap to a PNG file in the app's external files directory.
      *
@@ -138,3 +142,6 @@ public class ImageHelper {
         }
     }
 }
+
+}
+

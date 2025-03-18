@@ -119,10 +119,8 @@ public class User {
     public void post(MoodEvent event, DatabaseBestie db) {
         String postDate = event.userFormattedDate();
         // update MoodEventBook and database in parallel
-        db.addMoodEvent(event, postDate.substring(5), this.uid); // substr from 5 excludes the year
+        db.addMoodEvent(event, postDate.substring(3), this.uid); // substr from 5 excludes the year
         this.moodEventBook.addMoodEvent(event);
-
-        //update date last posted
-        this.setLastPosted(postDate);
     }
+
 }

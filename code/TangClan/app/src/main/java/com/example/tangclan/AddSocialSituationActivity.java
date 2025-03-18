@@ -3,6 +3,7 @@ package com.example.tangclan;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,6 +12,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AddSocialSituationActivity extends AppCompatActivity {
 
@@ -45,26 +49,24 @@ public class AddSocialSituationActivity extends AppCompatActivity {
 
         // Save and navigate forward
         btnSave.setOnClickListener(v -> {
-            String socialSituation = editTextSituation.getText().toString().trim();
+            String[] socialSituationList = editTextSituation.getText().toString().trim().split(",");
+            ArrayList<String> situation = new ArrayList<>(Arrays.asList(socialSituationList));
 
-            if (TextUtils.isEmpty(socialSituation)) {
+            if (situation.isEmpty()) {
                 Toast.makeText(this, "Please enter a social situation", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Save the social situation in the ViewModel
-            wizVIew.setSocialSituation(socialSituation);
+            wizVIew.setSocialSituation(situation);
 
-            // Create a bundle to carry both selectedEmotion and socialSituation
-            Bundle bundle = new Bundle();
-            bundle.putString("selectedEmotion", selectedEmotion);
-            bundle.putString("selectedSituation", socialSituation);
 
             // Create an intent to start the next activity
             Intent intent = new Intent(AddSocialSituationActivity.this, UploadPictureForMoodEventActivity.class);
 
             // Attach the bundle to the intent
-            intent.putExtras(bundle);
+            intent.putExtra("selectedEmotion", selectedEmotion);
+            intent.putStringArrayListExtra("selectedSituation", situation);
 
             // Start the activity
             startActivity(intent);  // Start UploadPictureForMoodEventActivity
