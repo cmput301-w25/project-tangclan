@@ -38,6 +38,7 @@ public class ProfilePageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        NavBarHelper.setupNavBar(this);
 
         // Initialize views
         usernameTextView = findViewById(R.id.username);

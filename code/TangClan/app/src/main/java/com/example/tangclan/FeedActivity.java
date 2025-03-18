@@ -42,6 +42,7 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
+        NavBarHelper.setupNavBar(this);
 
         // Logout button
         Button logout = findViewById(R.id.logout_butt);
@@ -51,7 +52,6 @@ public class FeedActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 // Clear the LoggedInUser instance on logout
                 LoggedInUser loggedInUser = LoggedInUser.getInstance();
-                loggedInUser.clearProfileData();
                 LoggedInUser.resetInstance();
 
                 // Redirect to the login/signup activity
@@ -108,7 +108,7 @@ public class FeedActivity extends AppCompatActivity {
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(FeedActivity.this, profileActivity.class));
+                startActivity(new Intent(FeedActivity.this, ProfilePageActivity.class));
                 finish();
             }
         });
