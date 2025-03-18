@@ -29,8 +29,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TangClan"
         tools:targetApi="31">
-        <activity android:name=".profileActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".ViewOtherProfile"
+            android:exported="false" />
+        <activity
+            android:name=".SearchUsersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".profileActivity"
+            android:exported="false" />
         <activity
             android:name=".AddEmotionActivity"
             android:exported="false" />
