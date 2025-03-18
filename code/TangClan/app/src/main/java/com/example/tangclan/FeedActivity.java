@@ -3,11 +3,13 @@ package com.example.tangclan;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,6 +63,24 @@ public class FeedActivity extends AppCompatActivity {
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }
+
+        Log.d("uid", currentUser.getUid());
+
+
+        DatabaseBestie db = new DatabaseBestie();
+
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        db.getUser(currentUser.getUid(), user -> {
+           loggedInUser.setEmail(user.getEmail());
+           loggedInUser.setUsername(user.getUsername());
+           loggedInUser.setPassword(user.getPassword());
+           loggedInUser.setDisplayName(user.getDisplayName());
+           loggedInUser.setAge(user.getAge());
+           loggedInUser.setUid(currentUser.getUid());
+           loggedInUser.initializeMoodEventBookFromDatabase(db);
+        });
+
+
     }
 
     @Override
@@ -110,7 +130,7 @@ public class FeedActivity extends AppCompatActivity {
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(FeedActivity.this, profileActivity.class));
+                startActivity(new Intent(FeedActivity.this, ProfilePageActivity.class));
                 finish();
             } //
         });

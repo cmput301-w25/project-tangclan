@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -42,6 +43,7 @@ public class ProfilePageActivity extends AppCompatActivity {
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
 
+
         // Get current user profile
         getCurrentUserProfile();
 
@@ -53,19 +55,16 @@ public class ProfilePageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Refresh the list whenever the activity is resumed
+        getCurrentUserProfile();
         setupProfileListView();
     }
 
     private void getCurrentUserProfile() {
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
-        userProfile = new Profile("Display Name", "username", "Password1!", "email@example.com", null);
+        userProfile = LoggedInUser.getInstance();
 
         // Initialize the mood event book if it doesn't exist
-        if (userProfile.getMoodEventBook() == null) {
-            userProfile.setMoodEventBook(new MoodEventBook());
-        }
-
         // Set the user information in the UI
         usernameTextView.setText(userProfile.getUsername());
         nameTextView.setText(userProfile.getDisplayName());
@@ -124,7 +123,7 @@ public class ProfilePageActivity extends AppCompatActivity {
                 }
 
                 // Add the mood event to the user's mood event book
-                userProfile.getMoodEventBook().addMoodEvent(newMoodEvent);
+                userProfile.post(newMoodEvent, databaseBestie);
 
                 // Save the updated profile to the database
                 saveProfileToDatabase();

@@ -14,6 +14,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -108,7 +109,6 @@ public class MoodEvent implements Serializable {
         this.situation = collaborators;
 
         // convert into stream and count the number of spaces
-        int spaceCount = (int) reason.chars().filter(ch -> ch == ' ').count();
 
         // raise an exception if the reason exceeds length limit
         if (reason.length() > 200) {
@@ -190,7 +190,7 @@ public class MoodEvent implements Serializable {
      * @param postDate the String representation of the post Date
      */
     public void setPostDate(String postDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
 
 
         this.postDate = LocalDate.parse(postDate, formatter);
@@ -316,7 +316,7 @@ public class MoodEvent implements Serializable {
      * @return The date in the formatter pattern
      */
     public String userFormattedDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
 
         return this.postDate.format(formatter);
     }
@@ -339,24 +339,27 @@ public class MoodEvent implements Serializable {
      */
     public Map<String, Object> prepFieldsForDatabase() {
         // convert the bitmap into a storeable string
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
-        byte[] bytes = output.toByteArray();
-        String imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+        String imageString = null;
+        if (this.image != null) {
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
+            byte[] bytes = output.toByteArray();
+            imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
+        }
 
         // convert LocalDate and LocalTime into a storeable string
         String dateString = userFormattedDate();
         String timeString = userFormattedTime();
 
-        Map<String, Object> moodEventFields = Map.of(
-                "mid", this.mid,
-                "emotionalState", this.mood.getEmotion(),
-                "collaborators", this.situation,
-                "reason", this.reason,
-                "image", imageString,
-                "datePosted", dateString,
-                "timePosted", timeString
-        );
+        Map<String, Object> moodEventFields = new HashMap<>();
+        moodEventFields.put("mid", this.mid);
+        moodEventFields.put("emotionalState", this.mood.getEmotion());
+        moodEventFields.put("collaborators", this.situation);
+        moodEventFields.put("reason", this.reason);
+        moodEventFields.put("image", imageString);
+        moodEventFields.put("datePosted", dateString);
+        moodEventFields.put("timePosted", timeString);
+
 
         return moodEventFields;
     }

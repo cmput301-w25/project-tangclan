@@ -124,10 +124,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         emotionTextView.setText(spannableUsernameEmotion); // username and emotional state
 
         // Set the social situation (if present, otherwise default message)
-        situationTextView.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation specified");
 
         // Set the reason (if present, otherwise default message)
-        reasonTextView.setText(moodEvent.getReason() != null && !moodEvent.getReason().isEmpty() ? moodEvent.getReason() : "No reason specified");
+        reasonTextView.setText(moodEvent.getReason().isPresent() && !(moodEvent.getReason().get().isEmpty()) ? moodEvent.getReason().get() : "No reason specified");
 
         // Set the post date and time
         dateTextView.setText(moodEvent.getPostDate().toString());
