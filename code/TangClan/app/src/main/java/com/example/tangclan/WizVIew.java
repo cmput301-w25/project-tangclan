@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class WizVIew extends ViewModel {
     private String emotionalState;
     private ArrayList<String> triggers = new ArrayList<>();
-    private String socialSituation;
+    private ArrayList<String> socialSituation;
     private Bitmap optionalPicture;
     private String reason;
 
@@ -26,10 +26,10 @@ public class WizVIew extends ViewModel {
         this.triggers.add(trigger);
     }
 
-    public String getSocialSituation() {
+    public ArrayList<String> getSocialSituation() {
         return socialSituation;
     }
-    public void setSocialSituation(String socialSituation) {
+    public void setSocialSituation(ArrayList<String> socialSituation) {
         this.socialSituation = socialSituation;
     }
     public Bitmap getOptionalPicture() {

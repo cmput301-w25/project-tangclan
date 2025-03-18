@@ -310,6 +310,8 @@ public class DatabaseBestie {
             event.setMid(mid);
             Map<String, String> data = Map.of("postedBy", uid);
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
+                            .set(data);
+            moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                     .set(event.prepFieldsForDatabase(), SetOptions.merge());
         });
     }
@@ -383,6 +385,7 @@ public class DatabaseBestie {
                             moodEvent.setImage(image);
 
 
+
                             events.add(moodEvent);
                         }
                         callback.onMoodEventsRetrieved(events);
@@ -428,7 +431,10 @@ public class DatabaseBestie {
                                 image = null;
                             }
 
-                            MoodEvent moodEvent = new MoodEvent(emotionalState, collaborators, reason);
+                            MoodEvent moodEvent = new MoodEvent(emotionalState);
+
+                            moodEvent.setCollaborators(collaborators);
+                            moodEvent.setReason(reason);
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
