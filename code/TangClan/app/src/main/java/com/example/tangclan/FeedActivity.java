@@ -11,8 +11,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
+
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.List;
+
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -39,17 +46,11 @@ import com.google.firebase.auth.FirebaseUser;
  *      US 01.04.01
  */
 
+
 public class FeedActivity extends AppCompatActivity {
-    //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
-    /**
-     * Initializes the activity, sets up the user interface, loads the mood event feed,
-     * and configures event listeners for adding and viewing mood events.
-     *
-     * @param savedInstanceState The saved instance state from a previous session, if any.
-     */
 
     FirebaseAuth auth;
     FirebaseUser currentUser;
@@ -59,7 +60,9 @@ public class FeedActivity extends AppCompatActivity {
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
+
         if(currentUser == null) {
+
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }
@@ -87,34 +90,57 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
+        NavBarHelper.setupNavBar(this);
 
+        // Logout button
         Button logout = findViewById(R.id.logout_butt);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
+                // Clear the LoggedInUser instance on logout
+                LoggedInUser loggedInUser = LoggedInUser.getInstance();
+                LoggedInUser.resetInstance();
+
+                // Redirect to the login/signup activity
                 Intent intent = new Intent(FeedActivity.this, LoginOrSignupActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-
+        // Initialize the ListView
         listViewFeed = findViewById(R.id.listViewFeed);
 
-        FollowingBook followingBook = new FollowingBook();
-        MoodEventBook moodEventBook = new MoodEventBook();
+        // Retrieve the LoggedInUser instance
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
 
+        // Ensure the LoggedInUser instance is properly populated
+        if (loggedInUser.getUsername() == null) {
+            // If the LoggedInUser instance is not populated, redirect to login
+            startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
+            finish();
+            return;
+        }
+
+        // Get the user's FollowingBook and MoodEventBook from the LoggedInUser instance
+        FollowingBook followingBook = loggedInUser.getFollowingBook();
+        MoodEventBook moodEventBook = loggedInUser.getMoodEventBook();
+
+        // Initialize the Feed with the user's FollowingBook and MoodEventBook
         feed = new Feed(followingBook, moodEventBook);
 
+        // Load the feed
         loadFeed();
 
+        // Add Emotion button
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
         addEmotionButton.setOnClickListener(v -> {
             Intent intent = new Intent(FeedActivity.this, AddEmotionActivity.class);
             startActivity(intent);
         });
 
+        // Long click listener for mood event details
         listViewFeed.setOnItemLongClickListener((parent, view, position, id) -> {
             MoodEvent moodEvent = feed.getFeedEvents().get(position);
             showMoodEventDetails(moodEvent);
@@ -132,14 +158,12 @@ public class FeedActivity extends AppCompatActivity {
             public void onClick(View view) {
                 startActivity(new Intent(FeedActivity.this, ProfilePageActivity.class));
                 finish();
-            } //
+            }
         });
-
     }
 
     /**
      * Loads the mood event feed and updates the list adapter.
-     *
      */
     private void loadFeed() {
         feed.loadFeed();
@@ -149,21 +173,30 @@ public class FeedActivity extends AppCompatActivity {
         listViewFeed.setAdapter(adapter);
     }
 
-
     /**
      * Displays the details of a selected mood event in an alert dialog.
      *
      * @param moodEvent The mood event whose details are to be displayed.
      */
-
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
         details.append("Emotional State: ").append(moodEvent.getMoodEmotionalState()).append("\n");
         details.append("Mood Color: ").append(moodEvent.getMood().getColor(getBaseContext()).toString()).append("\n");
         details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
+
+        if (moodEvent.getTriggers().isPresent() && moodEvent.getTriggers().isPresent()) {
+            details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers().get())).append("\n");
+        } else {
+            details.append("Triggers: N/A\n");
+        }
+
+        if (moodEvent.getSituation().isPresent()) {
+            details.append("Situation: ").append(moodEvent.getSituation()).append("\n");
+
         if (moodEvent.getReason().isPresent()) {
             details.append("Situation: ").append(moodEvent.getReason()).append("\n");
+
         } else {
             details.append("Situation: N/A\n");
         }

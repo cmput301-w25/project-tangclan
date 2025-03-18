@@ -23,6 +23,10 @@ import androidx.fragment.app.Fragment;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+
+import java.io.FileOutputStream;
+
+
 import java.io.InputStream;
 
 //for US US 02.02.01
@@ -106,4 +110,38 @@ public class ImageHelper {
         }
         return true;
     }
+
+
+    /**
+     * Saves a bitmap to a PNG file in the app's external files directory.
+     *
+     * @param bitmap the bitmap to save
+     * @return the absolute path to the saved file, or null if saving failed
+     */
+    public String saveBitmapToFile(Bitmap bitmap) {
+        try {
+            File outputDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (!outputDir.exists()) {
+                outputDir.mkdirs();
+            }
+
+            // Create a file with timestamp to ensure unique filenames
+            File outputFile = new File(outputDir, "mood_image_" + System.currentTimeMillis() + ".png");
+
+            // Save the bitmap as PNG (lossless)
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+
+            return outputFile.getAbsolutePath();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(activity, "Failed to save image", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+    }
 }
+
+}
+
