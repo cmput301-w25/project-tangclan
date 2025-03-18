@@ -167,7 +167,8 @@ public class MoodEventBook {
      *
      * @return A list of all MoodEvents
      */
-    public List<MoodEvent> getAllMoodEvents() {
+    public ArrayList<MoodEvent
+            > getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
     }
 

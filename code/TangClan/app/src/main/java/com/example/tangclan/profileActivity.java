@@ -1,6 +1,8 @@
 package com.example.tangclan;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Movie;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ListView;
 import android.widget.ImageView;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -101,6 +104,38 @@ public class profileActivity extends AppCompatActivity {
 
         // set the Adapter for the moodHistoryList
         moodHistoryList.setAdapter(profileHistoryAdapter);
+
+        // Get the underlying list from the logged-in user's MoodEventBook
+        ArrayList<MoodEvent> moodHistoryData = loggedInUser.getMoodEventBook().getAllMoodEvents();
+
+
+        // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
+        moodHistoryList.setOnItemLongClickListener((parent, view, position, id) -> {
+            MoodEvent post = moodHistoryData.get(position); // Access from the data list
+
+            new AlertDialog.Builder(view.getContext())
+                    .setMessage("Do you want to edit or delete this mood event?")
+                    .setPositiveButton("Edit", (dialog, which) -> {
+                        // Open EditMoodEvent fragment (your teammates handle this)
+                    })
+                    .setNegativeButton("Delete", (dialog, which) -> {
+                        new AlertDialog.Builder(view.getContext())
+                                .setTitle("Are you sure you want to delete this mood event?")
+                                .setMessage("This action cannot be undone.")
+                                .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
+                                    // Remove item from the data list, NOT the ListView itself
+                                    moodHistoryData.remove(position);
+                                    profileHistoryAdapter.notifyDataSetChanged(); // Notify adapter of changes
+                                    Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+                                })
+                                .setNegativeButton("No", null)
+                                .show();
+                    })
+                    .setNeutralButton("Cancel", null)
+                    .show();
+
+            return true; // Indicate that the long press event is consumed
+        });
 
         // NAVBAR
         ImageView pinIcon = findViewById(R.id.imgMap);
