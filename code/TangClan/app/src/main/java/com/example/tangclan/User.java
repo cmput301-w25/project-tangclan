@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -91,8 +93,16 @@ public class User {
      *      a Database wrapper with functionality to grab all mood events from user
      */
     public void initializeMoodEventBookFromDatabase(DatabaseBestie db) {
-        // call getAllMoodEvents with callback that sets the MoodEventBook list to the callback arg
-        db.getAllMoodEvents(this.uid, events -> User.this.moodEventBook.setMoodEvents(events));
+        Log.d("User", "Fetching MoodEvents from database for UID: " + this.uid);
+        db.getAllMoodEvents(this.uid, events -> {
+            Log.d("User", "Fetched " + events.size() + " MoodEvents from database");
+            this.moodEventBook.setMoodEvents(events);
+
+            // Log the MoodEvents for debugging
+            for (MoodEvent event : events) {
+                Log.d("User", "MoodEvent: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
+            }
+        });
     }
 
     /**

@@ -21,6 +21,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
 
     private MoodEventBook MoodEventBook;
     private FollowingBook followingBook;
+    private String uid;
 
 
 
@@ -190,6 +191,21 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      */
     public void setFollowingBook(FollowingBook followingBook) {
         this.followingBook = followingBook;
+    }
+
+    /**
+     * Setter for the user's MoodEventBook
+     * @param moodEventBook The MoodEventBook to assign to this profile
+     */
+    public void setMoodEventBook(MoodEventBook moodEventBook) {
+        this.MoodEventBook = moodEventBook;
+    }
+
+    // Make sure this exists in your Profile class
+    public String getUserId() {
+        // Return the Firebase user ID
+
+        return uid; // or however your user ID is stored
     }
     //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
 

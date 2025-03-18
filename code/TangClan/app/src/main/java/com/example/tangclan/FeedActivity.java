@@ -238,29 +238,17 @@ public class FeedActivity extends AppCompatActivity {
         details.append("Mood Color: ").append(moodEvent.getMood().getColor(getBaseContext()).toString()).append("\n");
         details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
-
-        if (moodEvent.getTriggers().isPresent() && !moodEvent.getTriggers().get().isEmpty()) {
-
-
-        if (moodEvent.getTriggers().isPresent() && moodEvent.getTriggers().isPresent()) {
-
-            details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers().get())).append("\n");
-        } else {
-            details.append("Triggers: N/A\n");
-        }
-
-        if (moodEvent.getSituation().isPresent()) {
-
-            details.append("Situation: ").append(moodEvent.getSituation().get()).append("\n");
-
-            details.append("Situation: ").append(moodEvent.getSituation()).append("\n");
-
-        if (moodEvent.getReason().isPresent()) {
-            details.append("Situation: ").append(moodEvent.getReason()).append("\n");
-
-
+        // Use getCollaborators() instead of getSituation()
+        if (moodEvent.getCollaborators().isPresent()) {
+            details.append("Situation: ").append(moodEvent.getCollaborators().get()).append("\n");
         } else {
             details.append("Situation: N/A\n");
+        }
+
+        if (moodEvent.getReason().isPresent()) {
+            details.append("Reason: ").append(moodEvent.getReason().get()).append("\n");
+        } else {
+            details.append("Reason: N/A\n");
         }
 
         if (moodEvent.hasGeolocation()) {

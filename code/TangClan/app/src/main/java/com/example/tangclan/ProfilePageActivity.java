@@ -52,11 +52,9 @@ public class ProfilePageActivity extends AppCompatActivity {
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
 
-
         // Get current user profile
         getCurrentUserProfile();
         setupProfileListView();
-
 
         // Process incoming mood event data if it exists
         processMoodEventData();
@@ -65,13 +63,11 @@ public class ProfilePageActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Refresh the list whenever the activity is resumed
         getCurrentUserProfile();
         setupProfileListView();
     }
 
     private void getCurrentUserProfile() {
-
         // Retrieve the current logged-in user profile using the Singleton instance
         userProfile = LoggedInUser.getInstance();
 
@@ -83,70 +79,65 @@ public class ProfilePageActivity extends AppCompatActivity {
         // Fetch the user's past mood events from the database
         initializeMoodEventBookFromDatabase();
 
-
-        // This method should retrieve the current user's profile
-        // For now, we'll create a dummy profile for testing
-        userProfile = LoggedInUser.getInstance();
-
-        // Initialize the mood event book if it doesn't exist
-
         // Set the user information in the UI
         usernameTextView.setText(userProfile.getUsername());
         nameTextView.setText(userProfile.getDisplayName());
-
-        // Setup the ListView after profile is loaded
-        setupProfileListView();
     }
 
     private void initializeMoodEventBookFromDatabase() {
-        // Fetch the user's past mood events from the database
         if (userProfile != null) {
+            Log.d("ProfilePageActivity", "Fetching MoodEvents from database");
             userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
+
+            // Log the number of MoodEvents after fetching
+            Log.d("ProfilePageActivity", "Number of MoodEvents: " + userProfile.getMoodEventBook().getMoodEventList().size());
         }
     }
-
     private void setupProfileListView() {
         if (userProfile != null && userProfile.getMoodEventBook() != null) {
-            // Create a custom adapter using ProfileHistoryAdapter which has all the proper formatting
-            adapter = new ProfileHistoryAdapter(this, userProfile);
+            ArrayList<MoodEvent> moodEvents = (ArrayList<MoodEvent>) userProfile.getMoodEventBook().getMoodEventList();
+            Log.d("ProfilePageActivity", "Setting up list view with " + moodEvents.size() + " events");
 
-            // Set the adapter on the ListView
-            profileArrayListView.setAdapter(adapter);
-
-            // Adjust ListView height if needed
-            ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
-            profileArrayListView.setLayoutParams(params);
+            // If you're reusing the adapter, update its data
+            if (adapter != null) {
+                adapter.clear();
+                adapter.addAll(moodEvents);
+                adapter.notifyDataSetChanged();
+            } else {
+                // Create a new adapter
+                adapter = new ProfileHistoryAdapter(this, userProfile);
+                profileArrayListView.setAdapter(adapter);
+            }
         }
     }
 
     private void processMoodEventData() {
-        // Retrieve the Bundle data passed from UploadPictureForMoodEventActivity
         Bundle bundle = getIntent().getExtras();
-
         if (bundle != null) {
             String selectedEmotion = bundle.getString("selectedEmotion");
             ArrayList<String> selectedSituation = bundle.getStringArrayList("selectedSituation");
             String reason = bundle.getString("reason");
             String imagePath = bundle.getString("imagePath");
 
-            // Create a new MoodEvent
-            MoodEvent newMoodEvent;
+
+            // Validate required fields
+            if (selectedEmotion == null) {
+                Toast.makeText(this, "Error: Emotion cannot be null", Toast.LENGTH_LONG).show();
+                return;
+            }
 
             try {
-                // Create the mood event based on available data
+                MoodEvent newMoodEvent;
                 if (selectedSituation != null && !selectedSituation.isEmpty()) {
                     newMoodEvent = new MoodEvent(selectedEmotion, selectedSituation);
                 } else {
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
 
-                // Set reason if available
                 if (reason != null && !reason.isEmpty()) {
                     newMoodEvent.setReason(reason);
                 }
 
-                // Set image if available
                 if (imagePath != null) {
                     File imgFile = new File(imagePath);
                     if (imgFile.exists()) {
@@ -157,22 +148,18 @@ public class ProfilePageActivity extends AppCompatActivity {
 
                 // Add the mood event to the user's mood event book
                 userProfile.post(newMoodEvent, databaseBestie);
+                setupProfileListView();
 
                 // Save the updated profile to the database
                 saveProfileToDatabase();
 
-                // Force refresh the ListView by recreating the adapter
-                setupProfileListView();
+                // Notify the adapter of data changes
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
 
-                // Show success message
                 Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
-
-                // Log the number of mood events for debugging
-                int count = userProfile.getMoodEventBook().getMoodEventList().size();
-                Toast.makeText(this, "Total mood events: " + count, Toast.LENGTH_SHORT).show();
-
             } catch (IllegalArgumentException e) {
-                // Handle invalid input
                 Toast.makeText(this, "Error creating mood event: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
@@ -182,17 +169,9 @@ public class ProfilePageActivity extends AppCompatActivity {
 
     }
 
-
-
-
     public void goToEditProfile(View view) {
         // Handle edit profile button click
         Intent intent = new Intent(this, FeedActivity.class);
         startActivity(intent);
     }
-
 }
-
-
-}
-

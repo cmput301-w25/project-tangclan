@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -181,7 +182,7 @@ public class MoodEvent implements Serializable {
      *      The 200-or-less reason of the MoodEvent
      */
     public Optional<String> getReason() {
-        return Optional.of(this.reason);
+        return Optional.ofNullable(this.reason);
     }
 
     /**
@@ -190,10 +191,22 @@ public class MoodEvent implements Serializable {
      * @param postDate the String representation of the post Date
      */
     public void setPostDate(String postDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+        DateTimeFormatter[] formatters = {
+                DateTimeFormatter.ofPattern("dd-MMM-yyyy"), // Format 1
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")   // Format 2
+        };
 
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                this.postDate = LocalDate.parse(postDate, formatter);
+                return; // Exit if parsing succeeds
+            } catch (DateTimeParseException e) {
+                // Try the next formatter
+            }
+        }
 
-        this.postDate = LocalDate.parse(postDate, formatter);
+        // If no formatter works, throw an exception
+        throw new IllegalArgumentException("Invalid date format: " + postDate);
     }
 
     /**
@@ -202,8 +215,23 @@ public class MoodEvent implements Serializable {
      * @param postTime the String representation of the Post Time
      */
     public void setPostTime(String postTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        this.postTime = LocalTime.parse(postTime, formatter);
+        DateTimeFormatter[] formatters = {
+                DateTimeFormatter.ofPattern("HH:mm:ss.SSSSSS"), // Format 1
+                DateTimeFormatter.ofPattern("HH:mm:ss"),        // Format 2
+                DateTimeFormatter.ofPattern("HH:mm")           // Format 3
+        };
+
+        for (DateTimeFormatter formatter : formatters) {
+            try {
+                this.postTime = LocalTime.parse(postTime, formatter);
+                return; // Exit if parsing succeeds
+            } catch (DateTimeParseException e) {
+                // Try the next formatter
+            }
+        }
+
+        // If no formatter works, throw an exception
+        throw new IllegalArgumentException("Invalid time format: " + postTime);
     }
 
     /**

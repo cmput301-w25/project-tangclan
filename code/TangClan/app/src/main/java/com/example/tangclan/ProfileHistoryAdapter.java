@@ -47,22 +47,15 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
      *      The current user's profile object
      */
     public ProfileHistoryAdapter(Context context, Profile profile) {
-        super(context, 0, new ArrayList<MoodEvent>());
-
-        moodToUsernameMap = new HashMap<>();
-        List<MoodEvent> moodEvents = new ArrayList<>();
-
-        // Get the username
+        super(context, 0, profile.getMoodEventBook().getMoodEventList()); // Pass the list directly
+        this.context = context;
         this.username = profile.getUsername();
+        this.moodToUsernameMap = new HashMap<>();
 
-        // Populate mood events and map usernames
+        // Populate the moodToUsernameMap
         for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
-            moodEvents.add(moodEvent);
             moodToUsernameMap.put(moodEvent, profile.getUsername());
         }
-
-        // Add the mood events to the adapter's data source
-        addAll(moodEvents);
     }
 
 
