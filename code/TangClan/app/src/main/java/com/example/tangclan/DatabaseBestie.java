@@ -159,11 +159,8 @@ public class DatabaseBestie {
      * @param user
      *      This is the user to be added
      */
-    public void addUser(Profile user) {
-        generateUid(uid -> {
-            user.setUid(String.valueOf(uid));
-            usersRef.document(user.getUid()).set(user);
-        });
+    public void addUser(String uid, Profile user) {
+        usersRef.document(uid).set(user);
     }
 
     /**
@@ -405,6 +402,7 @@ public class DatabaseBestie {
      */
     public void getAllMoodEvents(String uid, MoodEventsCallback callback) {
         // query should search all collections with id 'events' regardless of month
+        Log.d("thisuid", uid);
         db.collectionGroup("events")
                 .whereEqualTo("postedBy", uid)
                 .get()
@@ -412,7 +410,8 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         ArrayList<MoodEvent> moodEvents = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            int mid = parseInt(document.getString("mid")); // will never return null as mid is set when adding an event
+                            String midString = String.valueOf(document.get("mid")); // will never return null as mid is set when adding an event
+                            int mid = parseInt(midString);
                             String emotionalState = document.getString("emotionalState");
                             String reason = document.getString("reason");
                             ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
@@ -433,7 +432,6 @@ public class DatabaseBestie {
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
-
 
                             moodEvents.add(moodEvent);
                         }

@@ -10,6 +10,7 @@
         android:id="@+id/logout_butt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:backgroundTint="#FFC107"
         android:text="Log out"
         android:textColor="@color/black"

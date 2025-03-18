@@ -11,8 +11,8 @@
     <!-- Auto layout, variables, and unit scale are not yet supported NOTE: PUT CONSTRAINTS-->
     <RelativeLayout
         android:id="@+id/profile"
-        android:layout_width="412dp"
-        android:layout_height="917dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="#FFFFFF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
