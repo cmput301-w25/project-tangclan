@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Movie;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import android.widget.ListView;
 
@@ -21,11 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import java.io.Serializable;
-import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Activity class for the profile view with mood history
@@ -41,7 +34,7 @@ import java.util.List;
  *
  *      TODO: handle collaborators
  */
-public class profileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
     TextView usernameText;
     TextView NameText;
     TextView FollowersText;
@@ -87,7 +80,7 @@ public class profileActivity extends AppCompatActivity {
         EditProfileButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(profileActivity.this, editprofileActivity.class);
+                Intent intent = new Intent(ProfileActivity.this, editprofileActivity.class);
                 // intent.putExtra("Key1",profile1);
                 startActivity(intent);
             }
@@ -148,7 +141,7 @@ public class profileActivity extends AppCompatActivity {
         homeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(profileActivity.this, FeedActivity.class));
+                startActivity(new Intent(ProfileActivity.this, FeedActivity.class));
                 finish();
             }
         });
