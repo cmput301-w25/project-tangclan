@@ -18,8 +18,10 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     private String age;
 
     private Blob profilePic;
+
     private MoodEventBook MoodEventBook;
     private FollowingBook followingBook;
+
 
 
     /**
@@ -162,20 +164,13 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.age = age;
     }
 
-    /**
-     * Setter for the user's MoodEventBook
-     * @param moodEventBook
-     *      The MoodEventBook to assign to this profile
-     */
-    public void setMoodEventBook(MoodEventBook moodEventBook) {
-        this.MoodEventBook = moodEventBook;
-    }
 
     /**
      * Getter for the user's MoodEventBook
      * @return
      *      The MoodEventBook associated with this profile
      */
+
     public MoodEventBook getMoodEventBook() {
         if (MoodEventBook == null) {
             MoodEventBook = new MoodEventBook(); // Initialize if null
@@ -203,5 +198,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     //On CRC cards "Manages Permissions for followers" Referring to this user story?: "As a participant, I want to grant another participant permission to follow my most recent moodevent
     //Idea:
 
-    //ASK:Mood event history? is that supposed to be stored in MoodEventBook(yes it is)
+
+
 }

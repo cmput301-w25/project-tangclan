@@ -3,6 +3,7 @@ package com.example.tangclan;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -97,9 +98,12 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
+
+
+        int moodColor = moodEvent.getMood().getColor(getContext());
+        int transparentMoodColor = Color.argb(178, Color.red(moodColor), Color.green(moodColor), Color.blue(moodColor)); // 128 = 50% opacity
+        view.setBackgroundColor(transparentMoodColor);
 
         // Find views by ID
         TextView emotionTextView = view.findViewById(R.id.username_emotional_state);
@@ -108,15 +112,21 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         TextView dateTextView = view.findViewById(R.id.date_text);
         TextView timeTextView = view.findViewById(R.id.time_text);
         ImageView moodImageView = view.findViewById(R.id.mood_event_image);
+        ImageView moodIcon = view.findViewById(R.id.mood_icon);
+
+        Drawable emoticonDrawable = moodEvent.getMood().getEmoticon(getContext());
+        if (emoticonDrawable != null) {
+            moodIcon.setImageDrawable(emoticonDrawable);  // Use setImageDrawable to display the icon
+        }
+
 
         // Set the emotional state
         emotionTextView.setText(spannableUsernameEmotion); // username and emotional state
 
         // Set the social situation (if present, otherwise default message)
-        situationTextView.setText(moodEvent.getSituation().isPresent() ? moodEvent.getSituation().get() : "No situation specified");
 
         // Set the reason (if present, otherwise default message)
-        reasonTextView.setText(moodEvent.getReason() != null && !moodEvent.getReason().isEmpty() ? moodEvent.getReason() : "No reason specified");
+        reasonTextView.setText(moodEvent.getReason().isPresent() && !(moodEvent.getReason().get().isEmpty()) ? moodEvent.getReason().get() : "No reason specified");
 
         // Set the post date and time
         dateTextView.setText(moodEvent.getPostDate().toString());

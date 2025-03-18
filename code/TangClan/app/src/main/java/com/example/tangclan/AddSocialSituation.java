@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Fragment wrapper which allows the user to add an optional social situation to the Mood Event
@@ -47,8 +48,9 @@ public class AddSocialSituation extends Fragment {
 
         Button btnSave = view.findViewById(R.id.btnSaveEnvironment);
         btnSave.setOnClickListener(v -> {
-            String situation = editTextSituation.getText().toString().trim();
-            if (!TextUtils.isEmpty(situation)) {
+            String[] situationList = editTextSituation.getText().toString().trim().split(",");
+            ArrayList<String> situation = new ArrayList<>(Arrays.asList(situationList));
+            if (situation.size() > 0) {
                 // You can do more robust checks here if you like
                 // e.g., length <= 20, word count <= 3, etc.
                 activity.getWizardViewModel().setSocialSituation(situation);
@@ -68,28 +70,28 @@ public class AddSocialSituation extends Fragment {
         // You might have a MoodEventBook in your Activity or a global store
         MoodEventBook moodEventBook = new MoodEventBook();
 
-        try {
-            // Build the MoodEvent based on which fields are set
-            if (!vm.getTriggers().isEmpty() && vm.getSocialSituation() != null) {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers(), vm.getSocialSituation());
-                moodEventBook.addMoodEvent(moodEvent);
-            } else if (!vm.getTriggers().isEmpty()) {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers());
-                moodEventBook.addMoodEvent(moodEvent);
-            } else if (vm.getSocialSituation() != null) {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getSocialSituation());
-                moodEventBook.addMoodEvent(moodEvent);
-            } else {
-                MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState());
-                moodEventBook.addMoodEvent(moodEvent);
-            }
+        //try {
+        //    // Build the MoodEvent based on which fields are set
+        //    if (!vm.getTriggers().isEmpty() && vm.getSocialSituation() != null) {
+        //        MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers(), vm.getSocialSituation());
+        //        moodEventBook.addMoodEvent(moodEvent);
+        //    } else if (!vm.getTriggers().isEmpty()) {
+        //        MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers());
+        //        moodEventBook.addMoodEvent(moodEvent);
+        //    } else if (vm.getSocialSituation() != null) {
+        //        MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getSocialSituation());
+        //        moodEventBook.addMoodEvent(moodEvent);
+        //    } else {
+        //        MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState());
+        //        moodEventBook.addMoodEvent(moodEvent);
+        //    }
 
-            // Here, you might navigate to a confirmation screen or just finish()
-            requireActivity().finish();
+        //    // Here, you might navigate to a confirmation screen or just finish()
+        //    requireActivity().finish();
 
-        } catch (IllegalArgumentException e) {
-            // Show an error message if the mood event was invalid
-            // (e.g., invalid emotional state or invalid social situation)
-        }
+        //} catch (IllegalArgumentException e) {
+        //    // Show an error message if the mood event was invalid
+        //    // (e.g., invalid emotional state or invalid social situation)
+        //}
     }
 }

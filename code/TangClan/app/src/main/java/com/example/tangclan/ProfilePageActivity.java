@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,8 +52,11 @@ public class ProfilePageActivity extends AppCompatActivity {
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
 
+
         // Get current user profile
         getCurrentUserProfile();
+        setupProfileListView();
+
 
         // Process incoming mood event data if it exists
         processMoodEventData();
@@ -61,10 +66,12 @@ public class ProfilePageActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Refresh the list whenever the activity is resumed
+        getCurrentUserProfile();
         setupProfileListView();
     }
 
     private void getCurrentUserProfile() {
+
         // Retrieve the current logged-in user profile using the Singleton instance
         userProfile = LoggedInUser.getInstance();
 
@@ -75,6 +82,13 @@ public class ProfilePageActivity extends AppCompatActivity {
 
         // Fetch the user's past mood events from the database
         initializeMoodEventBookFromDatabase();
+
+
+        // This method should retrieve the current user's profile
+        // For now, we'll create a dummy profile for testing
+        userProfile = LoggedInUser.getInstance();
+
+        // Initialize the mood event book if it doesn't exist
 
         // Set the user information in the UI
         usernameTextView.setText(userProfile.getUsername());
@@ -109,9 +123,10 @@ public class ProfilePageActivity extends AppCompatActivity {
     private void processMoodEventData() {
         // Retrieve the Bundle data passed from UploadPictureForMoodEventActivity
         Bundle bundle = getIntent().getExtras();
+
         if (bundle != null) {
             String selectedEmotion = bundle.getString("selectedEmotion");
-            String selectedSituation = bundle.getString("selectedSituation");
+            ArrayList<String> selectedSituation = bundle.getStringArrayList("selectedSituation");
             String reason = bundle.getString("reason");
             String imagePath = bundle.getString("imagePath");
 
@@ -141,7 +156,7 @@ public class ProfilePageActivity extends AppCompatActivity {
                 }
 
                 // Add the mood event to the user's mood event book
-                userProfile.getMoodEventBook().addMoodEvent(newMoodEvent);
+                userProfile.post(newMoodEvent, databaseBestie);
 
                 // Save the updated profile to the database
                 saveProfileToDatabase();
@@ -175,4 +190,9 @@ public class ProfilePageActivity extends AppCompatActivity {
         Intent intent = new Intent(this, FeedActivity.class);
         startActivity(intent);
     }
+
 }
+
+
+}
+

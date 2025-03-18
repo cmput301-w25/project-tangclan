@@ -9,14 +9,43 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
+
+
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+
+//part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
+
+/**
+ * The class is responsible for displaying the mood event feed to the user.
+ * It allows users to view the most recent mood events from participants they follow,
+ * add a new mood event, and view detailed information about any mood event in the feed.
+
+ */
+
+//TODO make sure this screen is updated after the addition of a mood event from the add emotion fragments
+
+//TODO fix the bug for loadfeed because of the List<MoodEvent> to following book, cause runtime error
+
+
+/**
+ * Represents the activity feed, with all MoodEvents of users that the session user follows
+ * USER STORIES:
+ *      US 01.04.01
+ */
+
 
 public class FeedActivity extends AppCompatActivity {
     private ListView listViewFeed;
@@ -31,11 +60,30 @@ public class FeedActivity extends AppCompatActivity {
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        if (currentUser == null) {
-            // If no user is logged in, redirect to the login/signup activity
+
+        if(currentUser == null) {
+
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
         }
+
+        DatabaseBestie db = new DatabaseBestie();
+
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+
+        db.getUser(currentUser.getUid(), user -> {
+           loggedInUser.setEmail(user.getEmail());
+           loggedInUser.setUsername(user.getUsername());
+           loggedInUser.setPassword(user.getPassword());
+           loggedInUser.setDisplayName(user.getDisplayName());
+           loggedInUser.setAge(user.getAge());
+           loggedInUser.setUid(currentUser.getUid());
+           loggedInUser.initializeMoodEventBookFromDatabase(db);
+
+           Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
+        });
+
+
     }
 
     @Override
@@ -136,6 +184,7 @@ public class FeedActivity extends AppCompatActivity {
         details.append("Mood Color: ").append(moodEvent.getMood().getColor(getBaseContext()).toString()).append("\n");
         details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
+
         if (moodEvent.getTriggers().isPresent() && moodEvent.getTriggers().isPresent()) {
             details.append("Triggers: ").append(String.join(", ", moodEvent.getTriggers().get())).append("\n");
         } else {
@@ -144,6 +193,10 @@ public class FeedActivity extends AppCompatActivity {
 
         if (moodEvent.getSituation().isPresent()) {
             details.append("Situation: ").append(moodEvent.getSituation()).append("\n");
+
+        if (moodEvent.getReason().isPresent()) {
+            details.append("Situation: ").append(moodEvent.getReason()).append("\n");
+
         } else {
             details.append("Situation: N/A\n");
         }

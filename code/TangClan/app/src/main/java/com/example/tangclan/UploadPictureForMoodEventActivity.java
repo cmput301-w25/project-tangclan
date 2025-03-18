@@ -24,9 +24,12 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
+
 public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
     private String selectedEmotion;
+
     private String selectedSituation;
     private ImageView imageView;
     private ImageHelper imageHelper;
@@ -53,24 +56,21 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
                 }
             });
 
+    private ArrayList<String> selectedSituation;
+    private String imagePath = null; // Optional image path (null if not uploaded)
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.fragment_upload_picture);
 
-        // Apply window insets
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         // Retrieve passed data from AddSocialSituationActivity using the Bundle
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             selectedEmotion = extras.getString("selectedEmotion");
-            selectedSituation = extras.getString("selectedSituation");
+            selectedSituation = extras.getStringArrayList("selectedSituation");
         }
 
         // Initialize UI components
@@ -82,6 +82,13 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         TextView charCount = findViewById(R.id.charCount);
         TextInputEditText reason = findViewById(R.id.reason);
         ImageView closeIcon = findViewById(R.id.closeIcon);
+
+
+        Button btnBack = findViewById(R.id.btnBackEnvironment);
+        Button btnUploadImage = findViewById(R.id.btnUploadImage);
+        Button btnNext = findViewById(R.id.buttonSaveText);
+        TextInputEditText editTextReason = findViewById(R.id.text203).findViewById(R.id.reason);
+
 
         // Initialize ImageHelper
         imageHelper = new ImageHelper(this, cameraLauncher, galleryLauncher);
@@ -145,7 +152,11 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             // Create a bundle to carry all the collected data
             Bundle bundle = new Bundle();
             bundle.putString("selectedEmotion", selectedEmotion);
+
             bundle.putString("selectedSituation", selectedSituation);
+
+            bundle.putString("reason", reason);
+
 
             // Add reason if valid
             if (!TextUtils.isEmpty(userInput) && imageHelper.textValidation(userInput)) {
@@ -163,8 +174,16 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             // Create an intent to start the next activity
             Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ProfilePageActivity.class);
             intent.putExtras(bundle);
+
             startActivity(intent);
             finish();
+
+            intent.putStringArrayListExtra("selectedSituation", selectedSituation);
+
+            // Start the activity
+            startActivity(intent);  // Start ProfilePageActivity
+            finish();  // Close the current activity
+
         });
 
         // Close button action

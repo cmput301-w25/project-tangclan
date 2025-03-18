@@ -3,8 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     android:padding="16dp"
     android:id="@+id/main">
+
+    android:padding="16dp">
+
 
     <!-- Top bar -->
 
@@ -99,6 +103,7 @@
         android:background="@android:color/darker_gray"
         android:layout_marginLeft="40dp"/>
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="79dp"
@@ -120,6 +125,15 @@
             android:text="Save" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnUploadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Image"
+        android:layout_marginTop="20dp"/>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
