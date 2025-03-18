@@ -1,12 +1,11 @@
 package com.example.tangclan;
 
+import android.util.Log;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Date;
-import java.util.Optional;
 
 //part of US 01.01.01, US 01.04.01, and US 01.06.01
 /**
@@ -36,10 +35,7 @@ public class MoodEventBook {
      * @param event The mood event to be added.
      */
     public void addMoodEvent(MoodEvent event) {
-        if (event != null) {
             moodEvents.add(event);
-            // TODO: Connect to the database and save the new mood event
-        }
     }
 
     /**
@@ -126,7 +122,7 @@ public class MoodEventBook {
         List<MoodEvent> result = new ArrayList<>();
         for (MoodEvent event : moodEvents) {
 
-            String explanation = event.getSituation().get();
+            String explanation = event.getReason().get();
             if (explanation != null) {
                 String lowerCaseExplanation = explanation.toLowerCase();
 
@@ -172,7 +168,7 @@ public class MoodEventBook {
     }
 
     public List<MoodEvent> getMoodEventList() {
-        return new ArrayList<>();
+        return new ArrayList<>(moodEvents);
     }
 }
 

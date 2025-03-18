@@ -134,4 +134,4 @@ public class AddImageorText extends AppCompatActivity {
         // next button functionality (ALL OF THESE ARE OPTIONAL SO...
         // is this taken care of in the WizActivity technically?
 
-} }
+    } }

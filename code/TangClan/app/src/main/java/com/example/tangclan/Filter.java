@@ -1,7 +1,6 @@
 package com.example.tangclan;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +23,8 @@ public class Filter {
         return events.stream()
                 .filter(event -> {
                     // if (event.getSituation().isPresent()) {
-                    if (event.getSituation() != null) {
-                        String explanation = event.getSituation().get();
+                    if (event.getReason() != null) {
+                        String explanation = event.getReason().get();
 
                         return keywords.stream().anyMatch(keyword -> explanation.toLowerCase().contains(keyword.toLowerCase()));
                     }

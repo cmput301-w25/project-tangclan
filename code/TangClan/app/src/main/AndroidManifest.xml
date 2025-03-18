@@ -29,8 +29,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TangClan"
         tools:targetApi="31">
-        <activity android:name=".profileActivity"
+        <activity android:name=".ProfilePageActivity"
             android:exported="false"/>
+        <activity
+            android:name=".ProfilePageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UploadPictureForMoodEventActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddSocialSituationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddReasonActivity"
+            android:exported="false" />
         <activity
             android:name=".AddEmotionActivity"
             android:exported="false" />
@@ -62,8 +74,15 @@
             android:name=".LoginOrSignupActivity"
             android:exported="false" />
         <activity
+            android:name=".WizActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".profileActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

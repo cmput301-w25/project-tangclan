@@ -3,6 +3,8 @@ package com.example.tangclan;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class WizActivity extends AppCompatActivity {
@@ -44,16 +46,41 @@ public class WizActivity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
                 break;
-            case 3:
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new AddImageorText())
-                        .addToBackStack(null)
-                        .commit();
+            //case 3:
+            //    getSupportFragmentManager().beginTransaction()
+            //            .replace(R.id.fragment_container, new AddImageorText())
+            //            .addToBackStack(null)
+            //            .commit();
             default:
                 // Could handle final submission or more pages here
                 break;
         }
     }
+    // Inside WizActivity
+
+    private void finishWizard() {
+        // Assuming the WizVIew ViewModel contains the data for the MoodEvent
+        WizVIew vm = getWizardViewModel();
+
+        // Create a MoodEvent from the ViewModel data
+        //MoodEvent moodEvent = new MoodEvent(vm.getEmotionalState(), vm.getTriggers(), vm.getSocialSituation());
+
+        // Optionally, save it to a database or a local cache
+
+        // Pass the MoodEvent to ProfileActivity
+        Intent intent = new Intent(WizActivity.this, profileActivity.class);
+
+        // Pass the MoodEvent as Serializable or Parcelable
+        //intent.putExtra("moodEvent", moodEvent);
+
+        // Start ProfileActivity
+        startActivity(intent);
+
+        // Optionally finish this activity
+        finish();
+    }
+
+
 
     // write to database/local cache
 
