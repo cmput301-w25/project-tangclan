@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +20,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.sql.Blob;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -103,6 +108,28 @@ public class EditFragment extends Fragment {
         RadioButton selectedEmotion = (RadioButton) emotion.get(0);
         emotionOptions.check(selectedEmotion.getId());  // set checked
 
+        RadioButton[] radioButtons = {
+                view.findViewById(R.id.radioHappy),
+                view.findViewById(R.id.radioSad),
+                view.findViewById(R.id.radioAngry),
+                view.findViewById(R.id.radioAnxious),
+                view.findViewById(R.id.radioAshamed),
+                view.findViewById(R.id.radioCalm),
+                view.findViewById(R.id.radioConfused),
+                view.findViewById(R.id.radioDisgust),
+                view.findViewById(R.id.radioNeutral),
+                view.findViewById(R.id.radioSurprised),
+                view.findViewById(R.id.radioTerrified)
+        };
+
+        for (RadioButton button : radioButtons) {
+            button.setOnClickListener(but -> {
+                for (RadioButton btn : radioButtons) {
+                    btn.setChecked(btn == button);
+                }
+            });
+        }
+
         EditText editSocialSit = view.findViewById(R.id.edit_social_situation);
         editSocialSit.setText(situation);
 
@@ -125,13 +152,25 @@ public class EditFragment extends Fragment {
         submitButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (editSocialSit.getText().toString().length() > 200) {
+                String newReason = editReason.getText().toString();
+                if (newReason.length() > 200) {
+                    editReason.setError("Text is over 200 characters!");
                     return;
                 }
 
-                // update mood event in db
-                DatabaseBestie db = new DatabaseBestie();
-                db.updateMoodEvent(mid, new MoodEvent(), month);
+                String newEmotion = "";
+                for (RadioButton button : radioButtons) {
+                    if (button.isChecked()) {
+                        newEmotion = button.getText().toString();
+                    }
+                }
+
+                String[] situationArray = editSocialSit.getText().toString().split(",");
+                ArrayList<String> newCollaborators = new ArrayList<>(Arrays.asList(situationArray));
+
+                saveEditsToDatabase(newEmotion, newReason, newCollaborators, "");
+
+                getActivity().getSupportFragmentManager().beginTransaction().remove(EditFragment.this).commit(); // close fragmenet
             }
         });
 
@@ -139,10 +178,17 @@ public class EditFragment extends Fragment {
         cancel_butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().remove(EditFragment.this).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(EditFragment.this).commit(); // close fragment
             }
         });
 
         return view;
+    }
+
+    public void saveEditsToDatabase(String emotion, String reason, ArrayList<String> socialSit, String image) {
+        DatabaseBestie db = new DatabaseBestie();
+        db.updateMoodEventEmotionalState(mid, month, emotion);
+        db.updateMoodEventReason(mid,month, reason);
+        db.updateMoodEventCollaborators(mid, month, socialSit);
     }
 }
