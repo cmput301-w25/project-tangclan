@@ -106,7 +106,7 @@ public class profileActivity extends AppCompatActivity {
 
         // set up the adapter to connect to the ListView
         ProfileHistoryAdapter profileHistoryAdapter = new ProfileHistoryAdapter(this, profile1);
-        ListView moodHistoryList = findViewById(R.id.profile_array);
+        ListView moodHistoryList = findViewById(R.id.mood_history_list);
 
         // set the Adapter for the moodHistoryList
         moodHistoryList.setAdapter(profileHistoryAdapter);

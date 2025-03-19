@@ -40,7 +40,7 @@ public class ProfilePageActivity extends AppCompatActivity {
         nameTextView = findViewById(R.id.name);
         followersTextView = findViewById(R.id.followers);
         followingTextView = findViewById(R.id.following);
-        profileArrayListView = findViewById(R.id.profile_array);
+        profileArrayListView = findViewById(R.id.mood_history_list);
 
         // Initialize database helper
         databaseBestie = new DatabaseBestie();

@@ -173,7 +173,7 @@ public class MoodEvent implements Serializable {
      *      An optional object containing either null, or a list of collaborator usernames
      */
     public Optional<ArrayList<String>> getCollaborators() {
-        return Optional.of(this.situation);
+        return Optional.ofNullable(this.situation);
     }
 
     /**

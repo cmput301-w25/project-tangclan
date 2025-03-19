@@ -1,72 +1,84 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
-    >
+    android:layout_height="wrap_content"
+    android:padding="7dp"
+    android:layout_marginBottom="16dp">
 
     <ImageView
         android:id="@+id/mood_icon"
-        android:layout_width="200px"
-        android:layout_height="200px" />
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="10dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"/>
 
-
-    <!--Change-->
-
-    <!-- Display the emotional state -->
-
-    <ListView
-        android:id="@+id/profile_array"
-        android:layout_width="wrap_content"
-        android:layout_height="503dp"
-        android:layout_below="@+id/edit_profil_button"
-        android:layout_marginTop="42dp"
-        android:layout_weight="1" />
-
-    <TextView
-        android:id="@+id/username_emotional_state"
-        android:layout_width="wrap_content"
+    <!-- Main content (username, emotional state, social situation, reason, date, time) -->
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-    <!-- Display the social situation -->
-    <TextView
-        android:id="@+id/situation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:layout_marginBottom="8dp"/>
+        <!-- Display the username and emotional state -->
+        <TextView
+            android:id="@+id/username_emotional_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Display the reason -->
-    <TextView
-        android:id="@+id/reason"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:layout_marginBottom="8dp"/>
+        <!-- Display the social situation -->
+        <TextView
+            android:id="@+id/situation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
 
-    <!-- Display the post date -->
-    <TextView
-        android:id="@+id/date_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:layout_marginBottom="8dp"/>
+        <!-- Display the reason in a mini box -->
+        <LinearLayout
+            android:id="@+id/reason_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/reason_background"
+            android:padding="8dp"
+            android:layout_marginBottom="8dp">
 
-    <!-- Display the post time -->
-    <TextView
-        android:id="@+id/time_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:layout_marginBottom="8dp"/>
+            <TextView
+                android:id="@+id/reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"/>
+        </LinearLayout>
 
-    <!-- Display the image if available -->
+        <!-- Display the post date and time at the bottom -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/mood_event_image"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginStart="8dp"
+        android:visibility="gone"/>
 </LinearLayout>
-
