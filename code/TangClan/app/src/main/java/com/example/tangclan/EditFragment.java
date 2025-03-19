@@ -187,7 +187,7 @@ public class EditFragment extends Fragment {
 
     public void saveEditsToDatabase(String emotion, String reason, ArrayList<String> socialSit, String image) {
         DatabaseBestie db = new DatabaseBestie();
-        db.updateMoodEventEmotionalState(mid, month, emotion);
+        db.updateMoodEventEmotionalState(mid, month, emotion.toLowerCase());
         db.updateMoodEventReason(mid,month, reason);
         db.updateMoodEventCollaborators(mid, month, socialSit);
     }

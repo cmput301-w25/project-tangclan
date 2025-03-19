@@ -76,8 +76,6 @@ public class ProfilePageActivity extends AppCompatActivity {
         usernameTextView.setText(userProfile.getUsername());
         nameTextView.setText(userProfile.getDisplayName());
 
-        // Setup the ListView after profile is loaded
-        setupProfileListView();
     }
 
     private void setupProfileListView() {
@@ -93,18 +91,28 @@ public class ProfilePageActivity extends AppCompatActivity {
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
             profileArrayListView.setLayoutParams(params);
 
+            databaseBestie.addMoodEventListener(() -> {
+                databaseBestie.getMoodEventByMid(mid, month, post.getPostDate(), post.getPostTime(), (event) -> {
+                    System.out.println("EVENT MOOD IS " + event.getMood());
+                    // post.setMood(event.getMood().getEmotion());
+                    post.setReason(event.getReason().orElse(""));
+                    post.setCollaborators(event.getCollaborators().orElse(new ArrayList<>()));
+                    adapter.notifyDataSetChanged();
+                });
+            });
+
             // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
             profileArrayListView.setOnItemLongClickListener((parent, view, position, id) -> {
                 MoodEvent post = adapter.getItem(position); // Access from the data list
+                String mid = post.getMid();
+
+                String postDate = post.userFormattedDate();
+                String month = postDate.substring(3);
 
                 new AlertDialog.Builder(view.getContext())
                         .setMessage("Do you want to edit or delete this mood event?")
                         .setPositiveButton("Edit", (dialog, which) -> {
                             // Edit mood
-                            String mid = post.getMid();
-
-                            String postDate = post.userFormattedDate();
-                            String month = postDate.substring(3);
 
                             String emotion = post.getMoodEmotionalState();
 
@@ -146,9 +154,6 @@ public class ProfilePageActivity extends AppCompatActivity {
                                         adapter.remove(post);
                                         adapter.notifyDataSetChanged(); // Notify adapter of changes
 
-                                        String postDate = post.userFormattedDate();
-                                        String month = postDate.substring(3);
-
                                         databaseBestie.deleteMoodEvent(post.getMid(), month);
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
                                     })
@@ -157,9 +162,9 @@ public class ProfilePageActivity extends AppCompatActivity {
                         })
                         .setNeutralButton("Cancel", null)
                         .show();
-
                 return true; // Indicate that the long press event is consumed
             });
+
         }
     }
 

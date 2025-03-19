@@ -4,8 +4,11 @@ import static java.lang.Integer.parseInt;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Movie;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.firestore.*;
 
@@ -297,6 +300,8 @@ public class DatabaseBestie {
     }
 
 
+
+
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
     /**
      * This adds a mood event details to the "moodEvents" collection
@@ -518,6 +523,16 @@ public class DatabaseBestie {
         });
     }
 
+    public void getMoodEventByMid(String mid, String month, LocalDate date, LocalTime time, MoodEventCallback callback) {
+        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                callback.onMoodEventRetrieved(documentSnapshot.toObject(MoodEvent.class));
+            }
+        });
+    }
+
+
     /**
      * Given the uid of a user, retrieve their latest MoodEvent
      * @param uid
@@ -577,6 +592,41 @@ public class DatabaseBestie {
         void onMoodEventRetrieved(MoodEvent event);
     }
 
+
+    public void addMoodEventListener(EventListListenerCallback callback) {
+        moodEventsRef.addSnapshotListener((value, error) -> {
+                    if (error != null){
+                        Log.e("Firestore", error.toString());
+                    }
+                    if (value != null && value.isEmpty()){
+                        callback.onListUpdated();
+                    }
+        });
+    }
+
+    public interface EventListListenerCallback {
+        void onListUpdated();
+    }
+
+    public void checkMoodEventMatchesDatabase(MoodEvent event, String mid, String month) {
+        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
+        eventRef.
+        usersRef.whereEqualTo("email", email)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+                        String uid = document.getString("uid");
+                        if (uid != null) {
+                            DocumentReference user = usersRef.document(uid);
+
+                            user.update("password", password)
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Password updated successfully"))
+                                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
+                        }
+                    }
+                });
+    }
 
     // FOLLOWS COLLECTION METHODS ------------------------------------------------------------------
 
