@@ -198,7 +198,7 @@
         android:text="Do you want to share your location?"
         android:textSize="24sp" />
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/use_location_switch"
         android:layout_width="wrap_content"
         android:layout_height="38dp"
