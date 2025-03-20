@@ -29,7 +29,7 @@ import java.util.Optional;
  * TODO: Method to get the current location
  */
 public class MoodEvent implements Serializable {
-    private int mid;
+    private String mid;
     private LocalTime postTime;
     private LocalDate postDate;
     private Mood mood;
@@ -43,7 +43,7 @@ public class MoodEvent implements Serializable {
      * Default constructor (required for Firestore)
      */
     public MoodEvent() {
-        this.mid = -1; // Placeholder, should be set later
+        this.mid = ""; // Placeholder, should be set later
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
     }
@@ -54,12 +54,12 @@ public class MoodEvent implements Serializable {
      * @param emotionalState emotional state used for the Mood constructor
      */
     public MoodEvent(String emotionalState) {
-        this.mid = mid;
+        this.mid = "";
         this.postTime = LocalTime.now();
         this.postDate = LocalDate.now();
-        this.mood = new Mood(emotionalState);
+        this.mood = new Mood(emotionalState.toLowerCase());
 
-    }
+    } //
 
     /**
      * constructor for MoodEvent with collaborators
@@ -126,7 +126,7 @@ public class MoodEvent implements Serializable {
      *
      * @return the ID of the Mood Event in the database
      */
-    public int getMid() {
+    public String getMid() {
         return this.mid;
     }
 
@@ -137,7 +137,7 @@ public class MoodEvent implements Serializable {
      */
     public LocalDate getPostDate() {
         return this.postDate;
-    }
+    } //
 
     /**
      * Getter for the post time
@@ -258,7 +258,7 @@ public class MoodEvent implements Serializable {
      *
      * @param id the id of the Mood Event to be set to
      */
-    public void setMid(int id) {
+    public void setMid(String id) {
         this.mid = id;
     }
 
@@ -392,4 +392,3 @@ public class MoodEvent implements Serializable {
         return moodEventFields;
     }
 }
-

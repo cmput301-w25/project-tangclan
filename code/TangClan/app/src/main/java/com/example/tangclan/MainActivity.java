@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     public void checkLoginStatus() {
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-
+        System.out.println("CURRENT USER IS:" + currentUser);
         if (currentUser != null){
             // Show user feed
             startActivity(new Intent(MainActivity.this, FeedActivity.class));

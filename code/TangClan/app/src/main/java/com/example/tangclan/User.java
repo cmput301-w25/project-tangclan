@@ -83,8 +83,9 @@ public class User {
         return moodEventBook;
     }
 
-
-
+    public void setMoodEventBook(MoodEventBook moodEventBook) {
+        this.moodEventBook = moodEventBook;
+    }
 
     /**
      * initializes the user's moodEventBook by querying the database for all user

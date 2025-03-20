@@ -131,7 +131,7 @@ public class FollowingBook {
 
         // Real implementation for when following is set up
         for (String followingUid : following) {
-            db.getLatestMoodEvent(followingUid, latestEvent -> {
+            db.getLatestMoodEvent(followingUid, (latestEvent, emot) -> {
                 uidToMoodEvent.put(followingUid, latestEvent);
             });
         }

@@ -4,8 +4,11 @@ import static java.lang.Integer.parseInt;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Movie;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.firestore.*;
 
@@ -297,6 +300,8 @@ public class DatabaseBestie {
     }
 
 
+
+
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
     /**
      * This adds a mood event details to the "moodEvents" collection
@@ -307,7 +312,7 @@ public class DatabaseBestie {
      */
     public void addMoodEvent(MoodEvent event, String month, String uid) {
         generateMid(mid -> {
-            event.setMid(mid);
+            event.setMid(String.valueOf(mid));
             Map<String, String> data = Map.of("postedBy", uid);
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                             .set(data);
@@ -326,12 +331,40 @@ public class DatabaseBestie {
      *      This is the month (ex. sep-2025) of when the to-be-updated mood event was initially added
      */
      public void updateMoodEvent(String mid, MoodEvent event, String month) {
-         moodEventsRef.document(month).collection("events")
-                 .document(String.valueOf(mid))
+         moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                  .set(event)
                  .addOnSuccessListener(aVoid -> Log.d(TAG, "MoodEvent successfully updated!"))
                  .addOnFailureListener(e -> Log.e(TAG, "Error updating MoodEvent", e));
      }
+
+    public void updateMoodEventCollaborators(String mid, String month, ArrayList<String> newCollaborators) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("collaborators", newCollaborators)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Collaborators updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating collaborators", e));
+    }
+
+    public void updateMoodEventEmotionalState(String mid, String month, String newEmotion) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("emotionalState", newEmotion)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Emotion updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating emotion", e));
+    }
+
+    public void updateMoodEventReason(String mid, String month, String newReason) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("reason", newReason)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Reason updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating reason", e));
+    }
+
+    public void updateMoodEventPhoto(String mid, String month, String photo) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("image", photo)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Photo updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating photo", e));
+    }
+
 
     /**
      * This removes an existing mood event from the "moodEvents" collection
@@ -385,7 +418,6 @@ public class DatabaseBestie {
                             moodEvent.setImage(image);
 
 
-
                             events.add(moodEvent);
                         }
                         callback.onMoodEventsRetrieved(events);
@@ -405,7 +437,6 @@ public class DatabaseBestie {
      */
     public void getAllMoodEvents(String uid, MoodEventsCallback callback) {
         // query should search all collections with id 'events' regardless of month
-        Log.d("thisuid", uid);
         db.collectionGroup("events")
                 .whereEqualTo("postedBy", uid)
                 .get()
@@ -433,11 +464,13 @@ public class DatabaseBestie {
 
                             MoodEvent moodEvent = new MoodEvent(emotionalState);
 
+                            moodEvent.setMid(midString);
                             moodEvent.setCollaborators(collaborators);
                             moodEvent.setReason(reason);
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
+
 
                             moodEvents.add(moodEvent);
                         }
@@ -485,9 +518,19 @@ public class DatabaseBestie {
                     break;
                 }
             }
-            callback.onMoodEventRetrieved(post);
+            // callback.onMoodEventRetrieved(post); temporary commented out
         });
     }
+
+    public void getMoodEventByMid(String mid, String month, MoodEventCallback callback) {
+        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                callback.onMoodEventRetrieved(documentSnapshot.toObject(MoodEvent.class), documentSnapshot.getString("emotionalState") );
+            }
+        });
+    }
+
 
     /**
      * Given the uid of a user, retrieve their latest MoodEvent
@@ -528,7 +571,7 @@ public class DatabaseBestie {
                         moodEvent.setPostTime(postTime);
                         moodEvent.setImage(image);
 
-                        callback.onMoodEventRetrieved(moodEvent);
+                        callback.onMoodEventRetrieved(moodEvent, emotionalState);
                     }
                 });
 
@@ -545,7 +588,7 @@ public class DatabaseBestie {
          * @param event
          *      The retrieved MoodEvent, or null if not found
          */
-        void onMoodEventRetrieved(MoodEvent event);
+        void onMoodEventRetrieved(MoodEvent event, String emotionStr);
     }
 
 
