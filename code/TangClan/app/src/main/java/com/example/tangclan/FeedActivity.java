@@ -153,7 +153,7 @@ public class FeedActivity extends AppCompatActivity {
         details.append("Emoticon: ").append(moodEvent.getMoodEmotionalState()).append("emote\n");
 
         if (moodEvent.getReason().isPresent()) {
-            details.append("Situation: ").append(moodEvent.getReason()).append("\n");
+            details.append("Situation: ").append(moodEvent.getReason().get()).append("\n");
         } else {
             details.append("Situation: N/A\n");
         }

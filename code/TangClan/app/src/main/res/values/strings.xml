@@ -79,4 +79,9 @@
     <string name="search_mood_text">Search for words</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pfp_desc">Profile Picture\n</string>
+    <string name="followers_text">followers</string>
+    <string name="following_text">following</string>
+    <string name="add_filter_text">add a filter</string>
+    <string name="edit_profile_text">Edit Profile</string>
 </resources>

@@ -2,15 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="happy">#FFFA64</color>
-    <color name="sad">#8EBFFF</color>
-    <color name="angry">#DF4535</color>
+    <color name="happy">#00FF1A</color>
+    <color name="sad">#0015FF</color>
+    <color name="angry">#FF0000</color>
     <color name="calm">#72A0FF</color>
     <color name="surprised">#724F00</color>
-    <color name="terrified">#A50070</color>
-    <color name="ashamed">#B23C00</color>
-    <color name="no_idea">#8E8E8E</color>
-    <color name="confused">#C6BB53</color>
-    <color name="disgusted">#D5DB78</color>
-    <color name="anxious">#6C2B87</color>
+    <color name="terrified">#D900FF</color>
+    <color name="ashamed">#FF6700</color>
+    <color name="no_idea">#858585</color>
+    <color name="confused">#D0C77D</color>
+    <color name="disgusted">#C2CF86</color>
+    <color name="anxious">#7A189A</color>
 </resources>

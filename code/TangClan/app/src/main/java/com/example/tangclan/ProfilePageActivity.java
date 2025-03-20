@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 
+
 public class ProfilePageActivity extends AppCompatActivity implements EditFragment.FragmentListener {
 
     private TextView usernameTextView;
@@ -34,15 +35,15 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_profile_page_new);
         NavBarHelper.setupNavBar(this);
 
         // Initialize views
         usernameTextView = findViewById(R.id.username);
-        nameTextView = findViewById(R.id.name);
-        followersTextView = findViewById(R.id.followers);
-        followingTextView = findViewById(R.id.following);
-        profileArrayListView = findViewById(R.id.mood_history_list);
+        nameTextView = findViewById(R.id.display_name);
+        followersTextView = findViewById(R.id.follower_count);
+        followingTextView = findViewById(R.id.following_count);
+        profileArrayListView = findViewById(R.id.listview_profile_history);
 
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
@@ -86,7 +87,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Initialize the mood event book if it doesn't exist
 
         // Set the user information in the UI
-        usernameTextView.setText(userProfile.getUsername());
+        usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
 
         // Setup the ListView after profile is loaded

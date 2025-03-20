@@ -86,7 +86,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         View view;
 
         if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.content_mood_event, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.content_mood_event_new, parent, false);
         } else {
             view = convertView;
         }
@@ -101,23 +101,22 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         SpannableString spannableUsername = new SpannableString(username);
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
-
-        // Set the background color based on the mood
         int moodColor = moodEvent.getMood().getColor(getContext());
         int transparentMoodColor = Color.argb(178, Color.red(moodColor), Color.green(moodColor), Color.blue(moodColor)); // 178 = 70% opacity
-        view.setBackgroundColor(transparentMoodColor);
+
+        SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
+        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodColor), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
+
 
         // Find views by ID
         TextView emotionTextView = view.findViewById(R.id.username_emotional_state);
-        TextView situationTextView = view.findViewById(R.id.situation);
+        //TextView situationTextView = view.findViewById(R.id.situation);
         TextView reasonTextView = view.findViewById(R.id.reason);
         TextView dateTextView = view.findViewById(R.id.date_text);
         TextView timeTextView = view.findViewById(R.id.time_text);
         ImageView moodImageView = view.findViewById(R.id.mood_event_image);
-        ImageView moodIcon = view.findViewById(R.id.mood_icon); // Emoticon ImageView
-        LinearLayout reasonBox = view.findViewById(R.id.reason_box); // Mini box for reason
+        ImageView moodIcon = view.findViewById(R.id.emoticon); // Emoticon ImageView
 
         // Set the emoticon for the mood
         Drawable emoticonDrawable = moodEvent.getMood().getEmoticon(getContext());
@@ -129,26 +128,22 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         emotionTextView.setText(spannableUsernameEmotion);//
 
         // Set the social situation (if present, otherwise default message)
-        Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
-        if (collaborators.isPresent() && !collaborators.get().isEmpty()) {
-            String situationText = String.join(", ", collaborators.get());
-            situationTextView.setText("with " + situationText);
-        } else {
-            situationTextView.setText("alone");
-        }
+        //Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
+        //if (collaborators.isPresent() && !collaborators.get().isEmpty()) {
+        //    String situationText = String.join(", ", collaborators.get());
+        //    situationTextView.setText("with " + situationText);
+        //} else {
+        //    situationTextView.setText("alone");
+        //}
 
         // Set the reason (in a mini box)
         Optional<String> reason = moodEvent.getReason();
         if (reason.isPresent() && !reason.get().isEmpty()) {
             reasonTextView.setText(reason.get());
-            reasonBox.setVisibility(View.VISIBLE); // Show the reason box
-        } else {
-            reasonBox.setVisibility(View.GONE); // Hide the reason box if no reason is specified
         }
-
         // Set the post date and time
-        dateTextView.setText(moodEvent.userFormattedDate());
-        timeTextView.setText(moodEvent.userFormattedTime());
+        dateTextView.setText(moodEvent.returnPostFormattedDate());
+        timeTextView.setText(moodEvent.returnPostFormattedTime());
 
         // Set the image (if available)
         if (moodEvent.getImage() != null) {
