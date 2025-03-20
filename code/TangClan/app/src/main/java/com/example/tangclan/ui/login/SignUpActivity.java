@@ -87,6 +87,13 @@ public class SignUpActivity extends AppCompatActivity {
                     editUsername.setError("Enter username");
                     return;
                 }
+                if (!username.matches("^[a-z0-9_-]{4,}$")) {
+                    editUsername.setError("Username must be at least 4 characters long and can only contain:\n" +
+                            " - alphanumeric characters\n" +
+                            " - hyphens\n" +
+                            " - underscores\n");
+                    return;
+                }
                 if (TextUtils.isEmpty(password)) {
                     editPassword.setError("Enter password");
                     return;
