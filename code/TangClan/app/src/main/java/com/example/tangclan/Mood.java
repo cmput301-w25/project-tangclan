@@ -38,7 +38,7 @@ public class Mood {
                 "calm",
                 "confused",
                 "disgusted",
-                "neutral",
+                "no idea",
                 "surprised",
                 "terrified"));
         if (!(emotionsList.contains(emotion))) {
@@ -64,7 +64,7 @@ public class Mood {
                 "calm",
                 "confused",
                 "disgusted",
-                "neutral",
+                "no idea",
                 "surprised",
                 "terrified"));
         if (!(emotionsList.contains(emotion))) {
@@ -93,21 +93,23 @@ public class Mood {
 
         Resources res = context.getResources();
 
-        // initialize a map from each emotional state to the corresponding emoticon resource (drawable). 
+        // initialize a map from each emotional state to the corresponding emoticon resource (drawable).
         // this should have a suitable handler if any of the getDrawable calls return null
         //TODO: implement a try/catch block to return a generic system icon
-        Map<String, Drawable> mapEmotionEmoticon = Map.of(
-                "happy", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_happy, null)),
-                "sad", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_sadness, null)),
-                "angry", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_angy, null)),
-                "anxious", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_anxious, null)),
-                "ashamed", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_ashamed, null)),
-                "calm", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_calm, null)),
-                "confused", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_confuse, null)),
-                "disgusted", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_disgust, null)),
-                "surprised", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_surprised, null)),
-                "terrified", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_terrified, null))
+        Map<String, Drawable> mapEmotionEmoticon = Map.ofEntries(
+                Map.entry("happy", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_happy, null))),
+                Map.entry("sad", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_sadness, null))),
+                Map.entry("angry", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_angy, null))),
+                Map.entry("anxious", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_anxious, null))),
+                Map.entry("ashamed", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_ashamed, null))),
+                Map.entry("calm", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_calm, null))),
+                Map.entry("confused", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_confuse, null))),
+                Map.entry("disgusted", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_disgust, null))),
+                Map.entry("surprised", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_surprised, null))),
+                Map.entry("terrified", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_terrified, null))),
+                Map.entry("no idea", Objects.requireNonNull(ResourcesCompat.getDrawable(res, R.drawable.le_no_idea, null)))
         );
+
 
         return mapEmotionEmoticon.get(this.emotion);
     }
@@ -123,17 +125,18 @@ public class Mood {
         // initialize a map from each emotional state to the corresponding color resource (Color).
         // the values are integers in hexadecimal representing the color
         //TODO: implement a try/catch block that will return a generic color for a ResourceNotFound except
-        Map<String, Integer> mapEmotionColor = Map.of(
-                "happy", (ResourcesCompat.getColor(res, R.color.happy, null)),
-                "sad", (ResourcesCompat.getColor(res, R.color.sad, null)),
-                "angry", (ResourcesCompat.getColor(res, R.color.angry, null)),
-                "anxious", (ResourcesCompat.getColor(res, R.color.anxious, null)),
-                "ashamed", (ResourcesCompat.getColor(res, R.color.ashamed, null)),
-                "calm", (ResourcesCompat.getColor(res, R.color.calm, null)),
-                "confused", (ResourcesCompat.getColor(res, R.color.confused, null)),
-                "disgusted", (ResourcesCompat.getColor(res, R.color.disgusted, null)),
-                "surprised", (ResourcesCompat.getColor(res, R.color.surprised, null)),
-                "terrified", (ResourcesCompat.getColor(res, R.color.terrified, null))
+        Map<String, Integer> mapEmotionColor = Map.ofEntries(
+                Map.entry("happy", ResourcesCompat.getColor(res, R.color.happy, null)),
+                Map.entry("sad", ResourcesCompat.getColor(res, R.color.sad, null)),
+                Map.entry("angry", ResourcesCompat.getColor(res, R.color.angry, null)),
+                Map.entry("anxious", ResourcesCompat.getColor(res, R.color.anxious, null)),
+                Map.entry("ashamed", ResourcesCompat.getColor(res, R.color.ashamed, null)),
+                Map.entry("calm", ResourcesCompat.getColor(res, R.color.calm, null)),
+                Map.entry("confused", ResourcesCompat.getColor(res, R.color.confused, null)),
+                Map.entry("disgusted", ResourcesCompat.getColor(res, R.color.disgusted, null)),
+                Map.entry("surprised", ResourcesCompat.getColor(res, R.color.surprised, null)),
+                Map.entry("terrified", ResourcesCompat.getColor(res, R.color.terrified, null)),
+                Map.entry("no idea", ResourcesCompat.getColor(res, R.color.no_idea, null)) // Corrected duplicate key
         );
 
         return mapEmotionColor.get(this.emotion);
