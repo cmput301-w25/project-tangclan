@@ -121,9 +121,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Set the reason (if available)
         TextView reason = view.findViewById(R.id.reason);
 
-        reason.setText(moodEvent.getReason() != null ? moodEvent.getReason() : "No reason specified");
-
-
         reason.setText(moodEvent.getReason().isPresent() ? moodEvent.getReason().get() : "No reason specified");
 //
 
