@@ -135,7 +135,7 @@ public class EditFragment extends Fragment {
                 view.findViewById(R.id.radioCalm),
                 view.findViewById(R.id.radioConfused),
                 view.findViewById(R.id.radioDisgust),
-                view.findViewById(R.id.radioNeutral),
+                view.findViewById(R.id.radioNoIdea),
                 view.findViewById(R.id.radioSurprised),
                 view.findViewById(R.id.radioTerrified)
         };
