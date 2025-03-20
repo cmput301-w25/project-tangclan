@@ -102,28 +102,28 @@ public class FollowingBook {
         // For testing purposes until following system is implemented
         if (following.isEmpty()) {
             // Create some dummy events from "followed" users
-            MoodEvent event1 = new MoodEvent("Happy");
-            event1.setPostDate(String.valueOf(LocalDate.now()));
-            event1.setPostTime(LocalTime.now().minusHours(1).toString());
-            event1.setSituation("With friends");
+            MoodEvent event1 = new MoodEvent("happy");
+            event1.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
+            event1.setPostTime("12:29:39.673202"); // Use "HH:mm:ss.SSSSSS" format
+            event1.setCollaborators(new ArrayList<>(List.of("With friends")));
             uidToMoodEvent.put("user1", event1);
 
-            MoodEvent event2 = new MoodEvent("Sad");
-            event2.setPostDate(String.valueOf(LocalDate.now().minusDays(1)));
-            event2.setPostTime(LocalTime.now().toString());
-            event2.setSituation("At home");
+            MoodEvent event2 = new MoodEvent("sad");
+            event2.setPostDate("2025-03-17"); // Use "yyyy-MM-dd" format
+            event2.setPostTime("14:45:22.123456"); // Use "HH:mm:ss.SSSSSS" format
+            event2.setCollaborators(new ArrayList<>(List.of("At home")));
             uidToMoodEvent.put("user2", event2);
 
-            MoodEvent event3 = new MoodEvent("Excited");
-            event3.setPostDate(String.valueOf(LocalDate.now()));
-            event3.setPostTime(LocalTime.now().minusMinutes(30).toString());
-            event3.setSituation("Party time");
+            MoodEvent event3 = new MoodEvent("anxious");
+            event3.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
+            event3.setPostTime("18:30:15.987654"); // Use "HH:mm:ss.SSSSSS" format
+            event3.setCollaborators(new ArrayList<>(List.of("Party time")));
             uidToMoodEvent.put("user3", event3);
 
-            MoodEvent event4 = new MoodEvent("Calm");
-            event4.setPostDate(String.valueOf(LocalDate.now().minusDays(2)));
-            event4.setPostTime(LocalTime.now().toString());
-            event4.setSituation("Reading");
+            MoodEvent event4 = new MoodEvent("calm");
+            event4.setPostDate("2025-03-16"); // Use "yyyy-MM-dd" format
+            event4.setPostTime("09:15:45.456789"); // Use "HH:mm:ss.SSSSSS" format
+            event4.setCollaborators(new ArrayList<>(List.of("Reading")));
             uidToMoodEvent.put("user4", event4);
 
             return uidToMoodEvent;

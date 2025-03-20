@@ -44,6 +44,7 @@ public class FeedActivity extends AppCompatActivity {
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
+
     /**
      * Initializes the activity, sets up the user interface, loads the mood event feed,
      * and configures event listeners for adding and viewing mood events.
@@ -69,15 +70,15 @@ public class FeedActivity extends AppCompatActivity {
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
 
         db.getUser(currentUser.getUid(), user -> {
-           loggedInUser.setEmail(user.getEmail());
-           loggedInUser.setUsername(user.getUsername());
-           loggedInUser.setPassword(user.getPassword());
-           loggedInUser.setDisplayName(user.getDisplayName());
-           loggedInUser.setAge(user.getAge());
-           loggedInUser.setUid(currentUser.getUid());
-           loggedInUser.initializeMoodEventBookFromDatabase(db);
+            loggedInUser.setEmail(user.getEmail());
+            loggedInUser.setUsername(user.getUsername());
+            loggedInUser.setPassword(user.getPassword());
+            loggedInUser.setDisplayName(user.getDisplayName());
+            loggedInUser.setAge(user.getAge());
+            loggedInUser.setUid(currentUser.getUid());
+            loggedInUser.initializeMoodEventBookFromDatabase(db);
 
-           Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
+            Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
         });
 
 
@@ -87,6 +88,7 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
+        NavBarHelper.setupNavBar(this);
 
         Button logout = findViewById(R.id.logout_butt);
         logout.setOnClickListener(new View.OnClickListener() {

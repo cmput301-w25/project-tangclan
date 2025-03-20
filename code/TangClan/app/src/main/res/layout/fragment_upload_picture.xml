@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:id="@+id/main"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
-    <!--Change-->
+
+    android:padding="16dp"
+    android:id="@+id/main">
+
+
+
     <!-- Top bar -->
 
     <LinearLayout
@@ -16,8 +19,8 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="Owl icon"
-            android:src="@drawable/ic_owl" />
+            android:src="@drawable/ic_owl"
+            android:contentDescription="Owl icon" />
 
         <TextView
             android:layout_width="0dp"
@@ -98,6 +101,29 @@
         android:scaleType="centerCrop"
         android:background="@android:color/darker_gray"
         android:layout_marginLeft="40dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonSelectImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Select Image" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="0"
+            android:text="Save" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnUploadImage"

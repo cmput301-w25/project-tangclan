@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 
 public class ProfilePageActivity extends AppCompatActivity implements EditFragment.FragmentListener {
@@ -41,7 +42,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         nameTextView = findViewById(R.id.name);
         followersTextView = findViewById(R.id.followers);
         followingTextView = findViewById(R.id.following);
-        profileArrayListView = findViewById(R.id.profile_array);
+        profileArrayListView = findViewById(R.id.mood_history_list);
 
         // Initialize database helper
         databaseBestie = new DatabaseBestie();

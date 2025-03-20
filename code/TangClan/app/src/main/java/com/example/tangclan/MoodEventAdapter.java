@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -106,8 +107,22 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Formatting emotional state with color
-        SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(moodEvent.getMood().getColor(getContext().getApplicationContext())), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Mood mood = moodEvent.getMood();
+        if (mood == null) {
+            // Handle null Mood object
+            Toast.makeText(getContext(), "Mood is null for event: " + moodEvent, Toast.LENGTH_SHORT).show();
+            return view;
+        }
+
+        Integer color = mood.getColor(getContext().getApplicationContext());
+        if (color == null) {
+            // Handle null color
+            Toast.makeText(getContext(), "Color is null for mood: " + mood, Toast.LENGTH_SHORT).show();
+            return view;
+        }
+
+        SpannableString spannableEmotionalState = new SpannableString(mood.getEmotion());
+        spannableEmotionalState.setSpan(new ForegroundColorSpan(color), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
@@ -121,8 +136,12 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Set the reason (if available)
         TextView reason = view.findViewById(R.id.reason);
 
-        reason.setText(moodEvent.getReason().isPresent() ? moodEvent.getReason().get() : "No reason specified");
-//
+        // Handle Optional<String> for reason
+        if (moodEvent.getReason().isPresent()) {
+            reason.setText(moodEvent.getReason().get()); // Extract the value from Optional
+        } else {
+            reason.setText("No reason specified"); // Default message
+        }
 
         // Set the post date and time
         TextView date = view.findViewById(R.id.date_text);

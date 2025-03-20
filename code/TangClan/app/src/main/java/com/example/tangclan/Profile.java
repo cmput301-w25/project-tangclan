@@ -19,11 +19,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
 
     private Blob profilePic;
 
-    private MoodEventBook MoodEventBook;
-    private FollowingBook followingBook;
-
-
-
     /**
      * Constructor for database purposes
      */
@@ -55,7 +50,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.email=email;
         this.age= null;
         this.profilePic = photo;
-
     }
 
     /**
@@ -170,34 +164,5 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      * @return
      *      The MoodEventBook associated with this profile
      */
-
-    public MoodEventBook getMoodEventBook() {
-        if (MoodEventBook == null) {
-            MoodEventBook = new MoodEventBook(); // Initialize if null
-        }
-        return MoodEventBook;
-    }
-    public FollowingBook getFollowingBook() {
-        if (followingBook == null) {
-            followingBook = new FollowingBook(); // Initialize if null
-        }
-        return followingBook;
-    }
-
-    /**
-     * Setter for the user's FollowingBook
-     * @param followingBook The FollowingBook to assign to this profile
-     */
-    public void setFollowingBook(FollowingBook followingBook) {
-        this.followingBook = followingBook;
-    }
-    //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
-
-
-    //TODO:
-    //On CRC cards "Manages Permissions for followers" Referring to this user story?: "As a participant, I want to grant another participant permission to follow my most recent moodevent
-    //Idea:
-
-
 
 }

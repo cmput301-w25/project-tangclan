@@ -1,15 +1,23 @@
 package com.example.tangclan;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,8 +29,36 @@ import java.util.ArrayList;
 public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
     private String selectedEmotion;
+
     private ArrayList<String> selectedSituation;
+    private ImageView imageView;
+    private ImageHelper imageHelper;
+    private Uri imageUri = null;
+    private Bitmap selectedImage = null;
+
+    // Camera launcher
+    private final ActivityResultLauncher<Intent> cameraLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    imageUri = imageHelper.getImageUri();
+                    imageView.setImageURI(imageUri);
+                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                }
+            });
+
+    // Gallery launcher
+    private final ActivityResultLauncher<Intent> galleryLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    imageUri = result.getData().getData();
+                    imageView.setImageURI(imageUri);
+                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                }
+            });
+
+
     private String imagePath = null; // Optional image path (null if not uploaded)
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,57 +74,117 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         }
 
         // Initialize UI components
-        // User writes a reason for the mood event
+        imageView = findViewById(R.id.imageView);
+        Button buttonSelectImage = findViewById(R.id.buttonSelectImage);
+        Button buttonSaveImage = findViewById(R.id.btnSave);
+        Button buttonSaveText = findViewById(R.id.buttonSaveText);
+        Button buttonNext = findViewById(R.id.btnNext);
+        TextView charCount = findViewById(R.id.charCount);
+        TextInputEditText reason = findViewById(R.id.reason);
         ImageView closeIcon = findViewById(R.id.closeIcon);
         Button btnBack = findViewById(R.id.btnBackEnvironment);
         Button btnUploadImage = findViewById(R.id.btnUploadImage);
         Button btnNext = findViewById(R.id.buttonSaveText);
         TextInputEditText editTextReason = findViewById(R.id.text203).findViewById(R.id.reason);
 
-        // Close button action
-        closeIcon.setOnClickListener(v -> finish());
 
-        // Back button action
-        btnBack.setOnClickListener(v -> finish());
+        // Initialize ImageHelper
+        imageHelper = new ImageHelper(this, cameraLauncher, galleryLauncher);
 
-        // Upload image button (Optional)
-        btnUploadImage.setOnClickListener(v -> selectImage());
+        // Set up image selection
+        buttonSelectImage.setOnClickListener(v -> imageHelper.showImagePickerDialog());
 
-        // Proceed to ProfilePageActivity
-        btnNext.setOnClickListener(v -> {
-            String reason = editTextReason.getText().toString().trim();
-
-            if (TextUtils.isEmpty(reason)) {
-                Toast.makeText(this, "Please enter a reason for your mood event", Toast.LENGTH_SHORT).show();
-                return;
+        // Save image button functionality
+        buttonSaveImage.setOnClickListener(v -> {
+            if (imageUri != null) {
+                // Using the static method from ImageValidator
+                if (ImageValidator.isImageSizeValid(this, imageUri)) {
+                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                    Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Image is too large!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "No image selected!", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        // Set text watcher for character count
+        reason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                int remainingChars = 200 - s.length();
+
+                if (remainingChars <= 50) {
+                    charCount.setVisibility(View.VISIBLE);
+                    charCount.setText(remainingChars + " characters remaining");
+                } else {
+                    charCount.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Save text button functionality
+        buttonSaveText.setOnClickListener(v -> {
+            String userInput = reason.getText().toString().trim();
+
+            boolean validatedInput = imageHelper.textValidation(userInput);
+
+            if (!validatedInput) {
+                reason.setError("You're way over limit!");
+            } else {
+                Toast.makeText(this, "Reason saved!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Next button (proceed to profile page)
+        buttonNext.setOnClickListener(v -> {
+            String userInput = reason.getText().toString().trim();
 
             // Create a bundle to carry all the collected data
             Bundle bundle = new Bundle();
             bundle.putString("selectedEmotion", selectedEmotion);
-            bundle.putString("reason", reason);
 
-            if (imagePath != null) {
-                bundle.putString("imagePath", imagePath);
+            bundle.putStringArrayList("selectedSituation", selectedSituation);
+
+            bundle.putString("reason", String.valueOf(reason));
+
+
+            // Add reason if valid
+            if (!TextUtils.isEmpty(userInput) && imageHelper.textValidation(userInput)) {
+                bundle.putString("reason", userInput);
+            }
+
+            // Add image if selected
+            if (selectedImage != null) {
+                String imagePath = imageHelper.saveBitmapToFile(selectedImage);
+                if (imagePath != null) {
+                    bundle.putString("imagePath", imagePath);
+                }
             }
 
             // Create an intent to start the next activity
             Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ProfilePageActivity.class);
-
-            // Attach the bundle to the intent
             intent.putExtras(bundle);
+
+            startActivity(intent);
+            finish();
+
             intent.putStringArrayListExtra("selectedSituation", selectedSituation);
 
             // Start the activity
             startActivity(intent);  // Start ProfilePageActivity
             finish();  // Close the current activity
-        });
-    }
 
-    // This function simulates selecting an image (You need to implement actual image selection logic)
-    private void selectImage() {
-        // Example: Set a dummy image path
-        imagePath = "/storage/emulated/0/Pictures/mood_event.jpg";
-        Toast.makeText(this, "Image selected!", Toast.LENGTH_SHORT).show();
+        });
+
+        // Close button action
+        closeIcon.setOnClickListener(v -> finish());
     }
 }
