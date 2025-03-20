@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="350dp"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:layout_marginHorizontal="30dp"
+    android:layout_marginVertical="100dp"
+    android:background="#D3ECF8"
+    android:elevation="10dp"
     android:orientation="vertical"
+    android:outlineAmbientShadowColor="#000000"
     android:padding="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/moodevent_details_title"
-            android:layout_width="347dp"
-            android:layout_height="wrap_content"
-            android:text="Edit Details"
-            android:textSize="24sp" />
+            android:layout_width="247dp"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/inter_bold"
+            android:text="Review Details"
+            android:textSize="16sp" />
 
         <ImageButton
             android:id="@+id/cancel_edit"
-            android:layout_width="36dp"
-            android:layout_height="32dp"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
             android:background="#00FFFFFF"
             app:srcCompat="@drawable/baseline_cancel_24" />
     </LinearLayout>
@@ -31,56 +36,57 @@
         android:id="@+id/edit_details_q1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/inter_medium"
         android:text="How are you feeling?"
-        android:textSize="24sp" />
+        android:textSize="20sp" />
 
     <RadioGroup
         android:id="@+id/emotion_selection"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:elevation="1dp">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="56dp"
+            android:background="#0D000000"
+            android:outlineAmbientShadowColor="#000000">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radioNoIdea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="No Idea" />
 
                 <RadioButton
                     android:id="@+id/radioHappy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Happy" />
-
-                <RadioButton
-                    android:id="@+id/radioSad"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Sad" />
 
                 <RadioButton
                     android:id="@+id/radioAngry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Angry" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/radioAnxious"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Anxious" />
 
                 <RadioButton
@@ -88,6 +94,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Ashamed" />
 
                 <RadioButton
@@ -95,19 +102,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Calm" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/radioConfused"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Confused" />
 
                 <RadioButton
@@ -115,26 +118,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Disgusted" />
 
                 <RadioButton
-                    android:id="@+id/radioNoIdea"
+                    android:id="@+id/radioSad"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="No Idea" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Sad" />
 
                 <RadioButton
                     android:id="@+id/radioSurprised"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Surprised" />
 
                 <RadioButton
@@ -142,9 +142,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
                     android:text="Terrified" />
             </LinearLayout>
-        </LinearLayout>
+        </ScrollView>
 
     </RadioGroup>
 
@@ -152,8 +153,10 @@
         android:id="@+id/edit_details_q2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/inter_medium"
         android:text="Describe the social situation"
-        android:textSize="24sp" />
+        android:textSize="20sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -162,52 +165,74 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_social_situation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="hint" />
+            android:layout_height="54dp"
+            android:hint="I was with..." />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/edit_details_q3"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="What made you feel this way?"
-        android:textSize="24sp" />
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/edit_reason_box"
-        android:layout_width="match_parent"
-        android:layout_height="113dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_reasonwhy"
+        <TextView
+            android:id="@+id/edit_details_q3"
             android:layout_width="match_parent"
-            android:layout_height="113dp"
-            android:hint="200 characters" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:text="What made you feel this way?"
+            android:textSize="20sp" />
 
-    <ImageButton
-        android:id="@+id/image_reasonwhy"
-        android:layout_width="377dp"
-        android:layout_height="257dp"
-        app:srcCompat="@drawable/baseline_add_box_24" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edit_reason_box"
+            android:layout_width="match_parent"
+            android:layout_height="75dp">
 
-    <TextView
-        android:id="@+id/edit_details_q4"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_reasonwhy"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:hint="200 characters" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/image_reasonwhy"
+            android:layout_width="match_parent"
+            android:layout_height="167dp"
+            android:layout_marginVertical="10dp"
+            android:background="#0D000000"
+            app:srcCompat="@drawable/baseline_add_box_24" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Do you want to share your location?"
-        android:textSize="24sp" />
+        android:orientation="horizontal">
 
-    <Switch
-        android:id="@+id/use_location_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="38dp"
-        android:textOff="no"
-        android:textOn="yes" />
+        <TextView
+            android:id="@+id/edit_details_q4"
+            android:layout_width="235dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:paddingEnd="20dp"
+            android:text="Do you want to share your location?"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/use_location_switch"
+            android:layout_width="74dp"
+            android:layout_height="match_parent"
+            android:textOff="no"
+            android:textOn="yes" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/submit_details"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/black"
         android:text="Confirm Details" />
 </LinearLayout>

@@ -78,6 +78,7 @@ public class FeedActivity extends AppCompatActivity {
             loggedInUser.setUid(currentUser.getUid());
             loggedInUser.initializeMoodEventBookFromDatabase(db);
 
+            Log.d("FINALDEBUG", user.getUsername());
             Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
         });
 

@@ -125,39 +125,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                         .setMessage("Do you want to edit or delete this mood event?")
                         .setPositiveButton("Edit", (dialog, which) -> {
                             // Edit mood
-
-                            String emotion = post.getMoodEmotionalState();
-
-                            StringBuilder situation = new StringBuilder();
-                            Optional<ArrayList<String>> collaborators = post.getCollaborators();
-                            collaborators.ifPresent(list -> {
-                                for (String item: list ) {
-                                    situation.append(item);
-                                    situation.append(",");
-                                }
-                            });
-
-                            Optional<String> optReason = post.getReason();
-                            String reason = optReason.orElse("");
-
-                            // get Image bytes
-                            Bitmap bitmap = post.getImage();
-                            byte[] imageBytes;
-                            if (bitmap != null) {
-                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                                imageBytes = outputStream.toByteArray();
-                            } else {
-                                imageBytes = null;
-                            }
-
-                            boolean useLoc = false;
-
-                            EditFragment form = EditFragment.newInstance(mid,  month, emotion, situation.toString(), reason, imageBytes, useLoc);
+                            Bundle moodDetails = getMoodEventBundle(post);
+                            EditFragment form = EditFragment.newInstance(moodDetails);
                             getSupportFragmentManager()
                                     .beginTransaction().add(R.id.edit_form_container, form).commit();
 
-                            // userProfile.getMoodEventBook().updateMoodEvents();
                         })
                         .setNegativeButton("Delete", (dialog, which) -> {
                             new AlertDialog.Builder(view.getContext())
@@ -259,6 +231,50 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         startActivity(intent);
     }
 
+    public Bundle getMoodEventBundle(MoodEvent post) {
+        String mid = post.getMid();
+        String month = post.userFormattedDate().substring(3);
+        String emotion = post.getMoodEmotionalState();
+        String collaborators = getStringOfCollaborators(post);
+        String reason = post.getReason().orElse("");
+        byte[] imgBytes = getImageBytes(post.getImage());
+        boolean useLoc = false;  // TODO: implement location once MoodEvent has the field
+
+        Bundle args = new Bundle();
+        args.putString("mid", mid);
+        args.putString("month", month);
+        args.putString("emotion", emotion);
+        args.putString("social situation", collaborators);
+        args.putString("reason", reason);
+        args.putByteArray("image", imgBytes);
+        args.putBoolean("location permission", useLoc);
+
+        return args;
+    }
+
+    public String getStringOfCollaborators(MoodEvent post) {
+        StringBuilder collaboratorsStr = new StringBuilder();
+        Optional<ArrayList<String>> collaborators = post.getCollaborators();
+        collaborators.ifPresent(list -> {
+            for (String item: list ) {
+                collaboratorsStr.append(item);
+                collaboratorsStr.append(",");
+            }
+        });
+        return collaboratorsStr.toString();
+    }
+
+    public byte[] getImageBytes(Bitmap img) {
+        byte[] imageBytes;
+        if (img != null) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            img.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            imageBytes = outputStream.toByteArray();
+        } else {
+            imageBytes = null;
+        }
+        return imageBytes;
+    }
 
     @Override
     public void onFragmentFinished() {
