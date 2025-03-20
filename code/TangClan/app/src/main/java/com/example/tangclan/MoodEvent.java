@@ -137,7 +137,7 @@ public class MoodEvent implements Serializable {
      */
     public LocalDate getPostDate() {
         return this.postDate;
-    }
+    } //
 
     /**
      * Getter for the post time

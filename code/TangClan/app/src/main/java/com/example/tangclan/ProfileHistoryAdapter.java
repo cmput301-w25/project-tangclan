@@ -124,7 +124,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Set the emotional state
-        emotionTextView.setText(spannableUsernameEmotion);
+        emotionTextView.setText(spannableUsernameEmotion);//
 
         // Set the social situation (if present, otherwise default message)
         Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
