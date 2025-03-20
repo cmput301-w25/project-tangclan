@@ -2,19 +2,12 @@ package com.example.tangclan;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -55,7 +48,7 @@ public class SetupBirthdayActivity extends AppCompatActivity
             if (CalculateAge(yearGlobal,monthGlobal,dayGlobal)<18){
                 Log.d("TAgAGE","DisplayAge:"+CalculateAge(yearGlobal,monthGlobal,dayGlobal));
             }else{
-                Intent intent = new Intent(SetupBirthdayActivity.this, profileActivity.class);//TODO: CHANGE PROFILEACTIVITY.JAVA TO SETUP profile pic activity!!!
+                Intent intent = new Intent(SetupBirthdayActivity.this, ProfileActivity.class);//TODO: CHANGE PROFILEACTIVITY.JAVA TO SETUP profile pic activity!!!
                 startActivity(intent);
             }
 

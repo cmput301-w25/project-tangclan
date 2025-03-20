@@ -96,6 +96,8 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         // Format the username and mood emotion
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
 
+
+        username = LoggedInUser.getInstance().getUsername();
         SpannableString spannableUsername = new SpannableString(username);
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 

@@ -17,7 +17,11 @@ public class MoodEventBook {
 
     // Constructor
     public MoodEventBook() {
+
         this.moodEvents = new ArrayList<>();
+
+        // Add a listener for when data changes
+        DatabaseBestie db = new DatabaseBestie();
     }
 
     /**
@@ -46,6 +50,25 @@ public class MoodEventBook {
     public void deleteMoodEvent(MoodEvent event) {
         moodEvents.remove(event);
         // TODO: Connect to the database and remove the mood event
+        DatabaseBestie db = new DatabaseBestie();
+        db.deleteMoodEvent(event.getMid(), event.userFormattedDate().substring(3));
+    }
+
+    public void updateMoodEvents() {
+        DatabaseBestie db = new DatabaseBestie();
+        String id, month;
+        if (!moodEvents.isEmpty()) {
+            for (MoodEvent event: moodEvents) {
+                id = event.getMid();
+                month = event.userFormattedDate().substring(3);
+                db.getMoodEventByMid(id, month, (updatedEvent, emot) -> {
+                    event.setMood(emot);
+                    event.setCollaborators(updatedEvent.getCollaborators().orElse(new ArrayList<>()));
+                    event.setReason(updatedEvent.getReason().orElse(""));
+                    event.setImage(updatedEvent.getImage());
+                });
+            }
+        }
     }
 
     /**
@@ -163,7 +186,8 @@ public class MoodEventBook {
      *
      * @return A list of all MoodEvents
      */
-    public List<MoodEvent> getAllMoodEvents() {
+    public ArrayList<MoodEvent
+            > getAllMoodEvents() {
         return new ArrayList<>(moodEvents);
     }
 

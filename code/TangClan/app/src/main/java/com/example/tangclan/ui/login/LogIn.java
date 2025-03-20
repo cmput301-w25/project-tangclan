@@ -79,9 +79,11 @@ public class LogIn extends AppCompatActivity {
                     editPassword.setError("Enter password");
                     return;
                 }
+                System.out.println("we made it here");
 
                 // Find Corresponding email to Log In
                 bestie.findProfileByUsername(username, (profile) -> {
+                    System.out.println("and here");
                     if (profile == null) {
                         editUsername.setError("Cannot find an account with that username");
                     } else {
