@@ -29,7 +29,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private ListView profileArrayListView;
     private Profile userProfile;
     private DatabaseBestie databaseBestie;
-    private ArrayAdapter<MoodEvent> adapter;
+    private ArrayAdapter<MoodEvent> adapter;//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
