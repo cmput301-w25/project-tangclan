@@ -1,7 +1,6 @@
 package com.example.tangclan;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,10 +14,13 @@ import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
 
-public class ProfilePageActivity extends AppCompatActivity {
+public class ProfilePageActivity extends AppCompatActivity implements EditFragment.FragmentListener {
 
     private TextView usernameTextView;
     private TextView nameTextView;
@@ -27,7 +29,7 @@ public class ProfilePageActivity extends AppCompatActivity {
     private ListView profileArrayListView;
     private Profile userProfile;
     private DatabaseBestie databaseBestie;
-    private ArrayAdapter<MoodEvent> adapter;
+    private ArrayAdapter<MoodEvent> adapter;//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,17 +66,38 @@ public class ProfilePageActivity extends AppCompatActivity {
     }
 
     private void getCurrentUserProfile() {
+
+        // Retrieve the current logged-in user profile using the Singleton instance
+        userProfile = LoggedInUser.getInstance();
+
+        // Initialize the mood event book if it doesn't exist
+        if (userProfile.getMoodEventBook() == null) {
+            userProfile.setMoodEventBook(new MoodEventBook());
+        }
+
+        // Fetch the user's past mood events from the database
+        initializeMoodEventBookFromDatabase();
+
+
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
         userProfile = LoggedInUser.getInstance();
 
         // Initialize the mood event book if it doesn't exist
+
         // Set the user information in the UI
         usernameTextView.setText(userProfile.getUsername());
         nameTextView.setText(userProfile.getDisplayName());
 
         // Setup the ListView after profile is loaded
         setupProfileListView();
+    }
+
+    private void initializeMoodEventBookFromDatabase() {
+        // Fetch the user's past mood events from the database
+        if (userProfile != null) {
+            userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
+        }
     }
 
     private void setupProfileListView() {
@@ -89,6 +112,79 @@ public class ProfilePageActivity extends AppCompatActivity {
             ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
             profileArrayListView.setLayoutParams(params);
+
+            // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
+            profileArrayListView.setOnItemLongClickListener((parent, view, position, id) -> {
+                MoodEvent post = adapter.getItem(position); // Access from the data list
+                String mid = post.getMid();
+
+                String postDate = post.userFormattedDate();
+                String month = postDate.substring(3);
+
+                new AlertDialog.Builder(view.getContext())
+                        .setMessage("Do you want to edit or delete this mood event?")
+                        .setPositiveButton("Edit", (dialog, which) -> {
+                            // Edit mood
+
+                            String emotion = post.getMoodEmotionalState();
+
+                            StringBuilder situation = new StringBuilder();
+                            Optional<ArrayList<String>> collaborators = post.getCollaborators();
+                            collaborators.ifPresent(list -> {
+                                for (String item: list ) {
+                                    situation.append(item);
+                                    situation.append(",");
+                                }
+                            });
+
+                            Optional<String> optReason = post.getReason();
+                            String reason = optReason.orElse("");
+
+                            // get Image bytes
+                            Bitmap bitmap = post.getImage();
+                            byte[] imageBytes;
+                            if (bitmap != null) {
+                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                                imageBytes = outputStream.toByteArray();
+                            } else {
+                                imageBytes = null;
+                            }
+
+                            boolean useLoc = false;
+
+                            EditFragment form = EditFragment.newInstance(mid,  month, emotion, situation.toString(), reason, imageBytes, useLoc);
+                            getSupportFragmentManager()
+                                    .beginTransaction().add(R.id.edit_form_container, form).commit();
+
+                            // userProfile.getMoodEventBook().updateMoodEvents();
+                        })
+                        .setNegativeButton("Delete", (dialog, which) -> {
+                            new AlertDialog.Builder(view.getContext())
+                                    .setTitle("Are you sure you want to delete this mood event?")
+                                    .setMessage("This action cannot be undone.")
+                                    .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
+                                        // Remove item from the data list, NOT the ListView itself
+                                        adapter.remove(post);
+
+                                        // delete from mood event book and database
+                                        databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
+                                            userProfile.getMoodEventBook().deleteMoodEvent(event);
+                                        });
+
+                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
+
+                                        databaseBestie.deleteMoodEvent(post.getMid(), month);
+                                        Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+                                    })
+                                    .setNegativeButton("No", null)
+                                    .show();
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+                return true; // Indicate that the long press event is consumed
+            });
+
         }
     }
 
@@ -151,10 +247,11 @@ public class ProfilePageActivity extends AppCompatActivity {
     }
 
     private void saveProfileToDatabase() {
-        // This method should save the updated profile to your database
-        // For now, we'll just simulate successful saving
-        // databaseBestie.saveUser(userProfile);
+
     }
+
+
+
 
     public void goToEditProfile(View view) {
         // Handle edit profile button click
@@ -162,4 +259,28 @@ public class ProfilePageActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    @Override
+    public void onFragmentFinished() {
+        System.out.println("FRagment done!");
+        userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
+        // update adapter
+        String event_id, event_month;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            int pos = i;
+            MoodEvent event = adapter.getItem(i);
+            event_id = event.getMid();
+            event_month = event.userFormattedDate().substring(3);
+            databaseBestie.getMoodEventByMid(event_id, event_month, (updatedEvent, emot) -> {
+                adapter.remove(event);
+
+                event.setCollaborators(updatedEvent.getCollaborators().orElse(new ArrayList<>()));
+                event.setReason(updatedEvent.getReason().orElse(""));
+                event.setImage(updatedEvent.getImage());
+                event.setMood(emot);
+                adapter.insert(event,pos);
+            });
+        }
+        adapter.notifyDataSetChanged();
+    }
 }
