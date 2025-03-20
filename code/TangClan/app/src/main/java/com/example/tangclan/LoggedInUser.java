@@ -44,7 +44,7 @@ public class LoggedInUser extends Profile {
         this.setPassword(profile.getPassword());
         this.setEmail(profile.getEmail());
         this.setAge(profile.getAge());
-        this.setMoodEventBook(profile.getMoodEventBook());
+       
         // Set other profile data as needed
     }
 

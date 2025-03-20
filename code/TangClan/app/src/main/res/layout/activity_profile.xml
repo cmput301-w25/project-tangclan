@@ -112,13 +112,15 @@
             android:text="@string/edit_profile"
             android:textAppearance="@style/edit_profil_button"
             android:onClick="goToEditProfile" />
-`
+        `
         <ListView
-            android:id="@+id/profile_array"
+            android:id="@+id/mood_history_list"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/edit_profil_button"
-            android:layout_marginTop="42dp"
+            android:layout_marginTop="30dp"
+            android:dividerHeight="16dp"
+            android:divider="@android:color/transparent"
             android:layout_weight="1"
             />
 

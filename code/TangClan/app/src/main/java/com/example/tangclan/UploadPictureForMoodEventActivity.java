@@ -30,7 +30,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
     private String selectedEmotion;
 
-    private String selectedSituation;
+    private ArrayList<String> selectedSituation;
     private ImageView imageView;
     private ImageHelper imageHelper;
     private Uri imageUri = null;
@@ -56,7 +56,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
                 }
             });
 
-    private ArrayList<String> selectedSituation;
+
     private String imagePath = null; // Optional image path (null if not uploaded)
 
 
@@ -82,8 +82,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         TextView charCount = findViewById(R.id.charCount);
         TextInputEditText reason = findViewById(R.id.reason);
         ImageView closeIcon = findViewById(R.id.closeIcon);
-
-
         Button btnBack = findViewById(R.id.btnBackEnvironment);
         Button btnUploadImage = findViewById(R.id.btnUploadImage);
         Button btnNext = findViewById(R.id.buttonSaveText);
@@ -153,9 +151,9 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             Bundle bundle = new Bundle();
             bundle.putString("selectedEmotion", selectedEmotion);
 
-            bundle.putString("selectedSituation", selectedSituation);
+            bundle.putStringArrayList("selectedSituation", selectedSituation);
 
-            bundle.putString("reason", reason);
+            bundle.putString("reason", String.valueOf(reason));
 
 
             // Add reason if valid

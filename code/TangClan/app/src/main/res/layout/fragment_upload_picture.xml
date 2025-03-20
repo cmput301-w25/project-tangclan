@@ -7,7 +7,6 @@
     android:padding="16dp"
     android:id="@+id/main">
 
-    android:padding="16dp">
 
 
     <!-- Top bar -->
@@ -20,8 +19,8 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:contentDescription="Owl icon"
-            android:src="@drawable/ic_owl" />
+            android:src="@drawable/ic_owl"
+            android:contentDescription="Owl icon" />
 
         <TextView
             android:layout_width="0dp"
@@ -132,7 +131,6 @@
         android:layout_height="wrap_content"
         android:text="Select Image"
         android:layout_marginTop="20dp"/>
-
 
 
     <LinearLayout

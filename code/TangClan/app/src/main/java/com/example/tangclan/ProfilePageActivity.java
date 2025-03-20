@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -16,14 +15,8 @@ import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.io.File;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ProfilePageActivity extends AppCompatActivity {
 
@@ -47,7 +40,7 @@ public class ProfilePageActivity extends AppCompatActivity {
         nameTextView = findViewById(R.id.name);
         followersTextView = findViewById(R.id.followers);
         followingTextView = findViewById(R.id.following);
-        profileArrayListView = findViewById(R.id.profile_array);
+        profileArrayListView = findViewById(R.id.mood_history_list);
 
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
@@ -71,38 +64,17 @@ public class ProfilePageActivity extends AppCompatActivity {
     }
 
     private void getCurrentUserProfile() {
-
-        // Retrieve the current logged-in user profile using the Singleton instance
-        userProfile = LoggedInUser.getInstance();
-
-        // Initialize the mood event book if it doesn't exist
-        if (userProfile.getMoodEventBook() == null) {
-            userProfile.setMoodEventBook(new MoodEventBook());
-        }
-
-        // Fetch the user's past mood events from the database
-        initializeMoodEventBookFromDatabase();
-
-
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
         userProfile = LoggedInUser.getInstance();
 
         // Initialize the mood event book if it doesn't exist
-
         // Set the user information in the UI
         usernameTextView.setText(userProfile.getUsername());
         nameTextView.setText(userProfile.getDisplayName());
 
         // Setup the ListView after profile is loaded
         setupProfileListView();
-    }
-
-    private void initializeMoodEventBookFromDatabase() {
-        // Fetch the user's past mood events from the database
-        if (userProfile != null) {
-            userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
-        }
     }
 
     private void setupProfileListView() {
@@ -179,11 +151,10 @@ public class ProfilePageActivity extends AppCompatActivity {
     }
 
     private void saveProfileToDatabase() {
-
+        // This method should save the updated profile to your database
+        // For now, we'll just simulate successful saving
+        // databaseBestie.saveUser(userProfile);
     }
-
-
-
 
     public void goToEditProfile(View view) {
         // Handle edit profile button click
@@ -192,7 +163,3 @@ public class ProfilePageActivity extends AppCompatActivity {
     }
 
 }
-
-
-}
-

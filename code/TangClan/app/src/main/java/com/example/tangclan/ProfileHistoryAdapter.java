@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * ArrayAdapter wrapper for the Profile History.
@@ -100,9 +102,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
-
+        // Set the background color based on the mood
         int moodColor = moodEvent.getMood().getColor(getContext());
-        int transparentMoodColor = Color.argb(178, Color.red(moodColor), Color.green(moodColor), Color.blue(moodColor)); // 128 = 50% opacity
+        int transparentMoodColor = Color.argb(178, Color.red(moodColor), Color.green(moodColor), Color.blue(moodColor)); // 178 = 70% opacity
         view.setBackgroundColor(transparentMoodColor);
 
         // Find views by ID
@@ -112,25 +114,39 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         TextView dateTextView = view.findViewById(R.id.date_text);
         TextView timeTextView = view.findViewById(R.id.time_text);
         ImageView moodImageView = view.findViewById(R.id.mood_event_image);
-        ImageView moodIcon = view.findViewById(R.id.mood_icon);
+        ImageView moodIcon = view.findViewById(R.id.mood_icon); // Emoticon ImageView
+        LinearLayout reasonBox = view.findViewById(R.id.reason_box); // Mini box for reason
 
+        // Set the emoticon for the mood
         Drawable emoticonDrawable = moodEvent.getMood().getEmoticon(getContext());
         if (emoticonDrawable != null) {
             moodIcon.setImageDrawable(emoticonDrawable);  // Use setImageDrawable to display the icon
         }
 
-
         // Set the emotional state
-        emotionTextView.setText(spannableUsernameEmotion); // username and emotional state
+        emotionTextView.setText(spannableUsernameEmotion);
 
         // Set the social situation (if present, otherwise default message)
+        Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
+        if (collaborators.isPresent() && !collaborators.get().isEmpty()) {
+            String situationText = String.join(", ", collaborators.get());
+            situationTextView.setText("with " + situationText);
+        } else {
+            situationTextView.setText("alone");
+        }
 
-        // Set the reason (if present, otherwise default message)
-        reasonTextView.setText(moodEvent.getReason().isPresent() && !(moodEvent.getReason().get().isEmpty()) ? moodEvent.getReason().get() : "No reason specified");
+        // Set the reason (in a mini box)
+        Optional<String> reason = moodEvent.getReason();
+        if (reason.isPresent() && !reason.get().isEmpty()) {
+            reasonTextView.setText(reason.get());
+            reasonBox.setVisibility(View.VISIBLE); // Show the reason box
+        } else {
+            reasonBox.setVisibility(View.GONE); // Hide the reason box if no reason is specified
+        }
 
         // Set the post date and time
-        dateTextView.setText(moodEvent.getPostDate().toString());
-        timeTextView.setText(moodEvent.getPostTime().toString());
+        dateTextView.setText(moodEvent.userFormattedDate());
+        timeTextView.setText(moodEvent.userFormattedTime());
 
         // Set the image (if available)
         if (moodEvent.getImage() != null) {
