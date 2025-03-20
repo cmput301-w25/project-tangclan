@@ -282,7 +282,5 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             });
         }
         adapter.notifyDataSetChanged();
-
-
     }
 }
