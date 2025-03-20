@@ -72,4 +72,9 @@
     <string name="for_you">For you</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="followers">Followers</string>
+    <string name="search_text">Search for users</string>
+    <string name="following_text_feed">Following</string>
+    <string name="for_you_text_feed">For you</string>
+    <string name="filter_mood_events">Filter Mood Events</string>
+    <string name="search_mood_text">Search for words</string>
 </resources>

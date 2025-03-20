@@ -88,7 +88,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         View view;
 
         if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.content_mood_event, parent, false);
+            view = LayoutInflater.from(getContext()).inflate(R.layout.content_mood_event_new, parent, false);
         } else {
             view = convertView;
         }
@@ -146,8 +146,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Set the post date and time
         TextView date = view.findViewById(R.id.date_text);
         TextView time = view.findViewById(R.id.time_text);
-        date.setText(moodEvent.getPostDate().toString());
-        time.setText(moodEvent.getPostTime().toString());
+        date.setText(moodEvent.returnPostFormattedDate());
+        time.setText(moodEvent.returnPostFormattedTime());
 
         // Set the optional photo (if available)
         ImageView imageView = view.findViewById(R.id.mood_event_image);
