@@ -53,6 +53,14 @@
                 android:textSize="16sp"/>
         </LinearLayout>
 
+        <!-- Display the mood event image -->
+        <ImageView
+            android:id="@+id/mood_event_image"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
+
         <!-- Display the post date and time at the bottom -->
         <LinearLayout
             android:layout_width="wrap_content"
@@ -74,11 +82,4 @@
                 android:textSize="14sp"/>
         </LinearLayout>
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/mood_event_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="8dp"
-        android:visibility="gone"/>
 </LinearLayout>
