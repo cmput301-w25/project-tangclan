@@ -84,7 +84,7 @@ public class FollowingBook {
     public Map<String, MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
         Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
         for (String followingUid : following) {
-            db.getLatestMoodEvent(followingUid, latestEvent -> {
+            db.getLatestMoodEvent(followingUid, (latestEvent, emot) -> {
                 uidToMoodEvent.put(followingUid, latestEvent);
             });
         }

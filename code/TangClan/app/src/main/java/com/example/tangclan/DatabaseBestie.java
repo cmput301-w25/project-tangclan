@@ -519,15 +519,15 @@ public class DatabaseBestie {
                     break;
                 }
             }
-            callback.onMoodEventRetrieved(post);
+            // callback.onMoodEventRetrieved(post);
         });
     }
 
-    public void getMoodEventByMid(String mid, String month, LocalDate date, LocalTime time, MoodEventCallback callback) {
+    public void getMoodEventByMid(String mid, String month, MoodEventCallback callback) {
         DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
         eventRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                callback.onMoodEventRetrieved(documentSnapshot.toObject(MoodEvent.class));
+                callback.onMoodEventRetrieved(documentSnapshot.toObject(MoodEvent.class), documentSnapshot.getString("emotionalState") );
             }
         });
     }
@@ -572,7 +572,7 @@ public class DatabaseBestie {
                         moodEvent.setPostTime(postTime);
                         moodEvent.setImage(image);
 
-                        callback.onMoodEventRetrieved(moodEvent);
+                        callback.onMoodEventRetrieved(moodEvent, emotionalState);
                     }
                 });
 
@@ -589,7 +589,7 @@ public class DatabaseBestie {
          * @param event
          *      The retrieved MoodEvent, or null if not found
          */
-        void onMoodEventRetrieved(MoodEvent event);
+        void onMoodEventRetrieved(MoodEvent event, String emotionStr);
     }
 
 
@@ -608,25 +608,10 @@ public class DatabaseBestie {
         void onListUpdated();
     }
 
-    public void checkMoodEventMatchesDatabase(MoodEvent event, String mid, String month) {
-        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
-        eventRef.
-        usersRef.whereEqualTo("email", email)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
-                        String uid = document.getString("uid");
-                        if (uid != null) {
-                            DocumentReference user = usersRef.document(uid);
-
-                            user.update("password", password)
-                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Password updated successfully"))
-                                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
-                        }
-                    }
-                });
+    public interface CheckForMatchCallback {
+        void onCheckedForMatch(boolean matched);
     }
+
 
     // FOLLOWS COLLECTION METHODS ------------------------------------------------------------------
 

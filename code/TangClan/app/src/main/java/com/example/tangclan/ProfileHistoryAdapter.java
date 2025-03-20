@@ -37,6 +37,8 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     private String username;
     private Map<MoodEvent, String> moodToUsernameMap;
 
+    private MoodEventBook usersBook;
+
     /**
      * Constructor for the ProfileHistoryAdapter
      * @param context
@@ -53,6 +55,8 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         // Get the username
         this.username = profile.getUsername();
 
+        this.usersBook = profile.getMoodEventBook();
+
         // Populate mood events and map usernames
         for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
             moodEvents.add(moodEvent);
@@ -61,6 +65,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
         // Add the mood events to the adapter's data source
         addAll(moodEvents);
+
+        // Add a listener for when data changes
+        DatabaseBestie db = new DatabaseBestie();
     }
 
 

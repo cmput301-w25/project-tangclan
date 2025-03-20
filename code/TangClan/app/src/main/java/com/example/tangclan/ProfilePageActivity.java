@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -20,9 +21,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public class ProfilePageActivity extends AppCompatActivity {
+public class ProfilePageActivity extends AppCompatActivity implements EditFragment.FragmentListener {
 
     private TextView usernameTextView;
     private TextView nameTextView;
@@ -91,16 +96,6 @@ public class ProfilePageActivity extends AppCompatActivity {
             params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
             profileArrayListView.setLayoutParams(params);
 
-            databaseBestie.addMoodEventListener(() -> {
-                databaseBestie.getMoodEventByMid(mid, month, post.getPostDate(), post.getPostTime(), (event) -> {
-                    System.out.println("EVENT MOOD IS " + event.getMood());
-                    // post.setMood(event.getMood().getEmotion());
-                    post.setReason(event.getReason().orElse(""));
-                    post.setCollaborators(event.getCollaborators().orElse(new ArrayList<>()));
-                    adapter.notifyDataSetChanged();
-                });
-            });
-
             // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
             profileArrayListView.setOnItemLongClickListener((parent, view, position, id) -> {
                 MoodEvent post = adapter.getItem(position); // Access from the data list
@@ -144,6 +139,8 @@ public class ProfilePageActivity extends AppCompatActivity {
                             EditFragment form = EditFragment.newInstance(mid,  month, emotion, situation.toString(), reason, imageBytes, useLoc);
                             getSupportFragmentManager()
                                     .beginTransaction().add(R.id.edit_form_container, form).commit();
+
+                            // userProfile.getMoodEventBook().updateMoodEvents();
                         })
                         .setNegativeButton("Delete", (dialog, which) -> {
                             new AlertDialog.Builder(view.getContext())
@@ -152,6 +149,12 @@ public class ProfilePageActivity extends AppCompatActivity {
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
                                         adapter.remove(post);
+
+                                        // delete from mood event book and database
+                                        databaseBestie.getMoodEventByMid(post.getMid(),month, (event, emot) -> {
+                                            userProfile.getMoodEventBook().deleteMoodEvent(event);
+                                        });
+
                                         adapter.notifyDataSetChanged(); // Notify adapter of changes
 
                                         databaseBestie.deleteMoodEvent(post.getMid(), month);
@@ -238,4 +241,30 @@ public class ProfilePageActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onFragmentFinished() {
+        System.out.println("FRagment done!");
+        userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
+        // update adapter
+        String event_id, event_month;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            int pos = i;
+            MoodEvent event = adapter.getItem(i);
+            event_id = event.getMid();
+            event_month = event.userFormattedDate().substring(3);
+            databaseBestie.getMoodEventByMid(event_id, event_month, (updatedEvent, emot) -> {
+                adapter.remove(event);
+
+                event.setCollaborators(updatedEvent.getCollaborators().orElse(new ArrayList<>()));
+                event.setReason(updatedEvent.getReason().orElse(""));
+                event.setImage(updatedEvent.getImage());
+                event.setMood(emot);
+                adapter.insert(event,pos);
+
+
+            });
+        }
+        adapter.notifyDataSetChanged();
+
+    }
 }

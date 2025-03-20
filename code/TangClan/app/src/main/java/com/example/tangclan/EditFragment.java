@@ -2,9 +2,11 @@ package com.example.tangclan;
 
 import static android.view.View.FIND_VIEWS_WITH_TEXT;
 
+import android.content.Context;
 import android.media.Image;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
@@ -52,6 +54,12 @@ public class EditFragment extends Fragment {
     private byte[] image;
     private boolean location_permission;
 
+    private FragmentListener editFragmentListener;
+
+    public interface FragmentListener {
+        void onFragmentFinished();
+    }
+
     public EditFragment() {
         // Required empty public constructor
     }
@@ -79,6 +87,16 @@ public class EditFragment extends Fragment {
 
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentListener) {
+            editFragmentListener = (FragmentListener) context; // Attach listener
+        } else {
+            throw new RuntimeException(context.toString() + " must implement FragmentListener");
+        }
     }
 
     @Override
@@ -170,7 +188,8 @@ public class EditFragment extends Fragment {
 
                 saveEditsToDatabase(newEmotion, newReason, newCollaborators, "");
 
-                getActivity().getSupportFragmentManager().beginTransaction().remove(EditFragment.this).commit(); // close fragmenet
+                finishFragment();
+                // getActivity().getSupportFragmentManager().beginTransaction().remove(EditFragment.this).commit(); // close fragmenet
             }
         });
 
@@ -178,7 +197,8 @@ public class EditFragment extends Fragment {
         cancel_butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction().remove(EditFragment.this).commit(); // close fragment
+                finishFragment();
+                // getActivity().getSupportFragmentManager().beginTransaction().remove(EditFragment.this).commit(); // close fragment
             }
         });
 
@@ -190,5 +210,12 @@ public class EditFragment extends Fragment {
         db.updateMoodEventEmotionalState(mid, month, emotion.toLowerCase());
         db.updateMoodEventReason(mid,month, reason);
         db.updateMoodEventCollaborators(mid, month, socialSit);
+    }
+
+    private void finishFragment() {
+        if (editFragmentListener != null) {
+            editFragmentListener.onFragmentFinished(); // Notify Activity
+        }
+        getParentFragmentManager().beginTransaction().remove(this).commit(); // Remove Fragment
     }
 }
