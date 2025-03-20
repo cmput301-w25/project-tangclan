@@ -87,22 +87,10 @@ public class FeedActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.feed);
+        setContentView(R.layout.feed_new);
         NavBarHelper.setupNavBar(this);
 
-        Button logout = findViewById(R.id.logout_butt);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(FeedActivity.this, LoginOrSignupActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
-        listViewFeed = findViewById(R.id.listViewFeed);
+        listViewFeed = findViewById(R.id.listview_feed);
 
         FollowingBook followingBook = new FollowingBook();
         MoodEventBook moodEventBook = new MoodEventBook();
