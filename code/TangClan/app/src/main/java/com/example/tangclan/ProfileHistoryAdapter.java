@@ -9,6 +9,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,7 +98,10 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
 
 
-        username = LoggedInUser.getInstance().getUsername();
+        if (username == null) {
+            username = LoggedInUser.getInstance().getUsername();
+        }
+        //  Log.d("DEBUG PROFILEHISTORYADAPTER", username);
         SpannableString spannableUsername = new SpannableString(username);
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
