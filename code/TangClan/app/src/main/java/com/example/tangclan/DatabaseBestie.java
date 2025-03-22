@@ -465,6 +465,7 @@ public class DatabaseBestie {
 
                             MoodEvent moodEvent = new MoodEvent(emotionalState);
 
+
                             moodEvent.setMid(midString);
                             moodEvent.setCollaborators(collaborators);
                             moodEvent.setReason(reason);

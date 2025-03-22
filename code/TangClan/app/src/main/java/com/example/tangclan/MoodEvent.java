@@ -369,9 +369,7 @@ public class MoodEvent implements Serializable {
         // convert the bitmap into a storeable string
         String imageString = null;
         if (this.image != null) {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
-            byte[] bytes = output.toByteArray();
+            byte[] bytes = ImageValidator.compressBitmapToSize(this.image);
             imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
         }
 

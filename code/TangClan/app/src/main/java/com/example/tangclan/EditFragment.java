@@ -135,25 +135,6 @@ public class EditFragment extends Fragment {
         imageButton.setOnClickListener(v -> {
             imageHelper.showImagePickerDialog();
         });
-        Button saveButton = view.findViewById(R.id.save_new_img);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (imageUri != null) {
-                        // Using the static method from ImageValidator
-                        if (ImageValidator.isImageSizeValid(getActivity(), imageUri)) {
-                            selectedImage = imageHelper.uriToBitmap(imageUri);
-                            Toast.makeText(getActivity(), "Image saved!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "Image is too large!", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        selectedImage = imageHelper.base64ToBitmap(Base64.encodeToString(image, Base64.DEFAULT));
-                        Toast.makeText(getActivity(), "No image selected!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        );
 
         // set saved location permission
         SwitchCompat useLocation = view.findViewById(R.id.use_location_switch);
@@ -174,11 +155,23 @@ public class EditFragment extends Fragment {
                 String newEmotion = getCheckedEmotionText(view, radioButtons);
                 ArrayList<String> newCollaborators = getEditTextCollaborators(editSocialSit);
 
-                // save image as string
-                if (!ImageValidator.isImageSizeValid(getActivity(), imageUri)) {
-                    return;
+                // validate image
+                if (imageUri != null) {
+                    // Using the static method from ImageValidator
+                    if (ImageValidator.isImageSizeValid(getActivity(), imageUri)) {
+                        selectedImage = imageHelper.uriToBitmap(imageUri);
+                    } else {
+                        Toast.makeText(getActivity(), "Image is too large!", Toast.LENGTH_SHORT).show();
+                        return; // not valid
+                    }
+                } else {
+                    // img not changed
+                    selectedImage = imageHelper.base64ToBitmap(Base64.encodeToString(image, Base64.DEFAULT));  // select the same image
                 }
-                String newImg = imageHelper.bitmapToBase64(selectedImage);
+                // save image as string
+                byte[] compressedImg = ImageValidator.compressBitmapToSize(selectedImage);
+                String newImg = Base64.encodeToString(compressedImg, Base64.DEFAULT);
+
                 saveEditsToDatabase(newEmotion, newReason, newCollaborators, newImg);
 
                 finishFragment();
