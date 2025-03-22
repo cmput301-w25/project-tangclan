@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 
@@ -526,7 +527,27 @@ public class DatabaseBestie {
         DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
         eventRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
-                callback.onMoodEventRetrieved(documentSnapshot.toObject(MoodEvent.class), documentSnapshot.getString("emotionalState") );
+                String id = documentSnapshot.getId();
+                String date = documentSnapshot.getString("datePosted");
+                String time = documentSnapshot.getString("timePosted");
+                String emotion = documentSnapshot.getString("emotionalState");
+                ArrayList<String> collabs = (ArrayList<String>) documentSnapshot.get("collaborators");
+                String reason = documentSnapshot.getString("reason");
+                String img = documentSnapshot.getString("image");
+
+                MoodEvent moodEvent = new MoodEvent(emotion, collabs);
+                moodEvent.setMid(id);
+                moodEvent.setPostDate(date);
+                moodEvent.setPostTime(time);
+
+                if (img != null) {
+                    byte[] imgBytes = Base64.decode(img, Base64.DEFAULT);
+                    moodEvent.setImage(BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length));
+                }
+                if (reason != null) {
+                    moodEvent.setReason(reason);
+                }
+                callback.onMoodEventRetrieved(moodEvent, emotion);
             }
         });
     }
