@@ -12,9 +12,10 @@ public class Filter {
                 .collect(Collectors.toList());
     }
 
-    public static List<MoodEvent> filterByEmotionalState(List<MoodEvent> events, String moodType) {
+    public static List<MoodEvent> filterByEmotionalState(List<MoodEvent> events, List<String> moodTypes) {
         return events.stream()
-                .filter(event -> event.getMoodEmotionalState().equalsIgnoreCase(moodType))
+                .filter(event -> moodTypes.stream()
+                        .anyMatch(moodType -> event.getMoodEmotionalState().equalsIgnoreCase(moodType)))
                 .collect(Collectors.toList());
     }
 

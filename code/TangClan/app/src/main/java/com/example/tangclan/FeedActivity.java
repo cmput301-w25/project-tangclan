@@ -235,6 +235,7 @@ public class FeedActivity extends AppCompatActivity {
         CheckBox filterRecentWeekCheckbox = popupView.findViewById(R.id.filter_recent_week);
         ListView emotionalStatesList = popupView.findViewById(R.id.emotional_states_list);
         Button applyFilterButton = popupView.findViewById(R.id.apply_filter_button);
+        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters); // Reset Filters button
 
         // Set up the emotional states list
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.emotional_states));
@@ -267,27 +268,36 @@ public class FeedActivity extends AppCompatActivity {
             // Dismiss the popup
             popupWindow.dismiss();
         });
+
+        // Set up the reset filters button
+        resetFiltersButton.setOnClickListener(v -> {
+            // Reset the feed to its original state
+            resetFilters();
+
+            // Dismiss the popup
+            popupWindow.dismiss();
+        });
     }
 
     private void applyFilters(List<String> selectedEmotionalStates, boolean filterByRecentWeek) {
         List<MoodEvent> filteredEvents = new ArrayList<>(feed.getFeedEvents());
 
-
         for (MoodEvent event : filteredEvents) {
             Log.d("FeedActivity", "Event: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
         }
 
-        // Filter by emotional state
+        // Filter by emotional state (multiple selections)
         if (!selectedEmotionalStates.isEmpty()) {
-            filteredEvents = Filter.filterByEmotionalState(filteredEvents, selectedEmotionalStates.get(0)); // Assuming single selection for simplicity
+            filteredEvents = filteredEvents.stream()
+                    .filter(event -> selectedEmotionalStates.stream()
+                            .anyMatch(state -> state.equalsIgnoreCase(event.getMoodEmotionalState())))
+                    .collect(Collectors.toList());
         }
 
-        // Filter by recent week
         if (filterByRecentWeek) {
             LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
             filteredEvents = Filter.filterByTimeRange(filteredEvents, oneWeekAgo, LocalDate.now());
         }
-
 
         for (MoodEvent event : filteredEvents) {
             Log.d("FeedActivity", "Event: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
@@ -309,4 +319,17 @@ public class FeedActivity extends AppCompatActivity {
 
         adapter.updateMoodEvents(filteredEvents);
     }
+
+    private void resetFilters() {
+        // Reload the feed without applying any filters
+        loadFeed();
+
+        // Clear the search EditText
+        EditText searchEditText = findViewById(R.id.editText_search);
+        searchEditText.setText("");
+
+        // Notify the user that filters have been reset
+        Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
+    }
+    //need to account for multiple moods being selected
 }
