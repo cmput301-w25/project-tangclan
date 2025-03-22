@@ -103,6 +103,7 @@ public class FollowingBook {
         if (following.isEmpty()) {
             // Create some dummy events from "followed" users
             MoodEvent event1 = new MoodEvent("happy");
+            event1.setReason("i went to school today");
             event1.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
             event1.setPostTime("12:29:39.673202"); // Use "HH:mm:ss.SSSSSS" format
             event1.setCollaborators(new ArrayList<>(List.of("With friends")));
@@ -110,12 +111,14 @@ public class FollowingBook {
 
             MoodEvent event2 = new MoodEvent("sad");
             event2.setPostDate("2025-03-17"); // Use "yyyy-MM-dd" format
+            event2.setReason("i didnt go to school today. i lost my 5% participation mark");
             event2.setPostTime("14:45:22.123456"); // Use "HH:mm:ss.SSSSSS" format
             event2.setCollaborators(new ArrayList<>(List.of("At home")));
             uidToMoodEvent.put("user2", event2);
 
             MoodEvent event3 = new MoodEvent("anxious");
             event3.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
+            event3.setReason("i am anxiously waiting for my 429 midterm marks. it was curved. maybe i got like a 30%");
             event3.setPostTime("18:30:15.987654"); // Use "HH:mm:ss.SSSSSS" format
             event3.setCollaborators(new ArrayList<>(List.of("Party time")));
             uidToMoodEvent.put("user3", event3);
