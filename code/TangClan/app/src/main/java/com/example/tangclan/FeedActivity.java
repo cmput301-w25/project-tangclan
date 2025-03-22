@@ -277,7 +277,7 @@ public class FeedActivity extends AppCompatActivity {
             Log.d("FeedActivity", "Event: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
         }
 
-        // Filter by emotional state (case-insensitive)
+        
         if (!selectedEmotionalStates.isEmpty()) {
             filteredEvents = filteredEvents.stream()
                     .filter(event -> selectedEmotionalStates.stream()
