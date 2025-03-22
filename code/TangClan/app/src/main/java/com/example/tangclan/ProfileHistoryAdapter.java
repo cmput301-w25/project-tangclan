@@ -98,8 +98,10 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
 
 
-        // username = LoggedInUser.getInstance().getUsername();
-        Log.d("DEBUG PROFILEHISTORYADAPTER", username);
+        if (username == null) {
+            username = LoggedInUser.getInstance().getUsername();
+        }
+        //  Log.d("DEBUG PROFILEHISTORYADAPTER", username);
         SpannableString spannableUsername = new SpannableString(username);
         spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 

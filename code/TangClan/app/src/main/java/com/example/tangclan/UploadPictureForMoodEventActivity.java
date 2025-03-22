@@ -99,6 +99,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             if (imageUri != null) {
                 // Using the static method from ImageValidator
                 if (ImageValidator.isImageSizeValid(this, imageUri)) {
+                    System.out.println("image should be valid");
                     selectedImage = imageHelper.uriToBitmap(imageUri);
                     Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
                 } else {

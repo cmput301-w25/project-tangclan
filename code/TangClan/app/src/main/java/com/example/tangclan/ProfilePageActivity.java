@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -127,6 +130,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                             // Edit mood
                             Bundle moodDetails = getMoodEventBundle(post);
                             EditFragment form = EditFragment.newInstance(moodDetails);
+                            form.setEnterTransition(new Slide(Gravity.BOTTOM));
+                            form.setExitTransition(new Slide(Gravity.BOTTOM));
                             getSupportFragmentManager()
                                     .beginTransaction().add(R.id.edit_form_container, form).commit();
 
