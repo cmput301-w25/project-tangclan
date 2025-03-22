@@ -277,21 +277,17 @@ public class FeedActivity extends AppCompatActivity {
             Log.d("FeedActivity", "Event: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
         }
 
-        
+        // Filter by emotional state
         if (!selectedEmotionalStates.isEmpty()) {
-            filteredEvents = filteredEvents.stream()
-                    .filter(event -> selectedEmotionalStates.stream()
-                            .anyMatch(state -> state.equalsIgnoreCase(event.getMoodEmotionalState())))
-                    .collect(Collectors.toList());
+            filteredEvents = Filter.filterByEmotionalState(filteredEvents, selectedEmotionalStates.get(0)); // Assuming single selection for simplicity
         }
 
         // Filter by recent week
         if (filterByRecentWeek) {
             LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
-            filteredEvents = filteredEvents.stream()
-                    .filter(event -> event.getPostDate().isAfter(oneWeekAgo))
-                    .collect(Collectors.toList());
+            filteredEvents = Filter.filterByTimeRange(filteredEvents, oneWeekAgo, LocalDate.now());
         }
+
 
         for (MoodEvent event : filteredEvents) {
             Log.d("FeedActivity", "Event: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
@@ -303,15 +299,14 @@ public class FeedActivity extends AppCompatActivity {
     private void filterByKeyword(String keyword) {
         List<MoodEvent> filteredEvents = new ArrayList<>(feed.getFeedEvents());
 
-        // Filter by keyword in the reason text
+
         if (!keyword.isEmpty()) {
-            filteredEvents = filteredEvents.stream()
-                    .filter(event -> event.getReason().isPresent() &&
-                            event.getReason().get().toLowerCase().contains(keyword.toLowerCase()))
-                    .collect(Collectors.toList());
+            List<String> keywords = new ArrayList<>();
+            keywords.add(keyword);
+            filteredEvents = Filter.filterByKeywords(filteredEvents, keywords);
         }
 
-        // Update the adapter with the filtered events
+
         adapter.updateMoodEvents(filteredEvents);
     }
 }
