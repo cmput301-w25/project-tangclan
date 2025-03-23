@@ -37,10 +37,11 @@ public class ImageValidator {
 
     public static boolean isImageSizeValid(Context context, Uri imageUri) {
         try (InputStream inputStream = context.getContentResolver().openInputStream(imageUri)) {
+            System.out.println("im trying");
             if (inputStream != null) {
                 Bitmap originalBitmap = BitmapFactory.decodeStream(inputStream);
 
-                byte[] compressedBytes = compressBitmapToSize(originalBitmap, MAX_IMAGE_SIZE);
+                byte[] compressedBytes = compressBitmapToSize(originalBitmap);
                 if (compressedBytes == null) {
                     Toast.makeText(context, "Image too large! Please select a smaller image.", Toast.LENGTH_LONG).show();
                     return false;
@@ -60,11 +61,10 @@ public class ImageValidator {
      * The image is compressed in iterations, reducing quality until the size is below the max size.
      *
      * @param bitmap   the bitmap image to compress
-     * @param maxSize  the maximum allowed size in bytes
      * @return a byte array containing the compressed image, or null if the image cannot be compressed within the size limit
      */
 
-    static byte[] compressBitmapToSize(Bitmap bitmap, int maxSize) {
+    static byte[] compressBitmapToSize(Bitmap bitmap) {
         int quality = 100; // Start with max quality
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -72,7 +72,7 @@ public class ImageValidator {
             outputStream.reset(); // Clear buffer before retrying
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
 
-            if (outputStream.toByteArray().length <= maxSize) {
+            if (outputStream.toByteArray().length <= MAX_IMAGE_SIZE) {
                 return outputStream.toByteArray();
             }
             quality -= 5;

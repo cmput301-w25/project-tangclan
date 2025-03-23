@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     android:layout_marginHorizontal="30dp"
     android:layout_marginVertical="100dp"
-    android:background="#D3ECF8"
+    android:background="#FFFFFF"
     android:elevation="10dp"
     android:orientation="vertical"
     android:outlineAmbientShadowColor="#000000"
+    android:outlineSpotShadowColor="#000000"
     android:padding="15dp">
 
     <LinearLayout
@@ -38,7 +39,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_medium"
         android:text="How are you feeling?"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <RadioGroup
         android:id="@+id/emotion_selection"
@@ -156,7 +157,7 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/inter_medium"
         android:text="Describe the social situation"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -181,7 +182,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:text="What made you feel this way?"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edit_reason_box"
@@ -191,23 +192,39 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_reasonwhy"
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="55dp"
                 android:hint="200 characters" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageButton
-            android:id="@+id/image_reasonwhy"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="167dp"
-            android:layout_marginVertical="10dp"
-            android:background="#0D000000"
-            app:srcCompat="@drawable/baseline_add_box_24" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/image_reasonwhy"
+                android:layout_width="218dp"
+                android:layout_height="135dp"
+                android:background="#0D000000"
+                app:srcCompat="@drawable/baseline_add_box_24" />
+
+            <Button
+                android:id="@+id/save_new_img"
+                android:layout_width="119dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#000000"
+                android:text="Save"
+                android:textColorLink="#020101"
+                app:cornerRadius="12sp" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="311dp"
+        android:layout_height="58dp"
         android:orientation="horizontal">
 
         <TextView
@@ -222,7 +239,7 @@
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/use_location_switch"
             android:layout_width="74dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:textOff="no"
             android:textOn="yes" />
     </LinearLayout>
@@ -230,9 +247,9 @@
     <Button
         android:id="@+id/submit_details"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="20dp"
+        android:layout_height="53dp"
+        android:layout_marginTop="0dp"
         android:backgroundTint="@color/black"
-        android:text="Confirm Details" />
+        android:text="Confirm Details"
+        app:cornerRadius="12sp" />
 </LinearLayout>

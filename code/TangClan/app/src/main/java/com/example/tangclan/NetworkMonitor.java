@@ -1,10 +1,12 @@
 package com.example.tangclan;
 
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.util.Log;
 import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 
@@ -17,6 +19,7 @@ import androidx.annotation.NonNull;
  */
 public class NetworkMonitor extends ConnectivityManager.NetworkCallback {
     private final Context appContext;
+  
     /**
      * Constructor for the NetworkMonitor class
      */
@@ -50,5 +53,4 @@ public class NetworkMonitor extends ConnectivityManager.NetworkCallback {
         Toast.makeText(appContext, "Connected to a network", Toast.LENGTH_SHORT).show();
         Log.d("appConnect", "Connected");
     }
-
 }

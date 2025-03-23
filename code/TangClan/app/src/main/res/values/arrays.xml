@@ -1,0 +1,16 @@
+<!-- res/values/arrays.xml -->
+<resources>
+    <string-array name="emotional_states">
+        <item>Happy</item>
+        <item>Sad</item>
+        <item>Surprised</item>
+        <item>Terrified</item>
+        <item>Disgusted</item>
+        <item>Confused</item>
+        <item>Ashamed</item>
+        <item>Angry</item>
+        <item>Calm</item>
+        <item>Anxious</item>
+        <item>No Idea</item>
+    </string-array>
+</resources>

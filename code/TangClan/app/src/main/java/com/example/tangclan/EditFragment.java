@@ -2,10 +2,17 @@ package com.example.tangclan;
 
 import static android.view.View.FIND_VIEWS_WITH_TEXT;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
@@ -13,15 +20,19 @@ import androidx.fragment.app.Fragment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -34,6 +45,11 @@ public class EditFragment extends Fragment {
     byte[] image;
     boolean locationPermission;
     private FragmentListener editFragmentListener;
+
+    ImageHelper imageHelper;
+    private ImageButton imageButton;
+    private Uri imageUri = null;
+    private Bitmap selectedImage = null;
 
 
     public interface FragmentListener {  // listens to when fragment finishes
@@ -96,7 +112,7 @@ public class EditFragment extends Fragment {
         };
         // set saved emotion
         setCheckedEmotion(view);
-        getChangestoCheckedEmotion(view, radioButtons);  // listen for new selections
+        getChangesToCheckedEmotion(view, radioButtons);  // listen for new selections
 
         // set saved social situation
         EditText editSocialSit = view.findViewById(R.id.edit_social_situation);
@@ -108,16 +124,23 @@ public class EditFragment extends Fragment {
 
         // TODO: on text change listener, update character count
 
+
+        imageButton = view.findViewById(R.id.image_reasonwhy);
+        // set saved image
         if (image != null) {
-            ImageButton postImage = view.findViewById(R.id.image_reasonwhy);
-            // TODO: implement updating image
+            imageButton.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
         }
+
+        imageHelper = new ImageHelper(getActivity(), cameraLauncher, galleryLauncher);
+        imageButton.setOnClickListener(v -> {
+            imageHelper.showImagePickerDialog();
+        });
 
         // set saved location permission
         SwitchCompat useLocation = view.findViewById(R.id.use_location_switch);
         useLocation.setChecked(locationPermission);
 
-
+        // implement submit button
         Button submitButt = view.findViewById(R.id.submit_details);
         submitButt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,7 +155,24 @@ public class EditFragment extends Fragment {
                 String newEmotion = getCheckedEmotionText(view, radioButtons);
                 ArrayList<String> newCollaborators = getEditTextCollaborators(editSocialSit);
 
-                saveEditsToDatabase(newEmotion, newReason, newCollaborators, "");
+                // validate image
+                if (imageUri != null) {
+                    // Using the static method from ImageValidator
+                    if (ImageValidator.isImageSizeValid(getActivity(), imageUri)) {
+                        selectedImage = imageHelper.uriToBitmap(imageUri);
+                    } else {
+                        Toast.makeText(getActivity(), "Image is too large!", Toast.LENGTH_SHORT).show();
+                        return; // not valid
+                    }
+                } else {
+                    // img not changed
+                    selectedImage = imageHelper.base64ToBitmap(Base64.encodeToString(image, Base64.DEFAULT));  // select the same image
+                }
+                // save image as string
+                byte[] compressedImg = ImageValidator.compressBitmapToSize(selectedImage);
+                String newImg = Base64.encodeToString(compressedImg, Base64.DEFAULT);
+
+                saveEditsToDatabase(newEmotion, newReason, newCollaborators, newImg);
 
                 finishFragment();
             }
@@ -158,7 +198,7 @@ public class EditFragment extends Fragment {
         emotionOptions.check(selectedEmotion.getId());  // set checked
     }
 
-    public void getChangestoCheckedEmotion(View view, RadioButton[] buttons) {
+    public void getChangesToCheckedEmotion(View view, RadioButton[] buttons) {
         for (RadioButton button : buttons) {
             button.setOnClickListener(but -> {
                 for (RadioButton btn : buttons) {
@@ -183,12 +223,32 @@ public class EditFragment extends Fragment {
         return new ArrayList<>(Arrays.asList(situationArray));
     }
 
+    // Camera launcher
+    private final ActivityResultLauncher<Intent> cameraLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    imageUri = imageHelper.getImageUri();
+                    imageButton.setImageURI(imageUri);
+                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                }
+            });
+
+    // Gallery launcher
+    private final ActivityResultLauncher<Intent> galleryLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    imageUri = result.getData().getData();
+                    imageButton.setImageURI(imageUri);
+                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                }
+            });
 
     public void saveEditsToDatabase(String emotion, String reason, ArrayList<String> socialSit, String image) {
         DatabaseBestie db = new DatabaseBestie();
         db.updateMoodEventEmotionalState(mid, month, emotion.toLowerCase());
         db.updateMoodEventReason(mid,month, reason);
         db.updateMoodEventCollaborators(mid, month, socialSit);
+        db.updateMoodEventPhoto(mid,month,image);
     }
 
     private void finishFragment() {

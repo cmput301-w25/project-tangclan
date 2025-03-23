@@ -1,13 +1,31 @@
 package com.example.tangclan;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+
+import android.transition.Explode;
+import android.transition.Slide;
+import android.view.Gravity;
+
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ArrayAdapter;
@@ -16,9 +34,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 public class ProfilePageActivity extends AppCompatActivity implements EditFragment.FragmentListener {
 
@@ -35,17 +57,17 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+        setContentView(R.layout.activity_profile_page_new);
         NavBarHelper.setupNavBar(this);
 
         networkManager = new NetworkManager(getApplicationContext());
 
         // Initialize views
         usernameTextView = findViewById(R.id.username);
-        nameTextView = findViewById(R.id.name);
-        followersTextView = findViewById(R.id.followers);
-        followingTextView = findViewById(R.id.following);
-        profileArrayListView = findViewById(R.id.mood_history_list);
+        nameTextView = findViewById(R.id.display_name);
+        followersTextView = findViewById(R.id.follower_count);
+        followingTextView = findViewById(R.id.following_count);
+        profileArrayListView = findViewById(R.id.listview_profile_history);
 
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
@@ -55,6 +77,30 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         getCurrentUserProfile();
         setupProfileListView();
 
+
+        ImageView filterImageView = findViewById(R.id.filter);
+        filterImageView.setOnClickListener(v -> showFilterPopup(v));
+
+        // Set up the search bar
+        EditText searchEditText = findViewById(R.id.editText_search);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Do nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Filter the mood events based on the keyword
+                String keyword = s.toString().trim();
+                filterByKeyword(keyword);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Do nothing
+            }
+        });
 
         // Process incoming mood event data if it exists
         processMoodEventData();
@@ -103,7 +149,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Initialize the mood event book if it doesn't exist
 
         // Set the user information in the UI
-        usernameTextView.setText(userProfile.getUsername());
+        usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
 
         // Setup the ListView after profile is loaded
@@ -144,6 +190,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                             // Edit mood
                             Bundle moodDetails = getMoodEventBundle(post);
                             EditFragment form = EditFragment.newInstance(moodDetails);
+                            form.setEnterTransition(new Slide(Gravity.BOTTOM));
+                            form.setExitTransition(new Slide(Gravity.BOTTOM));
                             getSupportFragmentManager()
                                     .beginTransaction().add(R.id.edit_form_container, form).commit();
 
@@ -314,6 +362,127 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 adapter.insert(event,pos);
             });
         }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void showFilterPopup(View view) {
+        // Inflate the popup layout
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.filter_popup, null);
+
+        // Create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true; // lets taps outside the popup dismiss it
+        PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        // Show the popup window
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // Get references to the UI elements
+        CheckBox selectAllCheckbox = popupView.findViewById(R.id.select_all_checkbox);
+        CheckBox filterRecentWeekCheckbox = popupView.findViewById(R.id.filter_recent_week);
+        ListView emotionalStatesList = popupView.findViewById(R.id.emotional_states_list);
+        Button applyFilterButton = popupView.findViewById(R.id.apply_filter_button);
+        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters);
+
+        // Set up the emotional states list
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.emotional_states));
+        emotionalStatesList.setAdapter(adapter);
+
+        // Set up the "Select All" checkbox
+        selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            for (int i = 0; i < emotionalStatesList.getCount(); i++) {
+                emotionalStatesList.setItemChecked(i, isChecked);
+            }
+        });
+
+        // Set up the apply filter button
+        applyFilterButton.setOnClickListener(v -> {
+            // Get the selected emotional states
+            SparseBooleanArray checkedItems = emotionalStatesList.getCheckedItemPositions();
+            List<String> selectedEmotionalStates = new ArrayList<>();
+            for (int i = 0; i < checkedItems.size(); i++) {
+                if (checkedItems.valueAt(i)) {
+                    selectedEmotionalStates.add(emotionalStatesList.getItemAtPosition(checkedItems.keyAt(i)).toString());
+                }
+            }
+
+            // Get the "In the last week" filter value
+            boolean filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
+
+            // Apply the filters
+            applyFilters(selectedEmotionalStates, filterByRecentWeek);
+
+            // Dismiss the popup
+            popupWindow.dismiss();
+        });
+
+        // Set up the reset filters button
+        resetFiltersButton.setOnClickListener(v -> {
+            // Reset the feed to its original state
+            resetFilters();
+
+            // Dismiss the popup
+            popupWindow.dismiss();
+        });
+    }
+
+    private void applyFilters(List<String> selectedEmotionalStates, boolean filterByRecentWeek) {
+        List<MoodEvent> filteredEvents = new ArrayList<>(userProfile.getMoodEventBook().getMoodEventList());
+
+        // Filter by emotional state (multiple selections)
+        if (!selectedEmotionalStates.isEmpty()) {
+            filteredEvents = filteredEvents.stream()
+                    .filter(event -> selectedEmotionalStates.stream()
+                            .anyMatch(state -> state.equalsIgnoreCase(event.getMoodEmotionalState())))
+                    .collect(Collectors.toList());
+        }
+
+        // Filter by recent week
+        if (filterByRecentWeek) {
+            LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
+            filteredEvents = filteredEvents.stream()
+                    .filter(event -> event.getPostDate().isAfter(oneWeekAgo))
+                    .collect(Collectors.toList());
+        }
+
+        // Update the adapter with the filtered events
+        adapter.clear();
+        adapter.addAll(filteredEvents);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void resetFilters() {
+        // Reload the feed without applying any filters
+        adapter.clear();
+        adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
+        adapter.notifyDataSetChanged();
+
+        // Clear the search EditText
+        EditText searchEditText = findViewById(R.id.editText_search);
+        searchEditText.setText("");
+
+        // Notify the user that filters have been reset
+        Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
+    }
+
+    private void filterByKeyword(String keyword) {
+        List<MoodEvent> filteredEvents = new ArrayList<>(userProfile.getMoodEventBook().getMoodEventList());
+
+        // Filter by keyword in the reason text
+        if (!keyword.isEmpty()) {
+            List<String> keywords = new ArrayList<>();
+            keywords.add(keyword);
+            filteredEvents = filteredEvents.stream()
+                    .filter(event -> event.getReason().isPresent() &&
+                            event.getReason().get().toLowerCase().contains(keyword.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        // Update the adapter with the filtered events
+        adapter.clear();
+        adapter.addAll(filteredEvents);
         adapter.notifyDataSetChanged();
     }
 }
