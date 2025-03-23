@@ -52,12 +52,15 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private Profile userProfile;
     private DatabaseBestie databaseBestie;
     private ArrayAdapter<MoodEvent> adapter;//
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page_new);
         NavBarHelper.setupNavBar(this);
+
+        networkManager = new NetworkManager(getApplicationContext());
 
         // Initialize views
         usernameTextView = findViewById(R.id.username);
@@ -109,6 +112,20 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Refresh the list whenever the activity is resumed
         getCurrentUserProfile();
         setupProfileListView();
+        networkManager.registerNetworkMonitor();
+    }
+
+    @Override
+    protected void onPause()  {
+        networkManager.unregisterNetworkMonitor();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        networkManager.unregisterNetworkMonitor();
+        super.onDestroy();
+
     }
 
     private void getCurrentUserProfile() {

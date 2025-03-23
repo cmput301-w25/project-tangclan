@@ -1,32 +1,56 @@
 package com.example.tangclan;
 
+
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.util.Log;
+import android.widget.Toast;
+
 
 import androidx.annotation.NonNull;
 
 /**
- * A network callback wrapper providing mechanisms to monitor the network
- * USER STORIES:
- *      US 06.01.01
+ * A Network Callback wrapper that provides additional functionality for handling network events
+ * Designed specifically for use in Moodly
+ *
+ * RELATED USER STORIES
+ *      US 07.01.01
  */
 public class NetworkMonitor extends ConnectivityManager.NetworkCallback {
-    interface databaseMethodsOnConnect {
-        public void addOnConnect();
-        public void deleteOnConnect();
-        public void updateOnConnect();
-    }
-    public NetworkMonitor() {
+    private final Context appContext;
+  
+    /**
+     * Constructor for the NetworkMonitor class
+     */
+    public NetworkMonitor(Context context) {
         super();
+
+        appContext = context.getApplicationContext();
     }
 
+    /**
+     * Callback when connection is lost
+     * @param network
+     *      The network that no longer satisfies the request
+     */
     @Override
     public void onLost(@NonNull Network network) {
-        Log.d("Connectivity", "Lost connection");
+        super.onLost(network);
+
+        Toast.makeText(appContext, "Connection lost", Toast.LENGTH_SHORT).show();
+        Log.d("appConnect", "lost");
     }
 
-    public void onAvalable(@NonNull Network network) {
-        Log.d("Connectivity", "Connected to a network");
+    /**
+     * Callback when connection is available/gained
+     * @param network
+     *      The network that satisfies this request
+     */
+    public void onAvailable(@NonNull Network network) {
+        super.onAvailable(network);
+
+        Toast.makeText(appContext, "Connected to a network", Toast.LENGTH_SHORT).show();
+        Log.d("appConnect", "Connected");
     }
 }
