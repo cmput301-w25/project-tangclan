@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class FollowingBook {
     private ArrayList<String> following;
     private ArrayList<String> followers;
-    //private ArrayList<Followers> followRequests;
+    private ArrayList<String> followRequests;
 
     /**
      * Constructor for the FollowingBook object
@@ -22,7 +22,7 @@ public class FollowingBook {
     public FollowingBook() {
         this.following = new ArrayList<>();
         this.followers = new ArrayList<>();
-        //this.followRequests = new ArrayList<>();
+        this.followRequests = new ArrayList<>();
     }
 
     // Handle follow requests
@@ -141,6 +141,25 @@ public class FollowingBook {
         return uidToMoodEvent;
     }
 
+    // Accept a follow request
+    public void acceptFollowRequest(String uid) {
+        if (followRequests.contains(uid)) {
+            followRequests.remove(uid);
+            followers.add(uid);
+        } else {
+            throw new IllegalArgumentException("No follow request from this user!");
+        }
+    }
+
+    // Decline a follow request
+    public void declineFollowRequest(String uid) {
+        if (followRequests.contains(uid)) {
+            followRequests.remove(uid);
+        } else {
+            throw new IllegalArgumentException("No follow request from this user!");
+        }
+    }
+
     // Filter mood events
     //public List<MoodEvent> filterMoodEventsByDate(String date) {
     //    return getRecentMoodEvents().stream()
@@ -188,6 +207,9 @@ public class FollowingBook {
 
     public void setFollowing(ArrayList<String> following) {
         this.following = following;
+    }
+    public ArrayList<String> getFollowRequests() {
+        return followRequests;
     }
 
     //private Profile getOwnerProfile() {
