@@ -4,12 +4,17 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import android.widget.Toast;
@@ -17,16 +22,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.List;
-
-
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import java.util.ArrayList;
+import java.util.Objects;
 
 
 //part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
@@ -59,6 +59,11 @@ public class FeedActivity extends AppCompatActivity {
     private View rectangleFollowing;
     private View rectangleForYou;
 
+    private ArrayList<StateVO> listVOs;
+    private StateVO Object;
+
+
+
     FirebaseAuth auth;
     FirebaseUser currentUser;
 
@@ -67,7 +72,7 @@ public class FeedActivity extends AppCompatActivity {
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-
+        Log.d("Tag123:",currentUser.getUid());
         if(currentUser == null) {
 
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
@@ -168,6 +173,7 @@ public class FeedActivity extends AppCompatActivity {
         ImageView homeIcon = findViewById(R.id.imgHome); // do nothing but change color to white
         ImageView searchIcon = findViewById(R.id.imgSearch);
         ImageView profileIcon = findViewById(R.id.imgProfile);
+        Button testButton=findViewById(R.id.test_button);
 
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +182,67 @@ public class FeedActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        //TESTING FUNCTIONALITY OF SEARCH FIRST!
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(FeedActivity.this, ProfilePageActivity.class));
+                finish();
+            }
+
+        });
+
+
+
+        //Filter Spinner UI functionality
+        //NOTE: "empty space" put as first input here because it displays first item for some reason on the xml....
+        final String[] select_qualification = { "","Angry","Sad"};//TODO: ADD MORE FILTERS IF NEED BE, HARDCODED!
+        Spinner spinner = (Spinner) findViewById(R.id.feed_filter);
+
+        listVOs = new ArrayList<StateVO>();
+
+        for (int i = 0; i < select_qualification.length; i++) {
+            StateVO stateVO = new StateVO();
+            stateVO.setTitle(select_qualification[i]);
+            stateVO.setSelected(false);
+            listVOs.add(stateVO);
+
+        }
+
+
+        TextView testTextView;
+        testTextView=findViewById(R.id.textView2);
+        MyAdapter myAdapter = new MyAdapter(this, 0,listVOs,testTextView);//why is zero here? no idea...
+        spinner.setAdapter(myAdapter);
+        //CheckBox EditProfileButton =(CheckBox) findViewById(R.id.checkbox);
+        //Note: we start from i=1 since first is empty string? maybe? test!
+        //NOTE: change stateVO objects to mood objects such as angry, sad, excited, etc(the ones we hardcoded)
+        //PUT FUNCTIONALITY FOR FILTERS HERE!!!!!!!!!
+        //DOES NOT WORK!
+        //myAdapter.getCustomView(2,)
+        //TEST TEXTVIEW
+
+        for (int i=0;i<listVOs.size();i++){
+            Object=listVOs.get(i);
+            if (Object.isSelected()){
+                //testTextView.setVisibility(View.INVISIBLE);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     /**
@@ -270,4 +337,12 @@ public class FeedActivity extends AppCompatActivity {
         // Refresh the feed when coming back to this activity
         loadFollowingFeed();
     }
+
+
+
+
+
+
+
+
 }

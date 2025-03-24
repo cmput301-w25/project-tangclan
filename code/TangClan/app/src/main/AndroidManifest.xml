@@ -29,10 +29,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TangClan"
         tools:targetApi="31">
-        <activity android:name=".ProfilePageActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".SearchOtherProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".ProfilePageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".editprofileActivity"
             android:exported="false" />
         <activity
             android:name=".UploadPictureForMoodEventActivity"
@@ -75,14 +79,13 @@
             android:exported="false" />
         <activity
             android:name=".WizActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".profileActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,20 @@ public class ProfilePageActivity extends AppCompatActivity {
 
         // Process incoming mood event data if it exists
         processMoodEventData();
+        Button EditProfileButton =(Button) findViewById(R.id.edit_profil_button);
+        EditProfileButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                
+                Intent intent = new Intent(ProfilePageActivity.this, editprofileActivity.class);
+                startActivity(intent);
+            }
+
+
+        });
+
+
+
     }
 
     @Override
