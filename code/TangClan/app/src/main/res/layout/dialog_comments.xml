@@ -9,7 +9,9 @@
         android:id="@+id/comments_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +23,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Write a comment..." />
+            android:hint="Write a comment..."
+            android:inputType="textCapSentences" />
 
         <Button
             android:id="@+id/post_button"

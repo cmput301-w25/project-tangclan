@@ -216,7 +216,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         EditText commentInput = dialogView.findViewById(R.id.comment_input);
         Button postButton = dialogView.findViewById(R.id.post_button);
 
-        // Load existing comments
         DatabaseBestie db = DatabaseBestie.getInstance();
         db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
             CommentAdapter adapter = new CommentAdapter(getContext(), comments);
@@ -228,12 +227,10 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         postButton.setOnClickListener(v -> {
             String commentText = commentInput.getText().toString().trim();
             if (!commentText.isEmpty()) {
-                // Get current user
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (currentUser != null) {
                     Comment comment = new Comment(moodEvent.getMid(), currentUser.getUid(), commentText);
                     db.addComment(comment, () -> {
-                        // Refresh comments after posting
                         db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
                             CommentAdapter adapter = new CommentAdapter(getContext(), comments);
                             commentsList.setAdapter(adapter);
