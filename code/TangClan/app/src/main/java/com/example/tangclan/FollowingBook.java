@@ -103,6 +103,7 @@ public class FollowingBook {
         if (following.isEmpty()) {
             // Create some dummy events from "followed" users
             MoodEvent event1 = new MoodEvent("happy");
+            event1.setMid("1000");
             event1.setReason("i went to school today");
             event1.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
             event1.setPostTime("12:29:39.673202"); // Use "HH:mm:ss.SSSSSS" format
@@ -110,6 +111,7 @@ public class FollowingBook {
             uidToMoodEvent.put("user1", event1);
 
             MoodEvent event2 = new MoodEvent("sad");
+            event2.setMid("2000");
             event2.setPostDate("2025-03-17"); // Use "yyyy-MM-dd" format
             event2.setReason("i didnt go to school today. i lost my 5% participation mark");
             event2.setPostTime("14:45:22.123456"); // Use "HH:mm:ss.SSSSSS" format
@@ -117,6 +119,7 @@ public class FollowingBook {
             uidToMoodEvent.put("user2", event2);
 
             MoodEvent event3 = new MoodEvent("anxious");
+            event1.setMid("3000");
             event3.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
             event3.setReason("i am anxiously waiting for my 429 midterm marks. it was curved. maybe i got like a 30%");
             event3.setPostTime("18:30:15.987654"); // Use "HH:mm:ss.SSSSSS" format
@@ -124,6 +127,7 @@ public class FollowingBook {
             uidToMoodEvent.put("user3", event3);
 
             MoodEvent event4 = new MoodEvent("calm");
+            event1.setMid("4000");
             event4.setPostDate("2025-03-16"); // Use "yyyy-MM-dd" format
             event4.setPostTime("09:15:45.456789"); // Use "HH:mm:ss.SSSSSS" format
             event4.setCollaborators(new ArrayList<>(List.of("Reading")));
