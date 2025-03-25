@@ -1,23 +1,26 @@
 package com.example.tangclan;
 
+
 import static java.lang.Integer.parseInt;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Movie;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.firebase.firestore.*;
 
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
 
 
 /**
@@ -50,6 +53,10 @@ public class DatabaseBestie {
     private CollectionReference moodEventsRef;
     private CollectionReference followsRef;
 
+    private CollectionReference commentsRef;
+
+    private DocumentReference commentCounterRef;
+
     /**
      * This gets an instance of the database
      */
@@ -59,11 +66,13 @@ public class DatabaseBestie {
         moodEventCounterRef = db.collection("Counters").document("mood_event_counter");
         userCounterRef = db.collection("Counters").document("user_counter");
         followRelCounterRef = db.collection("Counters").document("follow_counter");
+        commentCounterRef = db.collection("Counters").document("comment_counter");
 
         // collection references
         usersRef = db.collection("users");
         moodEventsRef = db.collection("moodEvents");
         followsRef = db.collection("follows");
+        commentsRef = db.collection("comments");
     }
 
     /**
@@ -314,9 +323,12 @@ public class DatabaseBestie {
     public void addMoodEvent(MoodEvent event, String month, String uid) {
         generateMid(mid -> {
             event.setMid(String.valueOf(mid));
-            Map<String, String> data = Map.of("postedBy", uid);
+            Map<String, Object> data = new HashMap<>();
+            data.put("postedBy", uid);
+            data.put("comments", new ArrayList<String>()); // Initialize empty comments array
+
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
-                            .set(data);
+                    .set(data);
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                     .set(event.prepFieldsForDatabase(), SetOptions.merge());
         });
@@ -702,5 +714,67 @@ public class DatabaseBestie {
          */
         void onFollowingRetrieved(ArrayList<String> following);
     }
+
+    // Change the interface to use Collection
+
+    public interface CommentsCallback {
+        void onCommentsRetrieved(List<Comment> comments);
+    }
+
+    public interface CommentOperationCallback {
+        void onCommentOperationComplete();
+    }
+
+    public void addComment(Comment comment, CommentOperationCallback callback) {
+        generateCid(cid -> {
+            comment.setCid(String.valueOf(cid));
+
+            // Add comment to the top-level comments collection
+            commentsRef.document(comment.getCid())
+                    .set(comment)
+                    .addOnSuccessListener(aVoid -> callback.onCommentOperationComplete())
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error adding comment", e);
+                        callback.onCommentOperationComplete();
+                    });
+        });
+    }
+
+    public void getCommentsForMoodEvent(String mid, CommentsCallback callback) {
+        // Query comments that belong to this mood event
+        commentsRef.whereEqualTo("mid", mid)
+                .orderBy("postDate")
+                .orderBy("postTime")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Comment> comments = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        Comment comment = document.toObject(Comment.class);
+                        comment.setCid(document.getId());
+                        comments.add(comment);
+                    }
+                    callback.onCommentsRetrieved(comments);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error getting comments", e);
+                    callback.onCommentsRetrieved(new ArrayList<>());
+                });
+    }
+
+    private String getCurrentMonth() {
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("MMM-yyyy", Locale.US));
+    }
+
+    public void generateCid(IdCallback callback) {
+        generateUniqueId(commentCounterRef, "last_cid", callback);
+    }
+
+
+
+
+
+
+
+
 
 }
