@@ -343,7 +343,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     @Override
     public void onFragmentFinished() {
-        System.out.println("FRagment done!");
+        System.out.println("Fragment done!");
         userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
         // update adapter
         String event_id, event_month;
