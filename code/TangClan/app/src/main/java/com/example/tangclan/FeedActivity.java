@@ -165,18 +165,7 @@ public class FeedActivity extends AppCompatActivity {
         });
 
         // NAVBAR
-        ImageView pinIcon = findViewById(R.id.imgMap);
-        ImageView homeIcon = findViewById(R.id.imgHome); // do nothing but change color to white
-        ImageView searchIcon = findViewById(R.id.imgNotification);
-        ImageView profileIcon = findViewById(R.id.imgProfile);
-
-        profileIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(FeedActivity.this, ProfilePageActivity.class));
-                finish();
-            }
-        });
+        NavBarHelper.setupNavBar(this);
     }
 
     /**
