@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    android:background="@color/fragment_background"
     android:orientation="vertical"
-
-    android:padding="16dp"
-    android:id="@+id/main">
-
+    android:padding="16dp">
 
 
     <!-- Top bar -->
@@ -19,15 +19,17 @@
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_owl"
-            android:contentDescription="Owl icon" />
+            android:contentDescription="Owl icon"
+            android:src="@drawable/ic_owl" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:text="moodly"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -45,21 +47,25 @@
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/inter_medium"
         android:text="Would you like to talk about it over a moodle bowl?"
         android:textAlignment="center"
-        android:textSize="22sp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"/>
+        android:textColor="@color/black"
+        android:textSize="20sp" />
 
 
     <TextView
         android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/inter"
         android:text="You can write about you experience, or show it with a picture instead."
-        android:textAlignment="textStart"
-        android:textSize="18sp"
-        android:layout_marginBottom="20dp"/>
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text203"
@@ -79,28 +85,28 @@
     <TextView
         android:id="@+id/charCount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1dp"
         android:textAlignment="viewEnd" />
-
 
 
     <Button
         android:id="@+id/buttonSaveText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/black"
+        android:text="Save" />
 
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="299dp"
+        android:layout_height="302dp"
 
-        android:scaleType="centerCrop"
+        android:layout_marginLeft="40dp"
         android:background="@android:color/darker_gray"
-        android:layout_marginLeft="40dp"/>
+        android:scaleType="centerCrop" />
 
 
     <LinearLayout
@@ -113,6 +119,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:backgroundTint="@color/black"
             android:text="Select Image" />
 
         <Button
@@ -121,6 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_weight="0"
+            android:backgroundTint="@color/black"
             android:text="Save" />
 
     </LinearLayout>
@@ -129,8 +137,9 @@
         android:id="@+id/btnUploadImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Image"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/black"
+        android:text="Select Image" />
 
 
     <LinearLayout
@@ -143,12 +152,14 @@
             android:id="@+id/btnBackEnvironment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"
             android:text="Back" />
 
         <Button
             android:id="@+id/btnNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"
             android:text="Next" />
     </LinearLayout>
 </LinearLayout>

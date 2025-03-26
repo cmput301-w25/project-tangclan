@@ -39,6 +39,8 @@ public class MoodEvent implements Serializable {
     private Double latitude = null;
     private Double longitude = null;
 
+    private boolean privacyOn = false;
+
     /**
      * Default constructor (required for Firestore)
      */
@@ -312,6 +314,13 @@ public class MoodEvent implements Serializable {
         return this.longitude;
     }
 
+    public boolean isPrivacyOn() {
+        return privacyOn;
+    }
+
+    public void setPrivacyOn(boolean privacyOn) {
+        this.privacyOn = privacyOn;
+    }
 
     // helpers
 
