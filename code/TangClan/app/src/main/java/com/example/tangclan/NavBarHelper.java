@@ -17,11 +17,13 @@ public class NavBarHelper {
 
     private static int currentActiveTab = -1;
 
+    private static final int TAB_FOLLOW=3;
     public static void setupNavBar(Activity activity) {
         // Find all navbar items
         ImageView homeIcon = activity.findViewById(R.id.imgHome);
         ImageView profileIcon = activity.findViewById(R.id.imgProfile);
         ImageView addIcon = activity.findViewById(R.id.fabAdd);
+        ImageView notifIcon = activity.findViewById(R.id.imgNotification);
 
         Class<?> activityClass = activity.getClass();
         if (activityClass.equals(FeedActivity.class)) {
@@ -30,6 +32,8 @@ public class NavBarHelper {
             currentActiveTab = TAB_PROFILE;
         } else if (activityClass.equals(AddEmotionActivity.class)) {
             currentActiveTab = TAB_ADD;
+        } else if (activityClass.equals(FollowActivity.class)) {
+            currentActiveTab= TAB_FOLLOW;
         }
 
         updateIcons(homeIcon, profileIcon, addIcon);
@@ -52,6 +56,12 @@ public class NavBarHelper {
                 navigateToActivity(activity, AddEmotionActivity.class);
             });
         }
+        if (notifIcon != null) {
+            notifIcon.setOnClickListener(v -> {
+                navigateToActivity(activity, FollowActivity.class);
+            });
+        }
+
     }
 
     private static void updateIcons(ImageView homeIcon, ImageView profileIcon, ImageView addIcon) {
@@ -76,6 +86,12 @@ public class NavBarHelper {
                     currentActiveTab == TAB_ADD ?
                             R.drawable.baseline_add_box_24 :
                             R.drawable.outline_add_box_24
+            );
+        }
+
+        if (addIcon != null) {
+            addIcon.setImageResource(
+                    R.drawable.baseline_notifications_24
             );
         }
     }
