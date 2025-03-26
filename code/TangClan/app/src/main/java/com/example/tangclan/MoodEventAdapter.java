@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -114,7 +115,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         MoodEvent moodEvent = getItem(position);
         if (moodEvent == null) return view;
 
-        Button commentButton = view.findViewById(R.id.comment_button);
+        ImageButton commentButton = view.findViewById(R.id.comment_button);
         commentButton.setOnClickListener(v -> {
             showCommentDialog(moodEvent);
         });
@@ -214,7 +215,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         ListView commentsList = dialogView.findViewById(R.id.comments_list);
         EditText commentInput = dialogView.findViewById(R.id.comment_input);
-        Button postButton = dialogView.findViewById(R.id.post_button);
+        ImageButton postButton = dialogView.findViewById(R.id.post_button);
 
         DatabaseBestie db = DatabaseBestie.getInstance();
         db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
