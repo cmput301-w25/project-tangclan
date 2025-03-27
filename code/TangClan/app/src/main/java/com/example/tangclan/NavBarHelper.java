@@ -36,7 +36,7 @@ public class NavBarHelper {
             currentActiveTab= TAB_FOLLOW;
         }
 
-        updateIcons(homeIcon, profileIcon, addIcon);
+        updateIcons(homeIcon, profileIcon, addIcon, notifIcon);
 
 
         if (homeIcon != null) {
@@ -64,7 +64,7 @@ public class NavBarHelper {
 
     }
 
-    private static void updateIcons(ImageView homeIcon, ImageView profileIcon, ImageView addIcon) {
+    private static void updateIcons(ImageView homeIcon, ImageView profileIcon, ImageView addIcon, ImageView notifIcon) {
         if (homeIcon != null) {
             homeIcon.setImageResource(
                     currentActiveTab == TAB_HOME ?
@@ -89,9 +89,12 @@ public class NavBarHelper {
             );
         }
 
-        if (addIcon != null) {
+        if (notifIcon != null) {
             addIcon.setImageResource(
-                    R.drawable.baseline_notifications_24
+                    currentActiveTab == TAB_ADD ?
+                            R.drawable.baseline_notifications_24 :
+                            R.drawable.outline_notifications_24
+
             );
         }
     }
