@@ -30,4 +30,5 @@ public class FollowActivity extends AppCompatActivity {
         adapter = new FollowRequestAdapter(followRequests, followingBook);
         recyclerView.setAdapter(adapter);
     }
+
 }
