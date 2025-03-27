@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -53,6 +54,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private DatabaseBestie databaseBestie;
     private ArrayAdapter<MoodEvent> adapter;//
     private NetworkManager networkManager;
+
+    private ListView listViewFeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 // Do nothing
             }
         });
+
+
 
         // Process incoming mood event data if it exists
         processMoodEventData();
@@ -485,4 +490,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         adapter.addAll(filteredEvents);
         adapter.notifyDataSetChanged();
     }
+
+
 }

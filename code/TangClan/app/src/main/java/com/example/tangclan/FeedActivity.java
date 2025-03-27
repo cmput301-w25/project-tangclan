@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -29,8 +30,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.w3c.dom.Comment;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -131,6 +136,7 @@ public class FeedActivity extends AppCompatActivity {
             Intent intent = new Intent(FeedActivity.this, AddEmotionActivity.class);
             startActivity(intent);
         });
+
 
         // Set up long-click listener for mood event details
         listViewFeed.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -333,4 +339,7 @@ public class FeedActivity extends AppCompatActivity {
         Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
     //need to account for multiple moods being selected
+
+
+
 }
