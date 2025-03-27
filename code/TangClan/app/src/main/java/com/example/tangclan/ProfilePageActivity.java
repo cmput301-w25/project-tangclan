@@ -493,10 +493,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void resetFilters() {
-        userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
+        adapter.notifyDataSetChanged();
         adapter.clear();
         adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
-        adapter.notifyDataSetChanged();
+        userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
+
 
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.setText("");
