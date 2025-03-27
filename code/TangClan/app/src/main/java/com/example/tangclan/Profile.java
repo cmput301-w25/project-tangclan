@@ -17,7 +17,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     private String email;
     private String age;
 
-    private String profilePic;
+    private String profilePic = null;
 
     /**
      * Constructor for database purposes

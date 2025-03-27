@@ -127,15 +127,15 @@ public class SignUpActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                                     Profile newUser = new Profile(displayName, username, password, email);
-                                                    // newUser.setProfilePic();
                                                     bestie.addUser(uid, newUser);  // replace null with default image
-
                                                     LoggedInUser loggedInUser = LoggedInUser.getInstance();
                                                     loggedInUser.setUid(uid);
                                                     loggedInUser.setEmail(email);
                                                     loggedInUser.setUsername(username);
                                                     loggedInUser.setPassword(password);
                                                     loggedInUser.setDisplayName(displayName);
+                                                    loggedInUser.setProfilePic(null);
+
 
                                                     Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
                                                             Toast.LENGTH_SHORT).show();
