@@ -39,6 +39,9 @@
             android:exported="false" />
 
         <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".FilterFragmentActivity"
             android:exported="false" />
         <activity

@@ -101,7 +101,7 @@ public class LogIn extends AppCompatActivity {
                                             loggedInUser.setPassword(profile.getPassword());
                                             loggedInUser.setDisplayName(profile.getDisplayName());
                                             loggedInUser.setAge(profile.getAge());
-                                            // TO DO: get profile picture too
+                                            loggedInUser.setProfilePic(profile.getProfilePic());
 
                                             Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
                                             startActivity(intent);

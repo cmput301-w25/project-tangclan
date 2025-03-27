@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 
 import android.text.Editable;
@@ -160,6 +161,13 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Initialize the mood event book if it doesn't exist
 
         // Set the user information in the UI
+        String pfpStr = userProfile.getProfilePic();
+        if (pfpStr != null) {
+            ImageView pfp = findViewById(R.id.pfpView);
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            pfp.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+        }
         usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
 

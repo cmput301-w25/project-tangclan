@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +19,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 
 /**
@@ -27,7 +33,7 @@ import java.util.ArrayList;
  */
 public class EditProfileActivity extends AppCompatActivity {
 
-    ImageView profilePic;
+    ImageView profilePic, cancel;
     TextView usernameText,displayNameText;
     EditText EditTextInputName,EditTextInputEmail,EditTextInputUsername,EditTextInputPassword, EditTextInputConfirmPassword ;
     Button submitChangesButton;
@@ -63,10 +69,13 @@ public class EditProfileActivity extends AppCompatActivity {
         usernameText=findViewById(R.id.username);
         displayNameText=findViewById(R.id.nameDisplay);
         profilePic = findViewById(R.id.pfpView);
+        cancel = findViewById(R.id.closeIcon);
 
         // set saved details
         if (userProfile != null) {
-            profilePic.setImageBitmap(imageHelper.base64ToBitmap(userProfile.getProfilePic()));
+            if (userProfile.getProfilePic() != null) {
+                profilePic.setImageBitmap(imageHelper.base64ToBitmap(userProfile.getProfilePic()));
+            }
             usernameText.setText(userProfile.getUsername());
             displayNameText.setText(userProfile.getDisplayName() != null? userProfile.getDisplayName(): userProfile.getUsername());
             EditTextInputName.setText(userProfile.getDisplayName());
@@ -75,6 +84,15 @@ public class EditProfileActivity extends AppCompatActivity {
             EditTextInputPassword.setText(userProfile.getPassword());
             EditTextInputConfirmPassword.setText(userProfile.getPassword());
         }
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(EditProfileActivity.this, ProfilePageActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
 
         submitChangesButton = findViewById(R.id.submit_changes_button);
@@ -132,12 +150,19 @@ public class EditProfileActivity extends AppCompatActivity {
         String stringPassword= EditTextInputPassword.getText().toString();
         String stringConfirmPassword= EditTextInputConfirmPassword.getText().toString();
 
+        // should not be able to change email
         if (stringEmail.isEmpty()) {
             EditTextInputEmail.setError("Enter email");
             return false;
         }
-        if (!validEmail(stringEmail)) {
+
+        if (!validEmail(stringEmail) && !stringEmail.equals(profile2.getEmail())) {
             EditTextInputEmail.setError("Wrong format or already in use");
+            return false;
+        }
+        if (!stringEmail.equals(profile2.getEmail())){
+            EditTextInputEmail.setError("Email must be the same when you first logged in");
+            EditTextInputEmail.requestFocus();
             return false;
         }
 
@@ -145,7 +170,7 @@ public class EditProfileActivity extends AppCompatActivity {
             EditTextInputUsername.setError("Username required");
         }
 
-        if (!validUsername(stringUsername) ){//Note: MUST CHECK FOR UNIQUE USERNAME TOO
+        if (!validUsername(stringUsername) && !stringUsername.equals(profile2.getUsername())){//Note: MUST CHECK FOR UNIQUE USERNAME TOO
             EditTextInputUsername.setError("Username must be unique, at least 4 characters long and can only contain:\n" +
                     " - alphanumeric characters\n" +
                     " - hyphens\n" +
@@ -170,20 +195,38 @@ public class EditProfileActivity extends AppCompatActivity {
             return false;
         }
 
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        if (user != null) {
+            // Replace with the user's current email & password
+            AuthCredential credential = EmailAuthProvider.getCredential(profile2.getEmail(), profile2.getPassword());
+
+            user.reauthenticate(credential).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    System.out.println("Re-authentication successful");
+                    user.updatePassword(stringPassword);
+                } else {
+                    System.out.println("Re-authentication failed: " + task.getException().getMessage());
+                }
+            });
+        }
+
         //Setting values for profile object
         profile2.setEmail(stringEmail);
         profile2.setUsername(stringUsername);
         profile2.setPassword(stringPassword);
         profile2.setDisplayName(stringName);
-        SaveToDatabase(databaseBestie,profile2);
+        saveToDatabase(databaseBestie,profile2);
 
         return true;
 
     }
-    public void SaveToDatabase(DatabaseBestie db, Profile profile) {
-        db.updateUser(profile.getUid(),profile);
-
-
+    public void saveToDatabase(DatabaseBestie db, Profile profile) {
+        String id = profile.getUid();
+        db.updateUserUsername(id, profile.getUsername());
+        db.updateUserDisplayName(id, profile.getDisplayName());
+        db.updateUserPassword(id, profile.getPassword());
     }
 
     private final ActivityResultLauncher<Intent> cameraLauncher =

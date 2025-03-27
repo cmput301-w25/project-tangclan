@@ -4,11 +4,8 @@ import static java.lang.Integer.parseInt;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Movie;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.firebase.firestore.*;
 
@@ -306,6 +303,29 @@ public class DatabaseBestie {
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "User details successfully updated!"))
                 .addOnFailureListener(e -> Log.e(TAG, "Error updating User details", e));
     }
+
+    public void updateUserDisplayName(String uid, String name) {
+        DocumentReference usr = usersRef.document(uid);
+        usr.update("displayName", name)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "display name updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating displayName", e));
+    }
+
+    public void updateUserUsername(String uid, String name) {
+        DocumentReference usr = usersRef.document(uid);
+        usr.update("username", name)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "username updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating username", e));
+    }
+
+    public void updateUserPassword(String uid, String pass) {
+        DocumentReference usr = usersRef.document(uid);
+        usr.update("password", pass)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "password updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
+    }
+
+
 
 
 
