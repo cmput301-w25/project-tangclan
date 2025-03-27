@@ -15,6 +15,7 @@ public class FollowActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        NavBarHelper.setupNavBar(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow_requests);
 
