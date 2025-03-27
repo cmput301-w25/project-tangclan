@@ -18,6 +18,8 @@ public class FollowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_follow_requests);
 
+        FollowingBook followingBook = new FollowingBook();
+
         recyclerView = findViewById(R.id.recyclerViewFollowRequests);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
