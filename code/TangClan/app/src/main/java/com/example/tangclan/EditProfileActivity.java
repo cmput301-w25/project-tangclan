@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
@@ -32,6 +33,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -140,14 +142,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
     private boolean validUsername(String username){
-        if (!username.matches("^[a-z0-9_-]{4,}$")){
+        if (!username.toLowerCase().matches("^[a-z0-9_-]{4,}$")){
             return false;
         }
-        boolean[] exists = new boolean[1];
-        databaseBestie.findEmailByUsername(username, em -> {
-            exists[0] = em == null;
-        });
-        return exists[0];
+        return true;
     }
 
     private boolean validEmail(String email) {
@@ -164,12 +162,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private boolean ChangeProfileAndCheckErrors(Profile profile2){
         String stringName= EditTextInputName.getText().toString();
-        String stringEmail= EditTextInputEmail.getText().toString();
+        // String stringEmail= EditTextInputEmail.getText().toString();
         String stringUsername= EditTextInputUsername.getText().toString();
         String stringPassword= EditTextInputPassword.getText().toString();
         String stringConfirmPassword= EditTextInputConfirmPassword.getText().toString();
 
         // should not be able to change email
+        /*
         if (stringEmail.isEmpty()) {
             EditTextInputEmail.setError("Enter email");
             return false;
@@ -184,13 +183,14 @@ public class EditProfileActivity extends AppCompatActivity {
             EditTextInputEmail.requestFocus();
             return false;
         }
+         */
 
         if (stringUsername.isEmpty()) {
             EditTextInputUsername.setError("Username required");
         }
 
         if (!validUsername(stringUsername) && !stringUsername.equals(profile2.getUsername())){//Note: MUST CHECK FOR UNIQUE USERNAME TOO
-            EditTextInputUsername.setError("Username must be unique, at least 4 characters long and can only contain:\n" +
+            EditTextInputUsername.setError("Username must at least 4 characters long and can only contain:\n" +
                     " - alphanumeric characters\n" +
                     " - hyphens\n" +
                     " - underscores\n");
@@ -232,8 +232,22 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         //Setting values for profile object
-        profile2.setEmail(stringEmail);
-        profile2.setUsername(stringUsername);
+        if (selectedImage != null) {
+            profile2.setProfilePic(imageHelper.bitmapToBase64(selectedImage));
+        }
+        // profile2.setEmail(stringEmail);
+
+        databaseBestie.findEmailByUsername(stringUsername, em -> {
+            if (em != null) {
+                if (!stringUsername.equals(profile2.getUsername())) {
+                    // username changed and is not taken
+                    EditTextInputUsername.setError("Username already taken");
+                }
+            } else {
+                profile2.setUsername(stringUsername);
+                databaseBestie.updateUserUsername(profile2.getUid(),stringUsername);
+            }
+        });
         profile2.setPassword(stringPassword);
         profile2.setDisplayName(stringName);
         saveToDatabase(databaseBestie,profile2);
@@ -243,7 +257,8 @@ public class EditProfileActivity extends AppCompatActivity {
     }
     public void saveToDatabase(DatabaseBestie db, Profile profile) {
         String id = profile.getUid();
-        db.updateUserUsername(id, profile.getUsername());
+        db.updateUserPhoto(id,profile.getProfilePic());
+        // db.updateUserUsername(id, profile.getUsername());
         db.updateUserDisplayName(id, profile.getDisplayName());
         db.updateUserPassword(id, profile.getPassword());
     }
@@ -274,7 +289,9 @@ public class EditProfileActivity extends AppCompatActivity {
             if (which == 0) {
                 captureImageFromCamera();
             } else {
-                pickImageFromGallery();
+                //pickImageFromGallery();
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                galleryLauncher.launch(intent);
             }
         });
         builder.show();
@@ -287,12 +304,6 @@ public class EditProfileActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No camera app available", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void pickImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -407,6 +418,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void displaySelectedBitmap(Bitmap bitmap) {
         profilePic.setImageBitmap(bitmap);
+        selectedImage = bitmap;
         Toast.makeText(this, "Profile picture updated!", Toast.LENGTH_SHORT).show();
     }
 }

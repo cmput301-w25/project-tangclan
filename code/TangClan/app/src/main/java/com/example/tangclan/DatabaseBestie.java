@@ -325,6 +325,13 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
     }
 
+    public void updateUserPhoto(String uid, String photo) {
+        DocumentReference usr = usersRef.document(uid);
+        usr.update("profilePic", photo)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "password updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
+    }
+
 
 
 
