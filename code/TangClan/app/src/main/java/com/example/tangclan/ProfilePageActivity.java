@@ -155,7 +155,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
-        userProfile = LoggedInUser.getInstance();
+        //userProfile = LoggedInUser.getInstance();
 
         // Initialize the mood event book if it doesn't exist
 
@@ -177,10 +177,20 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private void setupProfileListView() {
         if (userProfile != null && userProfile.getMoodEventBook() != null) {
             // Create a custom adapter using ProfileHistoryAdapter which has all the proper formatting
-            adapter = new ProfileHistoryAdapter(this, userProfile);
+            //adapter = new ProfileHistoryAdapter(this, userProfile);
 
             // Set the adapter on the ListView
-            profileArrayListView.setAdapter(adapter);
+            //profileArrayListView.setAdapter(adapter);
+
+            if (adapter == null) {
+                adapter = new ProfileHistoryAdapter(this, userProfile);
+                profileArrayListView.setAdapter(adapter);
+            } else {
+                // Otherwise, just update the existing adapter
+                adapter.clear();
+                adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
+                adapter.notifyDataSetChanged();
+            }
 
             // Adjust ListView height if needed
             //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
