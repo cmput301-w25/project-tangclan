@@ -28,6 +28,11 @@ public class editprofileActivity extends AppCompatActivity {
 
     Button submitChangesButton;
 
+    private Profile userProfile;
+
+    private DatabaseBestie databaseBestie;
+
+
     //Profile profile= new Profile("Person1", "aBcd123*","shaian@ualberta.ca","21");
     //Profile profile2;
 
@@ -43,21 +48,26 @@ public class editprofileActivity extends AppCompatActivity {
             return insets;
         });
 
+        //Initializing database
+        databaseBestie = new DatabaseBestie();
+
+
+        userProfile = LoggedInUser.getInstance();
         EditTextInputName=findViewById(R.id.edit_name_input);
         EditTextinputEmail=findViewById(R.id.edit_email_input);
         EditTextinputUsername=findViewById(R.id.new_username_input);
         EditTextinputPassword= findViewById(R.id.new_password_input);
         EditTextinputConfirmPassword=findViewById(R.id.confirm_new_input);
-        Bundle extras = getIntent().getExtras();
+        //Bundle extras = getIntent().getExtras();
 
-        assert extras != null;
-        Profile profile2= (Profile) extras.get("Key1");
+        //assert extras != null;
+        //Profile profile2= (Profile) extras.get("Key1");
 
 
 
         usernameText=findViewById(R.id.username);
-        assert profile2 != null;
-        usernameText.setText(profile2.getUsername());
+        assert userProfile != null;
+        usernameText.setText(userProfile.getUsername());
 
 
 
@@ -66,10 +76,11 @@ public class editprofileActivity extends AppCompatActivity {
         submitChangesButton.setOnClickListener(view -> {
 
 
-            if(ChangeProfileAndCheckErrors(profile2)) {
+            if(ChangeProfileAndCheckErrors(userProfile)) {
                 //Note: changeprofileandcheckerrors method makes changes to the profile class if all conditions pass
-                Intent intent = new Intent(editprofileActivity.this, ProfileActivity.class);
-                intent.putExtra("Key1", profile2);
+                Intent intent = new Intent(editprofileActivity.this, ProfilePageActivity.class);
+                //intent.putExtra("Key1", profile2);
+                //saveProfileToDatabase();//Note commented out for now, put the method inside of changeprofileandcheckerrors
                 startActivity(intent);
             }
         });
@@ -77,8 +88,17 @@ public class editprofileActivity extends AppCompatActivity {
 
     }
 
+    private void saveProfileToDatabase(Profile userProfile) {
+        // This method should save the updated profile to your database
+        // For now, we'll just simulate successful saving
+        //databaseBestie.
+
+    }
+
+
+
     public static boolean validPassword(String password){
-        final String SPECIAL_CHARACTERS = "!,#,$,%,^,&,*,|";
+        final String SPECIAL_CHARACTERS = "!,#,$,%,^,&,*,|,?";
         boolean upCase = false;
         boolean loCase = false;
         boolean isDigit = false;
@@ -93,7 +113,7 @@ public class editprofileActivity extends AppCompatActivity {
         if (password.matches(".*[0-9].*")){
             isDigit = true;
         }
-        if (password.matches(".*[!#$%^&*|].*")){
+        if (password.matches(".*[!#$%^&*|?].*")){
             spChar = true;
         }
         if((password.length()>=8)){
@@ -127,8 +147,8 @@ public class editprofileActivity extends AppCompatActivity {
 
 
 
-        if (StringEmail.isEmpty()){
-            EditTextinputEmail.setError("Email required");
+        if (StringEmail.isEmpty() && StringEmail.equals(profile2.getEmail())){
+            EditTextinputEmail.setError("Email required and must be the same when you first logged in");
             EditTextinputEmail.requestFocus();
             return false;
         }
@@ -157,10 +177,14 @@ public class editprofileActivity extends AppCompatActivity {
         profile2.setUsername(StringUsername);
         profile2.setPassword(StringPassword);
         profile2.setDisplayName(StringName);
+        SaveToDatabase(databaseBestie,profile2);
 
 
         return true;
 
     }
+    public void SaveToDatabase(DatabaseBestie db, Profile profile) {
+        db.updateUser(profile.getUid(),profile);
 
+    }
 }
