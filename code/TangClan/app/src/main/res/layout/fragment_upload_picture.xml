@@ -78,7 +78,8 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="What's going on?" />
+            android:hint="What's going on?"
+            android:maxHeight="60dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
 

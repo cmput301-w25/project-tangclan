@@ -11,7 +11,7 @@
     android:orientation="vertical"
     android:outlineAmbientShadowColor="#000000"
     android:outlineSpotShadowColor="#000000"
-    android:padding="16dp">
+    android:padding="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,6 +42,18 @@
         android:text="How are you feeling?"
         android:textSize="18sp" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+        <AutoCompleteTextView
+            android:id="@+id/choose_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <!--
     <RadioGroup
         android:id="@+id/emotion_selection"
         android:layout_width="380dp"
@@ -150,6 +162,7 @@
         </ScrollView>
 
     </RadioGroup>
+    -->
 
     <TextView
         android:id="@+id/edit_details_q2"
@@ -162,13 +175,25 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+        <AutoCompleteTextView
+            android:id="@+id/choose_social_situation"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:inputType="none" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_social_situation"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:hint="I was with..." />
+            android:hint = "I was with..."/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -184,6 +209,7 @@
             android:fontFamily="@font/inter_medium"
             android:text="What made you feel this way?"
             android:textSize="18sp" />
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edit_reason_box"
@@ -211,6 +237,15 @@
                 android:background="#0D000000"
                 app:srcCompat="@drawable/baseline_add_box_24" />
 
+            <Button
+                android:id="@+id/save_new_img"
+                android:layout_width="119dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#000000"
+                android:text="Save"
+                android:textColorLink="#020101"
+                app:cornerRadius="12sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -225,7 +260,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="20dp"
-            android:text="Do you want to share your location?"
+            android:text="Share your location?"
             android:textSize="18sp" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -237,8 +272,8 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="310dp"
-        android:layout_height="46dp"
+        android:layout_width="311dp"
+        android:layout_height="68dp"
         android:orientation="horizontal">
 
         <TextView
@@ -247,12 +282,13 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="20dp"
-            android:text="Make this post private?"
+            android:text="make event private?"
             android:textSize="18sp" />
+
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/privacy_toggle"
-            android:layout_width="83dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 

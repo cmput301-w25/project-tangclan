@@ -34,6 +34,7 @@ public class MoodEvent implements Serializable {
     private LocalDate postDate;
     private Mood mood;
     private String reason = null;
+    private String setting = null;
     private ArrayList<String> situation = null;
     private Bitmap image = null;
     private Double latitude = null;
@@ -246,6 +247,14 @@ public class MoodEvent implements Serializable {
     }
 
     /**
+     * Setter for Mood event setting (Alone, with one other person, etc..)
+     * @param setting the setting
+     */
+    public void setSetting(String setting) {
+        this.setting = setting;
+    }
+
+    /**
      * Setter for the Mood event collaborators
      *
      * @param collaborators The list of collaborators for the situation attribute to be set to
@@ -271,7 +280,7 @@ public class MoodEvent implements Serializable {
      */
     public void setReason(String reason) {
         // raise an exception if the reason exceeds the length limit
-        if (reason.length() > 200) {
+        if (reason != null && reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
@@ -390,8 +399,10 @@ public class MoodEvent implements Serializable {
         moodEventFields.put("mid", this.mid);
         moodEventFields.put("emotionalState", this.mood.getEmotion());
         moodEventFields.put("collaborators", this.situation);
+        moodEventFields.put("setting",this.setting);
         moodEventFields.put("reason", this.reason);
         moodEventFields.put("image", imageString);
+        moodEventFields.put("privateMood",this.privacyOn);
         moodEventFields.put("datePosted", dateString);
         moodEventFields.put("timePosted", timeString);
 
