@@ -16,6 +16,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,8 +40,9 @@ public class MoodEvent implements Serializable {
     private Bitmap image = null;
     private Double latitude = null;
     private Double longitude = null;
-
     private boolean privacyOn = false;
+    private ArrayList<String> commentIds = new ArrayList<>();
+
 
     /**
      * Default constructor (required for Firestore)
@@ -409,4 +411,20 @@ public class MoodEvent implements Serializable {
 
         return moodEventFields;
     }
+
+    public ArrayList<String> getCommentIds() {
+        return commentIds;
+    }
+
+    public void setCommentIds(ArrayList<String> commentIds) {
+        this.commentIds = commentIds;
+    }
+
+    public void addCommentId(String commentId) {
+        this.commentIds.add(commentId);
+    }
+
+
+
+
 }
