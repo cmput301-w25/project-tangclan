@@ -79,7 +79,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         TextInputEditText reason = findViewById(R.id.reason);
         ImageView closeIcon = findViewById(R.id.closeIcon);
         Button btnBack = findViewById(R.id.btnBackEnvironment);
-        Button btnNext = findViewById(R.id.buttonSaveText);
         TextInputEditText editTextReason = findViewById(R.id.text203).findViewById(R.id.reason);
 
         // Initialize ImageHelper
