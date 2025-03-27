@@ -430,7 +430,7 @@ public class MoodEvent implements Serializable {
         this.commentIds.add(commentId);
     }
 
-
-
-
+    public String getSetting() {
+        return setting;
+    }
 }
