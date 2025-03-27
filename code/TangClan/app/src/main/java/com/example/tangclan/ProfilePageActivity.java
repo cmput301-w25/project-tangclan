@@ -178,9 +178,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             profileArrayListView.setAdapter(adapter);
 
             // Adjust ListView height if needed
-            ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
-            profileArrayListView.setLayoutParams(params);
+            //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
+            //params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
+            //profileArrayListView.setLayoutParams(params);
 
             // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
             profileArrayListView.setOnItemLongClickListener((parent, view, position, id) -> {
