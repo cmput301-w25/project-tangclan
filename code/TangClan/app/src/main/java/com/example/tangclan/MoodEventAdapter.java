@@ -1,6 +1,9 @@
 package com.example.tangclan;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -11,16 +14,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -69,6 +84,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             add(entry.getValue());
             moodToUsernameMap.put(entry.getValue(), "User_" + entry.getKey());
         }
+
+
     }
 
     /**
@@ -87,6 +104,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view;
 
+
+
         if (convertView == null) {
             view = LayoutInflater.from(getContext()).inflate(R.layout.content_mood_event_new, parent, false);
         } else {
@@ -95,6 +114,13 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         MoodEvent moodEvent = getItem(position);
         if (moodEvent == null) return view;
+
+        ImageButton commentButton = view.findViewById(R.id.comment_button);
+        commentButton.setOnClickListener(v -> {
+            showCommentDialog(moodEvent);
+        });
+
+
 
         // Retrieve username for this mood event
         String username = moodToUsernameMap.getOrDefault(moodEvent, "Unknown");
@@ -120,6 +146,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             Toast.makeText(getContext(), "Color is null for mood: " + mood, Toast.LENGTH_SHORT).show();
             return view;
         }
+
 
         SpannableString spannableEmotionalState = new SpannableString(mood.getEmotion());
         spannableEmotionalState.setSpan(new ForegroundColorSpan(color), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -179,4 +206,47 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         notifyDataSetChanged();
     }
+
+    private void showCommentDialog(MoodEvent moodEvent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_comments, null);
+        builder.setView(dialogView);
+
+        ListView commentsList = dialogView.findViewById(R.id.comments_list);
+        EditText commentInput = dialogView.findViewById(R.id.comment_input);
+        ImageButton postButton = dialogView.findViewById(R.id.post_button);
+
+        DatabaseBestie db = DatabaseBestie.getInstance();
+        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
+            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+            commentsList.setAdapter(adapter);
+        });
+
+        AlertDialog dialog = builder.create();
+
+        postButton.setOnClickListener(v -> {
+            String commentText = commentInput.getText().toString().trim();
+            if (!commentText.isEmpty()) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    Comment comment = new Comment(moodEvent.getMid(), currentUser.getUid(), commentText);
+                    db.addComment(comment, () -> {
+                        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
+                            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+                            commentsList.setAdapter(adapter);
+                            commentInput.setText("");
+                        });
+                    });
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+
+
+
+
 }

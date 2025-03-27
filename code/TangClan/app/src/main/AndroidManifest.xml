@@ -31,6 +31,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TangClan"
         tools:targetApi="31">
+
+        <activity
+
+            android:name=".ReviewDetailsActivity"
+
+            android:exported="false" />
+
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".FilterFragmentActivity"
             android:exported="false" />
@@ -76,6 +86,9 @@
         <activity
             android:name=".LoginOrSignupActivity"
             android:exported="false" />
+        <activity
+            android:name=".FollowActivity"
+            android:exported="false"/>
         <activity
             android:name=".WizActivity"
             android:exported="false" />

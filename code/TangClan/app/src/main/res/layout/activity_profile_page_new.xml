@@ -21,11 +21,11 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/pfp"
+            android:id="@+id/pfpView"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="0dp"
-            android:background="#d9d9d9"
+            android:src="@drawable/default_pfp"
             android:contentDescription="@string/pfp_desc"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/display_name"
+            android:id="@+id/nameDisplay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
@@ -177,6 +177,8 @@
         app:dividerColor="@color/black"
         app:dividerThickness="4dp"/>
 
+
+
     <ListView
         android:id="@+id/listview_profile_history"
         android:layout_width="match_parent"
@@ -214,5 +216,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/edit_form_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

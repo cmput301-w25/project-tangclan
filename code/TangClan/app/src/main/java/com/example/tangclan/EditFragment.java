@@ -25,6 +25,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -41,7 +44,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class EditFragment extends Fragment {
-    String mid, month, emotion, situation, reason;
+
+    String[] emotions = {"happy",
+                        "sad",
+                        "angry",
+                        "anxious",
+                        "ashamed",
+                        "calm",
+                        "confused",
+                        "disgusted",
+                        "no idea",
+                        "surprised",
+                        "terrified"};
+    String[] socialSituations = {"", "alone", "with one other person", "with two to several people", "with a crowd"};
+    String mid, month, emotion, setting, situation, reason;
     byte[] image;
     boolean locationPermission;
     private FragmentListener editFragmentListener;
@@ -83,6 +99,7 @@ public class EditFragment extends Fragment {
             mid = getArguments().getString("mid");
             month = getArguments().getString("month");
             emotion = getArguments().getString("emotion");
+            setting = getArguments().getString("setting");
             situation = getArguments().getString("social situation");
             reason = getArguments().getString("reason");
             image = getArguments().getByteArray("image");
@@ -96,25 +113,18 @@ public class EditFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.edit_details_fragment, container, false);
 
-        // get radio buttons
-        RadioButton[] radioButtons = {
-                view.findViewById(R.id.radioHappy),
-                view.findViewById(R.id.radioSad),
-                view.findViewById(R.id.radioAngry),
-                view.findViewById(R.id.radioAnxious),
-                view.findViewById(R.id.radioAshamed),
-                view.findViewById(R.id.radioCalm),
-                view.findViewById(R.id.radioConfused),
-                view.findViewById(R.id.radioDisgust),
-                view.findViewById(R.id.radioNoIdea),
-                view.findViewById(R.id.radioSurprised),
-                view.findViewById(R.id.radioTerrified)
-        };
-        // set saved emotion
-        setCheckedEmotion(view);
-        getChangesToCheckedEmotion(view, radioButtons);  // listen for new selections
+        AutoCompleteTextView autoCompleteEmotion = view.findViewById(R.id.choose_emotion);
+        String[] newEmotion = new String[1];
+        newEmotion[0] = emotion; // set current emotion
+        setUpDropdown(autoCompleteEmotion, newEmotion, emotions);
 
         // set saved social situation
+        String[] newSit = new String[1];
+        newSit[0] = setting;
+        AutoCompleteTextView autoCompleteSituation = view.findViewById(R.id.choose_social_situation);
+        setUpDropdown(autoCompleteSituation, newSit, socialSituations);
+
+        // set up collaborators
         EditText editSocialSit = view.findViewById(R.id.edit_social_situation);
         editSocialSit.setText(situation);
 
@@ -147,12 +157,13 @@ public class EditFragment extends Fragment {
             public void onClick(View view) {
                 String newReason = editReason.getText().toString();
 
-                if (newReason.length() > 200) {
+                if (newReason.length() > 200) { // hi alissa
                     editReason.setError("Text is over 200 characters!");
                     return;
                 }
 
-                String newEmotion = getCheckedEmotionText(view, radioButtons);
+
+                // String newEmotion = getCheckedEmotionText(view, radioButtons);
                 ArrayList<String> newCollaborators = getEditTextCollaborators(editSocialSit);
 
                 // validate image
@@ -166,13 +177,19 @@ public class EditFragment extends Fragment {
                     }
                 } else {
                     // img not changed
-                    selectedImage = imageHelper.base64ToBitmap(Base64.encodeToString(image, Base64.DEFAULT));  // select the same image
+                    if (image != null) {
+                        selectedImage = imageHelper.base64ToBitmap(Base64.encodeToString(image, Base64.DEFAULT));  // select the same image
+                    }
                 }
                 // save image as string
-                byte[] compressedImg = ImageValidator.compressBitmapToSize(selectedImage);
-                String newImg = Base64.encodeToString(compressedImg, Base64.DEFAULT);
-
-                saveEditsToDatabase(newEmotion, newReason, newCollaborators, newImg);
+                String newImg;
+                if (selectedImage != null) {
+                    byte[] compressedImg = ImageValidator.compressBitmapToSize(selectedImage);
+                    newImg = Base64.encodeToString(compressedImg, Base64.DEFAULT);
+                } else {
+                    newImg = null;
+                }
+                saveEditsToDatabase(newEmotion[0], newReason, newCollaborators, newImg);  // TODO: add setting and permisisions
 
                 finishFragment();
             }
@@ -190,32 +207,20 @@ public class EditFragment extends Fragment {
         return view;
     }
 
-    public void setCheckedEmotion(View view) {
-        RadioGroup emotionOptions = view.findViewById(R.id.emotion_selection);
-        ArrayList<View> emotionalState = new ArrayList<>();  // list of length 1 that stores the view to look for
-        emotionOptions.findViewsWithText(emotionalState,emotion, FIND_VIEWS_WITH_TEXT);
-        RadioButton selectedEmotion = (RadioButton) emotionalState.get(0);
-        emotionOptions.check(selectedEmotion.getId());  // set checked
-    }
 
-    public void getChangesToCheckedEmotion(View view, RadioButton[] buttons) {
-        for (RadioButton button : buttons) {
-            button.setOnClickListener(but -> {
-                for (RadioButton btn : buttons) {
-                    btn.setChecked(btn == button);
-                }
-            });
-        }
-    }
+    public void setUpDropdown(AutoCompleteTextView autoCompleteView, String[] saved, String[] items) {
+        autoCompleteView.setText(saved[0]);
+        autoCompleteView.setHint(saved[0]);
+        ArrayAdapter<String> options = new ArrayAdapter<>(getActivity().getApplicationContext(), R.layout.dropdown_item, items);
+        autoCompleteView.setAdapter(options);
 
-    public String getCheckedEmotionText(View view, RadioButton[] buttons) {
-        String newEmotion = "";
-        for (RadioButton button : buttons) {
-            if (button.isChecked()) {
-                newEmotion = button.getText().toString();  // get checked emotion string
+        autoCompleteView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                saved[0] = adapterView.getItemAtPosition(i).toString();
+                autoCompleteView.setHint(adapterView.getItemAtPosition(i).toString());
             }
-        }
-        return newEmotion;
+        });
     }
 
     public ArrayList<String> getEditTextCollaborators(EditText inputLine) {

@@ -1,21 +1,22 @@
 package com.example.tangclan;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 
-import android.transition.Explode;
 import android.transition.Slide;
-import android.view.Gravity;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,11 +34,9 @@ import android.widget.ArrayAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,9 +49,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private TextView followingTextView;
     private ListView profileArrayListView;
     private Profile userProfile;
+    private Button editProfileBtn;
     private DatabaseBestie databaseBestie;
     private ArrayAdapter<MoodEvent> adapter;//
     private NetworkManager networkManager;
+
+    private ListView listViewFeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +66,18 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Initialize views
         usernameTextView = findViewById(R.id.username);
-        nameTextView = findViewById(R.id.display_name);
+        nameTextView = findViewById(R.id.nameDisplay);
         followersTextView = findViewById(R.id.follower_count);
         followingTextView = findViewById(R.id.following_count);
         profileArrayListView = findViewById(R.id.listview_profile_history);
+        editProfileBtn = findViewById(R.id.button_edit_profile);
+
+        editProfileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToEditProfile();
+            }
+        });
 
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
@@ -101,6 +111,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 // Do nothing
             }
         });
+
+
 
         // Process incoming mood event data if it exists
         processMoodEventData();
@@ -144,11 +156,18 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
-        userProfile = LoggedInUser.getInstance();
+        //userProfile = LoggedInUser.getInstance();
 
         // Initialize the mood event book if it doesn't exist
 
         // Set the user information in the UI
+        String pfpStr = userProfile.getProfilePic();
+        if (pfpStr != null) {
+            ImageView pfp = findViewById(R.id.pfpView);
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            pfp.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
+        }
         usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
 
@@ -166,15 +185,31 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private void setupProfileListView() {
         if (userProfile != null && userProfile.getMoodEventBook() != null) {
             // Create a custom adapter using ProfileHistoryAdapter which has all the proper formatting
-            adapter = new ProfileHistoryAdapter(this, userProfile);
+            //adapter = new ProfileHistoryAdapter(this, userProfile);
 
             // Set the adapter on the ListView
-            profileArrayListView.setAdapter(adapter);
+            //profileArrayListView.setAdapter(adapter);
+
+            if (adapter == null) {
+                adapter = new ProfileHistoryAdapter(this, userProfile);
+                profileArrayListView.setAdapter(adapter);
+            } else {
+                // Otherwise, just update the existing adapter
+                adapter.clear();
+                adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
+                adapter.notifyDataSetChanged();
+            }
+
+
 
             // Adjust ListView height if needed
-            ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
-            profileArrayListView.setLayoutParams(params);
+            //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
+
+            //params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
+            //params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
+
+            //profileArrayListView.setLayoutParams(params);
 
             // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
             profileArrayListView.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -202,17 +237,23 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                     .setMessage("This action cannot be undone.")
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
-                                        adapter.remove(post);
+
 
                                         // delete from mood event book and database
                                         databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
                                             userProfile.getMoodEventBook().deleteMoodEvent(event);
                                         });
 
-                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
-
                                         databaseBestie.deleteMoodEvent(post.getMid(), month);
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+
+
+
+                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
+
+                                        adapter.remove(post);
+
+
                                     })
                                     .setNegativeButton("No", null)
                                     .show();
@@ -226,19 +267,24 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void processMoodEventData() {
-        // Retrieve the Bundle data passed from UploadPictureForMoodEventActivity
+        // Retrieve the Bundle data passed from ReviewDetailsActivity
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
-            String selectedEmotion = bundle.getString("selectedEmotion");
-            ArrayList<String> selectedSituation = bundle.getStringArrayList("selectedSituation");
+            String selectedEmotion = bundle.getString("emotion");
+            String selectedSetting = bundle.getString("setting");
+            ArrayList<String> selectedSituation = bundle.getStringArrayList("collaborators");
             String reason = bundle.getString("reason");
-            String imagePath = bundle.getString("imagePath");
+            String image = bundle.getString("image");
+            boolean privacy = bundle.getBoolean("privacy");
+
 
             // Create a new MoodEvent
-            MoodEvent newMoodEvent;
+
+
 
             try {
+                MoodEvent newMoodEvent;
                 // Create the mood event based on available data
                 if (selectedSituation != null && !selectedSituation.isEmpty()) {
                     newMoodEvent = new MoodEvent(selectedEmotion, selectedSituation);
@@ -246,28 +292,45 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
 
+
+
+                // set setting
+                if (selectedSetting != null) {
+                    newMoodEvent.setSetting(selectedSetting);
+                } else {
+                    newMoodEvent.setSetting("");
+                }
+
                 // Set reason if available
                 if (reason != null && !reason.isEmpty()) {
                     newMoodEvent.setReason(reason);
+                } else {
+                    newMoodEvent.setReason("");
                 }
 
                 // Set image if available
-                if (imagePath != null) {
-                    File imgFile = new File(imagePath);
-                    if (imgFile.exists()) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        newMoodEvent.setImage(bitmap);
-                    }
+                if (image != null) {
+                    byte[] imgBytes = Base64.decode(image, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+                    newMoodEvent.setImage(bitmap);
                 }
+
+                // Set Privacy setting
+                newMoodEvent.setPrivacyOn(privacy);
 
                 // Add the mood event to the user's mood event book
                 userProfile.post(newMoodEvent, databaseBestie);
 
                 // Save the updated profile to the database
-                saveProfileToDatabase();
+                //saveProfileToDatabase();
 
                 // Force refresh the ListView by recreating the adapter
-                setupProfileListView();
+                //setupProfileListView();
+
+                if (adapter != null) {
+                    adapter.add(newMoodEvent);
+                    adapter.notifyDataSetChanged();
+                }
 
                 // Show success message
                 Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
@@ -285,15 +348,26 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     private void saveProfileToDatabase() {
 
+
     }
 
 
 
 
-    public void goToEditProfile(View view) {
+    public void goToEditProfile() {
         // Handle edit profile button click
-        Intent intent = new Intent(this, FeedActivity.class);
+        Intent intent = new Intent(this, EditProfileActivity.class);
+        /*
+        Bundle profileDetails = new Bundle();
+        profileDetails.putString("pfp",userProfile.getProfilePic());
+        profileDetails.putString("displayName",userProfile.getDisplayName());
+        profileDetails.putString("username",userProfile.getUsername().trim());
+        profileDetails.putString("email",userProfile.getEmail().trim());
+        profileDetails.putString("password",userProfile.getPassword().trim());
+        intent.putExtras(profileDetails);
+         */
         startActivity(intent);
+        finish();
     }
 
     public Bundle getMoodEventBundle(MoodEvent post) {
@@ -343,7 +417,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     @Override
     public void onFragmentFinished() {
-        System.out.println("Fragment done!");
         userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
         // update adapter
         String event_id, event_month;
@@ -355,10 +428,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             databaseBestie.getMoodEventByMid(event_id, event_month, (updatedEvent, emot) -> {
                 adapter.remove(event);
 
+                event.setSetting(updatedEvent.getSetting());
                 event.setCollaborators(updatedEvent.getCollaborators().orElse(new ArrayList<>()));
                 event.setReason(updatedEvent.getReason().orElse(""));
                 event.setImage(updatedEvent.getImage());
                 event.setMood(emot);
+                event.setPrivacyOn(updatedEvent.isPrivacyOn());
                 adapter.insert(event,pos);
             });
         }
@@ -429,7 +504,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void applyFilters(List<String> selectedEmotionalStates, boolean filterByRecentWeek) {
-        List<MoodEvent> filteredEvents = new ArrayList<>(userProfile.getMoodEventBook().getMoodEventList());
+        List<MoodEvent> filteredEvents = new ArrayList<>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            filteredEvents.add(adapter.getItem(i));
+        }
 
         // Filter by emotional state (multiple selections)
         if (!selectedEmotionalStates.isEmpty()) {
@@ -454,12 +532,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void resetFilters() {
-        // Reload the feed without applying any filters
+        adapter.notifyDataSetChanged();
         adapter.clear();
         adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
-        adapter.notifyDataSetChanged();
+        userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
 
-        // Clear the search EditText
+
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.setText("");
 
@@ -485,4 +563,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         adapter.addAll(filteredEvents);
         adapter.notifyDataSetChanged();
     }
+
+
 }
