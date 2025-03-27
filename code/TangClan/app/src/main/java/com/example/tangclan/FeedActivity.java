@@ -276,7 +276,10 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void applyFilters(List<String> selectedEmotionalStates, boolean filterByRecentWeek) {
-        List<MoodEvent> filteredEvents = new ArrayList<>(feed.getFeedEvents());
+        List<MoodEvent> filteredEvents = new ArrayList<>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            filteredEvents.add(adapter.getItem(i));
+        }
 
         for (MoodEvent event : filteredEvents) {
             Log.d("FeedActivity", "Event: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
