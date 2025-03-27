@@ -43,15 +43,15 @@
             app:borderWidth="0dp"
             app:elevation="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/imgSearch"
+            app:layout_constraintEnd_toStartOf="@id/imgNotification"
             app:layout_constraintStart_toEndOf="@id/imgHome"
             app:tint="#FFFFFF" />
 
         <ImageView
-            android:id="@+id/imgSearch"
+            android:id="@+id/imgNotification"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/baseline_manage_search_24"
+            android:src="@drawable/baseline_notifications_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imgProfile"
             app:layout_constraintStart_toEndOf="@id/fabAdd"
@@ -64,7 +64,7 @@
             android:src="@drawable/baseline_person_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imgSearch"
+            app:layout_constraintStart_toEndOf="@id/imgNotification"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

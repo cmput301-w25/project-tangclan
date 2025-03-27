@@ -22,6 +22,7 @@ import java.util.Optional;
 
 
 
+
 /**
  * Represents a Mood Event
  * RELATED USER STORIES:
@@ -407,6 +408,7 @@ public class MoodEvent implements Serializable {
         moodEventFields.put("privateMood",this.privacyOn);
         moodEventFields.put("datePosted", dateString);
         moodEventFields.put("timePosted", timeString);
+
 
 
         return moodEventFields;

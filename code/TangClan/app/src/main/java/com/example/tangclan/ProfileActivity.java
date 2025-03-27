@@ -117,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
         // NAVBAR
         ImageView pinIcon = findViewById(R.id.imgMap);
         ImageView homeIcon = findViewById(R.id.imgHome);
-        ImageView searchIcon = findViewById(R.id.imgSearch);
+        ImageView searchIcon = findViewById(R.id.imgNotification);
         ImageView profileIcon = findViewById(R.id.imgProfile); // do nothing but change color to white
 
         homeIcon.setOnClickListener(new View.OnClickListener() {
