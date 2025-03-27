@@ -17,7 +17,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
     private String email;
     private String age;
 
-    private Blob profilePic;
+    private String profilePic;
 
     /**
      * Constructor for database purposes
@@ -39,17 +39,14 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      *      Password of the user
      * @param email
      * `    Email address of the user
-     * @param photo
-     *      Profile picture of the user
      */
-    public Profile(String displayName, String username, String password, String email, Blob photo){
+    public Profile(String displayName, String username, String password, String email){
         super();
         this.displayName = displayName;
         this.username=username;
         this.password=password;
         this.email=email;
         this.age= null;
-        this.profilePic = photo;
     }
 
     /**
@@ -64,17 +61,14 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      *      Email address linked to the account
      * @param age
      *      Age of the user
-     * @param photo
-     *      Profile picture of the user
      */
-    public Profile(String displayName, String username, String password, String email, String age, Blob photo){
+    public Profile(String displayName, String username, String password, String email, String age){
         super();
         this.displayName = displayName;
         this.username=username;
         this.password=password;
         this.email=email;
         this.age=age;
-        this.profilePic = photo;
     }
 
     /**
@@ -158,6 +152,13 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.age = age;
     }
 
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 
     /**
      * Getter for the user's MoodEventBook
