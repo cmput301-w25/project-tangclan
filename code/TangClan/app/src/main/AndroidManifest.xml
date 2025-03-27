@@ -35,8 +35,6 @@
 
             android:name=".ReviewDetailsActivity"
 
-            android:name=".CommentsActivity"
-
             android:exported="false" />
         <activity
             android:name=".FilterFragmentActivity"
