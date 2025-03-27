@@ -84,6 +84,9 @@
             android:name=".LoginOrSignupActivity"
             android:exported="false" />
         <activity
+            android:name=".FollowActivity"
+            android:exported="false"/>
+        <activity
             android:name=".WizActivity"
             android:exported="false" />
         <activity
