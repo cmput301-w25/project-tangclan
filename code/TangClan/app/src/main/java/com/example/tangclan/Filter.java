@@ -12,30 +12,17 @@ public class Filter {
                 .collect(Collectors.toList());
     }
 
-
-    public static List<MoodEvent> filterByEmotionalState(List<MoodEvent> events, String moodType) {
+    public static List<MoodEvent> filterByEmotionalState(List<MoodEvent> events, List<String> moodTypes) {
         return events.stream()
-                .filter(event -> event.getMoodEmotionalState().equalsIgnoreCase(moodType))
+                .filter(event -> moodTypes.stream()
+                        .anyMatch(moodType -> event.getMoodEmotionalState().equalsIgnoreCase(moodType)))
                 .collect(Collectors.toList());
     }
 
     public static List<MoodEvent> filterByKeywords(List<MoodEvent> events, List<String> keywords) {
         return events.stream()
-                .filter(event -> {
-                    // if (event.getSituation().isPresent()) {
-                    if (event.getReason() != null) {
-                        String explanation = event.getReason().get();
-
-                        return keywords.stream().anyMatch(keyword -> explanation.toLowerCase().contains(keyword.toLowerCase()));
-                    }
-
-                    return false;
-                    //String explanation = event.getSituation();
-                    //if (explanation != null) {
-                    //    return keywords.stream().anyMatch(keyword -> explanation.toLowerCase().contains(keyword.toLowerCase()));
-                    //}
-                    //return false;
-                })
+                .filter(event -> event.getReason().isPresent() &&
+                        keywords.stream().anyMatch(keyword -> event.getReason().get().toLowerCase().contains(keyword.toLowerCase())))
                 .collect(Collectors.toList());
     }
 
@@ -44,9 +31,4 @@ public class Filter {
                 .filter(MoodEvent::hasGeolocation)
                 .collect(Collectors.toList());
     }
-
-
 }
-
-//https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html
-

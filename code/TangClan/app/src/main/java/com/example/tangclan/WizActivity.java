@@ -3,7 +3,6 @@ package com.example.tangclan;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -35,10 +34,13 @@ public class WizActivity extends AppCompatActivity {
     public void navigateToNextFragment(int fragmentId) {
         switch (fragmentId) {
             case 1:
+                /*
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new AddTriggersFragment())
                         .addToBackStack(null)
                         .commit();
+
+                 */
                 break;
             case 2:
                 getSupportFragmentManager().beginTransaction()
@@ -68,7 +70,7 @@ public class WizActivity extends AppCompatActivity {
         // Optionally, save it to a database or a local cache
 
         // Pass the MoodEvent to ProfileActivity
-        Intent intent = new Intent(WizActivity.this, profileActivity.class);
+        Intent intent = new Intent(WizActivity.this, ProfileActivity.class);
 
         // Pass the MoodEvent as Serializable or Parcelable
         //intent.putExtra("moodEvent", moodEvent);

@@ -37,7 +37,7 @@ import java.util.List;
  *              TODO: longclick mechanism to be able to delete mood event
  *              TODO: remove from database
  */
-public class profileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
     TextView usernameText;
     TextView NameText;
     TextView FollowersText;
@@ -80,7 +80,7 @@ public class profileActivity extends AppCompatActivity {
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
         addEmotionButton.setOnClickListener(v -> {
             Log.d("profileActivity", "Add emotion button clicked");
-            Intent intent = new Intent(profileActivity.this, AddEmotionActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, AddEmotionActivity.class);
             startActivity(intent);
         });
 
@@ -91,7 +91,7 @@ public class profileActivity extends AppCompatActivity {
 
 
 
-                Intent intent = new Intent(profileActivity.this, editprofileActivity.class);
+                Intent intent = new Intent(ProfileActivity.this, editprofileActivity.class);
                 intent.putExtra("Key1",profile1);
                 startActivity(intent);
             }
@@ -106,7 +106,7 @@ public class profileActivity extends AppCompatActivity {
 
         // set up the adapter to connect to the ListView
         ProfileHistoryAdapter profileHistoryAdapter = new ProfileHistoryAdapter(this, profile1);
-        ListView moodHistoryList = findViewById(R.id.profile_array);
+        ListView moodHistoryList = findViewById(R.id.mood_history_list);
 
         // set the Adapter for the moodHistoryList
         moodHistoryList.setAdapter(profileHistoryAdapter);
@@ -117,13 +117,13 @@ public class profileActivity extends AppCompatActivity {
         // NAVBAR
         ImageView pinIcon = findViewById(R.id.imgMap);
         ImageView homeIcon = findViewById(R.id.imgHome);
-        ImageView searchIcon = findViewById(R.id.imgSearch);
+        ImageView searchIcon = findViewById(R.id.imgNotification);
         ImageView profileIcon = findViewById(R.id.imgProfile); // do nothing but change color to white
 
         homeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(profileActivity.this, FeedActivity.class));
+                startActivity(new Intent(ProfileActivity.this, FeedActivity.class));
                 finish();
             }
         });

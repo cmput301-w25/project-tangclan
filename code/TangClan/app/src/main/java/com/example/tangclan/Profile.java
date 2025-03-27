@@ -19,12 +19,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
 
     private Blob profilePic;
 
-    private MoodEventBook MoodEventBook;
-    private FollowingBook followingBook;
-    private String uid;
-
-
-
     /**
      * Constructor for database purposes
      */
@@ -56,7 +50,6 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.email=email;
         this.age= null;
         this.profilePic = photo;
-
     }
 
     /**
@@ -155,7 +148,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         return age;
     }
 
-    public void setAge(String age) {
+    public void setAge(String age) { //
         if (age == null) {
             return;
         }
@@ -171,49 +164,5 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
      * @return
      *      The MoodEventBook associated with this profile
      */
-
-    public MoodEventBook getMoodEventBook() {
-        if (MoodEventBook == null) {
-            MoodEventBook = new MoodEventBook(); // Initialize if null
-        }
-        return MoodEventBook;
-    }
-    public FollowingBook getFollowingBook() {
-        if (followingBook == null) {
-            followingBook = new FollowingBook(); // Initialize if null
-        }
-        return followingBook;
-    }
-
-    /**
-     * Setter for the user's FollowingBook
-     * @param followingBook The FollowingBook to assign to this profile
-     */
-    public void setFollowingBook(FollowingBook followingBook) {
-        this.followingBook = followingBook;
-    }
-
-    /**
-     * Setter for the user's MoodEventBook
-     * @param moodEventBook The MoodEventBook to assign to this profile
-     */
-    public void setMoodEventBook(MoodEventBook moodEventBook) {
-        this.MoodEventBook = moodEventBook;
-    }
-
-    // Make sure this exists in your Profile class
-    public String getUserId() {
-        // Return the Firebase user ID
-
-        return uid; // or however your user ID is stored
-    }
-    //methods for filter(already presented inside of new feed class with filter created?), methods are inherited
-
-
-    //TODO:
-    //On CRC cards "Manages Permissions for followers" Referring to this user story?: "As a participant, I want to grant another participant permission to follow my most recent moodevent
-    //Idea:
-
-
 
 }

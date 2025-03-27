@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class FollowingBook {
     private ArrayList<String> following;
     private ArrayList<String> followers;
-    //private ArrayList<Followers> followRequests;
+    private ArrayList<String> followRequests;
 
     /**
      * Constructor for the FollowingBook object
@@ -22,7 +22,7 @@ public class FollowingBook {
     public FollowingBook() {
         this.following = new ArrayList<>();
         this.followers = new ArrayList<>();
-        //this.followRequests = new ArrayList<>();
+        this.followRequests = new ArrayList<>();
     }
 
     // Handle follow requests
@@ -103,24 +103,31 @@ public class FollowingBook {
         if (following.isEmpty()) {
             // Create some dummy events from "followed" users
             MoodEvent event1 = new MoodEvent("happy");
+            event1.setMid("1000");
+            event1.setReason("i went to school today");
             event1.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
             event1.setPostTime("12:29:39.673202"); // Use "HH:mm:ss.SSSSSS" format
             event1.setCollaborators(new ArrayList<>(List.of("With friends")));
             uidToMoodEvent.put("user1", event1);
 
             MoodEvent event2 = new MoodEvent("sad");
+            event2.setMid("2000");
             event2.setPostDate("2025-03-17"); // Use "yyyy-MM-dd" format
+            event2.setReason("i didnt go to school today. i lost my 5% participation mark");
             event2.setPostTime("14:45:22.123456"); // Use "HH:mm:ss.SSSSSS" format
             event2.setCollaborators(new ArrayList<>(List.of("At home")));
             uidToMoodEvent.put("user2", event2);
 
             MoodEvent event3 = new MoodEvent("anxious");
+            event1.setMid("3000");
             event3.setPostDate("2025-03-18"); // Use "yyyy-MM-dd" format
+            event3.setReason("i am anxiously waiting for my 429 midterm marks. it was curved. maybe i got like a 30%");
             event3.setPostTime("18:30:15.987654"); // Use "HH:mm:ss.SSSSSS" format
             event3.setCollaborators(new ArrayList<>(List.of("Party time")));
             uidToMoodEvent.put("user3", event3);
 
             MoodEvent event4 = new MoodEvent("calm");
+            event1.setMid("4000");
             event4.setPostDate("2025-03-16"); // Use "yyyy-MM-dd" format
             event4.setPostTime("09:15:45.456789"); // Use "HH:mm:ss.SSSSSS" format
             event4.setCollaborators(new ArrayList<>(List.of("Reading")));
@@ -131,11 +138,30 @@ public class FollowingBook {
 
         // Real implementation for when following is set up
         for (String followingUid : following) {
-            db.getLatestMoodEvent(followingUid, latestEvent -> {
+            db.getLatestMoodEvent(followingUid, (latestEvent, emot) -> {
                 uidToMoodEvent.put(followingUid, latestEvent);
             });
         }
         return uidToMoodEvent;
+    }
+
+    // Accept a follow request
+    public void acceptFollowRequest(String uid) {
+        if (followRequests.contains(uid)) {
+            followRequests.remove(uid);
+            followers.add(uid);
+        } else {
+            throw new IllegalArgumentException("No follow request from this user!");
+        }
+    }
+
+    // Decline a follow request
+    public void declineFollowRequest(String uid) {
+        if (followRequests.contains(uid)) {
+            followRequests.remove(uid);
+        } else {
+            throw new IllegalArgumentException("No follow request from this user!");
+        }
     }
 
     // Filter mood events
@@ -185,6 +211,9 @@ public class FollowingBook {
 
     public void setFollowing(ArrayList<String> following) {
         this.following = following;
+    }
+    public ArrayList<String> getFollowRequests() {
+        return followRequests;
     }
 
     //private Profile getOwnerProfile() {

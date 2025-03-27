@@ -4,8 +4,11 @@ import static java.lang.Integer.parseInt;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Movie;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.firestore.*;
 
@@ -13,15 +16,18 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
  * Contains wrapper functions for method calls on an instance of FireBaseFirestore.
  * Contains Helper functions for querying existing data.
-=======
+ =======
 
-/**
+ /**
  * Database wrapper with functionality to query Mood, Followers, Users, and other information
  * pertaining to those objects
  * USER STORIES:
@@ -30,7 +36,7 @@ import java.util.Map;
  *      US 01.05.01
  *      US 01.06.01
  *      US 03.01.01
->>>>>>> Stashed changes
+ >>>>>>> Stashed changes
  */
 public class DatabaseBestie {
     private static final String TAG = "DatabaseBestie";
@@ -46,6 +52,9 @@ public class DatabaseBestie {
     private CollectionReference moodEventsRef;
     private CollectionReference followsRef;
 
+    private DocumentReference commentCounterRef;
+    private CollectionReference commentsRef;
+
     /**
      * This gets an instance of the database
      */
@@ -55,6 +64,8 @@ public class DatabaseBestie {
         moodEventCounterRef = db.collection("Counters").document("mood_event_counter");
         userCounterRef = db.collection("Counters").document("user_counter");
         followRelCounterRef = db.collection("Counters").document("follow_counter");
+        commentCounterRef = db.collection("Counters").document("comment_counter");
+        commentsRef = db.collection("comments");
 
         // collection references
         usersRef = db.collection("users");
@@ -297,6 +308,8 @@ public class DatabaseBestie {
     }
 
 
+
+
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
     /**
      * This adds a mood event details to the "moodEvents" collection
@@ -307,10 +320,10 @@ public class DatabaseBestie {
      */
     public void addMoodEvent(MoodEvent event, String month, String uid) {
         generateMid(mid -> {
-            event.setMid(mid);
+            event.setMid(String.valueOf(mid));
             Map<String, String> data = Map.of("postedBy", uid);
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
-                            .set(data);
+                    .set(data);
             moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
                     .set(event.prepFieldsForDatabase(), SetOptions.merge());
         });
@@ -325,13 +338,41 @@ public class DatabaseBestie {
      * @param month
      *      This is the month (ex. sep-2025) of when the to-be-updated mood event was initially added
      */
-     public void updateMoodEvent(String mid, MoodEvent event, String month) {
-         moodEventsRef.document(month).collection("events")
-                 .document(String.valueOf(mid))
-                 .set(event)
-                 .addOnSuccessListener(aVoid -> Log.d(TAG, "MoodEvent successfully updated!"))
-                 .addOnFailureListener(e -> Log.e(TAG, "Error updating MoodEvent", e));
-     }
+    public void updateMoodEvent(String mid, MoodEvent event, String month) {
+        moodEventsRef.document(month).collection("events").document(String.valueOf(mid))
+                .set(event)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "MoodEvent successfully updated!"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error updating MoodEvent", e));
+    }
+
+    public void updateMoodEventCollaborators(String mid, String month, ArrayList<String> newCollaborators) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("collaborators", newCollaborators)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Collaborators updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating collaborators", e));
+    }
+
+    public void updateMoodEventEmotionalState(String mid, String month, String newEmotion) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("emotionalState", newEmotion)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Emotion updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating emotion", e));
+    }
+
+    public void updateMoodEventReason(String mid, String month, String newReason) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("reason", newReason)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Reason updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating reason", e));
+    }
+
+    public void updateMoodEventPhoto(String mid, String month, String photo) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("image", photo)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Photo updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating photo", e));
+    }
+
 
     /**
      * This removes an existing mood event from the "moodEvents" collection
@@ -385,7 +426,6 @@ public class DatabaseBestie {
                             moodEvent.setImage(image);
 
 
-
                             events.add(moodEvent);
                         }
                         callback.onMoodEventsRetrieved(events);
@@ -405,7 +445,6 @@ public class DatabaseBestie {
      */
     public void getAllMoodEvents(String uid, MoodEventsCallback callback) {
         // query should search all collections with id 'events' regardless of month
-        Log.d("thisuid", uid);
         db.collectionGroup("events")
                 .whereEqualTo("postedBy", uid)
                 .get()
@@ -416,10 +455,12 @@ public class DatabaseBestie {
                             String midString = String.valueOf(document.get("mid")); // will never return null as mid is set when adding an event
                             int mid = parseInt(midString);
                             String emotionalState = document.getString("emotionalState");
+                            String setting = document.getString("setting");
                             String reason = document.getString("reason");
                             ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
+                            Boolean privateMood = document.getBoolean("privateMood");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
@@ -433,11 +474,16 @@ public class DatabaseBestie {
 
                             MoodEvent moodEvent = new MoodEvent(emotionalState);
 
+
+                            moodEvent.setMid(midString);
+                            moodEvent.setSetting(setting);
                             moodEvent.setCollaborators(collaborators);
                             moodEvent.setReason(reason);
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
+                            moodEvent.setPrivacyOn(privateMood != null && privateMood);
+
 
                             moodEvents.add(moodEvent);
                         }
@@ -485,9 +531,39 @@ public class DatabaseBestie {
                     break;
                 }
             }
-            callback.onMoodEventRetrieved(post);
+            // callback.onMoodEventRetrieved(post); temporary commented out
         });
     }
+
+    public void getMoodEventByMid(String mid, String month, MoodEventCallback callback) {
+        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String id = documentSnapshot.getId();
+                String date = documentSnapshot.getString("datePosted");
+                String time = documentSnapshot.getString("timePosted");
+                String emotion = documentSnapshot.getString("emotionalState");
+                ArrayList<String> collabs = (ArrayList<String>) documentSnapshot.get("collaborators");
+                String reason = documentSnapshot.getString("reason");
+                String img = documentSnapshot.getString("image");
+
+                MoodEvent moodEvent = new MoodEvent(emotion, collabs);
+                moodEvent.setMid(id);
+                moodEvent.setPostDate(date);
+                moodEvent.setPostTime(time);
+
+                if (img != null) {
+                    byte[] imgBytes = Base64.decode(img, Base64.DEFAULT);
+                    moodEvent.setImage(BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length));
+                }
+                if (reason != null) {
+                    moodEvent.setReason(reason);
+                }
+                callback.onMoodEventRetrieved(moodEvent, emotion);
+            }
+        });
+    }
+
 
     /**
      * Given the uid of a user, retrieve their latest MoodEvent
@@ -497,7 +573,7 @@ public class DatabaseBestie {
      *      callback to handle the retrieved MoodEvent
      */
     public void getLatestMoodEvent(String uid, MoodEventCallback callback) {
-         db.collectionGroup("events")
+        db.collectionGroup("events")
                 .whereEqualTo("postedBy", uid)
                 .orderBy("postDate")
                 .limit(1) // limit only to the latest post
@@ -528,11 +604,11 @@ public class DatabaseBestie {
                         moodEvent.setPostTime(postTime);
                         moodEvent.setImage(image);
 
-                        callback.onMoodEventRetrieved(moodEvent);
+                        callback.onMoodEventRetrieved(moodEvent, emotionalState);
                     }
                 });
 
-         // do nothing in the vacuous case
+        // do nothing in the vacuous case
     }
 
     /**
@@ -545,7 +621,7 @@ public class DatabaseBestie {
          * @param event
          *      The retrieved MoodEvent, or null if not found
          */
-        void onMoodEventRetrieved(MoodEvent event);
+        void onMoodEventRetrieved(MoodEvent event, String emotionStr);
     }
 
 
@@ -636,6 +712,93 @@ public class DatabaseBestie {
          * @param following List of user UIDs that the user follows.
          */
         void onFollowingRetrieved(ArrayList<String> following);
+    }
+
+    public void generateCid(IdCallback callback) {
+        generateUniqueId(commentCounterRef, "last_cid", callback);
+    }
+
+    // Add comment methods:
+    public interface CommentsCallback {
+        void onCommentsRetrieved(List<CommentWithUsername> comments);
+    }
+
+    public static class CommentWithUsername {
+        private Comment comment;
+        private String username;
+
+        public CommentWithUsername(Comment comment, String username) {
+            this.comment = comment;
+            this.username = username;
+        }
+
+        public Comment getComment() { return comment; }
+        public String getUsername() { return username; }
+    }
+
+    public void addComment(Comment comment, Runnable onSuccess) {
+        generateCid(cid -> {
+            comment.setCid(String.valueOf(cid));
+            // Convert to Map for Firestore
+            Map<String, Object> commentData = new HashMap<>();
+            commentData.put("cid", comment.getCid());
+            commentData.put("mid", comment.getMid());
+            commentData.put("uid", comment.getUid());
+            commentData.put("text", comment.getText());
+            commentData.put("timestamp", comment.getTimestamp());
+
+            commentsRef.document(String.valueOf(cid)).set(commentData)
+                    .addOnSuccessListener(aVoid -> onSuccess.run())
+                    .addOnFailureListener(e -> Log.e(TAG, "Error adding comment", e));
+        });
+    }
+
+    public void getCommentsForMoodEvent(String mid, CommentsCallback callback) {
+        commentsRef.whereEqualTo("mid", mid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Comment> comments = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Comment comment = new Comment();
+                            comment.setCid(document.getString("cid"));
+                            comment.setMid(document.getString("mid"));
+                            comment.setUid(document.getString("uid"));
+                            comment.setText(document.getString("text"));
+                            comment.setTimestamp(document.getDate("timestamp"));
+                            comments.add(comment);
+                        }
+
+                        fetchUsernamesForComments(comments, callback);
+                    } else {
+                        Log.e(TAG, "Error getting comments", task.getException());
+                        callback.onCommentsRetrieved(new ArrayList<>());
+                    }
+                });
+    }
+
+    private void fetchUsernamesForComments(List<Comment> comments, CommentsCallback callback) {
+        List<CommentWithUsername> result = new ArrayList<>();
+        AtomicInteger counter = new AtomicInteger(comments.size());
+
+        if (comments.isEmpty()) {
+            callback.onCommentsRetrieved(result);
+            return;
+        }
+
+        for (Comment comment : comments) {
+            getUser(comment.getUid(), user -> {
+                String username = user != null ? user.getUsername() : "Unknown";
+                result.add(new CommentWithUsername(comment, username));
+
+                if (counter.decrementAndGet() == 0) {
+                    // Sort by timestamp (newest first)
+                    Collections.sort(result, (a, b) ->
+                            b.getComment().getTimestamp().compareTo(a.getComment().getTimestamp()));
+                    callback.onCommentsRetrieved(result);
+                }
+            });
+        }
     }
 
 }
