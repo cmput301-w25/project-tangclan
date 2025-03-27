@@ -200,9 +200,15 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 adapter.notifyDataSetChanged();
             }
 
+
+
             // Adjust ListView height if needed
             //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
+
+            //params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+
             //params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
+
             //profileArrayListView.setLayoutParams(params);
 
             // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
@@ -231,17 +237,23 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                     .setMessage("This action cannot be undone.")
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
-                                        adapter.remove(post);
+
 
                                         // delete from mood event book and database
                                         databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
                                             userProfile.getMoodEventBook().deleteMoodEvent(event);
                                         });
 
-                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
-
                                         databaseBestie.deleteMoodEvent(post.getMid(), month);
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+
+
+
+                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
+
+                                        adapter.remove(post);
+
+
                                     })
                                     .setNegativeButton("No", null)
                                     .show();
@@ -266,16 +278,21 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             String image = bundle.getString("image");
             boolean privacy = bundle.getBoolean("privacy");
 
+
             // Create a new MoodEvent
-            MoodEvent newMoodEvent;
+
+
 
             try {
+                MoodEvent newMoodEvent;
                 // Create the mood event based on available data
                 if (selectedSituation != null && !selectedSituation.isEmpty()) {
                     newMoodEvent = new MoodEvent(selectedEmotion, selectedSituation);
                 } else {
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
+
+
 
                 // set setting
                 if (selectedSetting != null) {
@@ -305,10 +322,15 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 userProfile.post(newMoodEvent, databaseBestie);
 
                 // Save the updated profile to the database
-                saveProfileToDatabase();
+                //saveProfileToDatabase();
 
                 // Force refresh the ListView by recreating the adapter
-                setupProfileListView();
+                //setupProfileListView();
+
+                if (adapter != null) {
+                    adapter.add(newMoodEvent);
+                    adapter.notifyDataSetChanged();
+                }
 
                 // Show success message
                 Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
@@ -325,6 +347,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void saveProfileToDatabase() {
+
 
     }
 
@@ -481,7 +504,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void applyFilters(List<String> selectedEmotionalStates, boolean filterByRecentWeek) {
-        List<MoodEvent> filteredEvents = new ArrayList<>(userProfile.getMoodEventBook().getMoodEventList());
+        List<MoodEvent> filteredEvents = new ArrayList<>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            filteredEvents.add(adapter.getItem(i));
+        }
 
         // Filter by emotional state (multiple selections)
         if (!selectedEmotionalStates.isEmpty()) {
@@ -506,12 +532,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void resetFilters() {
-        // Reload the feed without applying any filters
+        adapter.notifyDataSetChanged();
         adapter.clear();
         adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
-        adapter.notifyDataSetChanged();
+        userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
 
-        // Clear the search EditText
+
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.setText("");
 
