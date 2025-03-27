@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -231,14 +232,16 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void processMoodEventData() {
-        // Retrieve the Bundle data passed from UploadPictureForMoodEventActivity
+        // Retrieve the Bundle data passed from ReviewDetailsActivity
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
-            String selectedEmotion = bundle.getString("selectedEmotion");
-            ArrayList<String> selectedSituation = bundle.getStringArrayList("selectedSituation");
+            String selectedEmotion = bundle.getString("emotion");
+            String selectedSetting = bundle.getString("setting");
+            ArrayList<String> selectedSituation = bundle.getStringArrayList("collaborators");
             String reason = bundle.getString("reason");
-            String imagePath = bundle.getString("imagePath");
+            String image = bundle.getString("image");
+            boolean privacy = bundle.getBoolean("privacy");
 
             // Create a new MoodEvent
             MoodEvent newMoodEvent;
@@ -251,19 +254,29 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
 
+                // set setting
+                if (selectedSetting != null) {
+                    newMoodEvent.setSetting(selectedSetting);
+                } else {
+                    newMoodEvent.setSetting("");
+                }
+
                 // Set reason if available
                 if (reason != null && !reason.isEmpty()) {
                     newMoodEvent.setReason(reason);
+                } else {
+                    newMoodEvent.setReason("");
                 }
 
                 // Set image if available
-                if (imagePath != null) {
-                    File imgFile = new File(imagePath);
-                    if (imgFile.exists()) {
-                        Bitmap bitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                        newMoodEvent.setImage(bitmap);
-                    }
+                if (image != null) {
+                    byte[] imgBytes = Base64.decode(image, Base64.DEFAULT);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imgBytes, 0, imgBytes.length);
+                    newMoodEvent.setImage(bitmap);
                 }
+
+                // Set Privacy setting
+                newMoodEvent.setPrivacyOn(privacy);
 
                 // Add the mood event to the user's mood event book
                 userProfile.post(newMoodEvent, databaseBestie);
@@ -348,7 +361,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     @Override
     public void onFragmentFinished() {
-        System.out.println("FRagment done!");
         userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
         // update adapter
         String event_id, event_month;

@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fragment_background"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -14,8 +15,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/inter_semibold"
             android:gravity="center"
-            android:text="moodly"
+            android:text="       moodly"
+            android:textAlignment="center"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -31,40 +35,44 @@
 
 
     <!-- Emoticons (just an example with a horizontal layout) -->
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-    <ImageView
-        android:layout_width="125dp"
-        android:layout_height="300dp"
-        android:contentDescription="Owl icon"
-        android:src="@drawable/ic_owl" />
+            <ImageView
+                android:layout_width="125dp"
+                android:layout_height="300dp"
+                android:contentDescription="Owl icon"
+                android:src="@drawable/ic_owl" />
 
-        <TextView
-            android:layout_width="367dp"
-            android:layout_height="46dp"
-            android:layout_marginTop="100dp"
-            android:paddingLeft="100dp"
-            android:text="How are you feeling today?"
-            android:textSize="18sp" />
-    </RelativeLayout>
-</LinearLayout>
+            <TextView
+                android:layout_width="363dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:fontFamily="@font/inter_medium"
+                android:paddingLeft="100dp"
+                android:text="Hey there, \nHow are you feeling?"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+        </RelativeLayout>
+    </LinearLayout>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginTop="16dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageButton
@@ -74,8 +82,9 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:contentDescription="Happy"
+                android:cropToPadding="true"
                 android:focusable="true"
-                android:padding="8dp"
+                android:padding="0dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_emotion_happy" />
 
@@ -87,7 +96,7 @@
                 android:clickable="true"
                 android:contentDescription="Calm"
                 android:focusable="true"
-                android:padding="8dp"
+                android:padding="0dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_emotion_calm" />
 
@@ -99,7 +108,7 @@
                 android:clickable="true"
                 android:contentDescription="Surprised"
                 android:focusable="true"
-                android:padding="8dp"
+                android:padding="0dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_emotion_surprised" />
 
@@ -111,7 +120,7 @@
                 android:clickable="true"
                 android:contentDescription="Disgusted"
                 android:focusable="true"
-                android:padding="8dp"
+                android:padding="0dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_emotion_disgusted" />
 
@@ -129,13 +138,13 @@
             android:id="@+id/emotionConfused"
             android:layout_width="90dp"
             android:layout_height="90dp"
+            android:layout_marginLeft="50dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="Confused"
             android:focusable="true"
-            android:padding="8dp"
+            android:padding="0dp"
             android:scaleType="fitCenter"
-            android:layout_marginLeft="50dp"
             android:src="@drawable/ic_emotion_confused" />
 
         <ImageButton
@@ -146,7 +155,7 @@
             android:clickable="true"
             android:contentDescription="Terrified"
             android:focusable="true"
-            android:padding="8dp"
+            android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_emotion_terrified" />
 
@@ -158,7 +167,7 @@
             android:clickable="true"
             android:contentDescription="Angry"
             android:focusable="true"
-            android:padding="8dp"
+            android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_emotion_angry" />
 
@@ -178,7 +187,7 @@
             android:clickable="true"
             android:contentDescription="Anxious"
             android:focusable="true"
-            android:padding="8dp"
+            android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_emotion_anxious" />
 
@@ -190,7 +199,7 @@
             android:clickable="true"
             android:contentDescription="Sad"
             android:focusable="true"
-            android:padding="8dp"
+            android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_emotion_sad" />
 
@@ -202,7 +211,7 @@
             android:clickable="true"
             android:contentDescription="Ashamed"
             android:focusable="true"
-            android:padding="8dp"
+            android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_emotion_ashamed" />
 
@@ -214,10 +223,9 @@
             android:clickable="true"
             android:contentDescription="No Idea"
             android:focusable="true"
-            android:padding="8dp"
+            android:padding="0dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_emotion_no_idea" />
-
 
 
     </LinearLayout>
@@ -230,16 +238,18 @@
 
         <Button
             android:id="@+id/btnCancelEmotion"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#49311E"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/black"
             android:text="Cancel" />
 
         <Button
             android:id="@+id/btnNextEmotion"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="#49311E"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/black"
             android:text="Next" />
     </LinearLayout>
 </LinearLayout>
