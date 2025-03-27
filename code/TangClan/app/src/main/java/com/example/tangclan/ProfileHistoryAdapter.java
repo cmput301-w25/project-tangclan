@@ -144,6 +144,8 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         Optional<String> reason = moodEvent.getReason();
         if (reason.isPresent() && !reason.get().isEmpty()) {
             reasonTextView.setText(reason.get());
+        } else {
+            reasonTextView.setText("");
         }
         // Set the post date and time
         dateTextView.setText(moodEvent.returnPostFormattedDate());
