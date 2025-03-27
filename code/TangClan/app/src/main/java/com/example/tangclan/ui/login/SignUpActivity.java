@@ -87,7 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
                     editUsername.setError("Enter username");
                     return;
                 }
-                if (!username.matches("^[a-z0-9_-]{4,}$")) {
+                if (!username.toLowerCase().matches("^[a-z0-9_-]{4,}$")) {
                     editUsername.setError("Username must be at least 4 characters long and can only contain:\n" +
                             " - alphanumeric characters\n" +
                             " - hyphens\n" +
@@ -126,14 +126,16 @@ public class SignUpActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<AuthResult> task) {
                                                 if (task.isSuccessful()) {
                                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                                    bestie.addUser(uid, new Profile(displayName, username, password, email, null));  // replace null with default image
-
+                                                    Profile newUser = new Profile(displayName, username, password, email);
+                                                    bestie.addUser(uid, newUser);  // replace null with default image
                                                     LoggedInUser loggedInUser = LoggedInUser.getInstance();
                                                     loggedInUser.setUid(uid);
                                                     loggedInUser.setEmail(email);
                                                     loggedInUser.setUsername(username);
                                                     loggedInUser.setPassword(password);
                                                     loggedInUser.setDisplayName(displayName);
+                                                    loggedInUser.setProfilePic(null);
+
 
                                                     Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
                                                             Toast.LENGTH_SHORT).show();
