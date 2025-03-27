@@ -86,16 +86,16 @@ public class NavBarHelper {
         if (addIcon != null) {
             addIcon.setImageResource(
                     currentActiveTab == TAB_ADD ?
-                            R.drawable.baseline_add_box_24 :
-                            R.drawable.outline_add_box_24
+                            R.drawable.outline_add_box_24 :
+                            R.drawable.baseline_add_box_24
             );
         }
 
         if (notifIcon != null) {
             notifIcon.setImageResource(
                     currentActiveTab == TAB_FOLLOW ?
-                            R.drawable.baseline_notifications_24 :
-                            R.drawable.outline_notifications_24
+                            R.drawable.outline_notifications_24 :
+                            R.drawable.baseline_notifications_24
 
             );
         }
