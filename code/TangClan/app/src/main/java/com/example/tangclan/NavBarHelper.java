@@ -18,6 +18,8 @@ public class NavBarHelper {
     private static int currentActiveTab = -1;
 
     private static final int TAB_FOLLOW=3;
+
+
     public static void setupNavBar(Activity activity) {
         // Find all navbar items
         ImageView homeIcon = activity.findViewById(R.id.imgHome);
@@ -91,7 +93,7 @@ public class NavBarHelper {
 
         if (notifIcon != null) {
             addIcon.setImageResource(
-                    currentActiveTab == TAB_ADD ?
+                    currentActiveTab == TAB_FOLLOW ?
                             R.drawable.baseline_notifications_24 :
                             R.drawable.outline_notifications_24
 
