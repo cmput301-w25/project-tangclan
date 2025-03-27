@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Holds additional data tied to a user
@@ -85,6 +86,20 @@ public class User {
 
     public void setMoodEventBook(MoodEventBook moodEventBook) {
         this.moodEventBook = moodEventBook;
+    }
+    public FollowingBook getFollowingBook() {
+        return followingBook;
+    }
+
+    public void setFollowingBook(FollowingBook followingBook) {
+        this.followingBook = followingBook;
+    }
+    public void addSampleFollowRequests() {
+        List<String> sampleFollowRequests = new ArrayList<>();
+        sampleFollowRequests.add("userA");  // Example follow request from userA
+        sampleFollowRequests.add("userB");  // Example follow request from userB
+        sampleFollowRequests.add("userC");  // Example follow request from userC
+        followingBook.setFollowRequests(sampleFollowRequests); // Add sample follow requests to followingBook
     }
 
     /**

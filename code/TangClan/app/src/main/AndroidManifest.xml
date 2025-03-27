@@ -75,6 +75,9 @@
             android:name=".WizActivity"
             android:exported="false"/>
         <activity
+            android:name=".FollowActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 

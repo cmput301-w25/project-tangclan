@@ -209,6 +209,11 @@ public class FollowingBook {
         return followRequests;
     }
 
+    public void setFollowRequests(List<String> followRequests) {
+        this.followRequests = (ArrayList<String>) followRequests;
+    }
+
+
     //private Profile getOwnerProfile() {
     //    // Implement logic to return the profile owning this FollowingBook
     //    return null;

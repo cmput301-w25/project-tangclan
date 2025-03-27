@@ -22,9 +22,20 @@ public class FollowActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
+        followingBook = new FollowingBook();  // Initialize the FollowingBook
+
+        // Add some sample follow requests for testing
+        addSampleFollowRequests();
 
         List<String> followRequests = followingBook.getFollowRequests();
         adapter = new FollowRequestAdapter(followRequests, followingBook);
         recyclerView.setAdapter(adapter);
     }
+    private void addSampleFollowRequests() {
+        // Add some dummy users as follow requests
+        followingBook.getFollowRequests().add("user1");
+        followingBook.getFollowRequests().add("user2");
+        followingBook.getFollowRequests().add("user3");
+    }
+
 }
