@@ -92,7 +92,7 @@ public class NavBarHelper {
         }
 
         if (notifIcon != null) {
-            addIcon.setImageResource(
+            notifIcon.setImageResource(
                     currentActiveTab == TAB_FOLLOW ?
                             R.drawable.baseline_notifications_24 :
                             R.drawable.outline_notifications_24
