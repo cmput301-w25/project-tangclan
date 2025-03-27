@@ -172,20 +172,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private void setupProfileListView() {
         if (userProfile != null && userProfile.getMoodEventBook() != null) {
             // Create a custom adapter using ProfileHistoryAdapter which has all the proper formatting
-            //adapter = new ProfileHistoryAdapter(this, userProfile);
+            adapter = new ProfileHistoryAdapter(this, userProfile);
 
             // Set the adapter on the ListView
-            //profileArrayListView.setAdapter(adapter);
+            profileArrayListView.setAdapter(adapter);
 
-            if (adapter == null) {
-                adapter = new ProfileHistoryAdapter(this, userProfile);
-                profileArrayListView.setAdapter(adapter);
-            } else {
-                // Otherwise, just update the existing adapter
-                adapter.clear();
-                adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
-                adapter.notifyDataSetChanged();
-            }
+
 
             // Adjust ListView height if needed
             //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
@@ -218,12 +210,14 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                     .setMessage("This action cannot be undone.")
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
+                                        userProfile.getMoodEventBook().deleteMoodEvent(post);
                                         adapter.remove(post);
+                                        databaseBestie.deleteMoodEvent(post.getMid(), month);
 
                                         // delete from mood event book and database
-                                        databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
+                                        /*databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
                                             userProfile.getMoodEventBook().deleteMoodEvent(event);
-                                        });
+                                        });*/
 
                                         adapter.notifyDataSetChanged(); // Notify adapter of changes
 
@@ -253,8 +247,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             String image = bundle.getString("image");
             boolean privacy = bundle.getBoolean("privacy");
 
+
             // Create a new MoodEvent
             MoodEvent newMoodEvent;
+
 
             try {
                 // Create the mood event based on available data
@@ -263,6 +259,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 } else {
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
+
+
 
                 // set setting
                 if (selectedSetting != null) {
@@ -485,11 +483,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void resetFilters() {
+        userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
         adapter.clear();
         adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
         adapter.notifyDataSetChanged();
 
-        // Clear the search EditText
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.setText("");
 
