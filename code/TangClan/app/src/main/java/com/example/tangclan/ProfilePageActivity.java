@@ -178,9 +178,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             profileArrayListView.setAdapter(adapter);
 
             // Adjust ListView height if needed
-            ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT; // Let it expand as needed
-            profileArrayListView.setLayoutParams(params);
+            //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
+            //params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            //profileArrayListView.setLayoutParams(params);
 
             // DELETE / EDIT / CANCEL operations on LongPress for Mood Events
             profileArrayListView.setOnItemLongClickListener((parent, view, position, id) -> {
@@ -302,6 +302,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void saveProfileToDatabase() {
+
 
     }
 
@@ -446,7 +447,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void applyFilters(List<String> selectedEmotionalStates, boolean filterByRecentWeek) {
-        List<MoodEvent> filteredEvents = new ArrayList<>(userProfile.getMoodEventBook().getMoodEventList());
+        List<MoodEvent> filteredEvents = new ArrayList<>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            filteredEvents.add(adapter.getItem(i));
+        }
 
         // Filter by emotional state (multiple selections)
         if (!selectedEmotionalStates.isEmpty()) {
@@ -471,7 +475,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void resetFilters() {
-        // Reload the feed without applying any filters
         adapter.clear();
         adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
         adapter.notifyDataSetChanged();
