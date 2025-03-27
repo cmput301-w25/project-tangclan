@@ -455,10 +455,12 @@ public class DatabaseBestie {
                             String midString = String.valueOf(document.get("mid")); // will never return null as mid is set when adding an event
                             int mid = parseInt(midString);
                             String emotionalState = document.getString("emotionalState");
+                            String setting = document.getString("setting");
                             String reason = document.getString("reason");
                             ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
+                            Boolean privateMood = document.getBoolean("privateMood");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
@@ -474,11 +476,13 @@ public class DatabaseBestie {
 
 
                             moodEvent.setMid(midString);
+                            moodEvent.setSetting(setting);
                             moodEvent.setCollaborators(collaborators);
                             moodEvent.setReason(reason);
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
+                            moodEvent.setPrivacyOn(privateMood != null && privateMood);
 
 
                             moodEvents.add(moodEvent);

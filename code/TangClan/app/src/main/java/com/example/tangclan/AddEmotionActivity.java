@@ -2,7 +2,6 @@ package com.example.tangclan;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Button;
 import android.widget.Toast;
@@ -14,6 +13,7 @@ public class AddEmotionActivity extends AppCompatActivity {
 
     private String selectedEmotion = null;
     private ImageButton selectedButton = null;
+    private Bundle savedDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,23 @@ public class AddEmotionActivity extends AppCompatActivity {
                 findViewById(R.id.emotionSad),
                 findViewById(R.id.emotionAnxious)
         };
+
+        savedDetails = getIntent().getExtras();
+        if (savedDetails != null) {
+            // load saved details
+            String savedEmotion = savedDetails.getString("emotion");
+            selectEmotion(savedEmotion, emotionButtons[getButtonIndex(savedEmotion)]);  // preselect saved emotion
+        } else {
+            // make new bundle
+            savedDetails = new Bundle();
+            savedDetails.putString("emotion", null);
+            savedDetails.putString("setting", null);
+            savedDetails.putStringArrayList("collaborators", null);
+            savedDetails.putString("reason", null);
+            savedDetails.putString("image", null);
+            savedDetails.putString("location", null);
+            savedDetails.putBoolean("privacy", false);
+        }
 
         // Emotion labels corresponding to the buttons
         String[] emotionNames = {
@@ -60,18 +77,14 @@ public class AddEmotionActivity extends AppCompatActivity {
                 return;
             }
 
-            // Create a bundle to carry the selected emotion
-            Bundle bundle = new Bundle();
-            bundle.putString("selectedEmotion", selectedEmotion);  // Add selectedEmotion to the bundle
-
             // Create an intent to start the next activity
             Intent intent = new Intent(AddEmotionActivity.this, AddSocialSituationActivity.class);
-
             // Attach the bundle to the intent
-            intent.putExtras(bundle);
+            intent.putExtras(savedDetails);
 
             // Start the activity
             startActivity(intent);  // Start AddSocialSituationActivity
+            finish();
         });
 
         // Set up the close button (ImageView) to navigate to FeedActivity
@@ -94,6 +107,36 @@ public class AddEmotionActivity extends AppCompatActivity {
         button.setBackgroundResource(R.drawable.selected_button_background); // Use a custom background to highlight
 
         selectedEmotion = emotion;
+        savedDetails.putString("emotion", selectedEmotion); // update bundle
         selectedButton = button;  // Keep track of the selected button
+    }
+
+    private int getButtonIndex(String emotion) {
+        emotion = emotion.toLowerCase().trim();
+        switch (emotion) {
+            case "happy":
+                return 0;
+            case "calm":
+                return 1;
+            case "surprise":
+                return 2;
+            case "disgusted":
+                return 3;
+            case "angry":
+                return 4;
+            case "confused":
+                return 5;
+            case "terrified":
+                return 6;
+            case "no idea":
+                return 7;
+            case "ashamed":
+                return 8;
+            case "sad":
+                return 9;
+            case "anxious":
+                return 10;
+        }
+        return -1;
     }
 }

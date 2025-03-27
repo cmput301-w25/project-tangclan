@@ -32,7 +32,11 @@
         android:theme="@style/Theme.TangClan"
         tools:targetApi="31">
         <activity
+
+            android:name=".ReviewDetailsActivity"
+
             android:name=".CommentsActivity"
+
             android:exported="false" />
         <activity
             android:name=".FilterFragmentActivity"

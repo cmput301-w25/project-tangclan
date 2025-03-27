@@ -1,8 +1,9 @@
 <!-- fragment_add_environment.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/fragment_background"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <!-- Top bar -->
@@ -12,49 +13,51 @@
         android:gravity="center_vertical">
 
 
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="moodly"
-            android:textStyle="bold"
-            android:textSize="20sp"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter_medium"
             android:gravity="center"
-            android:layout_weight="1" />
+            android:text="        moodly"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageView
+            android:id="@+id/closeIcon"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/baseline_cancel_24"
             android:contentDescription="Close"
-            android:id="@+id/closeIcon" />
+            android:src="@drawable/baseline_cancel_24" />
     </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="125dp"
-            android:layout_height="300dp"
-            android:src="@drawable/ic_owl"
-            android:contentDescription="Owl icon" />
+            <ImageView
+                android:layout_width="125dp"
+                android:layout_height="300dp"
+                android:contentDescription="Owl icon"
+                android:src="@drawable/ic_owl" />
 
-        <TextView
-            android:layout_width="367dp"
-            android:layout_height="46dp"
-            android:layout_marginTop="100dp"
-            android:paddingLeft="100dp"
-            android:text="Where are you feeling like this?"
-            android:textSize="18sp"
-             />
+            <TextView
+                android:layout_width="363dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:fontFamily="@font/inter_medium"
+                android:paddingLeft="100dp"
+                android:text="Where are you feeling like this?"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
 
         </RelativeLayout>
     </LinearLayout>
@@ -67,33 +70,68 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Add Social Situation"
-        android:layout_marginTop="16dp" />
+        android:textColor="@color/black"
+        android:textSize="18sp" />
 
-    <EditText
-        android:id="@+id/editTextSituation"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="e.g., at home, with friends"
-        android:layout_marginTop="8dp" />
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+        <AutoCompleteTextView
+            android:id="@+id/editTextSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:inputType="none"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Who were you with?"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/editTextSituation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Bottom row (Back, Save) -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:gravity="center|start">
+        android:gravity="center">
 
         <Button
             android:id="@+id/btnBackEnvironment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/black"
             android:text="Back" />
 
         <Button
             android:id="@+id/btnSaveEnvironment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/black"
             android:text="Save" />
     </LinearLayout>
 </LinearLayout>
