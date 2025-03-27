@@ -210,19 +210,23 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                     .setMessage("This action cannot be undone.")
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
-                                        userProfile.getMoodEventBook().deleteMoodEvent(post);
-                                        adapter.remove(post);
-                                        databaseBestie.deleteMoodEvent(post.getMid(), month);
+
 
                                         // delete from mood event book and database
-                                        /*databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
+                                        databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
                                             userProfile.getMoodEventBook().deleteMoodEvent(event);
-                                        });*/
-
-                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
+                                        });
 
                                         databaseBestie.deleteMoodEvent(post.getMid(), month);
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+
+
+
+                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
+
+                                        adapter.remove(post);
+
+
                                     })
                                     .setNegativeButton("No", null)
                                     .show();
@@ -249,10 +253,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
 
             // Create a new MoodEvent
-            MoodEvent newMoodEvent;
+
 
 
             try {
+                MoodEvent newMoodEvent;
                 // Create the mood event based on available data
                 if (selectedSituation != null && !selectedSituation.isEmpty()) {
                     newMoodEvent = new MoodEvent(selectedEmotion, selectedSituation);
@@ -290,10 +295,15 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 userProfile.post(newMoodEvent, databaseBestie);
 
                 // Save the updated profile to the database
-                saveProfileToDatabase();
+                //saveProfileToDatabase();
 
                 // Force refresh the ListView by recreating the adapter
-                setupProfileListView();
+                //setupProfileListView();
+
+                if (adapter != null) {
+                    adapter.add(newMoodEvent);
+                    adapter.notifyDataSetChanged();
+                }
 
                 // Show success message
                 Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
