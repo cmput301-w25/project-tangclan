@@ -43,9 +43,22 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> cameraLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null && data.getExtras() != null) {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        if (bitmap != null) {
+                            selectedImage = bitmap;
+                            imageView.setImageBitmap(selectedImage);
+                            return;
+                        }
+                    }
+
+
                     imageUri = imageHelper.getImageUri();
-                    imageView.setImageURI(imageUri);
-                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                    if (imageUri != null) {
+                        imageView.setImageURI(imageUri);
+                        selectedImage = imageHelper.uriToBitmap(imageUri);
+                    }
                 }
             });
 
@@ -60,7 +73,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             });
 
 
-    private String imagePath = null; // Optional image path (null if not uploaded)
+    private String imagePath = null; 
 
 
     @Override
