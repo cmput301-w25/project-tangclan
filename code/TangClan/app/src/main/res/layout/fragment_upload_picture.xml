@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
 
     android:background="@color/fragment_background"
+    android:elevation="2dp"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -90,41 +91,17 @@
         android:textAlignment="viewEnd" />
 
 
-    <Button
-        android:id="@+id/buttonSaveText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/black"
-        android:text="Save" />
-
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="299dp"
         android:layout_height="302dp"
 
         android:layout_marginLeft="40dp"
+        android:layout_marginTop="24dp"
         android:background="@android:color/darker_gray"
+        android:elevation="4dp"
         android:scaleType="centerCrop" />
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_weight="0"
-            android:backgroundTint="@color/black"
-            android:text="Save" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
