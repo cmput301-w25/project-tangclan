@@ -431,6 +431,34 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating photo", e));
     }
 
+    public void updateLocation(String mid, String month, boolean location, Double lat, Double lon, String name) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("location", location)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Location tracking bool updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating location tracking bool", e));
+        if (location) {
+            event.update("latitude", lat)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Latitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating latitude", e));
+            event.update("longitude", lon)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Longitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating longitude", e));
+            event.update("locationName", name)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Location name updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating location name", e));
+        } else {
+            event.update("latitude", null)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Latitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating latitude", e));
+            event.update("longitude", null)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Longitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating longitude", e));
+            event.update("locationName", null)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Location name updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating location name", e));
+        }
+    }
+
 
     /**
      * This removes an existing mood event from the "moodEvents" collection
@@ -467,6 +495,10 @@ public class DatabaseBestie {
                             ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
+                            Boolean location = document.getBoolean("location");
+                            Double lat = document.getDouble("latitude");
+                            Double lon = document.getDouble("longitude");
+                            String locationName = document.getString("locationName");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
@@ -482,6 +514,15 @@ public class DatabaseBestie {
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
+
+                            if (location) {
+                                moodEvent.setGeolocation(location);
+                                moodEvent.setLatitude(lat);
+                                moodEvent.setLongitude(lon);
+                                moodEvent.setLocationName(locationName);
+                            } else if (!location) {
+                                moodEvent.setGeolocation(location);
+                            }
 
 
                             events.add(moodEvent);
@@ -519,6 +560,10 @@ public class DatabaseBestie {
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
                             Boolean privateMood = document.getBoolean("privateMood");
+                            Boolean location = document.getBoolean("location");
+                            Double lat = document.getDouble("latitude");
+                            Double lon = document.getDouble("longitude");
+                            String locationName = document.getString("locationName");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
@@ -541,6 +586,15 @@ public class DatabaseBestie {
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
                             moodEvent.setPrivacyOn(privateMood != null && privateMood);
+
+                            if (location) {
+                                moodEvent.setGeolocation(location);
+                                moodEvent.setLatitude(lat);
+                                moodEvent.setLongitude(lon);
+                                moodEvent.setLocationName(locationName);
+                            } else if (!location) {
+                                moodEvent.setGeolocation(location);
+                            }
 
 
                             moodEvents.add(moodEvent);
@@ -604,6 +658,10 @@ public class DatabaseBestie {
                 ArrayList<String> collabs = (ArrayList<String>) documentSnapshot.get("collaborators");
                 String reason = documentSnapshot.getString("reason");
                 String img = documentSnapshot.getString("image");
+                Boolean location = documentSnapshot.getBoolean("location");
+                Double lat = documentSnapshot.getDouble("latitude");
+                Double lon = documentSnapshot.getDouble("longitude");
+                String locationName = documentSnapshot.getString("locationName");
 
                 MoodEvent moodEvent = new MoodEvent(emotion, collabs);
                 moodEvent.setMid(id);
@@ -616,6 +674,15 @@ public class DatabaseBestie {
                 }
                 if (reason != null) {
                     moodEvent.setReason(reason);
+                }
+
+                if (location) {
+                    moodEvent.setGeolocation(location);
+                    moodEvent.setLatitude(lat);
+                    moodEvent.setLongitude(lon);
+                    moodEvent.setLocationName(locationName);
+                } else if (!location) {
+                    moodEvent.setGeolocation(location);
                 }
                 callback.onMoodEventRetrieved(moodEvent, emotion);
             }
@@ -664,6 +731,10 @@ public class DatabaseBestie {
                         ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                         String postDate = document.getString("datePosted");
                         String postTime = document.getString("timePosted");
+                        Boolean location = document.getBoolean("location");
+                        Double lat = document.getDouble("latitude");
+                        Double lon = document.getDouble("longitude");
+                        String locationName = document.getString("locationName");
 
                         // mechanism to revert a string back into the bitmap
                         String imageString = document.getString("image");
@@ -679,6 +750,15 @@ public class DatabaseBestie {
                         moodEvent.setPostDate(postDate);
                         moodEvent.setPostTime(postTime);
                         moodEvent.setImage(image);
+
+                        if (location) {
+                            moodEvent.setGeolocation(location);
+                            moodEvent.setLatitude(lat);
+                            moodEvent.setLongitude(lon);
+                            moodEvent.setLocationName(locationName);
+                        } else if (!location) {
+                            moodEvent.setGeolocation(location);
+                        }
 
                         callback.onMoodEventRetrieved(moodEvent, emotionalState);
                     }
