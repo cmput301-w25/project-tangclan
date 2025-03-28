@@ -124,6 +124,7 @@ public class AddLocationActivity extends AppCompatActivity {
             if (!query.isEmpty()) {
                 suggestionsList.setVisibility(View.GONE); // Hide suggestions when search is clicked
                 searchLocation(query);
+                nextButton.setVisibility(View.VISIBLE);
             }
         });
 
