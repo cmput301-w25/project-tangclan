@@ -44,6 +44,8 @@ public class MoodEvent implements Serializable {
 
 
     private boolean privacyOn = false;
+    private boolean locationOn = false;
+    private String locationName = null;
 
     private ArrayList<String> commentIds = new ArrayList<>();
 
@@ -321,15 +323,42 @@ public class MoodEvent implements Serializable {
      * @return A boolean value indicating whether the MoodEvent has a geolocation
      */
     public boolean hasGeolocation() {
-        return (this.latitude != null && this.longitude != null);
+        return locationOn;
     }
 
+    public void setGeolocation(boolean locationOn) { this.locationOn = locationOn; }
+
     public Double getLatitude() {
-        return this.latitude;
+        if (locationOn) {
+            return this.latitude;
+        }
+        return null;
     }
 
     public Double getLongitude() {
-        return this.longitude;
+        if (locationOn) {
+            return this.longitude;
+        }
+        return null;
+    }
+
+    public String getLocationName() {
+        if (locationOn) {
+            return this.locationName;
+        }
+        return null;
+    }
+
+    public void setLatitude(double lat) {
+        this.latitude = lat;
+    }
+
+    public void setLongitude(double lon) {
+        this.longitude = lon;
+    }
+
+    public void setLocationName(String name) {
+        this.locationName = name;
     }
 
     public boolean isPrivacyOn() {
@@ -414,6 +443,17 @@ public class MoodEvent implements Serializable {
         moodEventFields.put("privateMood",this.privacyOn);
         moodEventFields.put("datePosted", dateString);
         moodEventFields.put("timePosted", timeString);
+        moodEventFields.put("location", this.locationOn);
+
+        if (locationOn) {
+            moodEventFields.put("latitude", this.latitude);
+            moodEventFields.put("longitude", this.longitude);
+            moodEventFields.put("locationName", this.locationName);
+        } else {
+            moodEventFields.put("latitude", null);
+            moodEventFields.put("longitude", null);
+            moodEventFields.put("locationName", null);
+        }
 
 
 
