@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -19,11 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import java.io.Serializable;
-import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Activity class for the profile view with mood history
@@ -91,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-                Intent intent = new Intent(ProfileActivity.this, editprofileActivity.class);
+                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 intent.putExtra("Key1",profile1);
                 startActivity(intent);
             }
@@ -117,7 +111,7 @@ public class ProfileActivity extends AppCompatActivity {
         // NAVBAR
         ImageView pinIcon = findViewById(R.id.imgMap);
         ImageView homeIcon = findViewById(R.id.imgHome);
-        ImageView searchIcon = findViewById(R.id.imgSearch);
+        ImageView searchIcon = findViewById(R.id.imgNotification);
         ImageView profileIcon = findViewById(R.id.imgProfile); // do nothing but change color to white
 
         homeIcon.setOnClickListener(new View.OnClickListener() {

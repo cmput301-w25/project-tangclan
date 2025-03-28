@@ -62,7 +62,7 @@ public class SignUpActivityTest {
     public void invalidFieldsShouldShowErrorWhenSigningUp() {
         // add to database
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("users").document().set(new Profile("JohnBow", "John1", "password1#", "John1@gmail.com", "20", null));
+        db.collection("users").document().set(new Profile("JohnBow", "John1", "password1#", "John1@gmail.com", "20"));
 
         // enter new user data
         onView(withId(R.id.full_name)).perform(ViewActions.typeText("JohnDoe"));

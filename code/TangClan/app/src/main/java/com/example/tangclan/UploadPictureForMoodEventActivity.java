@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,6 +31,8 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
     private String selectedEmotion;
 
+    private String savedReason;
+    private String savedImg;
     private ArrayList<String> selectedSituation;
     private ImageView imageView;
     private ImageHelper imageHelper;
@@ -66,13 +69,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.fragment_upload_picture);
 
-        // Retrieve passed data from AddSocialSituationActivity using the Bundle
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            selectedEmotion = extras.getString("selectedEmotion");
-            selectedSituation = extras.getStringArrayList("selectedSituation");
-        }
-
         // Initialize UI components
         imageView = findViewById(R.id.imageView);
         Button buttonSelectImage = findViewById(R.id.buttonSelectImage);
@@ -87,10 +83,22 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         Button btnNext = findViewById(R.id.buttonSaveText);
         TextInputEditText editTextReason = findViewById(R.id.text203).findViewById(R.id.reason);
 
-
         // Initialize ImageHelper
         imageHelper = new ImageHelper(this, cameraLauncher, galleryLauncher);
 
+        // Retrieve passed data from AddSocialSituationActivity using the Bundle
+        Bundle savedDetails = getIntent().getExtras();
+        if (savedDetails != null) {
+            savedReason = savedDetails.getString("reason");
+            savedImg = savedDetails.getString("image");
+            // load saved details
+            if (savedReason != null) {
+                reason.setText(savedReason);
+            }
+            if (savedImg != null){
+                imageView.setImageBitmap(imageHelper.base64ToBitmap(savedImg));
+            }
+        }
         // Set up image selection
         buttonSelectImage.setOnClickListener(v -> imageHelper.showImagePickerDialog());
 
@@ -99,6 +107,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             if (imageUri != null) {
                 // Using the static method from ImageValidator
                 if (ImageValidator.isImageSizeValid(this, imageUri)) {
+                    System.out.println("image should be valid");
                     selectedImage = imageHelper.uriToBitmap(imageUri);
                     Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -157,7 +166,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
 
             // Add reason if valid
-            if (!TextUtils.isEmpty(userInput) && imageHelper.textValidation(userInput)) {
+            if (imageHelper.textValidation(userInput)) {
                 bundle.putString("reason", userInput);
             }
 
@@ -167,16 +176,16 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
                 if (imagePath != null) {
                     bundle.putString("imagePath", imagePath);
                 }
+                byte[] imgBytes = ImageValidator.compressBitmapToSize(selectedImage);
+                savedDetails.putString("image", Base64.encodeToString(imgBytes, Base64.DEFAULT));
             }
+            savedDetails.putString("reason", TextUtils.isEmpty(userInput) ? null : userInput);
 
             // Create an intent to start the next activity
-            Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ProfilePageActivity.class);
-            intent.putExtras(bundle);
-
-            // Start the activity
-            startActivity(intent);  // Start ProfilePageActivity
-            finish();  // Close the current activity
-
+            Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ReviewDetailsActivity.class);
+            intent.putExtras(savedDetails);
+            startActivity(intent);
+            finish();
         });
 
         // Close button action

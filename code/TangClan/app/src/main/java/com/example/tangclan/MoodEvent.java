@@ -16,8 +16,10 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 
 
 
@@ -34,10 +36,18 @@ public class MoodEvent implements Serializable {
     private LocalDate postDate;
     private Mood mood;
     private String reason = null;
+    private String setting = null;
     private ArrayList<String> situation = null;
     private Bitmap image = null;
     private Double latitude = null;
     private Double longitude = null;
+
+
+    private boolean privacyOn = false;
+
+    private ArrayList<String> commentIds = new ArrayList<>();
+
+
 
     /**
      * Default constructor (required for Firestore)
@@ -244,6 +254,14 @@ public class MoodEvent implements Serializable {
     }
 
     /**
+     * Setter for Mood event setting (Alone, with one other person, etc..)
+     * @param setting the setting
+     */
+    public void setSetting(String setting) {
+        this.setting = setting;
+    }
+
+    /**
      * Setter for the Mood event collaborators
      *
      * @param collaborators The list of collaborators for the situation attribute to be set to
@@ -269,7 +287,7 @@ public class MoodEvent implements Serializable {
      */
     public void setReason(String reason) {
         // raise an exception if the reason exceeds the length limit
-        if (reason.length() > 200) {
+        if (reason != null && reason.length() > 200) {
             throw new IllegalArgumentException();
         }
 
@@ -312,6 +330,13 @@ public class MoodEvent implements Serializable {
         return this.longitude;
     }
 
+    public boolean isPrivacyOn() {
+        return privacyOn;
+    }
+
+    public void setPrivacyOn(boolean privacyOn) {
+        this.privacyOn = privacyOn;
+    }
 
     // helpers
 
@@ -369,9 +394,7 @@ public class MoodEvent implements Serializable {
         // convert the bitmap into a storeable string
         String imageString = null;
         if (this.image != null) {
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            this.image.compress(Bitmap.CompressFormat.PNG, 100, output);
-            byte[] bytes = output.toByteArray();
+            byte[] bytes = ImageValidator.compressBitmapToSize(this.image);
             imageString = Base64.encodeToString(bytes, Base64.DEFAULT);
         }
 
@@ -383,12 +406,31 @@ public class MoodEvent implements Serializable {
         moodEventFields.put("mid", this.mid);
         moodEventFields.put("emotionalState", this.mood.getEmotion());
         moodEventFields.put("collaborators", this.situation);
+        moodEventFields.put("setting",this.setting);
         moodEventFields.put("reason", this.reason);
         moodEventFields.put("image", imageString);
+        moodEventFields.put("privateMood",this.privacyOn);
         moodEventFields.put("datePosted", dateString);
         moodEventFields.put("timePosted", timeString);
 
 
+
         return moodEventFields;
+    }
+
+    public ArrayList<String> getCommentIds() {
+        return commentIds;
+    }
+
+    public void setCommentIds(ArrayList<String> commentIds) {
+        this.commentIds = commentIds;
+    }
+
+    public void addCommentId(String commentId) {
+        this.commentIds.add(commentId);
+    }
+
+    public String getSetting() {
+        return setting;
     }
 }

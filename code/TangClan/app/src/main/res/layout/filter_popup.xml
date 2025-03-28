@@ -1,0 +1,46 @@
+<!-- res/layout/filter_popup.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <!-- Select All CheckBox -->
+    <CheckBox
+        android:id="@+id/select_all_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select All" />
+
+    <!-- List of Emotional States -->
+    <ListView
+        android:id="@+id/emotional_states_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:choiceMode="multipleChoice" />
+
+    <CheckBox
+        android:id="@+id/filter_recent_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="In the last week" />
+
+    <!-- Apply Filter Button -->
+    <Button
+        android:id="@+id/apply_filter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apply Filter"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/white" />
+    <Button
+        android:id="@+id/button_reset_filters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset Filters"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>
