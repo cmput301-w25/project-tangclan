@@ -67,7 +67,10 @@ public class AddEmotionActivity extends AppCompatActivity {
 
         // Set up cancel button to finish the activity
         Button btnCancel = findViewById(R.id.btnCancelEmotion);
-        btnCancel.setOnClickListener(v -> finish());
+        btnCancel.setOnClickListener(v -> {
+            startActivity(new Intent(AddEmotionActivity.this, FeedActivity.class));
+            finish();
+        });
 
         // Set up next button to navigate to AddSocialSituationActivity
         Button btnNext = findViewById(R.id.btnNextEmotion);
