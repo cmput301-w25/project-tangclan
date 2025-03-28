@@ -173,11 +173,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ProfilePageActivity.class);
             intent.putExtras(bundle);
 
-            startActivity(intent);
-            finish();
-
-            intent.putStringArrayListExtra("selectedSituation", selectedSituation);
-
             // Start the activity
             startActivity(intent);  // Start ProfilePageActivity
             finish();  // Close the current activity

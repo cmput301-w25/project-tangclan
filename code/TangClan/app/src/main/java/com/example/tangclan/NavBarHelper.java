@@ -51,7 +51,9 @@ public class NavBarHelper {
 
         Intent intent = new Intent(currentActivity, destinationClass);
         currentActivity.startActivity(intent);
-        currentActivity.finish(); // Finish current activity to prevent stacking
+        if (!currentActivity.isTaskRoot()) {
+            currentActivity.finish(); // Finish current activity to prevent stacking
+        }
     }
 
 }
