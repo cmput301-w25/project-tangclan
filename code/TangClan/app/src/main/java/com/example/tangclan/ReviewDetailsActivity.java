@@ -13,6 +13,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -48,7 +50,7 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         SwitchCompat privacyToggle = findViewById(R.id.privacy_toggle);
         // TODO: save location: toggle state to enable permission, editText with address or both??
         Button confirmButton = findViewById(R.id.submit_details);
-        ImageButton closeIcon = findViewById(R.id.cancel_edit);
+        ImageView closeIcon = findViewById(R.id.closeIcon);
 
         setDetails(emotionTextView, settingTextView, collaboratorTextView, reasonTextView, imageView, privacyToggle);
 
