@@ -21,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 
+import com.google.firebase.firestore.FieldValue;
+
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
@@ -148,6 +150,7 @@ public class ReviewDetailsActivity extends AppCompatActivity {
             reasonText = savedDetails.getString("reason");
             reasonImage = savedDetails.getString("image");
             privacyOn = savedDetails.getBoolean("privacy");
+            locationOn = savedDetails.getBoolean("location");
 
             double lat = savedDetails.getDouble("latitude");
             double lon = savedDetails.getDouble("longitude");

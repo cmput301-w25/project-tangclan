@@ -200,7 +200,7 @@ public class FeedActivity extends AppCompatActivity {
         }
 
         if (moodEvent.hasGeolocation()) {
-            details.append("Location: Lat: ").append(moodEvent.getLatitude()).append(", Lon: ").append(moodEvent.getLongitude()).append("\n");
+            details.append("Location: ").append(moodEvent.getLocationName()).append("\n");
         } else {
             details.append("Location: N/A\n");
         }

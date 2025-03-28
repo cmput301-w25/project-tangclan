@@ -277,6 +277,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             String reason = bundle.getString("reason");
             String image = bundle.getString("image");
             boolean privacy = bundle.getBoolean("privacy");
+            boolean location = bundle.getBoolean("location");
+            double lat = bundle.getDouble("latitude");
+            double lon = bundle.getDouble("longitude");
+            String locationName = bundle.getString("locationName");
 
 
             // Create a new MoodEvent
@@ -317,6 +321,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
                 // Set Privacy setting
                 newMoodEvent.setPrivacyOn(privacy);
+
+                newMoodEvent.setGeolocation(location);
+                newMoodEvent.setLatitude(lat);
+                newMoodEvent.setLongitude(lon);
+                newMoodEvent.setLocationName(locationName);
 
                 // Add the mood event to the user's mood event book
                 userProfile.post(newMoodEvent, databaseBestie);
@@ -371,13 +380,22 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     public Bundle getMoodEventBundle(MoodEvent post) {
+        String locationName = null;
+        Double lat = null;
+        Double lon = null;
+
         String mid = post.getMid();
         String month = post.userFormattedDate().substring(3);
         String emotion = post.getMoodEmotionalState();
         String collaborators = getStringOfCollaborators(post);
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
-        boolean useLoc = false;  // TODO: implement location once MoodEvent has the field
+        boolean useLoc = post.hasGeolocation();
+        if (useLoc) {
+            lat = post.getLatitude();
+            lon = post.getLongitude();
+            locationName = post.getLocationName();
+        }
 
         Bundle args = new Bundle();
         args.putString("mid", mid);
@@ -387,6 +405,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
         args.putBoolean("location permission", useLoc);
+        if (useLoc) {
+            args.putDouble("latitude", lat);
+            args.putDouble("longitude", lon);
+            args.putString("location name", locationName);
+        }
 
         return args;
     }
@@ -434,6 +457,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 event.setImage(updatedEvent.getImage());
                 event.setMood(emot);
                 event.setPrivacyOn(updatedEvent.isPrivacyOn());
+                event.setGeolocation(updatedEvent.hasGeolocation());
+                if (event.hasGeolocation()) {
+                    event.setLatitude(updatedEvent.getLatitude());
+                    event.setLongitude(updatedEvent.getLongitude());
+                    event.setLocationName(updatedEvent.getLocationName());
+                }
                 adapter.insert(event,pos);
             });
         }
