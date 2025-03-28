@@ -1,6 +1,7 @@
 package com.example.tangclan;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -71,7 +72,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
         // Initialize UI components
         imageView = findViewById(R.id.imageView);
-        Button buttonSelectImage = findViewById(R.id.buttonSelectImage);
         Button buttonSaveImage = findViewById(R.id.btnSave);
         Button buttonSaveText = findViewById(R.id.buttonSaveText);
         Button buttonNext = findViewById(R.id.btnNext);
@@ -79,8 +79,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         TextInputEditText reason = findViewById(R.id.reason);
         ImageView closeIcon = findViewById(R.id.closeIcon);
         Button btnBack = findViewById(R.id.btnBackEnvironment);
-        Button btnUploadImage = findViewById(R.id.btnUploadImage);
-        Button btnNext = findViewById(R.id.buttonSaveText);
         TextInputEditText editTextReason = findViewById(R.id.text203).findViewById(R.id.reason);
 
         // Initialize ImageHelper
@@ -100,7 +98,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             }
         }
         // Set up image selection
-        buttonSelectImage.setOnClickListener(v -> imageHelper.showImagePickerDialog());
+        imageView.setOnClickListener(v -> imageHelper.showImagePickerDialog());
 
         // Save image button functionality
         buttonSaveImage.setOnClickListener(v -> {
