@@ -82,31 +82,11 @@ public class ImageHelper {
 
     private void launchCamera() {
         try {
-            File photoFile = createImageFile();
-            imageUri = FileProvider.getUriForFile(
-                    activity,
-                    "com.example.tangclan.fileprovider",
-                    photoFile
-            );
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-            cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            Intent simpleCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            if (cameraIntent.resolveActivity(activity.getPackageManager()) != null) {
-                cameraLauncher.launch(cameraIntent);
-            } else if (simpleCameraIntent.resolveActivity(activity.getPackageManager()) != null) {
-
-                cameraLauncher.launch(simpleCameraIntent);
-            } else {
-                Toast.makeText(activity,
-                        "No camera app found. Please install a camera app.",
-                        Toast.LENGTH_LONG).show();
-            }
-        } catch (IOException e) {
+            cameraLauncher.launch(cameraIntent);
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Error creating file for photo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity, "Error launching camera", Toast.LENGTH_SHORT).show();
         }
     }
 
