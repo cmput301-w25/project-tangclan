@@ -3,6 +3,7 @@ package com.example.tangclan;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -17,19 +18,22 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-
 import java.io.FileOutputStream;
+import android.Manifest;
 
-
+import java.io.IOException;
 import java.io.InputStream;
-
-//for US US 02.02.01
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * This class provides functionality for uploading images from the camera or gallery on the device.
@@ -40,7 +44,7 @@ public class ImageHelper {
     private final ActivityResultLauncher<Intent> cameraLauncher;
     private final ActivityResultLauncher<Intent> galleryLauncher;
     private Uri imageUri;
-
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
 
     public ImageHelper(Activity activity,
                        ActivityResultLauncher<Intent> cameraLauncher,
@@ -55,7 +59,7 @@ public class ImageHelper {
         builder.setTitle("Choose an option")
                 .setItems(new String[]{"Take Photo", "Choose from Gallery"}, (dialog, which) -> {
                     if (which == 0) {
-                        openCamera();
+                        checkCameraPermission();
                     } else {
                         openGallery();
                     }
@@ -63,12 +67,57 @@ public class ImageHelper {
                 .show();
     }
 
-    private void openCamera() {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photoFile = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), System.currentTimeMillis() + ".jpg");
-        imageUri = FileProvider.getUriForFile(activity, "com.example.tangclan.fileprovider", photoFile);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        cameraLauncher.launch(cameraIntent);
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            launchCamera();
+        } else {
+            requestCameraPermission();
+        }
+    }
+
+    private void requestCameraPermission() {
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+    }
+
+    private void launchCamera() {
+        try {
+            File photoFile = createImageFile();
+            imageUri = FileProvider.getUriForFile(
+                    activity,
+                    "com.example.tangclan.fileprovider",
+                    photoFile
+            );
+            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            cameraIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            cameraIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            Intent simpleCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            if (cameraIntent.resolveActivity(activity.getPackageManager()) != null) {
+                cameraLauncher.launch(cameraIntent);
+            } else if (simpleCameraIntent.resolveActivity(activity.getPackageManager()) != null) {
+
+                cameraLauncher.launch(simpleCameraIntent);
+            } else {
+                Toast.makeText(activity,
+                        "No camera app found. Please install a camera app.",
+                        Toast.LENGTH_LONG).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(activity, "Error creating file for photo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+        return File.createTempFile(imageFileName, ".jpg", storageDir);
     }
 
     private void openGallery() {
@@ -111,7 +160,6 @@ public class ImageHelper {
         return true;
     }
 
-
     /**
      * Saves a bitmap to a PNG file in the app's external files directory.
      *
@@ -142,6 +190,3 @@ public class ImageHelper {
         }
     }
 }
-
-
-
