@@ -1,6 +1,7 @@
 package com.example.tangclan;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,13 +41,19 @@ public class AddLocationActivity extends AppCompatActivity {
     private MapView mapView;
     private AutoCompleteTextView searchBar;
     private Button searchButton;
+    private Button nextButton;
     private ListView suggestionsList;
     private MyLocationNewOverlay locationOverlay;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> suggestions = new ArrayList<>();
     private ArrayList<GeoPoint> suggestionCoords = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
-    private long lastTypedTime = 0;  
+    private long lastTypedTime = 0;
+
+    // RETURNED COORDINATES FROM THIS ACTIVITY (USER LOCATION) -------------------------------------
+    private GeoPoint lastSearchedPoint;
+    //----------------------------------------------------------------------------------------------
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +81,9 @@ public class AddLocationActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.searchBar);
         searchButton = findViewById(R.id.searchButton);
         suggestionsList = findViewById(R.id.suggestionsList);
+
+        nextButton = findViewById(R.id.nextButton);
+        nextButton.setVisibility(View.GONE);
 
         // Setup adapter for ListView
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, suggestions);
@@ -114,6 +124,16 @@ public class AddLocationActivity extends AppCompatActivity {
             if (!query.isEmpty()) {
                 suggestionsList.setVisibility(View.GONE); // Hide suggestions when search is clicked
                 searchLocation(query);
+            }
+        });
+
+        nextButton.setOnClickListener(v -> {
+            if (lastSearchedPoint != null) {
+                Intent intent = new Intent(AddLocationActivity.this, ReviewDetailsActivity.class);
+                intent.putExtra("latitude", lastSearchedPoint.getLatitude());
+                intent.putExtra("longitude", lastSearchedPoint.getLongitude());
+                intent.putExtra("locationName", searchBar.getText().toString());
+                startActivity(intent);
             }
         });
     }
@@ -194,8 +214,8 @@ public class AddLocationActivity extends AppCompatActivity {
     }
 
     private void placeMarker(double lat, double lon) {
-        GeoPoint point = new GeoPoint(lat, lon);
-        mapView.getController().setCenter(point);
+        lastSearchedPoint = new GeoPoint(lat, lon); // Store last searched point
+        mapView.getController().setCenter(lastSearchedPoint);
         mapView.getController().setZoom(15.0);
 
         // Remove old markers
@@ -203,10 +223,12 @@ public class AddLocationActivity extends AppCompatActivity {
         if (locationOverlay != null) mapView.getOverlays().add(locationOverlay);
 
         Marker marker = new Marker(mapView);
-        marker.setPosition(point);
+        marker.setPosition(lastSearchedPoint);
         marker.setTitle("Selected Location");
         mapView.getOverlays().add(marker);
         mapView.invalidate();
+
+        nextButton.setVisibility(View.VISIBLE); // Show the next button after selecting a location
     }
 
     @Override
