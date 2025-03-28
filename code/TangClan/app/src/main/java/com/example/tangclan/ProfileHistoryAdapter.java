@@ -1,5 +1,6 @@
 package com.example.tangclan;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -14,12 +15,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,9 +101,14 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         MoodEvent moodEvent = getItem(position);
+        if (moodEvent == null) return view;
+
 
         // Format the username and mood emotion
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
+
+        ImageButton commentButton = view.findViewById(R.id.comment_button);
+        commentButton.setOnClickListener(v -> showCommentDialog(moodEvent));
 
 
         if (username == null) {
@@ -159,6 +172,49 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             moodImageView.setVisibility(View.GONE); // Hide image if not available
         }
 
+
+
         return view;
     }
+
+    private void showCommentDialog(MoodEvent moodEvent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_comments, null);
+        builder.setView(dialogView);
+
+        ListView commentsList = dialogView.findViewById(R.id.comments_list);
+        EditText commentInput = dialogView.findViewById(R.id.comment_input);
+        ImageButton postButton = dialogView.findViewById(R.id.post_button);
+
+        DatabaseBestie db = DatabaseBestie.getInstance();
+        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
+            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+            commentsList.setAdapter(adapter);
+        });
+
+        AlertDialog dialog = builder.create();
+
+        postButton.setOnClickListener(v -> {
+            String commentText = commentInput.getText().toString().trim();
+            if (!commentText.isEmpty()) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    Comment comment = new Comment(moodEvent.getMid(), currentUser.getUid(), commentText);
+                    db.addComment(comment, () -> {
+                        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
+                            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+                            commentsList.setAdapter(adapter);
+                            commentInput.setText("");
+                        });
+                    });
+                }
+            }
+        });
+
+        dialog.show();
+    }
+
+
+
 }

@@ -52,8 +52,8 @@ public class ImageHelper {
 
     public void showImagePickerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Choose an option")
-                .setItems(new String[]{"Take Photo", "Choose from Gallery"}, (dialog, which) -> {
+        builder.setTitle("Upload image from: ")
+                .setItems(new String[]{"Camera", "Gallery"}, (dialog, which) -> {
                     if (which == 0) {
                         openCamera();
                     } else {

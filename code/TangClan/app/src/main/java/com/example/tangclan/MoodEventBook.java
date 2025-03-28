@@ -49,9 +49,6 @@ public class MoodEventBook {
      */
     public void deleteMoodEvent(MoodEvent event) {
         moodEvents.remove(event);
-        // TODO: Connect to the database and remove the mood event
-        DatabaseBestie db = new DatabaseBestie();
-        db.deleteMoodEvent(event.getMid(), event.userFormattedDate().substring(3));
     }
 
     public void updateMoodEvents() {
