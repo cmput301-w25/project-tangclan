@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
@@ -48,6 +49,7 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         SwitchCompat privacyToggle = findViewById(R.id.privacy_toggle);
         // TODO: save location: toggle state to enable permission, editText with address or both??
         Button confirmButton = findViewById(R.id.submit_details);
+        ImageButton closeIcon = findViewById(R.id.cancel_edit);
 
         setDetails(emotionTextView, settingTextView, collaboratorTextView, reasonTextView, imageView, privacyToggle);
 
@@ -70,6 +72,11 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         reasonTextView.setOnClickListener(view -> changeScreen(UploadPictureForMoodEventActivity.class, savedDetails));
         imageView.setOnClickListener(view -> changeScreen(UploadPictureForMoodEventActivity.class, savedDetails));
         confirmButton.setOnClickListener(view -> changeScreen(ProfilePageActivity.class, savedDetails));
+
+        closeIcon.setOnClickListener(v -> {
+            startActivity(new Intent(ReviewDetailsActivity.this, FeedActivity.class));
+            finish();
+        });
     }
 
     public void changeScreen(Class<?> detailScreen, Bundle savedDetails) {

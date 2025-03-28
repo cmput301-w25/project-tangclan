@@ -189,6 +189,9 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
         });
 
         // Close button action
-        closeIcon.setOnClickListener(v -> finish());
+        closeIcon.setOnClickListener(v -> {
+            startActivity(new Intent(UploadPictureForMoodEventActivity.this, FeedActivity.class));
+            finish();
+        });
     }
 }
