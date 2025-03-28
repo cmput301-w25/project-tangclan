@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/emoticon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:layout_marginEnd="12dp"
             android:contentDescription="The emoticon image" />
 
@@ -33,19 +33,7 @@
             android:textSize="20sp"
             tools:text="@string/placeholder_username_emotion" />
 
-
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/mood_event_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:contentDescription="Mood Event Image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_drawable_name_emotional_state" />
-
 
     <TextView
         android:id="@+id/reason"
@@ -60,6 +48,14 @@
         app:layout_constraintTop_toBottomOf="@id/container_drawable_name_emotional_state"
         tools:text="@string/placeholder_situation" />
 
+    <ImageView
+        android:id="@+id/mood_event_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:contentDescription="Mood Event Image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reason" />
 
     <LinearLayout
         android:id="@+id/container_date_time"
@@ -68,7 +64,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reason">
+        app:layout_constraintTop_toBottomOf="@+id/mood_event_image">
 
         <TextView
             android:id="@+id/date_text"
@@ -100,7 +96,6 @@
             android:textColor="@color/material_dynamic_neutral50"
             tools:text="Edmonton, AB" />
 
-
     </LinearLayout>
 
     <ImageButton
@@ -118,6 +113,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_date_time" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-
