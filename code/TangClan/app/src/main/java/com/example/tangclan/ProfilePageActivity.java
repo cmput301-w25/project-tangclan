@@ -315,19 +315,15 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                     // Log the number of mood events for debugging
                     int count = userProfile.getMoodEventBook().getMoodEventList().size();
 
-                } catch (IllegalArgumentException e) {
-                    // Handle invalid input
-                    Toast.makeText(this, "Error creating mood event: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
+            } catch (IllegalArgumentException e) {
+                // Handle invalid input
+                Toast.makeText(this, "Error creating mood event: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
-
     }
 
-    private void saveProfileToDatabase() {
 
 
-    }
 
 
 
