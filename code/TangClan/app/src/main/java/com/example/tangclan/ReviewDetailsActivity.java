@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -61,6 +62,7 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         SwitchCompat locationToggle = findViewById(R.id.use_location_switch);
 
         Button confirmButton = findViewById(R.id.submit_details);
+        ImageView closeIcon = findViewById(R.id.closeIcon);
 
         setDetails(emotionTextView, settingTextView, collaboratorTextView, reasonTextView, imageView, privacyToggle, locationToggle, locationDisplay);
 
@@ -133,7 +135,13 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         reasonTextView.setOnClickListener(view -> changeScreen(UploadPictureForMoodEventActivity.class, savedDetails));
         imageView.setOnClickListener(view -> changeScreen(UploadPictureForMoodEventActivity.class, savedDetails));
         confirmButton.setOnClickListener(view -> changeScreen(ProfilePageActivity.class, savedDetails));
+
+        closeIcon.setOnClickListener(v -> {
+            startActivity(new Intent(ReviewDetailsActivity.this, FeedActivity.class));
+            finish();
+        });
     }
+
 
     public void changeScreen(Class<?> detailScreen, Bundle savedDetails) {
         Intent intent = new Intent(ReviewDetailsActivity.this, detailScreen);
@@ -175,8 +183,10 @@ public class ReviewDetailsActivity extends AppCompatActivity {
 
         if (collaborators != null) {
             StringBuilder s = new StringBuilder();
-            for (String collaborator : collaborators) {
-                s.append(collaborator.trim()).append(", ");
+            if (!collaborators.get(0).isEmpty()) {
+                for (String collaborator : collaborators) {
+                    s.append(collaborator.trim()).append(", ");
+                }
             }
             collaboratorTextView.setText(s);
         }

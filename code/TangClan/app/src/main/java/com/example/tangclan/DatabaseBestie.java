@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.*;
 
 import java.time.LocalDate;
@@ -52,6 +56,9 @@ public class DatabaseBestie {
     private DocumentReference commentCounterRef;
     private CollectionReference commentsRef;
 
+    private DocumentReference followRequestCounterRef;
+    private CollectionReference followRequestsRef;
+
     /**
      * This gets an instance of the database
      */
@@ -68,6 +75,8 @@ public class DatabaseBestie {
         usersRef = db.collection("users");
         moodEventsRef = db.collection("moodEvents");
         followsRef = db.collection("follows");
+        followRequestCounterRef = db.collection("Counters").document("follow_request_counter");
+        followRequestsRef = db.collection("followRequests");
     }
 
     /**
@@ -331,9 +340,6 @@ public class DatabaseBestie {
                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "password updated successfully"))
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
     }
-
-
-
 
 
 
@@ -752,9 +758,22 @@ public class DatabaseBestie {
      *      This is the relationship to be added
      */
     public void addFollowRelationship(FollowRelationship followRelationship) {
-        generateFid(uid -> {
-            followRelationship.setId(String.valueOf(uid));
-            followsRef.document(followRelationship.getId()).set(followRelationship);
+        generateFid(fid -> {
+            followRelationship.setId(String.valueOf(fid));
+            followsRef.document(String.valueOf(fid)).set(followRelationship)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d("addFollowRelationship", "added");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("addFollowRelationship", "problem adding relationship:"+e);
+                        }
+                    });
+
         });
     }
 
@@ -907,5 +926,121 @@ public class DatabaseBestie {
             });
         }
     }
+
+    public void generateRid(IdCallback callback) {
+        generateUniqueId(followRequestCounterRef, "last_rid", callback);
+    }
+
+    
+    public interface FollowRequestCallback {
+        void onFollowRequestProcessed(boolean success);
+    }
+
+    public interface FollowRequestsCallback {
+        void onFollowRequestsRetrieved(List<FollowRequest> requests);
+    }
+
+
+    public void sendFollowRequest(String requesterUid, String targetUid, FollowRequestCallback callback) {
+        generateRid(rid -> {
+            FollowRequest request = new FollowRequest(requesterUid, targetUid);
+            request.setRid(String.valueOf(rid));
+
+            followRequestsRef.document(String.valueOf(rid))
+                    .set(request)
+                    .addOnSuccessListener(aVoid -> callback.onFollowRequestProcessed(true))
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error sending follow request", e);
+                        callback.onFollowRequestProcessed(false);
+                    });
+        });
+    }
+
+
+    public void updateFollowRequestStatus(String rid, String status, FollowRequestCallback callback) {
+        followRequestsRef.document(rid)
+                .update("status", status)
+                .addOnSuccessListener(aVoid -> callback.onFollowRequestProcessed(true))
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error updating follow request", e);
+                    callback.onFollowRequestProcessed(false);
+                });
+    }
+
+
+    public void getPendingFollowRequests(String targetUid, FollowRequestsCallback callback) {
+        followRequestsRef.whereEqualTo("targetUid", targetUid)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<FollowRequest> requests = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            requests.add(document.toObject(FollowRequest.class));
+                        }
+                        callback.onFollowRequestsRetrieved(requests);
+                    } else {
+                        Log.e(TAG, "Error getting follow requests", task.getException());
+                        callback.onFollowRequestsRetrieved(new ArrayList<>());
+                    }
+                });
+    }
+
+
+    public void checkExistingRequest(String requesterUid, String targetUid, FollowRequestCallback callback) {
+        followRequestsRef.whereEqualTo("requesterUid", requesterUid)
+                .whereEqualTo("targetUid", targetUid)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onFollowRequestProcessed(!task.getResult().isEmpty());
+                    } else {
+                        Log.e(TAG, "Error checking existing request", task.getException());
+                        callback.onFollowRequestProcessed(false);
+                    }
+                });
+    }
+
+
+
+    public void deleteFollowRequest(String requesterUid, String targetUid) {
+        followRequestsRef.whereEqualTo("requesterUid", requesterUid)
+                .whereEqualTo("targetUid", targetUid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            followRequestsRef.document(document.getId()).delete();
+                        }
+                    }
+                });
+    }
+
+    public void getAllUsers(OnUsersLoadedListener listener) {
+        // Implement your database query to get all users
+        // For Firebase Firestore example:
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Profile> users = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Profile user = document.toObject(Profile.class);
+                            users.add(user);
+                        }
+                        listener.onUsersLoaded(users);
+                    }
+                });
+    }
+
+    public interface OnUsersLoadedListener {
+        void onUsersLoaded(List<Profile> users);
+    }
+
+
+
+
+
 
 }

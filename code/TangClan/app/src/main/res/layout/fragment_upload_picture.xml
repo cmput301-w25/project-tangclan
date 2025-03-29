@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@color/fragment_background"
+
+    android:background="@drawable/blue_gradient_background"
+
+   
+    android:elevation="2dp"
+
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -70,7 +76,11 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text203"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
 
@@ -90,57 +100,17 @@
         android:textAlignment="viewEnd" />
 
 
-    <Button
-        android:id="@+id/buttonSaveText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/black"
-        android:text="Save" />
-
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="299dp"
         android:layout_height="302dp"
 
-        android:layout_marginLeft="40dp"
-        android:background="@android:color/darker_gray"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="24dp"
+        android:background="#0D0D0000"
+        android:elevation="4dp"
+        android:padding="0dp"
         android:scaleType="centerCrop" />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/buttonSelectImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/black"
-            android:text="Select Image" />
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_weight="0"
-            android:backgroundTint="@color/black"
-            android:text="Save" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnUploadImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/black"
-        android:text="Select Image" />
 
 
     <LinearLayout
@@ -151,16 +121,21 @@
 
         <Button
             android:id="@+id/btnBackEnvironment"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
-            android:text="Back" />
+            android:text="Back"
+            android:textSize="14sp"
+            app:cornerRadius="16dp" />
 
         <Button
             android:id="@+id/btnNext"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
             android:backgroundTint="@color/black"
-            android:text="Next" />
+            android:text="Review"
+            android:textSize="14sp"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 </LinearLayout>

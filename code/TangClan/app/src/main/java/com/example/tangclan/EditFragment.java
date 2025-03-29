@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.io.IOException;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +62,7 @@ public class EditFragment extends Fragment {
     byte[] image;
     boolean locationPermission;
     private FragmentListener editFragmentListener;
+    private ImageView imageView;
 
     ImageHelper imageHelper;
     private ImageButton imageButton;
@@ -124,8 +126,10 @@ public class EditFragment extends Fragment {
         AutoCompleteTextView autoCompleteSituation = view.findViewById(R.id.choose_social_situation);
         setUpDropdown(autoCompleteSituation, newSit, socialSituations);
 
+
         // set up collaborators
         EditText editSocialSit = view.findViewById(R.id.edit_social_situation);
+
         editSocialSit.setText(situation);
 
         // set saved reason text
@@ -141,7 +145,7 @@ public class EditFragment extends Fragment {
             imageButton.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
         }
 
-        imageHelper = new ImageHelper(getActivity(), cameraLauncher, galleryLauncher);
+        imageHelper = new ImageHelper(requireActivity(), cameraLauncher, galleryLauncher);
         imageButton.setOnClickListener(v -> {
             imageHelper.showImagePickerDialog();
         });
@@ -196,7 +200,7 @@ public class EditFragment extends Fragment {
         });
 
         // Implement Cancel Button
-        ImageButton cancel_butt = view.findViewById(R.id.cancel_edit);
+        ImageView cancel_butt = view.findViewById(R.id.closeIcon);
         cancel_butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,15 +233,39 @@ public class EditFragment extends Fragment {
     }
 
     // Camera launcher
-    private final ActivityResultLauncher<Intent> cameraLauncher =
-            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+    private final ActivityResultLauncher<Intent> cameraLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    // First try to get thumbnail from intent extras
+                    if (data != null && data.getExtras() != null) {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        if (bitmap != null) {
+                            selectedImage = bitmap;
+                            imageButton.setImageBitmap(selectedImage);
+                            return;
+                        }
+                    }
+
+                    // If no thumbnail, use the saved file URI
                     imageUri = imageHelper.getImageUri();
-                    imageButton.setImageURI(imageUri);
-                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                    if (imageUri != null) {
+                        try {
+                            Bitmap bitmap = imageHelper.uriToBitmap(imageUri);
+                            if (bitmap != null) {
+                                selectedImage = bitmap;
+                                imageButton.setImageBitmap(bitmap);
+                            } else {
+                                Toast.makeText(requireContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(requireContext(), "Error processing image", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             });
-
     // Gallery launcher
     private final ActivityResultLauncher<Intent> galleryLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {

@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -7,20 +8,31 @@
     <TextView
         android:id="@+id/textViewUsername"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Username" />
-
-    <Button
-        android:id="@+id/buttonAccept"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Accept" />
+        android:fontFamily="@font/inter_semibold"
+        android:text="Username"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/buttonDecline"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Decline" />
+        android:layout_height="42dp"
+        android:layout_marginStart="10dp"
+        android:backgroundTint="#1B000000"
+        android:fontFamily="@font/inter_medium"
+        android:text="Decline"
+        android:textColor="@color/black"
+        app:cornerRadius="16dp" />
+
+    <Button
+        android:id="@+id/buttonAccept"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:layout_marginStart="10dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="@font/inter_medium"
+        android:text="Accept"
+        app:cornerRadius="16dp" />
+
 </LinearLayout>

@@ -6,7 +6,7 @@
     android:layout_margin="0dp"
     android:layout_marginHorizontal="30dp"
     android:layout_marginVertical="100dp"
-    android:background="@color/fragment_background"
+    android:background="@drawable/blue_gradient_background"
     android:elevation="10dp"
     android:orientation="vertical"
     android:outlineAmbientShadowColor="#000000"
@@ -15,37 +15,54 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="38dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="Owl icon"
+            android:src="@drawable/ic_owl" />
 
         <TextView
-            android:id="@+id/moodevent_details_title"
-            android:layout_width="310dp"
-            android:layout_height="match_parent"
-            android:fontFamily="@font/inter_bold"
-            android:text="Review Details"
-            android:textSize="16sp" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/inter_medium"
+            android:gravity="center"
+            android:text="moodly"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/cancel_edit"
-            android:layout_width="70dp"
-            android:layout_height="match_parent"
-            android:background="#00FFFFFF"
-            app:srcCompat="@drawable/baseline_cancel_24" />
+        <ImageView
+            android:id="@+id/closeIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Close"
+            android:src="@drawable/baseline_cancel_24" />
     </LinearLayout>
+
 
     <TextView
         android:id="@+id/edit_details_q1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/inter_medium"
         android:text="How are you feeling?"
+        android:textColor="@color/black"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeColor="@color/black">
 
         <AutoCompleteTextView
             android:id="@+id/choose_emotion"
@@ -171,12 +188,17 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/inter_medium"
         android:text="Describe the social situation"
+        android:textColor="@color/black"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp">
 
         <AutoCompleteTextView
             android:id="@+id/choose_social_situation"
@@ -187,13 +209,17 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_social_situation"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:hint = "I was with..."/>
+            android:hint="I was with..." />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -208,13 +234,18 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:text="What made you feel this way?"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edit_reason_box"
             android:layout_width="match_parent"
-            android:layout_height="75dp">
+            android:layout_height="75dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_reasonwhy"
@@ -228,39 +259,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/image_reasonwhy"
                 android:layout_width="218dp"
-                android:layout_height="135dp"
-                android:background="#0D000000"
-                app:srcCompat="@drawable/baseline_add_box_24" />
+                android:layout_height="218dp"
+                android:background="#0D0D0000" />
 
-            <Button
-                android:id="@+id/save_new_img"
-                android:layout_width="119dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#000000"
-                android:text="Save"
-                android:textColorLink="#020101"
-                app:cornerRadius="12sp" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="311dp"
+        android:layout_width="341dp"
         android:layout_height="58dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/edit_details_q4"
-            android:layout_width="235dp"
+            android:layout_width="265dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="20dp"
             android:text="Share your location?"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -294,17 +317,18 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="311dp"
+        android:layout_width="340dp"
         android:layout_height="68dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/edit_details_q5"
-            android:layout_width="235dp"
+            android:layout_width="265dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="20dp"
             android:text="make event private?"
+            android:textColor="@color/black"
             android:textSize="18sp" />
 
 
@@ -319,9 +343,10 @@
     <Button
         android:id="@+id/submit_details"
         android:layout_width="match_parent"
-        android:layout_height="53dp"
+        android:layout_height="60dp"
         android:layout_marginTop="0dp"
         android:backgroundTint="@color/black"
         android:text="Confirm Details"
-        app:cornerRadius="12sp" />
+        android:textSize="14sp"
+        app:cornerRadius="16dp" />
 </LinearLayout>

@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import static java.lang.Integer.parseInt;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -122,9 +125,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     protected void onResume() {
         super.onResume();
         // Refresh the list whenever the activity is resumed
+        networkManager.registerNetworkMonitor();
         getCurrentUserProfile();
         setupProfileListView();
-        networkManager.registerNetworkMonitor();
     }
 
     @Override
@@ -145,20 +148,22 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Retrieve the current logged-in user profile using the Singleton instance
         userProfile = LoggedInUser.getInstance();
 
+
         // Initialize the mood event book if it doesn't exist
         if (userProfile.getMoodEventBook() == null) {
             userProfile.setMoodEventBook(new MoodEventBook());
         }
 
         // Fetch the user's past mood events from the database
-        initializeMoodEventBookFromDatabase();
-
+        userProfile.initializeFollowingBookFromDatabase(databaseBestie);
+        FollowingBook userFollowingBook = userProfile.getFollowingBook();
 
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
         //userProfile = LoggedInUser.getInstance();
 
         // Initialize the mood event book if it doesn't exist
+
 
         // Set the user information in the UI
         String pfpStr = userProfile.getProfilePic();
@@ -170,16 +175,13 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
         usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
+        String followerCt = String.valueOf(userProfile.getFollowingBook().getFollowerCount());
+        String followingCt = String.valueOf(userProfile.getFollowingBook().getFollowingCount());
+        followersTextView.setText(followerCt);
+        followingTextView.setText(followingCt);
 
-        // Setup the ListView after profile is loaded
-        setupProfileListView();
-    }
-
-    private void initializeMoodEventBookFromDatabase() {
-        // Fetch the user's past mood events from the database
-        if (userProfile != null) {
-            userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
-        }
+        followingTextView.setText(String.valueOf(userFollowingBook.getFollowingCount()));
+        followersTextView.setText(String.valueOf(userFollowingBook.getFollowerCount()));
     }
 
     private void setupProfileListView() {
@@ -238,11 +240,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
 
+                                        userProfile.getMoodEventBook().deleteMoodEvent(post);
+                                        adapter.remove(post);
 
-                                        // delete from mood event book and database
-                                        databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
-                                            userProfile.getMoodEventBook().deleteMoodEvent(event);
-                                        });
+                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
 
                                         databaseBestie.deleteMoodEvent(post.getMid(), month);
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
@@ -300,6 +301,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
                 // set setting
                 if (selectedSetting != null) {
+                    Log.d("test1", selectedSetting);
                     newMoodEvent.setSetting(selectedSetting);
                 } else {
                     newMoodEvent.setSetting("");
@@ -344,9 +346,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 // Show success message
                 Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
 
-                // Log the number of mood events for debugging
-                int count = userProfile.getMoodEventBook().getMoodEventList().size();
-                Toast.makeText(this, "Total mood events: " + count, Toast.LENGTH_SHORT).show();
+                    // Log the number of mood events for debugging
+                    int count = userProfile.getMoodEventBook().getMoodEventList().size();
 
             } catch (IllegalArgumentException e) {
                 // Handle invalid input
@@ -355,10 +356,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
     }
 
-    private void saveProfileToDatabase() {
 
 
-    }
 
 
 
@@ -387,6 +386,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String mid = post.getMid();
         String month = post.userFormattedDate().substring(3);
         String emotion = post.getMoodEmotionalState();
+        String setting = post.getSetting();
         String collaborators = getStringOfCollaborators(post);
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
@@ -401,6 +401,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         args.putString("mid", mid);
         args.putString("month", month);
         args.putString("emotion", emotion);
+        args.putString("setting", setting);
         args.putString("social situation", collaborators);
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
@@ -418,9 +419,13 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         StringBuilder collaboratorsStr = new StringBuilder();
         Optional<ArrayList<String>> collaborators = post.getCollaborators();
         collaborators.ifPresent(list -> {
-            for (String item: list ) {
-                collaboratorsStr.append(item);
-                collaboratorsStr.append(",");
+            if (list.get(0) != "") {
+                for (String item : list) {
+                    collaboratorsStr.append(item);
+                    collaboratorsStr.append(",");
+                }
+            } else {
+                collaboratorsStr.append("");
             }
         });
         return collaboratorsStr.toString();

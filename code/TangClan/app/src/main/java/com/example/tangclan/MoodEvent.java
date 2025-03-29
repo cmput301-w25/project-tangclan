@@ -49,6 +49,8 @@ public class MoodEvent implements Serializable {
 
     private ArrayList<String> commentIds = new ArrayList<>();
 
+    private List<String> comments = new ArrayList<>();
+
 
 
     /**
@@ -472,5 +474,20 @@ public class MoodEvent implements Serializable {
 
     public String getSetting() {
         return setting;
+    }
+
+    public List<String> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<String> comments) {
+        this.comments = comments;
+    }
+
+    public void addComment(String comment) {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
+        comments.add(comment);
     }
 }

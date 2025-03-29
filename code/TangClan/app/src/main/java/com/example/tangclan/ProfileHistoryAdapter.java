@@ -1,31 +1,45 @@
 package com.example.tangclan;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * ArrayAdapter wrapper for the Profile History.
@@ -93,9 +107,14 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         MoodEvent moodEvent = getItem(position);
+        if (moodEvent == null) return view;
+
 
         // Format the username and mood emotion
         SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
+
+        ImageButton commentButton = view.findViewById(R.id.comment_button);
+        commentButton.setOnClickListener(v -> showCommentDialog(moodEvent));
 
 
         if (username == null) {
@@ -111,6 +130,44 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         SpannableString spannableEmotionalState = new SpannableString(moodEvent.getMood().getEmotion());
         spannableEmotionalState.setSpan(new ForegroundColorSpan(moodColor), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
+
+        Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
+        String setting = moodEvent.getSetting();
+
+        if (collaborators.isPresent() && !collaborators.get().isEmpty() && !collaborators.get().get(0).isEmpty()) {
+            int numCollaborators =  collaborators.get().size();
+
+            if (numCollaborators > 0) {
+                spannableUsernameEmotion.append(" with ");
+                SpannableString spannableSituation;
+
+                if (numCollaborators == 1) {
+                    spannableSituation = new SpannableString("one other person");
+                } else if (numCollaborators <= 7) { // the condition numCollaborators >= 2 is also true in this block
+                    spannableSituation = new SpannableString("two to several people");
+                } else {
+                    spannableSituation = new SpannableString("a crowd");
+                }
+
+                // underline to indicate clickable
+                spannableSituation.setSpan(new UnderlineSpan(), 0, spannableSituation.length(), 0);
+                spannableSituation.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        Log.d("test1", "here");
+                        showCollaborators(moodEvent);
+                    }
+                }, 0, spannableSituation.length(), 0);
+                // set the onClick/onTouch listener for the tags
+                spannableUsernameEmotion.append(spannableSituation);
+            } else {
+                spannableUsernameEmotion.append("alone");
+            }
+        } else {
+            if (setting != null && !setting.isEmpty()) {
+                spannableUsernameEmotion.append(" ").append(setting);
+            }
+        }
 
 
         // Find views by ID
@@ -129,16 +186,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Set the emotional state
+        emotionTextView.setMovementMethod(LinkMovementMethod.getInstance());
         emotionTextView.setText(spannableUsernameEmotion);//
 
-        // Set the social situation (if present, otherwise default message)
-        //Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
-        //if (collaborators.isPresent() && !collaborators.get().isEmpty()) {
-        //    String situationText = String.join(", ", collaborators.get());
-        //    situationTextView.setText("with " + situationText);
-        //} else {
-        //    situationTextView.setText("alone");
-        //}
 
         // Set the reason (in a mini box)
         Optional<String> reason = moodEvent.getReason();
@@ -159,6 +209,74 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             moodImageView.setVisibility(View.GONE); // Hide image if not available
         }
 
+
+
         return view;
     }
+
+    private void showCollaborators(MoodEvent moodEvent) {
+        Context context = getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_tagged,null);
+        builder.setView(dialogView);
+
+        ListView tags = dialogView.findViewById(R.id.listview_tagged);
+
+        ArrayList<String> collaborators = moodEvent.getCollaborators().get(); // non-null handled
+        CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaborators);
+        tags.setAdapter(adapter);
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(context.getResources(), R.drawable.dialog_round, null));
+        dialog.show();
+    }
+
+    private void showCommentDialog(MoodEvent moodEvent) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_comments, null);
+        builder.setView(dialogView);
+
+        ListView commentsList = dialogView.findViewById(R.id.comments_list);
+        EditText commentInput = dialogView.findViewById(R.id.comment_input);
+        ImageButton postButton = dialogView.findViewById(R.id.post_button);
+
+        DatabaseBestie db = DatabaseBestie.getInstance();
+        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
+            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+            commentsList.setAdapter(adapter);
+        });
+
+        AlertDialog dialog = builder.create();
+
+        postButton.setOnClickListener(v -> {
+            String commentText = commentInput.getText().toString().trim();
+            if (!commentText.isEmpty()) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null) {
+                    Comment comment = new Comment(moodEvent.getMid(), currentUser.getUid(), commentText);
+                    db.addComment(comment, () -> {
+                        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
+                            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+                            commentsList.setAdapter(adapter);
+                            commentInput.setText("");
+                        });
+                    });
+                }
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(getContext().getResources(), R.drawable.dialog_round, null));
+        dialog.show();
+    }
+
+
+
 }

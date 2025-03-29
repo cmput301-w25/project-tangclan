@@ -22,6 +22,7 @@ public class MoodEventBook {
 
         // Add a listener for when data changes
         DatabaseBestie db = new DatabaseBestie();
+        sortMoodEvents();
     }
 
     /**
@@ -30,16 +31,16 @@ public class MoodEventBook {
      * @param moodEvents The new list of mood events.
      */
     public void setMoodEvents(ArrayList<MoodEvent> moodEvents) {
-        this.moodEvents = new ArrayList<>(moodEvents); // Copy to prevent unintended modifications
+        this.moodEvents = new ArrayList<>(moodEvents);
+        sortMoodEvents(); // Ensure proper sorting
     }
-
     /**
      * Adds a new mood event to the list.
      *
      * @param event The mood event to be added.
      */
     public void addMoodEvent(MoodEvent event) {
-            moodEvents.add(event);
+        moodEvents.add(0, event); // Insert at beginning to maintain reverse chronological order
     }
 
     /**
@@ -49,9 +50,6 @@ public class MoodEventBook {
      */
     public void deleteMoodEvent(MoodEvent event) {
         moodEvents.remove(event);
-        // TODO: Connect to the database and remove the mood event
-        DatabaseBestie db = new DatabaseBestie();
-        db.deleteMoodEvent(event.getMid(), event.userFormattedDate().substring(3));
     }
 
     public void updateMoodEvents() {
@@ -186,12 +184,13 @@ public class MoodEventBook {
      *
      * @return A list of all MoodEvents
      */
-    public ArrayList<MoodEvent
-            > getAllMoodEvents() {
+    public ArrayList<MoodEvent> getAllMoodEvents() {
+        // Return a copy of the list (already in reverse chronological order)
         return new ArrayList<>(moodEvents);
     }
 
     public List<MoodEvent> getMoodEventList() {
+        // Return a copy of the list (already in reverse chronological order)
         return new ArrayList<>(moodEvents);
     }
 }
