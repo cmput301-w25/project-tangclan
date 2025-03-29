@@ -14,12 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tangclan.DatabaseBestie;
-import com.example.tangclan.FeedActivity;
 import com.example.tangclan.LoggedInUser;
-import com.example.tangclan.MainActivity;
 import com.example.tangclan.Profile;
 import com.example.tangclan.R;
-import com.example.tangclan.TempFeedActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

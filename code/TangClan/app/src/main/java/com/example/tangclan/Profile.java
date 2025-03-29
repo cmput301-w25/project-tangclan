@@ -25,6 +25,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
 
 
 
+
     /**
      * Constructor for database purposes
      */
@@ -81,7 +82,7 @@ public class Profile extends User implements Serializable {//NOTE: EXTENDS MoodE
         this.password=password;
         this.email=email;
         this.age=age;
-        this.profilePic = photo;
+        this.profilePic=photo;
     }
 
     /**

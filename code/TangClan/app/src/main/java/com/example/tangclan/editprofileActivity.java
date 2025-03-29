@@ -97,12 +97,7 @@ public class editprofileActivity extends AppCompatActivity {
 
     }
 
-    private void saveProfileToDatabase(Profile userProfile) {
-        // This method should save the updated profile to your database
-        // For now, we'll just simulate successful saving
-        //databaseBestie.
 
-    }
 
 
 
