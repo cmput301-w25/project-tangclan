@@ -2,6 +2,8 @@ package com.example.tangclan;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,8 +21,8 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
     private FirebaseAuth auth;
 
     private DatabaseBestie db;
-    List<String> requestList;
-
+    private List<String> requestList; 
+    private List<String> followRequestUids;
     private FollowingBook followingBook;
 
     @Override
@@ -29,7 +31,9 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         setContentView(R.layout.activity_follow_requests);
         NavBarHelper.setupNavBar(this);
 
-        // Initialize Firebase Authentication
+        requestList = new ArrayList<>();
+        followRequestUids = new ArrayList<>();
+
         auth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = auth.getCurrentUser();
 
@@ -37,48 +41,51 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
 
         if (firebaseUser == null) {
             Log.e("FollowActivity", "User not logged in!");
-            finish(); // Close activity if no user is logged in
+            finish();
             return;
         }
 
-        // Get the logged-in user's UID
+
         String userUid = firebaseUser.getUid();
         Log.d("FollowActivity", "Logged-in user UID: " + userUid);
 
-        // Initialize currentUser with the logged-in UID
         currentUser = LoggedInUser.getInstance();
         currentUser.initializeFollowingBookFromDatabase(db);
         followingBook = currentUser.getFollowingBook();
 
-
-
         recyclerView = findViewById(R.id.recyclerViewFollowRequests);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Initialize adapter with empty list
-        requestList = new ArrayList<>();
-        adapter = new FollowRequestAdapter(requestList, new FollowingBook(), (pos,accepted) -> {
-            String requestedUid = requestList.get(pos);
-            requestList.remove(pos);
-            adapter.notifyItemRemoved(pos);
-            db.deleteFollowRequest(requestedUid,currentUser.getUid());
-            if (accepted) {
-                followingBook.acceptFollowRequest(requestedUid);
-                db.addFollowRelationship(new FollowRelationship(currentUser.getUid(),requestedUid));
-            } else {
-                followingBook.declineFollowRequest(requestedUid);
-            }
-        });
+        adapter = new FollowRequestAdapter(requestList, followingBook, this);
         recyclerView.setAdapter(adapter);
 
-        // Fetch and display pending follow requests
         currentUser.getPendingFollowRequests(userUid, requests -> {
-            for (int i =0; i < requests.size(); i++) {
-                db.getUser(requests.get(i).getRequesterUid(), profile -> {
+            for (FollowRequest request : requests) {
+                followRequestUids.add(request.getRequesterUid());
+                db.getUser(request.getRequesterUid(), profile -> {
                     requestList.add(profile.getUsername());
                     adapter.notifyItemInserted(requestList.size()-1);
                 });
             }
         });
+    }
+
+    @Override
+    public void onRequestHandled(int position, boolean accepted) {
+        String requesterUid = followRequestUids.get(position);
+        requestList.remove(position);
+        followRequestUids.remove(position);
+        adapter.notifyItemRemoved(position);
+
+        if (accepted) {
+            FollowRelationship relationship = new FollowRelationship(currentUser.getUid(), requesterUid);
+            db.addFollowRelationship(relationship);
+            followingBook.acceptFollowRequest(requesterUid);
+
+            Toast.makeText(this, "Follow request accepted", Toast.LENGTH_SHORT).show();
+        } else {
+            followingBook.declineFollowRequest(requesterUid);
+            Toast.makeText(this, "Follow request declined", Toast.LENGTH_SHORT).show();
+        }
+        db.deleteFollowRequest(requesterUid, currentUser.getUid());
     }
 }
