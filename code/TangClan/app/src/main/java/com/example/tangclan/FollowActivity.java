@@ -3,7 +3,6 @@ package com.example.tangclan;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,11 +22,7 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
     private FirebaseAuth auth;
 
     private DatabaseBestie db;
-
-    private List<String> requestList; 
-
     private List<String> requestList;
-
     private List<String> followRequestUids;
     private FollowingBook followingBook;
 
@@ -37,40 +32,45 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         setContentView(R.layout.activity_follow_requests);
         NavBarHelper.setupNavBar(this);
 
+        // Initialize lists
         requestList = new ArrayList<>();
         followRequestUids = new ArrayList<>();
 
+        // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = auth.getCurrentUser();
 
+        // Initialize database
         db = new DatabaseBestie();
 
         if (firebaseUser == null) {
             Log.e("FollowActivity", "User not logged in!");
-            finish();
+            finish(); // Close activity if no user is logged in
             return;
         }
-        
+
+        // Set up swipe refresh
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::refreshFollowRequests);
 
-
-
-
+        // Get the logged-in user's UID
         String userUid = firebaseUser.getUid();
         Log.d("FollowActivity", "Logged-in user UID: " + userUid);
 
+        // Initialize current user and following book
         currentUser = LoggedInUser.getInstance();
         currentUser.initializeFollowingBookFromDatabase(db);
         followingBook = currentUser.getFollowingBook();
 
+        // Set up RecyclerView
         recyclerView = findViewById(R.id.recyclerViewFollowRequests);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Initialize adapter with empty list
         adapter = new FollowRequestAdapter(requestList, followingBook, this);
         recyclerView.setAdapter(adapter);
 
-
-
+        // Fetch and display pending follow requests
         loadFollowRequests(userUid);
     }
 
@@ -78,7 +78,6 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         requestList.clear();
         followRequestUids.clear();
         adapter.notifyDataSetChanged();
-
 
         currentUser.getPendingFollowRequests(userUid, requests -> {
             for (FollowRequest request : requests) {
@@ -88,10 +87,6 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
                     adapter.notifyItemInserted(requestList.size()-1);
                 });
             }
-
-        });
-    }
-
             swipeRefreshLayout.setRefreshing(false);
         });
     }
@@ -104,7 +99,6 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         }
     }
 
-
     @Override
     public void onRequestHandled(int position, boolean accepted) {
         String requesterUid = followRequestUids.get(position);
@@ -116,7 +110,6 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
             FollowRelationship relationship = new FollowRelationship(currentUser.getUid(), requesterUid);
             db.addFollowRelationship(relationship);
             followingBook.acceptFollowRequest(requesterUid);
-
             Toast.makeText(this, "Follow request accepted", Toast.LENGTH_SHORT).show();
         } else {
             followingBook.declineFollowRequest(requesterUid);
