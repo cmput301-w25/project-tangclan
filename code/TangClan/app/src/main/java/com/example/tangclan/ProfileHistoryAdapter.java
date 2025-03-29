@@ -3,13 +3,17 @@ package com.example.tangclan;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +29,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * ArrayAdapter wrapper for the Profile History.
@@ -125,6 +131,44 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         spannableEmotionalState.setSpan(new ForegroundColorSpan(moodColor), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
+        Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
+        String setting = moodEvent.getSetting();
+
+        if (collaborators.isPresent() && !collaborators.get().isEmpty() && !collaborators.get().get(0).isEmpty()) {
+            int numCollaborators =  collaborators.get().size();
+
+            if (numCollaborators > 0) {
+                spannableUsernameEmotion.append(" with ");
+                SpannableString spannableSituation;
+
+                if (numCollaborators == 1) {
+                    spannableSituation = new SpannableString("one other person");
+                } else if (numCollaborators <= 7) { // the condition numCollaborators >= 2 is also true in this block
+                    spannableSituation = new SpannableString("two to several people");
+                } else {
+                    spannableSituation = new SpannableString("a crowd");
+                }
+
+                // underline to indicate clickable
+                spannableSituation.setSpan(new UnderlineSpan(), 0, spannableSituation.length(), 0);
+                spannableSituation.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        Log.d("test1", "here");
+                        showCollaborators(moodEvent);
+                    }
+                }, 0, spannableSituation.length(), 0);
+                // set the onClick/onTouch listener for the tags
+                spannableUsernameEmotion.append(spannableSituation);
+            } else {
+                spannableUsernameEmotion.append("alone");
+            }
+        } else {
+            if (setting != null && !setting.isEmpty()) {
+                spannableUsernameEmotion.append(" ").append(setting);
+            }
+        }
+
 
         // Find views by ID
         TextView emotionTextView = view.findViewById(R.id.username_emotional_state);
@@ -142,16 +186,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Set the emotional state
+        emotionTextView.setMovementMethod(LinkMovementMethod.getInstance());
         emotionTextView.setText(spannableUsernameEmotion);//
 
-        // Set the social situation (if present, otherwise default message)
-        //Optional<ArrayList<String>> collaborators = moodEvent.getCollaborators();
-        //if (collaborators.isPresent() && !collaborators.get().isEmpty()) {
-        //    String situationText = String.join(", ", collaborators.get());
-        //    situationTextView.setText("with " + situationText);
-        //} else {
-        //    situationTextView.setText("alone");
-        //}
 
         // Set the reason (in a mini box)
         Optional<String> reason = moodEvent.getReason();
@@ -175,6 +212,27 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
 
         return view;
+    }
+
+    private void showCollaborators(MoodEvent moodEvent) {
+        Context context = getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_tagged,null);
+        builder.setView(dialogView);
+
+        ListView tags = dialogView.findViewById(R.id.listview_tagged);
+
+        ArrayList<String> collaborators = moodEvent.getCollaborators().get(); // non-null handled
+        CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaborators);
+        tags.setAdapter(adapter);
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(context.getResources(), R.drawable.dialog_round, null));
+        dialog.show();
     }
 
     private void showCommentDialog(MoodEvent moodEvent) {
@@ -212,6 +270,10 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             }
         });
 
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(getContext().getResources(), R.drawable.dialog_round, null));
         dialog.show();
     }
 

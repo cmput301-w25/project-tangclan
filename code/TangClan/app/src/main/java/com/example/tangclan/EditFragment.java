@@ -126,8 +126,10 @@ public class EditFragment extends Fragment {
         AutoCompleteTextView autoCompleteSituation = view.findViewById(R.id.choose_social_situation);
         setUpDropdown(autoCompleteSituation, newSit, socialSituations);
 
+
         // set up collaborators
         EditText editSocialSit = view.findViewById(R.id.edit_social_situation);
+
         editSocialSit.setText(situation);
 
         // set saved reason text
