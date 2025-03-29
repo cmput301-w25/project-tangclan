@@ -68,8 +68,7 @@ public class ImageHelper {
     }
 
     private void checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             launchCamera();
         } else {
             requestCameraPermission();
@@ -83,7 +82,21 @@ public class ImageHelper {
     private void launchCamera() {
         try {
             Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            cameraLauncher.launch(cameraIntent);
+
+            // Create file for the full-size image
+            File photoFile = createImageFile();
+            if (photoFile != null) {
+                imageUri = FileProvider.getUriForFile(activity,
+                        activity.getPackageName() + ".fileprovider",
+                        photoFile);
+
+                // Specify where to save the full image
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                cameraLauncher.launch(cameraIntent);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(activity, "Error creating image file", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(activity, "Error launching camera", Toast.LENGTH_SHORT).show();
