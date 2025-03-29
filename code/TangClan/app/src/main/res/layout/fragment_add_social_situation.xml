@@ -1,5 +1,6 @@
 <!-- fragment_add_environment.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/blue_gradient_background"
@@ -52,7 +53,7 @@
             <TextView
                 android:layout_width="363dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="120dp"
                 android:fontFamily="@font/inter_medium"
                 android:paddingLeft="100dp"
                 android:text="Where are you feeling like this?"
@@ -76,17 +77,20 @@
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp">
 
         <AutoCompleteTextView
             android:id="@+id/editTextSetting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:inputType="none"
-            />
+            android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,13 +98,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Who were you with?"
+        android:text="Tag People"
         android:textColor="@color/black"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp">
 
         <EditText
             android:id="@+id/editTextSituation"
@@ -115,23 +123,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="76dp"
         android:gravity="center">
 
         <Button
             android:id="@+id/btnBackEnvironment"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:backgroundTint="@color/black"
-            android:text="Back" />
+            android:text="Back"
+            android:textSize="14sp"
+            app:cornerRadius="16dp" />
 
         <Button
             android:id="@+id/btnSaveEnvironment"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:backgroundTint="@color/black"
-            android:text="Save" />
+            android:text="Save"
+            android:textSize="14sp"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 </LinearLayout>

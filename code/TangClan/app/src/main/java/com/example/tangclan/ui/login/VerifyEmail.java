@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -52,17 +53,16 @@ public class VerifyEmail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.verify_link_sent);
-        Log.d("VerifyEmail", "we out here (verification step)");
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();;
 
         TextView guideText = findViewById(R.id.a_verificat2);
         TextView continueText = findViewById(R.id.continue_text);
-        TextView sendLinkText = findViewById(R.id.send_link);
+        Button sendLinkText = findViewById(R.id.send_link);
 
         String currentUsersEmail = user.getEmail();
 
-        guideText.setText("Please verify your email:" + currentUsersEmail);
+        guideText.setText("Please verify your email:\n" + currentUsersEmail);
 
         if (!user.isEmailVerified()) {
             continueText.setText("Continue");
