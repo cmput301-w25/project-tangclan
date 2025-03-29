@@ -4,123 +4,156 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Search Bar -->
-
-    <!-- Centered Buttons ("Following" and "For You") -->
-    <EditText
-        android:id="@+id/editText_search"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        android:autofillHints="username"
-        android:background="@drawable/edittext_round"
-        android:fontFamily="@font/inter"
-        android:hint="@string/search_mood_text"
-        android:inputType="text"
-        android:letterSpacing="-0.03"
-        android:paddingHorizontal="20dp"
-        android:textColorHint="@color/material_dynamic_neutral40"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/divider_toggle_list"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <LinearLayout
-        android:id="@+id/button_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:orientation="horizontal"
-        android:gravity="center"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_search">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_following"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="#f1ffa1"
-            android:gravity="center"
-            android:text="@string/following_text_feed"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            app:cornerRadius="20dp"
-            app:strokeColor="@color/black"
-            app:strokeWidth="2dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_for_you"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#ffffff"
-            android:gravity="center"
-            android:text="@string/for_you_text_feed"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            app:cornerRadius="20dp"
-            app:strokeColor="@color/black"
-            app:strokeWidth="2dp" />
-
-    </LinearLayout>
-
-    <!-- Divider Below Buttons -->
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider_toggle_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        app:dividerColor="@color/black"
-        app:dividerThickness="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/container_filter"
-        app:layout_constraintTop_toBottomOf="@+id/button_container" />
-
-    <!-- Filter and Other Elements -->
-    <LinearLayout
-        android:id="@+id/container_filter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="0dp"
-        android:layout_marginVertical="0dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider_toggle_list">
-
-    </LinearLayout>
-
-    <!-- Divider Below Filter -->
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        app:dividerColor="@color/black"
-        app:dividerThickness="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/listview_feed"
-        app:layout_constraintTop_toBottomOf="@+id/container_filter" />
-
-    <!-- ListView for Feed -->
-    <ListView
-        android:id="@+id/listview_feed"
+    <!-- Main container that will hold both feed and users views -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:divider="@color/black"
-        android:dividerHeight="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/container_filter" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/navbarContainer">
+
+        <!-- Feed Container (visible by default) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/feed_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Your existing feed content -->
+            <EditText
+                android:id="@+id/editText_search"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="32dp"
+                android:autofillHints="username"
+                android:background="@drawable/edittext_round"
+                android:fontFamily="@font/inter"
+                android:hint="@string/search_mood_text"
+                android:inputType="text"
+                android:letterSpacing="-0.03"
+                android:paddingHorizontal="20dp"
+                android:textColorHint="@color/material_dynamic_neutral40"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/divider_toggle_list"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <LinearLayout
+                android:id="@+id/button_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editText_search">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_moods"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:backgroundTint="#f1ffa1"
+                    android:gravity="center"
+                    android:text="@string/following_text_feed"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:cornerRadius="20dp"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="2dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_users"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#ffffff"
+                    android:gravity="center"
+                    android:text="@string/for_you_text_feed"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:cornerRadius="20dp"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="2dp" />
+            </LinearLayout>
+
+            <!-- Divider Below Buttons -->
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_toggle_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                app:dividerColor="@color/black"
+                app:dividerThickness="1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/container_filter"
+                app:layout_constraintTop_toBottomOf="@+id/button_container" />
+
+            <!-- Filter and Other Elements -->
+            <LinearLayout
+                android:id="@+id/container_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="0dp"
+                android:layout_marginVertical="0dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider_toggle_list">
+
+                <ImageView
+                    android:id="@+id/filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="28dp"
+                    android:layout_marginBottom="8dp"
+                    android:clickable="true"
+                    android:contentDescription="@string/filter_mood_events"
+                    android:src="@drawable/filter" />
+            </LinearLayout>
+
+            <!-- Divider Below Filter -->
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                app:dividerColor="@color/black"
+                app:dividerThickness="1dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/listview_feed"
+                app:layout_constraintTop_toBottomOf="@+id/container_filter" />
+
+            <!-- ListView for Feed -->
+            <ListView
+                android:id="@+id/listview_feed"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:divider="@color/black"
+                android:dividerHeight="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/container_filter" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Users Container (hidden by default) -->
+        <include
+            android:id="@+id/users_container"
+            layout="@layout/users_feed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Navigation Bar -->
     <include
@@ -129,20 +162,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-    <ImageView
-        android:id="@+id/filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:contentDescription="@string/filter_mood_events"
-        android:src="@drawable/filter"
-        app:layout_constraintBottom_toTopOf="@+id/divider_toggle_list"
-        app:layout_constraintEnd_toStartOf="@+id/button_container"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
