@@ -13,17 +13,31 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
 
     private List<String> followRequests;
     private FollowingBook followingBook;
-
     private handleFollowRequest listener;
 
     public interface handleFollowRequest {
         void onRequestHandled(int position, boolean accepted);
     }
 
+    /**
+     * Constructor with listener for request handling
+     * @param followRequests List of follow request UIDs
+     * @param followingBook FollowingBook instance
+     * @param listener Callback for handling requests
+     */
     public FollowRequestAdapter(List<String> followRequests, FollowingBook followingBook, handleFollowRequest listener) {
         this.followRequests = followRequests;
         this.followingBook = followingBook;
         this.listener = listener;
+    }
+
+    /**
+     * Constructor without listener (maintains backward compatibility)
+     * @param followRequests List of follow request UIDs
+     * @param followingBook FollowingBook instance
+     */
+    public FollowRequestAdapter(List<String> followRequests, FollowingBook followingBook) {
+        this(followRequests, followingBook, null);
     }
 
     @NonNull
@@ -36,22 +50,30 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        LoggedInUser followee = LoggedInUser.getInstance();
-        DatabaseBestie db = new DatabaseBestie();
         String uid = followRequests.get(position);
         holder.textViewUsername.setText(uid);
 
         // Accept button logic
         holder.buttonAccept.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onRequestHandled(position,true);
+                listener.onRequestHandled(position, true);
+            } else {
+                // Fallback to direct handling if no listener
+                followingBook.acceptFollowRequest(uid);
+                followRequests.remove(uid);
+                notifyDataSetChanged();
             }
         });
 
         // Decline button logic
         holder.buttonDecline.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onRequestHandled(position,false);
+                listener.onRequestHandled(position, false);
+            } else {
+                // Fallback to direct handling if no listener
+                followingBook.declineFollowRequest(uid);
+                followRequests.remove(uid);
+                notifyDataSetChanged();
             }
         });
     }
