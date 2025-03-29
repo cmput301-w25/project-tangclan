@@ -12,6 +12,8 @@ public class FollowRequest {
     private Date timestamp;
     private String status;
 
+    public FollowRequest() {
+    }
     public FollowRequest(String requesterUid, String targetUid) {
         this.requesterUid = requesterUid;
         this.targetUid = targetUid;

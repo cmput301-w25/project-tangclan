@@ -145,6 +145,12 @@ public class FollowingBook {
         return uidToMoodEvent;
     }
 
+    // Add a follow request
+    public void addRequestingFollower(String uid) {
+        if (!followRequests.contains(uid)) {
+            followRequests.add(uid);
+        }
+    }
     // Accept a follow request
     public void acceptFollowRequest(String uid) {
         if (followRequests.contains(uid)) {
@@ -212,6 +218,11 @@ public class FollowingBook {
     public void setFollowing(ArrayList<String> following) {
         this.following = following;
     }
+
+    public void setFollowRequests(ArrayList<String> followRequests) {
+        this.followRequests = followRequests;
+    }
+
     public ArrayList<String> getFollowRequests() {
         return followRequests;
     }

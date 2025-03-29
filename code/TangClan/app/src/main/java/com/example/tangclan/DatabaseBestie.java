@@ -339,9 +339,6 @@ public class DatabaseBestie {
 
 
 
-
-
-
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
     /**
      * This adds a mood event details to the "moodEvents" collection
@@ -906,27 +903,6 @@ public class DatabaseBestie {
                         callback.onFollowRequestProcessed(false);
                     }
                 });
-    }
-
-    public void getAllUsers(OnUsersLoadedListener listener) {
-        // Implement your database query to get all users
-        // For Firebase Firestore example:
-        db.collection("users")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Profile> users = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Profile user = document.toObject(Profile.class);
-                            users.add(user);
-                        }
-                        listener.onUsersLoaded(users);
-                    }
-                });
-    }
-
-    public interface OnUsersLoadedListener {
-        void onUsersLoaded(List<Profile> users);
     }
 
 

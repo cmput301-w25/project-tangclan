@@ -96,6 +96,7 @@ public class LogIn extends AppCompatActivity {
                                                 bestie.updatePasswordSameAsFirebaseAuth(profile.getEmail(), password);
                                             }
                                             LoggedInUser loggedInUser = LoggedInUser.getInstance();
+                                            loggedInUser.setUid(profile.getUid());
                                             loggedInUser.setEmail(profile.getEmail());
                                             loggedInUser.setUsername(profile.getUsername());
                                             loggedInUser.setPassword(profile.getPassword());

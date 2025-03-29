@@ -14,9 +14,16 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
     private List<String> followRequests;
     private FollowingBook followingBook;
 
-    public FollowRequestAdapter(List<String> followRequests, FollowingBook followingBook) {
+    private handleFollowRequest listener;
+
+    public interface handleFollowRequest {
+        void onRequestHandled(int position, boolean accepted);
+    }
+
+    public FollowRequestAdapter(List<String> followRequests, FollowingBook followingBook, handleFollowRequest listener) {
         this.followRequests = followRequests;
         this.followingBook = followingBook;
+        this.listener = listener;
     }
 
     @NonNull
@@ -29,21 +36,23 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        LoggedInUser followee = LoggedInUser.getInstance();
+        DatabaseBestie db = new DatabaseBestie();
         String uid = followRequests.get(position);
         holder.textViewUsername.setText(uid);
 
         // Accept button logic
         holder.buttonAccept.setOnClickListener(v -> {
-            followingBook.acceptFollowRequest(uid);
-            followRequests.remove(uid);
-            notifyDataSetChanged();
+            if (listener != null) {
+                listener.onRequestHandled(position,true);
+            }
         });
 
         // Decline button logic
         holder.buttonDecline.setOnClickListener(v -> {
-            followingBook.declineFollowRequest(uid);
-            followRequests.remove(uid);
-            notifyDataSetChanged();
+            if (listener != null) {
+                listener.onRequestHandled(position,false);
+            }
         });
     }
 

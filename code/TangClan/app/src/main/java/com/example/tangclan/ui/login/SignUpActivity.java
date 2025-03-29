@@ -127,6 +127,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                                     Profile newUser = new Profile(displayName, username, password, email);
+                                                    newUser.setUid(uid);  // same as firebase auth
                                                     bestie.addUser(uid, newUser);  // replace null with default image
                                                     LoggedInUser loggedInUser = LoggedInUser.getInstance();
                                                     loggedInUser.setUid(uid);
