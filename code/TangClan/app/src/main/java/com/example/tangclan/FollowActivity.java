@@ -11,12 +11,17 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FollowActivity extends AppCompatActivity {
+public class FollowActivity extends AppCompatActivity implements FollowRequestAdapter.handleFollowRequest {
 
     private RecyclerView recyclerView;
     private FollowRequestAdapter adapter;
-    private User currentUser;
+    private LoggedInUser currentUser;
     private FirebaseAuth auth;
+
+    private DatabaseBestie db;
+    List<String> requestList;
+
+    private FollowingBook followingBook;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,6 +32,8 @@ public class FollowActivity extends AppCompatActivity {
         // Initialize Firebase Authentication
         auth = FirebaseAuth.getInstance();
         FirebaseUser firebaseUser = auth.getCurrentUser();
+
+        db = new DatabaseBestie();
 
         if (firebaseUser == null) {
             Log.e("FollowActivity", "User not logged in!");
@@ -39,24 +46,35 @@ public class FollowActivity extends AppCompatActivity {
         Log.d("FollowActivity", "Logged-in user UID: " + userUid);
 
         // Initialize currentUser with the logged-in UID
-        currentUser = new User();
-        currentUser.setUid(userUid);
+        currentUser = LoggedInUser.getInstance();
+        currentUser.initializeFollowingBookFromDatabase(db);
+        followingBook = currentUser.getFollowingBook();
+
+
 
         recyclerView = findViewById(R.id.recyclerViewFollowRequests);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize adapter with empty list
-        List<String> requestList = new ArrayList<>();
-        adapter = new FollowRequestAdapter(requestList, new FollowingBook());
+        requestList = new ArrayList<>();
+        adapter = new FollowRequestAdapter(requestList, new FollowingBook(), (pos,accepted) -> {
+            String requestedUid = requestList.get(pos);
+            requestList.remove(pos);
+            adapter.notifyItemRemoved(pos);
+            db.deleteFollowRequest(requestedUid,currentUser.getUid());
+            if (accepted) {
+                followingBook.acceptFollowRequest(requestedUid);
+                db.addFollowRelationship(new FollowRelationship(currentUser.getUid(),requestedUid));
+            } else {
+                followingBook.declineFollowRequest(requestedUid);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         // Fetch and display pending follow requests
-        DatabaseBestie db = new DatabaseBestie();
         currentUser.getPendingFollowRequests(userUid, requests -> {
-            List<String> followRequestUids = new ArrayList<>();
             for (int i =0; i < requests.size(); i++) {
                 db.getUser(requests.get(i).getRequesterUid(), profile -> {
-                    System.out.println("profile is "+profile.getUsername());
                     requestList.add(profile.getUsername());
                     adapter.notifyItemInserted(requestList.size()-1);
                 });
