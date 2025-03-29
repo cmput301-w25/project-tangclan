@@ -923,6 +923,7 @@ public class DatabaseBestie {
     }
 
 
+
     public void deleteFollowRequest(String requesterUid, String targetUid) {
         followRequestsRef.whereEqualTo("requesterUid", requesterUid)
                 .whereEqualTo("targetUid", targetUid)
@@ -956,6 +957,7 @@ public class DatabaseBestie {
     public interface OnUsersLoadedListener {
         void onUsersLoaded(List<Profile> users);
     }
+
 
 
 
