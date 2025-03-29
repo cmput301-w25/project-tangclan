@@ -44,9 +44,22 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> cameraLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null && data.getExtras() != null) {
+                        Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                        if (bitmap != null) {
+                            selectedImage = bitmap;
+                            imageView.setImageBitmap(selectedImage);
+                            return;
+                        }
+                    }
+
+
                     imageUri = imageHelper.getImageUri();
-                    imageView.setImageURI(imageUri);
-                    selectedImage = imageHelper.uriToBitmap(imageUri);
+                    if (imageUri != null) {
+                        imageView.setImageURI(imageUri);
+                        selectedImage = imageHelper.uriToBitmap(imageUri);
+                    }
                 }
             });
 
@@ -61,7 +74,7 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             });
 
 
-    private String imagePath = null; // Optional image path (null if not uploaded)
+    private String imagePath = null; 
 
 
     @Override
@@ -72,14 +85,11 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
         // Initialize UI components
         imageView = findViewById(R.id.imageView);
-        Button buttonSaveImage = findViewById(R.id.btnSave);
-        Button buttonSaveText = findViewById(R.id.buttonSaveText);
         Button buttonNext = findViewById(R.id.btnNext);
         TextView charCount = findViewById(R.id.charCount);
         TextInputEditText reason = findViewById(R.id.reason);
         ImageView closeIcon = findViewById(R.id.closeIcon);
         Button btnBack = findViewById(R.id.btnBackEnvironment);
-        TextInputEditText editTextReason = findViewById(R.id.text203).findViewById(R.id.reason);
 
         // Initialize ImageHelper
         imageHelper = new ImageHelper(this, cameraLauncher, galleryLauncher);
@@ -97,24 +107,27 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
                 imageView.setImageBitmap(imageHelper.base64ToBitmap(savedImg));
             }
         }
-        // Set up image selection
-        imageView.setOnClickListener(v -> imageHelper.showImagePickerDialog());
 
-        // Save image button functionality
-        buttonSaveImage.setOnClickListener(v -> {
-            if (imageUri != null) {
-                // Using the static method from ImageValidator
-                if (ImageValidator.isImageSizeValid(this, imageUri)) {
-                    System.out.println("image should be valid");
-                    selectedImage = imageHelper.uriToBitmap(imageUri);
-                    Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(this, "Image is too large!", Toast.LENGTH_SHORT).show();
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (reason.getText() != null) {
+                    savedDetails.putString("reason", reason.getText().toString().trim());  // not null since first fragment handles this
                 }
-            } else {
-                Toast.makeText(this, "No image selected!", Toast.LENGTH_SHORT).show();
+                if (validImage()) {
+                    if (selectedImage != null) {
+                        byte[] imgBytes = ImageValidator.compressBitmapToSize(selectedImage);
+                        savedDetails.putString("image", Base64.encodeToString(imgBytes, Base64.DEFAULT));
+                    }
+                }
+                Intent intent = new Intent(UploadPictureForMoodEventActivity.this, AddSocialSituationActivity.class);
+                intent.putExtras(savedDetails);
+                startActivity(intent);
+                finish();
             }
         });
+        // Set up image selection
+        imageView.setOnClickListener(v -> imageHelper.showImagePickerDialog());
 
         // Set text watcher for character count
         reason.addTextChangedListener(new TextWatcher() {
@@ -137,19 +150,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Save text button functionality
-        buttonSaveText.setOnClickListener(v -> {
-            String userInput = reason.getText().toString().trim();
-
-            boolean validatedInput = imageHelper.textValidation(userInput);
-
-            if (!validatedInput) {
-                reason.setError("You're way over limit!");
-            } else {
-                Toast.makeText(this, "Reason saved!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         // Next button (proceed to profile page)
         buttonNext.setOnClickListener(v -> {
             String userInput = reason.getText().toString().trim();
@@ -162,13 +162,23 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
 
             bundle.putString("reason", String.valueOf(reason));
 
+            //
+
 
             // Add reason if valid
             if (imageHelper.textValidation(userInput)) {
                 bundle.putString("reason", userInput);
+                savedDetails.putString("reason", TextUtils.isEmpty(userInput) ? null : userInput);
+            } else {
+                reason.setError("You're way over limit!");
+                return;
             }
 
-            // Add image if selected
+            // Check for valid image or no image
+            if (!validImage()){
+                return;
+            }
+            // Check if there is an image
             if (selectedImage != null) {
                 String imagePath = imageHelper.saveBitmapToFile(selectedImage);
                 if (imagePath != null) {
@@ -177,8 +187,6 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
                 byte[] imgBytes = ImageValidator.compressBitmapToSize(selectedImage);
                 savedDetails.putString("image", Base64.encodeToString(imgBytes, Base64.DEFAULT));
             }
-            savedDetails.putString("reason", TextUtils.isEmpty(userInput) ? null : userInput);
-
             // Create an intent to start the next activity
             Intent intent = new Intent(UploadPictureForMoodEventActivity.this, ReviewDetailsActivity.class);
             intent.putExtras(savedDetails);
@@ -191,5 +199,20 @@ public class UploadPictureForMoodEventActivity extends AppCompatActivity {
             startActivity(new Intent(UploadPictureForMoodEventActivity.this, FeedActivity.class));
             finish();
         });
+    }
+
+    public boolean validImage() {
+        if (imageUri != null) {
+            // Using the static method from ImageValidator
+            if (ImageValidator.isImageSizeValid(this, imageUri)) {
+                selectedImage = imageHelper.uriToBitmap(imageUri);
+                Toast.makeText(this, "Image saved!", Toast.LENGTH_SHORT).show();
+                return true;
+            } else {
+                Toast.makeText(this, "Image is too large!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;  // no image selected
     }
 }
