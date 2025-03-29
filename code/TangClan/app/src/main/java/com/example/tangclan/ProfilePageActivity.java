@@ -381,6 +381,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String mid = post.getMid();
         String month = post.userFormattedDate().substring(3);
         String emotion = post.getMoodEmotionalState();
+        String setting = post.getSetting();
         String collaborators = getStringOfCollaborators(post);
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
@@ -390,6 +391,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         args.putString("mid", mid);
         args.putString("month", month);
         args.putString("emotion", emotion);
+        args.putString("setting", setting);
         args.putString("social situation", collaborators);
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
