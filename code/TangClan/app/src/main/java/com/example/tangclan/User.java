@@ -127,10 +127,6 @@ public class User {
         });
     }
 
-    public FollowingBook getFollowingBook() {
-        return followingBook;
-    }
-
     public void setFollowingBook(FollowingBook followingBook) {
         this.followingBook = followingBook;
     }

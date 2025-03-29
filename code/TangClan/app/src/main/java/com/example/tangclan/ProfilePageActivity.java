@@ -155,8 +155,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
 
         // Fetch the user's past mood events from the database
-        initializeMoodEventBookFromDatabase();
-        //userProfile.initializeFollowingBookFromDatabase(databaseBestie);
+        userProfile.initializeFollowingBookFromDatabase(databaseBestie);
+        FollowingBook userFollowingBook = userProfile.getFollowingBook();
 
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
