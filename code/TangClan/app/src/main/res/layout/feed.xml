@@ -75,6 +75,7 @@
         app:layout_constraintTop_toTopOf="@id/rectangle_2" />
 
     <ListView
+
         android:id="@+id/listViewFeed"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -87,12 +88,15 @@
         tools:layout_editor_absoluteX="16dp" />
 
     <FrameLayout
+
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toBottomOf="@id/rectangle_1"
         app:layout_constraintBottom_toTopOf="@id/navbarContainer">
 
+        <!--spinner for dropdown checkbox removed here-->
+        <!--
         <Spinner
             android:id="@+id/feed_filter"
             android:layout_width="55dp"
@@ -100,18 +104,10 @@
             android:layout_marginTop="40dp"
             android:layout_marginLeft="20dp"
             android:background="@drawable/outline_filter_alt_24" />
+        -->
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TEST TEXTVIEW FOR FILTER" />
 
-        <Button
-            android:id="@+id/test_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TestBUTTON" />
+
 
 
     </FrameLayout>
@@ -124,5 +120,49 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+
+    <!-- UI for searching for profiles-->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        >
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_marginTop="140dp"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="invisible"/>
+
+
+        <!-- recycler view to display our data -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_below="@id/toolbar"
+            android:id="@+id/ProfileRecyclerViewForYou"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"/>
+    </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

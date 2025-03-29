@@ -4,29 +4,30 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 
 //part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
@@ -59,8 +60,16 @@ public class FeedActivity extends AppCompatActivity {
     private View rectangleFollowing;
     private View rectangleForYou;
 
-    private ArrayList<StateVO> listVOs;
-    private StateVO Object;
+
+
+    // creating variables for UI components
+    private RecyclerView ProfileRV;
+    private Toolbar toolbar;
+
+    // variable for our adapter class and array list
+    private SearchOtherProfileAdapter adapter1;
+    private ArrayList<Profile> ProfileArrayList;
+
 
 
 
@@ -103,6 +112,22 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed);
         NavBarHelper.setupNavBar(this);
+
+        //Searching for users
+        // initializing variables
+        ProfileRV = findViewById(R.id.ProfileRecyclerViewForYou);
+        toolbar = findViewById(R.id.toolbar);
+
+
+
+
+        // setting the toolbar as the ActionBar
+        setSupportActionBar(toolbar);
+
+        // calling method to build recycler view
+        buildRecyclerView();
+
+
 
         // Logout button
         Button logout = findViewById(R.id.logout_butt);
@@ -173,7 +198,7 @@ public class FeedActivity extends AppCompatActivity {
         ImageView homeIcon = findViewById(R.id.imgHome); // do nothing but change color to white
         ImageView searchIcon = findViewById(R.id.imgSearch);
         ImageView profileIcon = findViewById(R.id.imgProfile);
-        Button testButton=findViewById(R.id.test_button);
+        //Button testButton=findViewById(R.id.test_button);
 
         profileIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,64 +207,6 @@ public class FeedActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        //TESTING FUNCTIONALITY OF SEARCH FIRST!
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(FeedActivity.this, ProfilePageActivity.class));
-                finish();
-            }
-
-        });
-
-
-
-        //Filter Spinner UI functionality
-        //NOTE: "empty space" put as first input here because it displays first item for some reason on the xml....
-        final String[] select_qualification = { "","Angry","Sad"};//TODO: ADD MORE FILTERS IF NEED BE, HARDCODED!
-        Spinner spinner = (Spinner) findViewById(R.id.feed_filter);
-
-        listVOs = new ArrayList<StateVO>();
-
-        for (int i = 0; i < select_qualification.length; i++) {
-            StateVO stateVO = new StateVO();
-            stateVO.setTitle(select_qualification[i]);
-            stateVO.setSelected(false);
-            listVOs.add(stateVO);
-
-        }
-
-
-        TextView testTextView;
-        testTextView=findViewById(R.id.textView2);
-        MyAdapter myAdapter = new MyAdapter(this, 0,listVOs,testTextView);//why is zero here? no idea...
-        spinner.setAdapter(myAdapter);
-        //CheckBox EditProfileButton =(CheckBox) findViewById(R.id.checkbox);
-        //Note: we start from i=1 since first is empty string? maybe? test!
-        //NOTE: change stateVO objects to mood objects such as angry, sad, excited, etc(the ones we hardcoded)
-        //PUT FUNCTIONALITY FOR FILTERS HERE!!!!!!!!!
-        //DOES NOT WORK!
-        //myAdapter.getCustomView(2,)
-        //TEST TEXTVIEW
-
-        for (int i=0;i<listVOs.size();i++){
-            Object=listVOs.get(i);
-            if (Object.isSelected()){
-                //testTextView.setVisibility(View.INVISIBLE);
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -256,6 +223,10 @@ public class FeedActivity extends AppCompatActivity {
                 // Update UI to show Following tab is active
                 rectangleFollowing.setBackgroundResource(R.drawable.rectangle_1); // Active style
                 rectangleForYou.setBackgroundResource(R.drawable.rectangle_2); // Inactive style
+                listViewFeed.setVisibility(View.VISIBLE);
+                toolbar.setVisibility(View.INVISIBLE);
+                ProfileRV.setVisibility(View.INVISIBLE);
+
             }
         });
 
@@ -266,6 +237,9 @@ public class FeedActivity extends AppCompatActivity {
                 // Update UI to show For You tab is active
                 rectangleFollowing.setBackgroundResource(R.drawable.rectangle_2); // Inactive style
                 rectangleForYou.setBackgroundResource(R.drawable.rectangle_1); // Active style
+                listViewFeed.setVisibility(View.INVISIBLE);
+                toolbar.setVisibility(View.VISIBLE);
+                ProfileRV.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -336,6 +310,98 @@ public class FeedActivity extends AppCompatActivity {
         super.onResume();
         // Refresh the feed when coming back to this activity
         loadFollowingFeed();
+    }
+
+
+
+    // calling onCreateOptionsMenu to inflate our menu file
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // get the MenuInflater
+        MenuInflater inflater = getMenuInflater();
+
+        // inflate the menu
+        inflater.inflate(R.menu.search_menu,menu);
+
+        // get the search menu item
+        MenuItem searchItem = menu.findItem(R.id.actionSearch);
+
+        // get the SearchView from the menu item
+        SearchView searchView = (SearchView) searchItem.getActionView();
+
+        // set the on query text listener for the SearchView
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // call a method to filter your RecyclerView
+                filter(newText);
+                return false;
+            }
+        });
+        return true;
+    }
+
+    // method to filter data based on query
+    private void filter(String text) {
+        // creating a new array list to filter data
+        ArrayList<Profile> filteredlist = new ArrayList<>();
+
+        // running a for loop to compare elements
+        for (Profile item : ProfileArrayList) {
+            // checking if the entered string matches any item of our recycler view
+            if (item.getUsername().toLowerCase().contains(text.toLowerCase())) {
+                // adding matched item to the filtered list
+                filteredlist.add(item);
+            }
+        }
+
+        if (filteredlist.isEmpty()) {
+            // displaying a toast message if no data found
+            Toast.makeText(this, "No Data Found..", Toast.LENGTH_SHORT).show();
+        } else {
+            // passing the filtered list to the adapter class
+            adapter1.filterList(filteredlist);
+        }
+    }
+
+    // method to build RecyclerView
+    private void buildRecyclerView() {
+        // creating a new array list
+
+        //Get the array list from the database here!
+        ProfileArrayList = new ArrayList<>();
+
+        // adding data to the array list from the collection from the database
+        //Profile profileTest=databaseBestie.getUser("yMlofXqAySgYvEFaOyocWp2yNbh1",);
+
+
+        //TODO: HOOK UP TO DATABASE, AND GET PROFILES FROM USERS COLLECTIONS AND ADD TO PROFILE ARRAYLIST
+        ProfileArrayList.add(new Profile("Shaiansss","shaian","Gg123?111","shaian@ualberta.ca","20",null));
+        ProfileArrayList.add(new Profile("Shaiansss","shaian123","Gg123?111","shaian@ualberta.ca","20",null));
+        ProfileArrayList.add(new Profile("Shaiansss","ggshaian","Gg123?111","shaian@ualberta.ca","20",null));
+        ProfileArrayList.add(new Profile("Shaiansss","BBshaian","Gg123?111","shaian@ualberta.ca","20",null));
+
+
+
+
+
+        // initializing the adapter class
+        adapter1 = new SearchOtherProfileAdapter(ProfileArrayList, FeedActivity.this);
+
+        // adding layout manager to the RecyclerView
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        ProfileRV.setHasFixedSize(true);
+
+        // setting layout manager to the RecyclerView
+        ProfileRV.setLayoutManager(manager);
+
+        // setting adapter to the RecyclerView
+        ProfileRV.setAdapter(adapter1);
     }
 
 
