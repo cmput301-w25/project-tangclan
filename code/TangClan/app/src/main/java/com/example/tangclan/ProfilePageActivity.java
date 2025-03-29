@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -144,6 +145,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Retrieve the current logged-in user profile using the Singleton instance
         userProfile = LoggedInUser.getInstance();
+        FollowingBook userFollowingBook = userProfile.getFollowingBook();
 
         // Set the user information in the UI
         String pfpStr = userProfile.getProfilePic();
@@ -155,6 +157,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
         usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
+
+        followingTextView.setText(String.valueOf(userFollowingBook.getFollowingCount()));
+        followersTextView.setText(String.valueOf(userFollowingBook.getFollowerCount()));
     }
 
     private void setupProfileListView() {
@@ -270,6 +275,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
                 // set setting
                 if (selectedSetting != null) {
+                    Log.d("test1", selectedSetting);
                     newMoodEvent.setSetting(selectedSetting);
                 } else {
                     newMoodEvent.setSetting("");

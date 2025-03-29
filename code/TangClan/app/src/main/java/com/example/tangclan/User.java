@@ -34,8 +34,17 @@ public class User {
         this.moodEventBook = new MoodEventBook();
         this.db = FirebaseFirestore.getInstance();
         this.followRequestsRef = db.collection("followRequests");
+        this.followingBook = new FollowingBook();
     }
 
+    /**
+     * Getter for the FollowingBook
+     * @return
+     *      the following book of the user
+     */
+    public FollowingBook getFollowingBook() {
+        return this.followingBook;
+    }
     /**
      * Getter for the uid
      * @return

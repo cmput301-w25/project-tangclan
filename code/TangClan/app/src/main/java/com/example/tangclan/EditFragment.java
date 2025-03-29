@@ -196,7 +196,7 @@ public class EditFragment extends Fragment {
         });
 
         // Implement Cancel Button
-        ImageButton cancel_butt = view.findViewById(R.id.closeIcon);
+        ImageView cancel_butt = view.findViewById(R.id.closeIcon);
         cancel_butt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

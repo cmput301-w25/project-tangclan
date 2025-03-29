@@ -11,8 +11,10 @@
         android:id="@+id/container_drawable_name_emotional_state"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/reason"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,9 +30,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:fontFamily="@font/inter_medium"
-            android:gravity="center"
+            android:gravity="start|center"
             android:letterSpacing="-0.03"
-            android:textSize="20sp"
+            android:textSize="18sp"
             tools:text="@string/placeholder_username_emotion" />
 
     </LinearLayout>
@@ -41,20 +43,22 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_semibold"
         android:letterSpacing="-0.03"
-        android:paddingVertical="16dp"
-        android:textSize="16sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_drawable_name_emotional_state"
+        app:layout_constraintBottom_toTopOf="@id/mood_event_image"
         tools:text="@string/placeholder_situation" />
 
     <ImageView
         android:id="@+id/mood_event_image"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:contentDescription="Mood Event Image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/container_date_time"
         app:layout_constraintTop_toBottomOf="@id/reason" />
 
     <LinearLayout
@@ -62,6 +66,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginVertical="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mood_event_image">
