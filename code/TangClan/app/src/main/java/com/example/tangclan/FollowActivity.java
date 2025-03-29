@@ -3,6 +3,7 @@ package com.example.tangclan;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,7 +23,11 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
     private FirebaseAuth auth;
 
     private DatabaseBestie db;
+
+    private List<String> requestList; 
+
     private List<String> requestList;
+
     private List<String> followRequestUids;
     private FollowingBook followingBook;
 
@@ -49,6 +54,9 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this::refreshFollowRequests);
 
+
+
+
         String userUid = firebaseUser.getUid();
         Log.d("FollowActivity", "Logged-in user UID: " + userUid);
 
@@ -61,6 +69,8 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         adapter = new FollowRequestAdapter(requestList, followingBook, this);
         recyclerView.setAdapter(adapter);
 
+
+
         loadFollowRequests(userUid);
     }
 
@@ -68,6 +78,7 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         requestList.clear();
         followRequestUids.clear();
         adapter.notifyDataSetChanged();
+
 
         currentUser.getPendingFollowRequests(userUid, requests -> {
             for (FollowRequest request : requests) {
@@ -77,6 +88,10 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
                     adapter.notifyItemInserted(requestList.size()-1);
                 });
             }
+
+        });
+    }
+
             swipeRefreshLayout.setRefreshing(false);
         });
     }
@@ -89,6 +104,7 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
         }
     }
 
+
     @Override
     public void onRequestHandled(int position, boolean accepted) {
         String requesterUid = followRequestUids.get(position);
@@ -100,6 +116,7 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
             FollowRelationship relationship = new FollowRelationship(currentUser.getUid(), requesterUid);
             db.addFollowRelationship(relationship);
             followingBook.acceptFollowRequest(requesterUid);
+
             Toast.makeText(this, "Follow request accepted", Toast.LENGTH_SHORT).show();
         } else {
             followingBook.declineFollowRequest(requesterUid);

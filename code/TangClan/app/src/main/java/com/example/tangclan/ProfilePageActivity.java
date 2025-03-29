@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import static java.lang.Integer.parseInt;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -152,7 +155,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Fetch the user's past mood events from the database
         initializeMoodEventBookFromDatabase();
-
+        userProfile.initializeFollowingBookFromDatabase(databaseBestie);
 
         // This method should retrieve the current user's profile
         // For now, we'll create a dummy profile for testing
@@ -170,6 +173,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
         usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
+        String followerCt = String.valueOf(userProfile.getFollowingBook().getFollowerCount());
+        String followingCt = String.valueOf(userProfile.getFollowingBook().getFollowingCount());
+        followersTextView.setText(followerCt);
+        followingTextView.setText(followingCt);
 
         // Setup the ListView after profile is loaded
         setupProfileListView();
