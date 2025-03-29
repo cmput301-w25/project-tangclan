@@ -59,6 +59,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     private ListView listViewFeed;
 
+    //private Profile profileSearch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +89,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
 
         // Get current user profile
+
         getCurrentUserProfile();
         setupProfileListView();
 
@@ -125,6 +128,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     protected void onResume() {
         super.onResume();
         // Refresh the list whenever the activity is resumed
+
         getCurrentUserProfile();
         setupProfileListView();
         networkManager.registerNetworkMonitor();
@@ -146,8 +150,45 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private void getCurrentUserProfile() {
 
         // Retrieve the current logged-in user profile using the Singleton instance
-        userProfile = LoggedInUser.getInstance();
 
+        //Grabs profile object
+
+
+
+
+        //Intent intentSearchProfile = getIntent();
+        //Profile profileSearch = (Profile) intentSearchProfile.getSerializableExtra("KeySearchProfile");
+
+
+        //String username = profileSearch.getUsername();
+        //String email = profileSearch.getEmail();
+        //Toast.makeText(getApplicationContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+
+
+        //if (profileSearch!=null){
+            //userProfile = profileSearch;
+        //}else{
+
+        if (getIntent()!=null && getIntent().getExtras()!=null && getIntent().getExtras().containsKey("User")){//change key if passing object
+
+            /*
+            String Username = getIntent().getStringExtra("Username");
+            String Email = getIntent().getStringExtra("Email");
+            String Age = getIntent().getStringExtra("Age");
+            String DisplayName = getIntent().getStringExtra("DisplayName");
+            String ProfilePic = getIntent().getStringExtra("ProfilePic");
+            String Password = getIntent().getStringExtra("Password");
+
+            Profile profileSearch= new Profile(DisplayName,Username,Password,Email,Age);
+
+            profileSearch.setProfilePic(ProfilePic);
+            */
+            //userProfile=profileSearch;
+            userProfile = LoggedInUser.getInstance();
+
+        }else {
+            userProfile = LoggedInUser.getInstance();
+        }
         // Initialize the mood event book if it doesn't exist
         if (userProfile.getMoodEventBook() == null) {
             userProfile.setMoodEventBook(new MoodEventBook());
