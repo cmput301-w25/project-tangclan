@@ -922,6 +922,7 @@ public class DatabaseBestie {
                 });
     }
 
+
     public void deleteFollowRequest(String requesterUid, String targetUid) {
         followRequestsRef.whereEqualTo("requesterUid", requesterUid)
                 .whereEqualTo("targetUid", targetUid)
@@ -934,4 +935,30 @@ public class DatabaseBestie {
                     }
                 });
     }
+
+    public void getAllUsers(OnUsersLoadedListener listener) {
+        // Implement your database query to get all users
+        // For Firebase Firestore example:
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Profile> users = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Profile user = document.toObject(Profile.class);
+                            users.add(user);
+                        }
+                        listener.onUsersLoaded(users);
+                    }
+                });
+    }
+
+    public interface OnUsersLoadedListener {
+        void onUsersLoaded(List<Profile> users);
+    }
+
+
+
+
+
 }
