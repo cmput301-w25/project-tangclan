@@ -42,11 +42,6 @@ public class AddSocialSituationActivity extends AppCompatActivity {
         // get the session user (for followingbook)
         LoggedInUser user = LoggedInUser.getInstance();
         ArrayList<String> followerBook = user.getFollowingBook().getFollowers();
-        followerBook.add("gerard");
-        followerBook.add("julian");
-        followerBook.add("mario");
-        followerBook.add("luigi");
-        followerBook.add("maria");
 
         // Initialize ViewModel
         wizVIew = new ViewModelProvider(this).get(WizVIew.class);
