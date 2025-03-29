@@ -48,6 +48,7 @@ public class AddLocationActivity extends AppCompatActivity {
     private ArrayList<String> suggestions = new ArrayList<>();
     private ArrayList<GeoPoint> suggestionCoords = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
+    private Bundle savedDetailes;
     private long lastTypedTime = 0;
 
     // RETURNED COORDINATES FROM THIS ACTIVITY (USER LOCATION) -------------------------------------
@@ -61,6 +62,7 @@ public class AddLocationActivity extends AppCompatActivity {
         Configuration.getInstance().load(getApplicationContext(), getSharedPreferences("osmdroid", MODE_PRIVATE));
         setContentView(R.layout.activity_add_location);
 
+
         mapView = findViewById(R.id.mapView);
         mapView.setMultiTouchControls(true);
         mapView.getController().setZoom(15.0);
@@ -72,6 +74,8 @@ public class AddLocationActivity extends AppCompatActivity {
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
+
+        Bundle savedDetails = getIntent().getExtras();
 
         // Add compass
         CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this), mapView);
@@ -131,10 +135,14 @@ public class AddLocationActivity extends AppCompatActivity {
         nextButton.setOnClickListener(v -> {
             if (lastSearchedPoint != null) {
                 Intent intent = new Intent(AddLocationActivity.this, ReviewDetailsActivity.class);
-                intent.putExtra("latitude", lastSearchedPoint.getLatitude());
-                intent.putExtra("longitude", lastSearchedPoint.getLongitude());
-                intent.putExtra("locationName", searchBar.getText().toString());
+
+                savedDetails.putDouble("latitude", lastSearchedPoint.getLatitude());
+                savedDetails.putDouble("longitude", lastSearchedPoint.getLongitude());
+                savedDetails.putString("locationName", searchBar.getText().toString());
+
+                intent.putExtras(savedDetails);
                 startActivity(intent);
+                finish();
             }
         });
     }
