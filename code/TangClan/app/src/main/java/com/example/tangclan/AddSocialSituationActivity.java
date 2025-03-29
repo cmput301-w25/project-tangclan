@@ -51,8 +51,10 @@ public class AddSocialSituationActivity extends AppCompatActivity {
 
             if (collaborators != null) {
                 StringBuilder s = new StringBuilder();
-                for (String collaborator : collaborators) {
-                    s.append(collaborator.trim()).append(", ");
+                if (!collaborators.get(0).isEmpty()) {
+                    for (String collaborator : collaborators) {
+                        s.append(collaborator.trim()).append(", ");
+                    }
                 }
                 editTextSituation.setText(s);
             }

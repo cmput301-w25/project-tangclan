@@ -9,6 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -148,13 +151,20 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
                 // underline to indicate clickable
                 spannableSituation.setSpan(new UnderlineSpan(), 0, spannableSituation.length(), 0);
+                spannableSituation.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(@NonNull View view) {
+                        Log.d("test1", "here");
+                        showCollaborators(moodEvent);
+                    }
+                }, 0, spannableSituation.length(), 0);
                 // set the onClick/onTouch listener for the tags
                 spannableUsernameEmotion.append(spannableSituation);
             } else {
                 spannableUsernameEmotion.append("alone");
             }
         } else {
-            if (!setting.isEmpty()) {
+            if (setting != null && !setting.isEmpty()) {
                 spannableUsernameEmotion.append(" ").append(setting);
             }
         }
@@ -176,6 +186,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         }
 
         // Set the emotional state
+        emotionTextView.setMovementMethod(LinkMovementMethod.getInstance());
         emotionTextView.setText(spannableUsernameEmotion);//
 
 
@@ -201,6 +212,27 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
 
         return view;
+    }
+
+    private void showCollaborators(MoodEvent moodEvent) {
+        Context context = getContext();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_tagged,null);
+        builder.setView(dialogView);
+
+        ListView tags = dialogView.findViewById(R.id.listview_tagged);
+
+        ArrayList<String> collaborators = moodEvent.getCollaborators().get(); // non-null handled
+        CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaborators);
+        tags.setAdapter(adapter);
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(context.getResources(), R.drawable.dialog_round, null));
+        dialog.show();
     }
 
     private void showCommentDialog(MoodEvent moodEvent) {
@@ -238,6 +270,10 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             }
         });
 
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(getContext().getResources(), R.drawable.dialog_round, null));
         dialog.show();
     }
 

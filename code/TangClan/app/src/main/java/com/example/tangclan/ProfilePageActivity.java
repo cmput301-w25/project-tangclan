@@ -372,9 +372,13 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         StringBuilder collaboratorsStr = new StringBuilder();
         Optional<ArrayList<String>> collaborators = post.getCollaborators();
         collaborators.ifPresent(list -> {
-            for (String item: list ) {
-                collaboratorsStr.append(item);
-                collaboratorsStr.append(",");
+            if (list.get(0) != "") {
+                for (String item : list) {
+                    collaboratorsStr.append(item);
+                    collaboratorsStr.append(",");
+                }
+            } else {
+                collaboratorsStr.append("");
             }
         });
         return collaboratorsStr.toString();

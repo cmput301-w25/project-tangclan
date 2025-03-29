@@ -41,7 +41,7 @@
         android:id="@+id/reason"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/inter_semibold"
+        android:fontFamily="@font/inter"
         android:letterSpacing="-0.03"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
