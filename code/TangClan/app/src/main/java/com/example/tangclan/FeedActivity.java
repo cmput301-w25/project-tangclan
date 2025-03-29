@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +13,7 @@ import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,6 +28,10 @@ import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,6 +72,13 @@ public class FeedActivity extends AppCompatActivity {
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
+    private ConstraintLayout feedContainer;
+    private ConstraintLayout usersContainer;
+    private RecyclerView usersRecyclerView;
+    private SearchOtherProfileAdapter usersAdapter;
+    private ArrayList<Profile> allUsers = new ArrayList<>();
+    private com.google.android.material.button.MaterialButton button_moods;
+    private com.google.android.material.button.MaterialButton buttonForYou;
 
     /**
      * Initializes the activity, sets up the user interface, loads the mood event feed,
@@ -112,7 +125,13 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_new);
 
-        // testing follow button (move this code to a users pf page --------------------------------------------
+        // Initialize views
+        listViewFeed = findViewById(R.id.listview_feed);
+        feedContainer = findViewById(R.id.feed_container);
+        usersContainer = findViewById(R.id.users_container);
+        button_moods = findViewById(R.id.button_moods);
+        buttonForYou = findViewById(R.id.button_users);
+
         DatabaseBestie db = new DatabaseBestie();
         Button followBtn = findViewById(R.id.follow_test);
         String testUserUID = "NZliQC89wvTSafYDeYsG7ke8kuO2";
@@ -135,9 +154,9 @@ public class FeedActivity extends AppCompatActivity {
         followBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    // Assumes that when clicking on a user to go to their profile,
-                    // a bundle of their profile details is passed to the profile activity
-                    db.checkExistingRequest(loggedInUser.getUid(), testUserUID, reqExists -> {
+                // Assumes that when clicking on a user to go to their profile,
+                // a bundle of their profile details is passed to the profile activity
+                db.checkExistingRequest(loggedInUser.getUid(), testUserUID, reqExists -> {
 
                     if (!reqExists) {
                         db.sendFollowRequest(loggedInUser.getUid(), testUserUID, requestProcessed -> {
@@ -147,14 +166,38 @@ public class FeedActivity extends AppCompatActivity {
                 });
             }
         });
-        // -----------------------------------------------------------------------------------------------------
-
-        // Initialize the ListView
-        listViewFeed = findViewById(R.id.listview_feed); // Initialize listViewFeed here
 
         // Initialize the adapter and set it to the ListView
         adapter = new MoodEventAdapter(this, new ArrayList<>());
         listViewFeed.setAdapter(adapter); // Now listViewFeed is properly initialized
+
+        usersRecyclerView = usersContainer.findViewById(R.id.recyclerView_users);
+        usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        usersAdapter = new SearchOtherProfileAdapter(allUsers, this);
+        usersRecyclerView.setAdapter(usersAdapter);
+
+        // Set up back button in user search
+        ImageButton backButton = usersContainer.findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> showFeed());
+
+        // Set up button click listeners
+        button_moods.setOnClickListener(v -> showFeed());
+        buttonForYou.setOnClickListener(v -> showUserSearch());
+
+        // Set up search functionality
+        EditText searchUsersEditText = usersContainer.findViewById(R.id.editText_search_users);
+        searchUsersEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterUsers(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         // Set up the filter ImageView
         ImageView filterImageView = findViewById(R.id.filter);
@@ -185,21 +228,15 @@ public class FeedActivity extends AppCompatActivity {
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Filter the mood events based on the keyword
-                String keyword = s.toString().trim();
-                filterByKeyword(keyword);
+                filterByKeyword(s.toString().trim());
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                // Do nothing
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         // NAVBAR
@@ -370,6 +407,58 @@ public class FeedActivity extends AppCompatActivity {
     }
     //need to account for multiple moods being selected
 
+    private void loadUsers() {
+        DatabaseBestie db = new DatabaseBestie();
+        db.getAllUsers(users -> {
+            allUsers.clear();
+            allUsers.addAll(users);
+            usersAdapter.notifyDataSetChanged();
+        });
+    }
+
+    // Add this method to filter users
+    private void filterUsers(String keyword) {
+        ArrayList<Profile> filteredList = new ArrayList<>();
+        for (Profile user : allUsers) {
+            if (user.getUsername().toLowerCase().contains(keyword.toLowerCase())) {
+                filteredList.add(user);
+            }
+        }
+        usersAdapter.filterList(filteredList);
+    }
+
+    private void showFeed() {
+        feedContainer.setVisibility(View.VISIBLE);
+        usersContainer.setVisibility(View.GONE);
+        button_moods.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.yellow)));
+        buttonForYou.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.white)));
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        View currentFocus = getCurrentFocus();
+        if (currentFocus != null) {
+            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
+    }
+
+    private void showUserSearch() {
+
+        feedContainer.setVisibility(View.GONE);
+        usersContainer.setVisibility(View.VISIBLE);
+
+        button_moods.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.white)));
+        buttonForYou.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.yellow)));
+
+        if (allUsers.isEmpty()) {
+            loadUsers();
+        }
+
+        EditText searchUsers = usersContainer.findViewById(R.id.editText_search_users);
+        searchUsers.requestFocus();
+    }
 
 
 }

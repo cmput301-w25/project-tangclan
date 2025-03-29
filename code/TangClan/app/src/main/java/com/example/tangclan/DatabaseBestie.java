@@ -674,9 +674,9 @@ public class DatabaseBestie {
      *      This is the relationship to be added
      */
     public void addFollowRelationship(FollowRelationship followRelationship) {
-        generateFid(fid -> {
-            followRelationship.setId(String.valueOf(fid));
-            followsRef.document(String.valueOf(fid)).set(followRelationship);
+        generateFid(uid -> {
+            followRelationship.setId(String.valueOf(uid));
+            followsRef.document(followRelationship.getId()).set(followRelationship);
         });
     }
 
@@ -905,16 +905,7 @@ public class DatabaseBestie {
                 });
     }
 
-    public void deleteFollowRequest(String requesterUid, String targetUid) {
-        followRequestsRef.whereEqualTo("requesterUid", requesterUid)
-                .whereEqualTo("targetUid", targetUid)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            followRequestsRef.document(document.getId()).delete();
-                        }
-                    }
-                });
-    }
+
+
+
 }
