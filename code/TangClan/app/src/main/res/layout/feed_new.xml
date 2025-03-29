@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Main container that will hold both feed and users views -->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
@@ -12,13 +12,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/navbarContainer">
 
-        <!-- Feed Container (visible by default) -->
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/feed_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- Your existing feed content -->
+
             <EditText
                 android:id="@+id/editText_search"
                 android:layout_width="match_parent"
@@ -52,16 +52,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/editText_search">
 
-
-        <Button
-            android:id="@+id/follow_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="fllwbtn (delete me after)" />
-
-    </LinearLayout>
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_moods"
                     android:layout_width="wrap_content"
@@ -76,7 +66,6 @@
                     app:strokeColor="@color/black"
                     app:strokeWidth="2dp" />
 
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_users"
                     android:layout_width="wrap_content"
@@ -89,9 +78,16 @@
                     app:cornerRadius="20dp"
                     app:strokeColor="@color/black"
                     app:strokeWidth="2dp" />
+
+                <Button
+                    android:id="@+id/follow_test"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="fllwbtn (delete me after)" />
             </LinearLayout>
 
-            <!-- Divider Below Buttons -->
+
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider_toggle_list"
                 android:layout_width="match_parent"
@@ -104,7 +100,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/container_filter"
                 app:layout_constraintTop_toBottomOf="@+id/button_container" />
 
-            <!-- Filter and Other Elements -->
+
             <LinearLayout
                 android:id="@+id/container_filter"
                 android:layout_width="match_parent"
@@ -131,7 +127,7 @@
                     android:src="@drawable/filter" />
             </LinearLayout>
 
-            <!-- Divider Below Filter -->
+
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/divider_list"
                 android:layout_width="match_parent"
@@ -144,7 +140,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/listview_feed"
                 app:layout_constraintTop_toBottomOf="@+id/container_filter" />
 
-            <!-- ListView for Feed -->
+
             <ListView
                 android:id="@+id/listview_feed"
                 android:layout_width="match_parent"
@@ -157,7 +153,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/container_filter" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Users Container (hidden by default) -->
+
         <include
             android:id="@+id/users_container"
             layout="@layout/users_feed"
@@ -166,12 +162,14 @@
             android:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Navigation Bar -->
+
     <include
         android:id="@+id/navbarContainer"
         layout="@layout/navbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
