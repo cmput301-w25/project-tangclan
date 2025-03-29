@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import static java.lang.Integer.parseInt;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -145,7 +147,23 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Retrieve the current logged-in user profile using the Singleton instance
         userProfile = LoggedInUser.getInstance();
-        FollowingBook userFollowingBook = userProfile.getFollowingBook();
+
+
+        // Initialize the mood event book if it doesn't exist
+        if (userProfile.getMoodEventBook() == null) {
+            userProfile.setMoodEventBook(new MoodEventBook());
+        }
+
+        // Fetch the user's past mood events from the database
+        initializeMoodEventBookFromDatabase();
+        //userProfile.initializeFollowingBookFromDatabase(databaseBestie);
+
+        // This method should retrieve the current user's profile
+        // For now, we'll create a dummy profile for testing
+        //userProfile = LoggedInUser.getInstance();
+
+        // Initialize the mood event book if it doesn't exist
+
 
         // Set the user information in the UI
         String pfpStr = userProfile.getProfilePic();
@@ -157,6 +175,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
         usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
         nameTextView.setText(userProfile.getDisplayName());
+        String followerCt = String.valueOf(userProfile.getFollowingBook().getFollowerCount());
+        String followingCt = String.valueOf(userProfile.getFollowingBook().getFollowingCount());
+        followersTextView.setText(followerCt);
+        followingTextView.setText(followingCt);
 
         followingTextView.setText(String.valueOf(userFollowingBook.getFollowingCount()));
         followersTextView.setText(String.valueOf(userFollowingBook.getFollowerCount()));
@@ -351,6 +373,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String mid = post.getMid();
         String month = post.userFormattedDate().substring(3);
         String emotion = post.getMoodEmotionalState();
+        String setting = post.getSetting();
         String collaborators = getStringOfCollaborators(post);
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
@@ -360,6 +383,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         args.putString("mid", mid);
         args.putString("month", month);
         args.putString("emotion", emotion);
+        args.putString("setting", setting);
         args.putString("social situation", collaborators);
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);

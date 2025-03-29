@@ -32,6 +32,7 @@ public class User {
         this.dateAccCreated = new Date(); // gets current Date, probably should be formatted
         this.lastPosted = null;  // null for a new user
         this.moodEventBook = new MoodEventBook();
+        this.followingBook = new FollowingBook();
         this.db = FirebaseFirestore.getInstance();
         this.followRequestsRef = db.collection("followRequests");
         this.followingBook = new FollowingBook();
@@ -126,6 +127,14 @@ public class User {
         });
     }
 
+    public FollowingBook getFollowingBook() {
+        return followingBook;
+    }
+
+    public void setFollowingBook(FollowingBook followingBook) {
+        this.followingBook = followingBook;
+    }
+
     /**
      * initializes the user's FollowingBook by querying the database for all user followers,
      * following, and any outstanding follow requests
@@ -136,8 +145,14 @@ public class User {
     public void initializeFollowingBookFromDatabase(DatabaseBestie db) {
         db.getFollowers(this.uid, followers -> User.this.followingBook.setFollowers(followers));
         db.getFollowing(this.uid, following -> User.this.followingBook.setFollowing(following));
-        //TODO: get any outstanding follow requests
-        // not relevant until next project part
+
+        db.getPendingFollowRequests(this.uid, requests -> {
+            ArrayList<String> requestingFollowerIds = new ArrayList<>();
+            for (int i=0; i < requests.size(); i++) {
+                requestingFollowerIds.add(requests.get(i).getRequesterUid());
+            }
+            User.this.followingBook.setFollowRequests(requestingFollowerIds);
+        });
     }
 
     /**

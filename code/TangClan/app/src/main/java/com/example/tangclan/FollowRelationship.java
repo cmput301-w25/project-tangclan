@@ -17,7 +17,7 @@ public class FollowRelationship {
      * @param uidFollowee user being followed
      * @param uidFollower user following
      */
-    public FollowRelationship( String uidFollowee, String uidFollower) {
+    public FollowRelationship(String uidFollowee, String uidFollower) {
         this.id = "0"; // placeholder
         this.uidFollowee = uidFollowee;
         this.uidFollower = uidFollower;

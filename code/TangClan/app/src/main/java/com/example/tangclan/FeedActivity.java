@@ -1,8 +1,10 @@
 package com.example.tangclan;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,6 +13,7 @@ import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -23,9 +26,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,32 +44,35 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 //part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
 
 /**
  * The class is responsible for displaying the mood event feed to the user.
  * It allows users to view the most recent mood events from participants they follow,
  * add a new mood event, and view detailed information about any mood event in the feed.
-
  */
 
 //TODO make sure this screen is updated after the addition of a mood event from the add emotion fragments
 
 //TODO fix the bug for loadfeed because of the List<MoodEvent> to following book, cause runtime error
 
-
 /**
  * Represents the activity feed, with all MoodEvents of users that the session user follows
  * USER STORIES:
  *      US 01.04.01
  */
-
 public class FeedActivity extends AppCompatActivity {
     //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
+    private ConstraintLayout feedContainer;
+    private ConstraintLayout usersContainer;
+    private RecyclerView usersRecyclerView;
+    private SearchOtherProfileAdapter usersAdapter;
+    private ArrayList<Profile> allUsers = new ArrayList<>();
+    private com.google.android.material.button.MaterialButton button_moods;
+    private com.google.android.material.button.MaterialButton buttonForYou;
 
     /**
      * Initializes the activity, sets up the user interface, loads the mood event feed,
@@ -102,8 +110,6 @@ public class FeedActivity extends AppCompatActivity {
             Log.d("FINALDEBUG", user.getUsername());
             Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
         });
-
-
     }
 
     @Override
@@ -111,12 +117,45 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_new);
 
-        // Initialize the ListView
-        listViewFeed = findViewById(R.id.listview_feed); // Initialize listViewFeed here
+        // Initialize views
+        listViewFeed = findViewById(R.id.listview_feed);
+        feedContainer = findViewById(R.id.feed_container);
+        usersContainer = findViewById(R.id.users_container);
+        button_moods = findViewById(R.id.button_moods);
+        buttonForYou = findViewById(R.id.button_users);
 
-        // Initialize the adapter and set it to the ListView
+        // Initialize adapters
         adapter = new MoodEventAdapter(this, new ArrayList<>());
-        listViewFeed.setAdapter(adapter); // Now listViewFeed is properly initialized
+        listViewFeed.setAdapter(adapter);
+
+        // Initialize user search components
+        usersRecyclerView = usersContainer.findViewById(R.id.recyclerView_users);
+        usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        usersAdapter = new SearchOtherProfileAdapter(allUsers, this);
+        usersRecyclerView.setAdapter(usersAdapter);
+
+        // Set up back button in user search
+        ImageButton backButton = usersContainer.findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> showFeed());
+
+        // Set up button click listeners
+        button_moods.setOnClickListener(v -> showFeed());
+        buttonForYou.setOnClickListener(v -> showUserSearch());
+
+        // Set up search functionality
+        EditText searchUsersEditText = usersContainer.findViewById(R.id.editText_search_users);
+        searchUsersEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterUsers(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         // Set up the filter ImageView
         ImageView filterImageView = findViewById(R.id.filter);
@@ -137,30 +176,60 @@ public class FeedActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
         // Set up long-click listener for mood event details
         listViewFeed.setOnItemLongClickListener((parent, view, position, id) -> {
             MoodEvent moodEvent = feed.getFeedEvents().get(position);
             showMoodEventDetails(moodEvent);
             return true;
         });
+
+        // Set up mood search listener
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Do nothing
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Filter the mood events based on the keyword
-                String keyword = s.toString().trim();
-                filterByKeyword(keyword);
+                filterByKeyword(s.toString().trim());
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                // Do nothing
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Follow button test code
+        DatabaseBestie db = new DatabaseBestie();
+        Button followBtn = findViewById(R.id.follow_test);
+        String testUserUID = "NZliQC89wvTSafYDeYsG7ke8kuO2";
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        loggedInUser.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        loggedInUser.initializeFollowingBookFromDatabase(db);
+
+        // simulate another user sending a request to the current logged in user
+        String CHANGEME = "qM5OwQrQYyQf5p13VfyDVibnuXd2";
+        db.checkExistingRequest(CHANGEME, loggedInUser.getUid(), reqExists -> {
+            if (!reqExists) {
+                loggedInUser.getFollowingBook().addRequestingFollower("qM5OwQrQYyQf5p13VfyDVibnuXd2");
+                db.sendFollowRequest(CHANGEME, loggedInUser.getUid(), requestProcessed -> {
+                    Toast.makeText(this, "Tom Cruise requested to follow you!", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+
+        followBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Assumes that when clicking on a user to go to their profile,
+                // a bundle of their profile details is passed to the profile activity
+                db.checkExistingRequest(loggedInUser.getUid(), testUserUID, reqExists -> {
+                    if (!reqExists) {
+                        db.sendFollowRequest(loggedInUser.getUid(), testUserUID, requestProcessed -> {
+                            followBtn.setText("Pending");
+                        });
+                    }
+                });
             }
         });
 
@@ -180,13 +249,11 @@ public class FeedActivity extends AppCompatActivity {
         listViewFeed.setAdapter(adapter);
     }
 
-
     /**
      * Displays the details of a selected mood event in an alert dialog.
      *
      * @param moodEvent The mood event whose details are to be displayed.
      */
-
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
         details.append("Emotional State: ").append(moodEvent.getMoodEmotionalState()).append("\n");
@@ -305,16 +372,15 @@ public class FeedActivity extends AppCompatActivity {
         // Update the adapter with the filtered events
         adapter.updateMoodEvents(filteredEvents);
     }
+
     private void filterByKeyword(String keyword) {
         List<MoodEvent> filteredEvents = new ArrayList<>(feed.getFeedEvents());
-
 
         if (!keyword.isEmpty()) {
             List<String> keywords = new ArrayList<>();
             keywords.add(keyword);
             filteredEvents = Filter.filterByKeywords(filteredEvents, keywords);
         }
-
 
         adapter.updateMoodEvents(filteredEvents);
     }
@@ -330,8 +396,56 @@ public class FeedActivity extends AppCompatActivity {
         // Notify the user that filters have been reset
         Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
-    //need to account for multiple moods being selected
 
+    private void loadUsers() {
+        DatabaseBestie db = new DatabaseBestie();
+        db.getAllUsers(users -> {
+            allUsers.clear();
+            allUsers.addAll(users);
+            usersAdapter.notifyDataSetChanged();
+        });
+    }
 
+    // Add this method to filter users
+    private void filterUsers(String keyword) {
+        ArrayList<Profile> filteredList = new ArrayList<>();
+        for (Profile user : allUsers) {
+            if (user.getUsername().toLowerCase().contains(keyword.toLowerCase())) {
+                filteredList.add(user);
+            }
+        }
+        usersAdapter.filterList(filteredList);
+    }
 
+    private void showFeed() {
+        feedContainer.setVisibility(View.VISIBLE);
+        usersContainer.setVisibility(View.GONE);
+        button_moods.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.yellow)));
+        buttonForYou.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.white)));
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        View currentFocus = getCurrentFocus();
+        if (currentFocus != null) {
+            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
+    }
+
+    private void showUserSearch() {
+        feedContainer.setVisibility(View.GONE);
+        usersContainer.setVisibility(View.VISIBLE);
+
+        button_moods.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.white)));
+        buttonForYou.setBackgroundTintList(ColorStateList.valueOf(
+                ContextCompat.getColor(this, R.color.yellow)));
+
+        if (allUsers.isEmpty()) {
+            loadUsers();
+        }
+
+        EditText searchUsers = usersContainer.findViewById(R.id.editText_search_users);
+        searchUsers.requestFocus();
+    }
 }

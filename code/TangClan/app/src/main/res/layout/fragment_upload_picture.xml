@@ -5,8 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@color/fragment_background"
+
+    android:background="@drawable/blue_gradient_background"
+
+   
     android:elevation="2dp"
+
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -105,9 +109,8 @@
         android:layout_marginTop="24dp"
         android:background="#0D0D0000"
         android:elevation="4dp"
-        android:padding="130dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/baseline_add_box_24" />
+        android:padding="0dp"
+        android:scaleType="centerCrop" />
 
 
     <LinearLayout
