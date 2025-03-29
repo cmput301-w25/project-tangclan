@@ -7,6 +7,10 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.*;
 
 import java.time.LocalDate;
@@ -676,7 +680,20 @@ public class DatabaseBestie {
     public void addFollowRelationship(FollowRelationship followRelationship) {
         generateFid(fid -> {
             followRelationship.setId(String.valueOf(fid));
-            followsRef.document(String.valueOf(fid)).set(followRelationship);
+            followsRef.document(String.valueOf(fid)).set(followRelationship)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.d("addFollowRelationship", "added");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("addFollowRelationship", "problem adding relationship:"+e);
+                        }
+                    });
+
         });
     }
 

@@ -115,7 +115,7 @@ public class FeedActivity extends AppCompatActivity {
         // testing follow button (move this code to a users pf page --------------------------------------------
         DatabaseBestie db = new DatabaseBestie();
         Button followBtn = findViewById(R.id.follow_test);
-        String testUserUID = "NZliQC89wvTSafYDeYsG7ke8kuO2";
+        String testUserUID = "qM5OwQrQYyQf5p13VfyDVibnuXd2";
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
         loggedInUser.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -125,9 +125,9 @@ public class FeedActivity extends AppCompatActivity {
         String CHANGEME = "qM5OwQrQYyQf5p13VfyDVibnuXd2";
         db.checkExistingRequest(CHANGEME, loggedInUser.getUid(), reqExists -> {
             if (!reqExists) {
-                loggedInUser.getFollowingBook().addRequestingFollower("qM5OwQrQYyQf5p13VfyDVibnuXd2");
+                loggedInUser.getFollowingBook().addRequestingFollower(CHANGEME);
                 db.sendFollowRequest(CHANGEME, loggedInUser.getUid(), requestProcessed -> {
-                    Toast.makeText(this, "Tom Cruise requested to follow you!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "someone requested to follow you!", Toast.LENGTH_SHORT).show();
                 });
             }
         });
