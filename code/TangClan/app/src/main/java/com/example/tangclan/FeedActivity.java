@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -36,12 +37,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import org.w3c.dom.Comment;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -66,7 +63,7 @@ import java.util.stream.Collectors;
  *      US 01.04.01
  */
 
-public class FeedActivity extends AppCompatActivity {
+public class FeedActivity extends AppCompatActivity implements SelectProfileListener {
     //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
@@ -138,7 +135,7 @@ public class FeedActivity extends AppCompatActivity {
         // Initialize user search components
         usersRecyclerView = usersContainer.findViewById(R.id.recyclerView_users);
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        usersAdapter = new SearchOtherProfileAdapter(allUsers, this);
+        usersAdapter = new SearchOtherProfileAdapter(allUsers, this,this);
         usersRecyclerView.setAdapter(usersAdapter);
 
         // Set up back button in user search
@@ -425,6 +422,38 @@ public class FeedActivity extends AppCompatActivity {
         EditText searchUsers = usersContainer.findViewById(R.id.editText_search_users);
         searchUsers.requestFocus();
     }
+
+
+
+    //Idea: after clicking on a profile on the search page for profiles it takes you to the users profile by passing in the profile object to the ProfilePageActivity
+
+    public void onItemClicked(Profile profile){
+        Toast.makeText(this, "Clicked: " + profile.getUsername(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(FeedActivity.this, ProfilePageActivity.class);
+        //intent.putExtra("KeySearchProfile",profile);
+
+
+
+
+
+
+        //not getting profile object for ome reason
+        intent.putExtra("Username",profile.getUsername());
+        intent.putExtra("Email",profile.getEmail());
+        intent.putExtra("Age",profile.getAge());
+        intent.putExtra("DisplayName",profile.getDisplayName());
+        intent.putExtra("ProfilePic",profile.getProfilePic());
+        intent.putExtra("Password",profile.getPassword());
+
+
+
+
+        startActivity(intent);
+    }
+
+
+
+
 
 
 }
