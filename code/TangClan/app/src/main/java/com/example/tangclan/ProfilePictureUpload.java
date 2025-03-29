@@ -76,7 +76,7 @@ public class ProfilePictureUpload extends AppCompatActivity {
 
     private void showImageSourceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select Image Source");
+        builder.setTitle("Upload image from: ");
         builder.setItems(new CharSequence[]{"Camera", "Gallery"}, (dialog, which) -> {
             if (which == 0) {
                 captureImageFromCamera();

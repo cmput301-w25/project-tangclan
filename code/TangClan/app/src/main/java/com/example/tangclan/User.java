@@ -2,8 +2,13 @@ package com.example.tangclan;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Holds additional data tied to a user
@@ -14,6 +19,10 @@ public class User {
     private String lastPosted;
     private FollowingBook followingBook;
     private MoodEventBook moodEventBook;
+    private DatabaseBestie database;
+    private FirebaseFirestore db;
+    private CollectionReference followRequestsRef;
+
 
     /**
      * Constructor
@@ -23,6 +32,8 @@ public class User {
         this.dateAccCreated = new Date(); // gets current Date, probably should be formatted
         this.lastPosted = null;  // null for a new user
         this.moodEventBook = new MoodEventBook();
+        this.db = FirebaseFirestore.getInstance();
+        this.followRequestsRef = db.collection("followRequests");
     }
 
     /**
@@ -134,4 +145,25 @@ public class User {
         this.moodEventBook.addMoodEvent(event);
     }
 
+    public void getPendingFollowRequests(String targetUid, FollowRequestsCallback callback) {
+        followRequestsRef.whereEqualTo("targetUid", targetUid)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<FollowRequest> requests = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            requests.add(document.toObject(FollowRequest.class));
+                        }
+                        callback.onFollowRequestsRetrieved(requests);
+                    } else {
+                        Log.e("User", "Error getting follow requests", task.getException());
+                        callback.onFollowRequestsRetrieved(new ArrayList<>());
+                    }
+                });
+    }
+
+    public interface FollowRequestsCallback {
+        void onFollowRequestsRetrieved(List<FollowRequest> followRequests);
+    }
 }

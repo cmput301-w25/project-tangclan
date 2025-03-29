@@ -9,9 +9,6 @@ import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.os.Bundle;
 
-import android.util.Log;
-
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
@@ -85,7 +82,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
 
-        // Process incoming mood event data if it exists
+
+        // Get current user profile
         getCurrentUserProfile();
         setupProfileListView();
 
@@ -308,9 +306,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                     adapter.notifyDataSetChanged();
                 }
 
-
-                    // Show success message
-                    Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
+                // Show success message
+                Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
 
                     // Log the number of mood events for debugging
                     int count = userProfile.getMoodEventBook().getMoodEventList().size();

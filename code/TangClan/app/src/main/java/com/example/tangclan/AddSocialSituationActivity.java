@@ -71,7 +71,10 @@ public class AddSocialSituationActivity extends AppCompatActivity {
         });
 
         // Close the activity when clicking the close icon
-        closeIcon.setOnClickListener(v -> finish());
+        closeIcon.setOnClickListener(v -> {
+            startActivity(new Intent(AddSocialSituationActivity.this, FeedActivity.class));
+            finish();
+        });
 
         // Navigate back TODO: pass back selectedEmotion
         btnBack.setOnClickListener(v -> {
