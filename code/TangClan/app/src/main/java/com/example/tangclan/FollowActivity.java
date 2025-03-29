@@ -46,13 +46,21 @@ public class FollowActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // Initialize adapter with empty list
-        adapter = new FollowRequestAdapter(new ArrayList<>(), new FollowingBook());
+        List<String> requestList = new ArrayList<>();
+        adapter = new FollowRequestAdapter(requestList, new FollowingBook());
         recyclerView.setAdapter(adapter);
 
         // Fetch and display pending follow requests
+        DatabaseBestie db = new DatabaseBestie();
         currentUser.getPendingFollowRequests(userUid, requests -> {
             List<String> followRequestUids = new ArrayList<>();
-
+            for (int i =0; i < requests.size(); i++) {
+                db.getUser(requests.get(i).getRequesterUid(), profile -> {
+                    System.out.println("profile is "+profile.getUsername());
+                    requestList.add(profile.getUsername());
+                    adapter.notifyItemInserted(requestList.size()-1);
+                });
+            }
         });
     }
 }

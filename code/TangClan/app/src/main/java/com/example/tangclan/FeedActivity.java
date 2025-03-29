@@ -1,5 +1,6 @@
 package com.example.tangclan;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -110,6 +111,39 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_new);
+
+        // testing follow button (move this code to a users pf page --------------------------------------------
+        DatabaseBestie db = new DatabaseBestie();
+        Button followBtn = findViewById(R.id.follow_test);
+        String testUserUID = "NZliQC89wvTSafYDeYsG7ke8kuO2";
+        LoggedInUser loggedInUser = LoggedInUser.getInstance();
+        loggedInUser.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        // simulate another user sending a request to the current logged in user
+        String CHANGEME = "qM5OwQrQYyQf5p13VfyDVibnuXd2";
+        db.checkExistingRequest(CHANGEME, loggedInUser.getUid(), reqExists -> {
+            if (!reqExists) {
+                db.sendFollowRequest(CHANGEME, loggedInUser.getUid(), requestProcessed -> {
+                    Toast.makeText(this, "Tom Cruise requested to follow you!", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+
+        followBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Assumes that when clicking on a user to go to their profile,
+                // a bundle of their profile details is passed to the profile activity
+                db.checkExistingRequest(loggedInUser.getUid(), testUserUID, reqExists -> {
+                    if (!reqExists) {
+                        db.sendFollowRequest(loggedInUser.getUid(), testUserUID, requestProcessed -> {
+                            followBtn.setText("Pending");
+                        });
+                    }
+                });
+            }
+        });
+        // -----------------------------------------------------------------------------------------------------
 
         // Initialize the ListView
         listViewFeed = findViewById(R.id.listview_feed); // Initialize listViewFeed here
