@@ -467,8 +467,8 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
     //Idea: after clicking on a profile on the search page for profiles it takes you to the users profile by passing in the profile object to the ProfilePageActivity
     @Override
-    public void onItemClicked(int pos) {
-        Profile profile = allUsers.get(pos);
+    public void onItemClicked(Profile profile) {
+        //Profile profile = allUsers.get(pos);
         Toast.makeText(this, "Clicked: " + profile.getUsername(), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(FeedActivity.this, ViewOtherProfileActivity.class);
         Bundle profileDetails = new Bundle();
