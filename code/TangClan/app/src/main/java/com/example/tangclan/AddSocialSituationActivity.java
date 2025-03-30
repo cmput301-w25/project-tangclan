@@ -40,6 +40,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_add_social_situation);
 
         // get the session user (for followingbook)
+        //TODO: make sure that followingbook is up to date for everything
         LoggedInUser user = LoggedInUser.getInstance();
         ArrayList<String> followerBook = user.getFollowingBook().getFollowers();
 
@@ -103,7 +104,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
 
             // all names in collaborators must be unique
             if (collaborators.contains(collaborator)) {
-                Toast.makeText(getBaseContext(), "@" + collaborator + " is already tagged!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),  collaborator + " is already tagged!", Toast.LENGTH_SHORT).show();
             } else {
                 editTextSituation.setText("");
                 collaborators.add(collaborator);
@@ -112,7 +113,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
                 taggedSoFar.setTextColor(Color.parseColor("#366184"));
                 taggedSoFar.setPaintFlags(8);
                 taggedSoFar.setOnClickListener(onTaggedSoFarClicked);
-                Toast.makeText(getBaseContext(), "@" + collaborator + " successfully added to tag list!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), collaborator + " successfully added to tag list!", Toast.LENGTH_SHORT).show();
             }
         });
 
