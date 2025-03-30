@@ -158,12 +158,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         userProfile.initializeFollowingBookFromDatabase(databaseBestie);
         FollowingBook userFollowingBook = userProfile.getFollowingBook();
 
-        // This method should retrieve the current user's profile
-        // For now, we'll create a dummy profile for testing
-        //userProfile = LoggedInUser.getInstance();
-
-        // Initialize the mood event book if it doesn't exist
-
 
         // Set the user information in the UI
         String pfpStr = userProfile.getProfilePic();
