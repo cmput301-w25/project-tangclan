@@ -99,10 +99,6 @@ public class ReviewDetailsActivity extends AppCompatActivity {
                                 double lon = getIntent().getDoubleExtra("longitude", 0.0);
                                 String locationName = getIntent().getStringExtra("locationName");
 
-                                savedDetails.putDouble("latitude", lat);
-                                savedDetails.putDouble("longitude", lon);
-                                savedDetails.putString("locationName", locationName);
-
                                 if (locationName != null) {
                                     locationDisplay.setText(locationName);
                                     locationDisplay.setVisibility(View.VISIBLE);
