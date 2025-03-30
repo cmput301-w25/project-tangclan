@@ -4,9 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
@@ -447,7 +450,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
     private void showUserSearch() {
 
-        feedContainer.setVisibility(View.GONE);
+        feedContainer.setVisibility(View.INVISIBLE);
         usersContainer.setVisibility(View.VISIBLE);
 
         button_moods.setBackgroundTintList(ColorStateList.valueOf(
@@ -469,18 +472,30 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
     @Override
     public void onItemClicked(int pos) {
         Profile profile = allUsers.get(pos);
-        Toast.makeText(this, "Clicked: " + profile.getUsername(), Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "Clicked: " + profile.getUsername(), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(FeedActivity.this, ViewOtherProfileActivity.class);
         Bundle profileDetails = new Bundle();
+        profileDetails.putString("uid", profile.getUid());
         profileDetails.putString("username",profile.getUsername());
         profileDetails.putString("email",profile.getEmail());
         profileDetails.putString("displayName",profile.getDisplayName());
-        profileDetails.putString("pfp",profile.getProfilePic());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes == null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
 
+        Log.d("PROFILEINFO","uid is "+ profile.getUid());
         Log.d("PROFILEINFO","username is "+ profile.getUsername());
         Log.d("PROFILEINFO","diplsay name is "+ profile.getDisplayName());
         intent.putExtras(profileDetails);
         startActivity(intent);
-        finish();
+
     }
 }

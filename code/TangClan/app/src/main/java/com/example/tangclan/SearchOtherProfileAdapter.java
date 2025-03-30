@@ -65,7 +65,7 @@ public class SearchOtherProfileAdapter extends RecyclerView.Adapter<SearchOtherP
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                listener.onItemClicked(position);
+                listener.onItemClicked(holder.getAdapterPosition());
 //                Intent intent =new Intent(view.getContext(), ProfilePageActivity.class);
 //                intent.putExtra("KeySearchProfile", ProfileArrayList.get(holder.getAdapterPosition()));
 //                view.getContext().startActivity(intent);

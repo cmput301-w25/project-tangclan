@@ -156,6 +156,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:backgroundTint="@android:color/transparent"
+        android:clickable="true"
         android:fontFamily="@font/inter_semibold"
         android:letterSpacing="-0.03"
         android:onClick="goToEditProfile"
