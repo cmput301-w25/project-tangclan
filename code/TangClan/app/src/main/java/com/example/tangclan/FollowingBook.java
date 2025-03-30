@@ -12,6 +12,8 @@ public class FollowingBook {
     private ArrayList<String> following = new ArrayList<>();
     private ArrayList<String> followers = new ArrayList<>();
     private ArrayList<String> followRequests = new ArrayList<>();
+    private Map<String, String> UIDtoFollowerUsername = new HashMap<>();
+    private Map<String, String> UIDtoFollowingUsername = new HashMap<>();
 
     public FollowingBook() {
         
@@ -85,6 +87,16 @@ public class FollowingBook {
         this.followRequests = convertToArrayList(followRequests);
     }
 
+   public void addEntryToFollowerMap(String uid, String username) {
+        this.UIDtoFollowerUsername.put(uid, username);
+   }
+
+   public void addEntryToFollowingMap(String uid, String username) {
+        this.UIDtoFollowingUsername.put(uid, username);
+   }
+
+
+
     private ArrayList<String> convertToArrayList(Object input) {
         ArrayList<String> result = new ArrayList<>();
         if (input instanceof List) {
@@ -114,6 +126,32 @@ public class FollowingBook {
             }
         }
         return uidToMoodEvent;
+    }
+
+    /**
+     * Gets the usernames of all user followers
+     * @return
+     *      An ArrayList of all follower usernames
+     */
+    public ArrayList<String> getFollowerUsernames() {
+        return new ArrayList<>(this.UIDtoFollowerUsername.values());
+    }
+
+    /**
+     * Gets the usernames of all following
+     * @return
+     *      An ArrayList of all following usernames
+     */
+    public ArrayList<String> getFollowingUsernames() {
+        return new ArrayList<>(this.UIDtoFollowingUsername.values());
+    }
+
+    public void resetFollowingUsernames() {
+        this.UIDtoFollowingUsername = new HashMap<>();
+    }
+
+    public void resetFollowerUsernames() {
+        this.UIDtoFollowerUsername = new HashMap<>();
     }
 
     private void addMockMoodEvents(Map<String, MoodEvent> uidToMoodEvent) {

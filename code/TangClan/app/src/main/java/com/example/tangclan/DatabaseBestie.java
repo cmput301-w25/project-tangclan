@@ -234,6 +234,30 @@ public class DatabaseBestie {
         void onEmailFound(String email);
     }
 
+    /**
+     * Grabs the username by UID
+     * @param uid
+     *      The uid of the username
+     * @param callback
+     *      Callback to handle when username found
+     */
+    public void findUsernameByUID(String uid, findUsernameCallback callback) {
+        usersRef.document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String username = documentSnapshot.get("username", String.class);
+
+                    callback.onUsernameFound(username);
+                });
+    }
+
+    /**
+     * Callback function for when username is successfully found
+     */
+    public interface findUsernameCallback {
+        void onUsernameFound(String username);
+    }
+
     public void findProfileByUsername(String username, findProfileCallback callback) {
         usersRef.whereEqualTo("username", username)
                 .get()
