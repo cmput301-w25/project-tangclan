@@ -48,6 +48,7 @@ public class MoodEvent implements Serializable {
     private ArrayList<String> commentIds = new ArrayList<>();
 
     private List<String> comments = new ArrayList<>();
+    private String postedBy;
 
 
 
@@ -186,6 +187,14 @@ public class MoodEvent implements Serializable {
      */
     public Optional<ArrayList<String>> getCollaborators() {
         return Optional.ofNullable(this.situation);
+    }
+
+    public String getPostedBy() {
+        return postedBy;
+    }
+
+    public void setPostedBy(String uid) {
+        this.postedBy = uid;
     }
 
     /**

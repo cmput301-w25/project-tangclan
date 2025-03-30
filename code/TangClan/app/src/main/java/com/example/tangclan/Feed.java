@@ -19,6 +19,8 @@ public class Feed {
     private List<MoodEvent> feedEvents;
     private DatabaseBestie db;
 
+    private static Feed instance;
+
     /**
      *  Constructor for the feed class
      * @param followingBook
@@ -26,12 +28,18 @@ public class Feed {
      * @param moodEventBook
      *      moodEventBook of the current user
      */
-    public Feed(FollowingBook followingBook, MoodEventBook moodEventBook) {
+    Feed(FollowingBook followingBook, MoodEventBook moodEventBook) {
         this.followingBook = followingBook;
         this.moodEventBook = moodEventBook;
         this.feedEvents = new ArrayList<>();
         this.db = DatabaseBestie.getInstance();
+    }
 
+    public static synchronized Feed getInstance(FollowingBook followingBook, MoodEventBook moodEventBook) {
+        if (instance == null) {
+            instance = new Feed(followingBook, moodEventBook);
+        }
+        return instance;
     }
 
     /**

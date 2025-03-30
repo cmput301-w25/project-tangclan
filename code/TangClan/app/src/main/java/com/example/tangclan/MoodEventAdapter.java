@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -40,9 +41,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Adapter for displaying mood events in a ListView.
@@ -50,212 +55,185 @@ import java.util.Map;
  * It ensures that mood events are displayed with formatted text and optional images.
  */
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
+    private Map<String, String> uidToUsernameMap; // Maps UIDs to usernames
+    private DatabaseBestie db;
+    private AtomicInteger pendingUsernameFetches;
 
-    private Map<MoodEvent, String> moodToUsernameMap; // Maps MoodEvent to corresponding username
-
-    /**
-     * Constructor for the MoodEventAdapter with a pre-populated list of mood events.
-     *
-     * @param context The activity context
-     * @param moodEvents List of mood events to display
-     */
     public MoodEventAdapter(Context context, List<MoodEvent> moodEvents) {
         super(context, 0, moodEvents);
-        this.moodToUsernameMap = new HashMap<>();
-
-        // Associate mock usernames with each mood event for display purposes
-        // In a real implementation, these would come from the database
-        int userCounter = 1;
-        for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
-        }
+        this.uidToUsernameMap = new HashMap<>();
+        this.db = DatabaseBestie.getInstance();
+        this.pendingUsernameFetches = new AtomicInteger(0);
+        fetchAllUsernames(moodEvents);
     }
 
-    /**
-     * Constructor for the MoodEventAdapter that takes a FollowingBook.
-     *
-     * @param context The activity context
-     * @param followingBook The FollowingBook containing users and their mood events
-     */
-    /**
-     * Constructor for the MoodEventAdapter that takes a FollowingBook.
-     *
-     * @param context The activity context
-     * @param followingBook The FollowingBook containing users and their mood events
-     */
     public MoodEventAdapter(Context context, FollowingBook followingBook) {
         super(context, 0, new ArrayList<>());
-        this.moodToUsernameMap = new HashMap<>();
+        this.uidToUsernameMap = new HashMap<>();
+        this.db = DatabaseBestie.getInstance();
+        this.pendingUsernameFetches = new AtomicInteger(0);
 
-        DatabaseBestie bestie = DatabaseBestie.getInstance();
-
-        // Show loading state if needed (you might want to add this)
-        // ((Activity)context).findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-
-        followingBook.getRecentMoodEvents(bestie, new DatabaseBestie.MoodEventsCallback() {
+        followingBook.getRecentMoodEvents(db, new DatabaseBestie.MoodEventsCallback() {
             @Override
             public void onMoodEventsRetrieved(ArrayList<MoodEvent> events) {
-                // Hide loading state if needed
-                // ((Activity)context).findViewById(R.id.progressBar).setVisibility(View.GONE);
-
-                // Clear existing data
                 clear();
-
-                // Add new events
                 addAll(events);
-
-                // Update username mapping
-                moodToUsernameMap.clear();
-                for (MoodEvent event : events) {
-                    // This is a placeholder - in a real app you'd get the actual username from the database
-                    moodToUsernameMap.put(event, "User_" + events.indexOf(event));
-                }
-
-                // Notify adapter that data changed
-                notifyDataSetChanged();
+                fetchAllUsernames(events);
             }
         });
     }
 
-    /**
-     * View recycler for the ListView
-     * @param position
-     *      position of the item
-     * @param convertView
-     *      view to be recycled
-     * @param parent
-     *      parent view
-     * @return
-     *      a single recycled view to be added to the ListView
-     */
-    @Override
-    @NonNull
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        View view;
-
-
-
-        if (convertView == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.content_mood_event_new, parent, false);
-        } else {
-            view = convertView;
+    private void fetchAllUsernames(List<MoodEvent> moodEvents) {
+        if (moodEvents == null || moodEvents.isEmpty()) {
+            notifyDataSetChanged();
+            return;
         }
+
+        // Clear existing mappings
+        uidToUsernameMap.clear();
+        pendingUsernameFetches.set(0);
+
+        // Count unique UIDs that need to be fetched
+        Set<String> uniqueUids = new HashSet<>();
+        for (MoodEvent event : moodEvents) {
+            String uid = event.getPostedBy();
+            if (uid != null && !uid.isEmpty()) {
+                uniqueUids.add(uid);
+            }
+        }
+
+        if (uniqueUids.isEmpty()) {
+            notifyDataSetChanged();
+            return;
+        }
+
+        pendingUsernameFetches.set(uniqueUids.size());
+
+        // Fetch all usernames
+        for (String uid : uniqueUids) {
+            db.getUser(uid, new DatabaseBestie.UserCallback() {
+                @Override
+                public void onUserRetrieved(Profile user) {
+                    synchronized (uidToUsernameMap) {
+                        if (user != null && user.getUsername() != null) {
+                            uidToUsernameMap.put(uid, user.getUsername());
+                        } else {
+                            uidToUsernameMap.put(uid, "Anonymous");
+                        }
+                    }
+
+                    if (pendingUsernameFetches.decrementAndGet() == 0) {
+                        notifyDataSetChanged();
+                    }
+                }
+            });
+        }
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View view = convertView != null ? convertView :
+                LayoutInflater.from(getContext()).inflate(R.layout.content_mood_event_new, parent, false);
 
         MoodEvent moodEvent = getItem(position);
         if (moodEvent == null) return view;
 
-        ImageButton commentButton = view.findViewById(R.id.comment_button);
-        commentButton.setOnClickListener(v -> {
-            showCommentDialog(moodEvent);
-        });
+        String uid = moodEvent.getPostedBy();
+        String username = uid != null ? uidToUsernameMap.getOrDefault(uid, "Anonymous") : "Anonymous";
 
-
-
-        // Retrieve username for this mood event
-        String username = moodToUsernameMap.getOrDefault(moodEvent, "Unknown");
-
-        // Format the username and mood emotion
-        SpannableStringBuilder spannableUsernameEmotion = new SpannableStringBuilder();
-
-        // Formatting username as bold
-        SpannableString spannableUsername = new SpannableString(username);
-        spannableUsername.setSpan(new StyleSpan(Typeface.BOLD), 0, spannableUsername.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Formatting emotional state with color
-        Mood mood = moodEvent.getMood();
-        if (mood == null) {
-            // Handle null Mood object
-            Toast.makeText(getContext(), "Mood is null for event: " + moodEvent, Toast.LENGTH_SHORT).show();
-            return view;
-        }
-
-        Integer color = mood.getColor(getContext().getApplicationContext());
-        if (color == null) {
-            // Handle null color
-            Toast.makeText(getContext(), "Color is null for mood: " + mood, Toast.LENGTH_SHORT).show();
-            return view;
-        }
-
-
-        SpannableString spannableEmotionalState = new SpannableString(mood.getEmotion());
-        spannableEmotionalState.setSpan(new ForegroundColorSpan(color), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
-
-        // Set username and emotion on the TextView
+        // Setup views
         TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
+        ImageView emoticonView = view.findViewById(R.id.emoticon);
+        ImageButton commentButton = view.findViewById(R.id.comment_button);
+        TextView reasonView = view.findViewById(R.id.reason);
+        TextView dateView = view.findViewById(R.id.date_text);
+        TextView timeView = view.findViewById(R.id.time_text);
+        ImageView imageView = view.findViewById(R.id.mood_event_image);
 
-        String setting = moodEvent.getSetting();
-        ArrayList<String> collaborators;
+        // Set comment button listener
+        commentButton.setOnClickListener(v -> showCommentDialog(moodEvent));
 
-        if (moodEvent.getCollaborators().isPresent()) {
-            collaborators = moodEvent.getCollaborators().get();
-            Log.d("test1", collaborators.get(0));
+        // Create formatted text
+        SpannableStringBuilder spannableText = new SpannableStringBuilder();
 
-            // remove all empty tags, if any
-            //collaborators.removeAll(Collections.singleton(""));
+        // Format username as bold
+        SpannableString usernameSpan = new SpannableString(username);
+        usernameSpan.setSpan(new StyleSpan(Typeface.BOLD), 0, usernameSpan.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableText.append(usernameSpan);
 
-            int numCollaborators = collaborators.size();
+        // Get mood and emotion safely
+        Mood mood = moodEvent.getMood();
+        if (mood != null) {
+            // Set the emoticon image
+            Drawable emoticon = mood.getEmoticon(getContext());
+            if (emoticon != null) {
+                emoticonView.setImageDrawable(emoticon);
+                emoticonView.setVisibility(View.VISIBLE);
+            } else {
+                emoticonView.setVisibility(View.GONE);
+            }
 
-            spannableUsernameEmotion.append(" with ");
+            String emotion = mood.getEmotion();
+            if (emotion != null && !emotion.isEmpty()) {
+                spannableText.append(" is feeling ");
 
-            if (numCollaborators > 0) {
-                spannableUsernameEmotion.append(" with ");
-                SpannableString spannableSituation;
-
-                if (numCollaborators == 1) {
-                    spannableSituation = new SpannableString("one other person");
-                } else if (numCollaborators <= 7) { // the condition numCollaborators >= 2 is also true in this block
-                    spannableSituation = new SpannableString("two to several people");
-                } else {
-                    spannableSituation = new SpannableString("a crowd");
+                // Add emotion with color
+                SpannableString emotionSpan = new SpannableString(emotion);
+                Integer color = mood.getColor(getContext().getApplicationContext());
+                if (color != null) {
+                    emotionSpan.setSpan(
+                            new ForegroundColorSpan(color),
+                            0,
+                            emotionSpan.length(),
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    );
                 }
+                spannableText.append(emotionSpan);
+            }
+        } else {
+            emoticonView.setVisibility(View.GONE);
+        }
 
-                // underline to indicate clickable
-                spannableSituation.setSpan(new UnderlineSpan(), 0, spannableSituation.length(), 0);
-                spannableSituation.setSpan(new ClickableSpan() {
-                    @Override
-                    public void onClick(@NonNull View view) {
+        // Add social situation if available
+        Optional<ArrayList<String>> collaboratorsOpt = moodEvent.getCollaborators();
+        if (collaboratorsOpt.isPresent()) {
+            ArrayList<String> collaborators = collaboratorsOpt.get();
+            int count = collaborators.size();
+
+            if (count > 0) {
+                String situationText = count == 1 ? " with one other person" :
+                        count <= 7 ? " with two to several people" :
+                                " with a crowd";
+
+                SpannableString situationSpan = new SpannableString(situationText);
+                situationSpan.setSpan(new UnderlineSpan(), 0, situationSpan.length(), 0);
+                situationSpan.setSpan(new ClickableSpan() {
+                    @Override public void onClick(@NonNull View v) {
                         showCollaborators(moodEvent);
                     }
-                }, 0, spannableSituation.length(), 0);
-                // set the onClick/onTouch listener for the tags
-                spannableUsernameEmotion.append(spannableSituation);
+                }, 0, situationSpan.length(), 0);
+
+                spannableText.append(situationSpan);
             } else {
-                spannableUsernameEmotion.append("alone");
+                spannableText.append(" alone");
             }
-        } else {
-            if (setting != null && !setting.isEmpty()) {
-                spannableUsernameEmotion.append(" ").append(setting);
-            }
+        } else if (moodEvent.getSetting() != null && !moodEvent.getSetting().isEmpty()) {
+            spannableText.append(" ").append(moodEvent.getSetting());
         }
 
+        // Set all view values
         usernameEmotion.setMovementMethod(LinkMovementMethod.getInstance());
-        usernameEmotion.setText(spannableUsernameEmotion);
+        usernameEmotion.setText(spannableText);
+        reasonView.setText(moodEvent.getReason().orElse("No reason specified"));
+        dateView.setText(moodEvent.returnPostFormattedDate());
+        timeView.setText(moodEvent.returnPostFormattedTime());
 
-        // Set the reason (if available)
-        TextView reason = view.findViewById(R.id.reason);
-
-        // Handle Optional<String> for reason
-        if (moodEvent.getReason().isPresent()) {
-            reason.setText(moodEvent.getReason().get()); // Extract the value from Optional
-        } else {
-            reason.setText("No reason specified"); // Default message
-        }
-
-        // Set the post date and time
-        TextView date = view.findViewById(R.id.date_text);
-        TextView time = view.findViewById(R.id.time_text);
-        date.setText(moodEvent.returnPostFormattedDate());
-        time.setText(moodEvent.returnPostFormattedTime());
-
-        // Set the optional photo (if available)
-        ImageView imageView = view.findViewById(R.id.mood_event_image);
         if (moodEvent.getImage() != null) {
             imageView.setImageBitmap(moodEvent.getImage());
-            imageView.setVisibility(View.VISIBLE);  // Make sure the ImageView is visible
+            imageView.setVisibility(View.VISIBLE);
         } else {
-            imageView.setVisibility(View.GONE);  // Hide the ImageView if no image is available
+            imageView.setVisibility(View.GONE);
         }
 
         return view;
@@ -269,17 +247,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
     public void updateMoodEvents(List<MoodEvent> moodEvents) {
         clear();
         addAll(moodEvents);
-
-        // Reset username mapping
-        moodToUsernameMap.clear();
-        int userCounter = 1;
-        for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
-        }
-
-        notifyDataSetChanged();
+        fetchAllUsernames(moodEvents);
     }
-
     private void showCommentDialog(MoodEvent moodEvent) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = LayoutInflater.from(getContext());

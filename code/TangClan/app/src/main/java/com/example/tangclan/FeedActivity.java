@@ -113,7 +113,13 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
 
         // Initialize with empty books first
-        feed = new Feed(new FollowingBook(), new MoodEventBook());
+        FollowingBook followingBook = new FollowingBook();
+        MoodEventBook moodEventBook = new MoodEventBook();
+        feed = Feed.getInstance(followingBook, moodEventBook);
+
+        // Debug: Check if feedEvents is empty before loading
+        Log.d("FEED_DEBUG", "Feed events before load: " + feed.getFeedEvents().size());
+
         adapter = new MoodEventAdapter(this, new ArrayList<>());
         listViewFeed.setAdapter(adapter);
 
@@ -128,9 +134,13 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             }
 
             loggedInUser.getFollowingBook().setFollowing(following);
+            feed.getFollowingBook().setFollowing(following);
 
             // Now load the feed with this following list
             loadFeed();
+
+            // Debug: Check if feedEvents is populated after loading
+            Log.d("FEED_DEBUG", "Feed events after load: " + feed.getFeedEvents().size());
         });
     }
 
@@ -261,10 +271,17 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
                         Log.d("FEED_DEBUG", "Total events to display: " + allEvents.size());
 
+                        // Update both the adapter AND the feed's events list
+                        feed.getFeedEvents().clear();
+                        feed.getFeedEvents().addAll(allEvents);
+
                         runOnUiThread(() -> {
                             adapter.updateMoodEvents(allEvents);
                             progressBar.setVisibility(View.GONE);
                             listViewFeed.setVisibility(View.VISIBLE);
+
+                            // Debug: Verify UI update
+                            Log.d("FEED_DEBUG", "Adapter count: " + adapter.getCount());
                         });
                     }
                 }
