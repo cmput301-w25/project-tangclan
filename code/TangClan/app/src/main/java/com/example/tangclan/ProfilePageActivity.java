@@ -125,9 +125,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     protected void onResume() {
         super.onResume();
         // Refresh the list whenever the activity is resumed
-        networkManager.registerNetworkMonitor();
         getCurrentUserProfile();
         setupProfileListView();
+        networkManager.registerNetworkMonitor();
     }
 
     @Override
@@ -148,7 +148,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Retrieve the current logged-in user profile using the Singleton instance
         userProfile = LoggedInUser.getInstance();
 
-
         // Initialize the mood event book if it doesn't exist
         if (userProfile.getMoodEventBook() == null) {
             userProfile.setMoodEventBook(new MoodEventBook());
@@ -156,7 +155,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Fetch the user's past mood events from the database
         userProfile.initializeFollowingBookFromDatabase(databaseBestie);
-        FollowingBook userFollowingBook = userProfile.getFollowingBook();
 
 
         // Set the user information in the UI
@@ -173,9 +171,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String followingCt = String.valueOf(userProfile.getFollowingBook().getFollowingCount());
         followersTextView.setText(followerCt);
         followingTextView.setText(followingCt);
-
-        followingTextView.setText(String.valueOf(userFollowingBook.getFollowingCount()));
-        followersTextView.setText(String.valueOf(userFollowingBook.getFollowerCount()));
     }
 
     private void setupProfileListView() {
@@ -286,7 +281,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
                 // set setting
                 if (selectedSetting != null) {
-                    Log.d("test1", selectedSetting);
                     newMoodEvent.setSetting(selectedSetting);
                 } else {
                     newMoodEvent.setSetting("");
@@ -326,9 +320,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 // Show success message
                 Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
 
-                    // Log the number of mood events for debugging
-                    int count = userProfile.getMoodEventBook().getMoodEventList().size();
-
             } catch (IllegalArgumentException e) {
                 // Handle invalid input
                 Toast.makeText(this, "Error creating mood event: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -336,8 +327,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
     }
 
+    private void saveProfileToDatabase() {
 
 
+    }
 
 
 
@@ -345,15 +338,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     public void goToEditProfile() {
         // Handle edit profile button click
         Intent intent = new Intent(this, EditProfileActivity.class);
-        /*
-        Bundle profileDetails = new Bundle();
-        profileDetails.putString("pfp",userProfile.getProfilePic());
-        profileDetails.putString("displayName",userProfile.getDisplayName());
-        profileDetails.putString("username",userProfile.getUsername().trim());
-        profileDetails.putString("email",userProfile.getEmail().trim());
-        profileDetails.putString("password",userProfile.getPassword().trim());
-        intent.putExtras(profileDetails);
-         */
         startActivity(intent);
         finish();
     }
@@ -388,33 +372,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         return args;
     }
 
-    //TODO: delete this function
-    public String getStringOfCollaborators(MoodEvent post) {
-        StringBuilder collaboratorsStr = new StringBuilder();
-        Optional<ArrayList<String>> collaborators = post.getCollaborators();
-        collaborators.ifPresent(list -> {
-            if (list.get(0) != "") {
-                for (String item : list) {
-                    collaboratorsStr.append(item);
-                    collaboratorsStr.append(",");
-                }
-            } else {
-                collaboratorsStr.append("");
-            }
-        });
-        return collaboratorsStr.toString();
-    }
-
-    public byte[] getImageBytes(Bitmap img) {
-        byte[] imageBytes;
-        if (img != null) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            img.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            imageBytes = outputStream.toByteArray();
-        } else {
-            imageBytes = null;
-        }
-        return imageBytes;
+    private byte[] getImageBytes(Bitmap image) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+        return outputStream.toByteArray();
     }
 
     @Override
@@ -565,6 +526,4 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         adapter.addAll(filteredEvents);
         adapter.notifyDataSetChanged();
     }
-
-
 }

@@ -1,13 +1,15 @@
 package com.example.tangclan;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
@@ -26,11 +28,13 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,24 +48,28 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 //part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
 
 /**
  * The class is responsible for displaying the mood event feed to the user.
  * It allows users to view the most recent mood events from participants they follow,
  * add a new mood event, and view detailed information about any mood event in the feed.
+
  */
 
 //TODO make sure this screen is updated after the addition of a mood event from the add emotion fragments
 
 //TODO fix the bug for loadfeed because of the List<MoodEvent> to following book, cause runtime error
 
+
 /**
  * Represents the activity feed, with all MoodEvents of users that the session user follows
  * USER STORIES:
  *      US 01.04.01
  */
-public class FeedActivity extends AppCompatActivity {
+
+public class FeedActivity extends AppCompatActivity implements SearchOtherProfileAdapter.SelectProfileListener {
     //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
@@ -111,6 +119,8 @@ public class FeedActivity extends AppCompatActivity {
             Log.d("FINALDEBUG", user.getUsername());
             Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
         });
+
+
     }
 
     @Override
@@ -132,7 +142,7 @@ public class FeedActivity extends AppCompatActivity {
         // Initialize user search components
         usersRecyclerView = usersContainer.findViewById(R.id.recyclerView_users);
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        usersAdapter = new SearchOtherProfileAdapter(allUsers, this);
+        usersAdapter = new SearchOtherProfileAdapter(allUsers, getApplicationContext(),this);
         usersRecyclerView.setAdapter(usersAdapter);
 
         // Set up back button in user search
@@ -199,41 +209,6 @@ public class FeedActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Follow button test code
-        DatabaseBestie db = new DatabaseBestie();
-        Button followBtn = findViewById(R.id.follow_test);
-        String testUserUID = "NZliQC89wvTSafYDeYsG7ke8kuO2";
-        LoggedInUser loggedInUser = LoggedInUser.getInstance();
-        loggedInUser.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        loggedInUser.initializeFollowingBookFromDatabase(db);
-
-        // simulate another user sending a request to the current logged in user
-        String CHANGEME = "qM5OwQrQYyQf5p13VfyDVibnuXd2";
-        db.checkExistingRequest(CHANGEME, loggedInUser.getUid(), reqExists -> {
-            if (!reqExists) {
-                loggedInUser.getFollowingBook().addRequestingFollower("qM5OwQrQYyQf5p13VfyDVibnuXd2");
-                db.sendFollowRequest(CHANGEME, loggedInUser.getUid(), requestProcessed -> {
-                    Toast.makeText(this, "Tom Cruise requested to follow you!", Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-
-        followBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Assumes that when clicking on a user to go to their profile,
-                // a bundle of their profile details is passed to the profile activity
-                db.checkExistingRequest(loggedInUser.getUid(), testUserUID, reqExists -> {
-                    if (!reqExists) {
-                        db.sendFollowRequest(loggedInUser.getUid(), testUserUID, requestProcessed -> {
-                            followBtn.setText("Pending");
-                        });
-                    }
-                });
-            }
-        });
-
         // NAVBAR
         NavBarHelper.setupNavBar(this);
     }
@@ -250,11 +225,13 @@ public class FeedActivity extends AppCompatActivity {
         listViewFeed.setAdapter(adapter);
     }
 
+
     /**
      * Displays the details of a selected mood event in an alert dialog.
      *
      * @param moodEvent The mood event whose details are to be displayed.
      */
+
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
         details.append("Emotional State: ").append(moodEvent.getMoodEmotionalState()).append("\n");
@@ -373,15 +350,16 @@ public class FeedActivity extends AppCompatActivity {
         // Update the adapter with the filtered events
         adapter.updateMoodEvents(filteredEvents);
     }
-
     private void filterByKeyword(String keyword) {
         List<MoodEvent> filteredEvents = new ArrayList<>(feed.getFeedEvents());
+
 
         if (!keyword.isEmpty()) {
             List<String> keywords = new ArrayList<>();
             keywords.add(keyword);
             filteredEvents = Filter.filterByKeywords(filteredEvents, keywords);
         }
+
 
         adapter.updateMoodEvents(filteredEvents);
     }
@@ -397,13 +375,16 @@ public class FeedActivity extends AppCompatActivity {
         // Notify the user that filters have been reset
         Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
+    //need to account for multiple moods being selected
 
     private void loadUsers() {
         DatabaseBestie db = new DatabaseBestie();
         db.getAllUsers(users -> {
             allUsers.clear();
-            allUsers.addAll(users);
-            usersAdapter.notifyDataSetChanged();
+            for (Profile user: users) {
+                allUsers.add(user);
+                usersAdapter.notifyItemInserted(allUsers.size()-1);
+            }
         });
     }
 
@@ -434,7 +415,8 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void showUserSearch() {
-        feedContainer.setVisibility(View.GONE);
+
+        feedContainer.setVisibility(View.INVISIBLE);
         usersContainer.setVisibility(View.VISIBLE);
 
         button_moods.setBackgroundTintList(ColorStateList.valueOf(
@@ -448,5 +430,37 @@ public class FeedActivity extends AppCompatActivity {
 
         EditText searchUsers = usersContainer.findViewById(R.id.editText_search_users);
         searchUsers.requestFocus();
+    }
+
+
+
+    //Idea: after clicking on a profile on the search page for profiles it takes you to the users profile by passing in the profile object to the ProfilePageActivity
+    @Override
+    public void onItemClicked(Profile profile) {
+        // Toast.makeText(this, "Clicked: " + profile.getUsername(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(FeedActivity.this, ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
+        profileDetails.putString("uid", profile.getUid());
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes == null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
+
+        Log.d("PROFILEINFO","uid is "+ profile.getUid());
+        Log.d("PROFILEINFO","username is "+ profile.getUsername());
+        Log.d("PROFILEINFO","diplsay name is "+ profile.getDisplayName());
+        intent.putExtras(profileDetails);
+        startActivity(intent);
+
     }
 }
