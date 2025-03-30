@@ -171,13 +171,13 @@ public class MoodEventBook {
      * Displays mood events that have geolocation data.
      * Placeholder for integrating with a mapping UI.
      */
-    public void displayMoodEventsOnMap() {
+    /*public void displayMoodEventsOnMap() {
         for (MoodEvent event : moodEvents) {
             if (event.hasGeolocation()) {
                 System.out.println("Displaying on map: " + event);
             }
         }
-    }
+    }*/
 
     /**
      * Grabs all of the Mood Event objects as a List stored within the MoodEventBook

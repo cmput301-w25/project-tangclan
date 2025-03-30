@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import com.example.tangclan.LocationData;
 
 
 /**
@@ -59,6 +60,9 @@ public class DatabaseBestie {
     private DocumentReference followRequestCounterRef;
     private CollectionReference followRequestsRef;
 
+    private DocumentReference locationCounterRef;
+    private CollectionReference locationsRef;
+
     /**
      * This gets an instance of the database
      */
@@ -77,6 +81,8 @@ public class DatabaseBestie {
         followsRef = db.collection("follows");
         followRequestCounterRef = db.collection("Counters").document("follow_request_counter");
         followRequestsRef = db.collection("followRequests");
+        locationCounterRef = db.collection("Counters").document("location_counter");
+        locationsRef = db.collection("locations");
     }
 
     /**
@@ -464,16 +470,13 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         ArrayList<MoodEvent> events = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            int mid = parseInt(document.getString("mid")); // will never return null as mid is set when adding an event
+                            int mid = parseInt(document.getString("mid"));
                             String emotionalState = document.getString("emotionalState");
                             String reason = document.getString("reason");
                             ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
                             Boolean location = document.getBoolean("location");
-                            Double lat = document.getDouble("latitude");
-                            Double lon = document.getDouble("longitude");
-                            String locationName = document.getString("locationName");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
@@ -486,26 +489,38 @@ public class DatabaseBestie {
                             }
 
                             MoodEvent moodEvent = new MoodEvent(emotionalState, collaborators, reason);
+                            moodEvent.setMid(String.valueOf(mid));
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
+                            moodEvent.setGeolocation(location != null && location);
 
-                            if (location) {
-                                moodEvent.setGeolocation(location);
-                                moodEvent.setLatitude(lat);
-                                moodEvent.setLongitude(lon);
-                                moodEvent.setLocationName(locationName);
-                            } else if (!location) {
-                                moodEvent.setGeolocation(location);
-                            }
-
-
+                            // Add each mood event to the list immediately
                             events.add(moodEvent);
                         }
-                        callback.onMoodEventsRetrieved(events);
+
+                        // Now fetch locations for all events in parallel
+                        if (!events.isEmpty()) {
+                            AtomicInteger counter = new AtomicInteger(events.size());
+                            for (MoodEvent event : events) {
+                                getLocationForMoodEvent(event.getMid(), location -> {
+                                    if (location != null) {
+                                        event.setLatitude(location.getLatitude());
+                                        event.setLongitude(location.getLongitude());
+                                        event.setLocationName(location.getName());
+                                    }
+
+                                    if (counter.decrementAndGet() == 0) {
+                                        callback.onMoodEventsRetrieved(events);
+                                    }
+                                });
+                            }
+                        } else {
+                            callback.onMoodEventsRetrieved(events);
+                        }
                     } else {
                         Log.e(TAG, "Error getting mood events: ", task.getException());
-                        callback.onMoodEventsRetrieved(new ArrayList<>()); // Return empty list on failure
+                        callback.onMoodEventsRetrieved(new ArrayList<>());
                     }
                 });
     }
@@ -518,7 +533,6 @@ public class DatabaseBestie {
      *      function to be called when the task is successful.
      */
     public void getAllMoodEvents(String uid, MoodEventsCallback callback) {
-        // query should search all collections with id 'events' regardless of month
         db.collectionGroup("events")
                 .whereEqualTo("postedBy", uid)
                 .get()
@@ -526,7 +540,7 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         ArrayList<MoodEvent> moodEvents = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String midString = String.valueOf(document.get("mid")); // will never return null as mid is set when adding an event
+                            String midString = String.valueOf(document.get("mid"));
                             int mid = parseInt(midString);
                             String emotionalState = document.getString("emotionalState");
                             String setting = document.getString("setting");
@@ -536,11 +550,7 @@ public class DatabaseBestie {
                             String postTime = document.getString("timePosted");
                             Boolean privateMood = document.getBoolean("privateMood");
                             Boolean location = document.getBoolean("location");
-                            Double lat = document.getDouble("latitude");
-                            Double lon = document.getDouble("longitude");
-                            String locationName = document.getString("locationName");
 
-                            // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
                             Bitmap image;
                             if (imageString != null) {
@@ -551,8 +561,6 @@ public class DatabaseBestie {
                             }
 
                             MoodEvent moodEvent = new MoodEvent(emotionalState);
-
-
                             moodEvent.setMid(midString);
                             moodEvent.setSetting(setting);
                             moodEvent.setCollaborators(collaborators);
@@ -561,22 +569,31 @@ public class DatabaseBestie {
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
                             moodEvent.setPrivacyOn(privateMood != null && privateMood);
-
-                            if (location) {
-                                moodEvent.setGeolocation(location);
-                                moodEvent.setLatitude(lat);
-                                moodEvent.setLongitude(lon);
-                                moodEvent.setLocationName(locationName);
-                            } else if (!location) {
-                                moodEvent.setGeolocation(location);
-                            }
-
+                            moodEvent.setGeolocation(location != null && location);
 
                             moodEvents.add(moodEvent);
                         }
-                        callback.onMoodEventsRetrieved(moodEvents);
-                    }
-                    else {
+
+                        // Now fetch locations for all events in parallel
+                        if (!moodEvents.isEmpty()) {
+                            AtomicInteger counter = new AtomicInteger(moodEvents.size());
+                            for (MoodEvent event : moodEvents) {
+                                getLocationForMoodEvent(event.getMid(), location -> {
+                                    if (location != null) {
+                                        event.setLatitude(location.getLatitude());
+                                        event.setLongitude(location.getLongitude());
+                                        event.setLocationName(location.getName());
+                                    }
+
+                                    if (counter.decrementAndGet() == 0) {
+                                        callback.onMoodEventsRetrieved(moodEvents);
+                                    }
+                                });
+                            }
+                        } else {
+                            callback.onMoodEventsRetrieved(moodEvents);
+                        }
+                    } else {
                         Log.e(TAG, "Error getting mood events: ", task.getException());
                         callback.onMoodEventsRetrieved(new ArrayList<>());
                     }
@@ -634,14 +651,12 @@ public class DatabaseBestie {
                 String reason = documentSnapshot.getString("reason");
                 String img = documentSnapshot.getString("image");
                 Boolean location = documentSnapshot.getBoolean("location");
-                Double lat = documentSnapshot.getDouble("latitude");
-                Double lon = documentSnapshot.getDouble("longitude");
-                String locationName = documentSnapshot.getString("locationName");
 
                 MoodEvent moodEvent = new MoodEvent(emotion, collabs);
                 moodEvent.setMid(id);
                 moodEvent.setPostDate(date);
                 moodEvent.setPostTime(time);
+                moodEvent.setGeolocation(location != null && location);
 
                 if (img != null) {
                     byte[] imgBytes = Base64.decode(img, Base64.DEFAULT);
@@ -651,16 +666,21 @@ public class DatabaseBestie {
                     moodEvent.setReason(reason);
                 }
 
-                if (location) {
-                    moodEvent.setGeolocation(location);
-                    moodEvent.setLatitude(lat);
-                    moodEvent.setLongitude(lon);
-                    moodEvent.setLocationName(locationName);
-                } else if (!location) {
-                    moodEvent.setGeolocation(location);
-                }
-                callback.onMoodEventRetrieved(moodEvent, emotion);
+                // Get location data separately
+                getLocationForMoodEvent(mid, locationData -> {
+                    if (locationData != null) {
+                        moodEvent.setLatitude(locationData.getLatitude());
+                        moodEvent.setLongitude(locationData.getLongitude());
+                        moodEvent.setLocationName(locationData.getName());
+                    }
+                    callback.onMoodEventRetrieved(moodEvent, emotion);
+                });
+            } else {
+                callback.onMoodEventRetrieved(null, null);
             }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error getting mood event", e);
+            callback.onMoodEventRetrieved(null, null);
         });
     }
 
@@ -676,10 +696,10 @@ public class DatabaseBestie {
         db.collectionGroup("events")
                 .whereEqualTo("postedBy", uid)
                 .orderBy("postDate")
-                .limit(1) // limit only to the latest post
+                .limit(1)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
                         DocumentSnapshot document = task.getResult().getDocuments().get(0);
 
                         int mid = parseInt(document.getString("mid"));
@@ -689,11 +709,7 @@ public class DatabaseBestie {
                         String postDate = document.getString("datePosted");
                         String postTime = document.getString("timePosted");
                         Boolean location = document.getBoolean("location");
-                        Double lat = document.getDouble("latitude");
-                        Double lon = document.getDouble("longitude");
-                        String locationName = document.getString("locationName");
 
-                        // mechanism to revert a string back into the bitmap
                         String imageString = document.getString("image");
                         Bitmap image;
                         if (imageString != null) {
@@ -704,24 +720,25 @@ public class DatabaseBestie {
                         }
 
                         MoodEvent moodEvent = new MoodEvent(emotionalState, collaborators, reason);
+                        moodEvent.setMid(String.valueOf(mid));
                         moodEvent.setPostDate(postDate);
                         moodEvent.setPostTime(postTime);
                         moodEvent.setImage(image);
+                        moodEvent.setGeolocation(location != null && location);
 
-                        if (location) {
-                            moodEvent.setGeolocation(location);
-                            moodEvent.setLatitude(lat);
-                            moodEvent.setLongitude(lon);
-                            moodEvent.setLocationName(locationName);
-                        } else if (!location) {
-                            moodEvent.setGeolocation(location);
-                        }
-
-                        callback.onMoodEventRetrieved(moodEvent, emotionalState);
+                        // Get location data separately
+                        getLocationForMoodEvent(String.valueOf(mid), locationData -> {
+                            if (locationData != null) {
+                                moodEvent.setLatitude(locationData.getLatitude());
+                                moodEvent.setLongitude(locationData.getLongitude());
+                                moodEvent.setLocationName(locationData.getName());
+                            }
+                            callback.onMoodEventRetrieved(moodEvent, emotionalState);
+                        });
+                    } else {
+                        callback.onMoodEventRetrieved(null, null);
                     }
                 });
-
-        // do nothing in the vacuous case
     }
 
     /**
@@ -1037,6 +1054,89 @@ public class DatabaseBestie {
     public interface OnUsersLoadedListener {
         void onUsersLoaded(List<Profile> users);
     }
+
+
+    public void generateLid(IdCallback callback) {
+        generateUniqueId(locationCounterRef, "last_lid", callback);
+    }
+
+    public interface LocationCallback {
+        void onLocationRetrieved(LocationData location);
+    }
+
+    public void addLocation(LocationData location, Runnable onSuccess) {
+        generateLid(lid -> {
+            location.setLid(String.valueOf(lid));
+            Map<String, Object> locationData = new HashMap<>();
+            locationData.put("lid", location.getLid());
+            locationData.put("mid", location.getMid());
+            locationData.put("latitude", location.getLatitude());
+            locationData.put("longitude", location.getLongitude());
+            locationData.put("name", location.getName());
+
+            locationsRef.document(String.valueOf(lid))
+                    .set(locationData)
+                    .addOnSuccessListener(aVoid -> onSuccess.run())
+                    .addOnFailureListener(e -> Log.e(TAG, "Error adding location", e));
+        });
+    }
+
+    public void getLocationForMoodEvent(String mid, LocationCallback callback) {
+        locationsRef.whereEqualTo("mid", mid)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        LocationData location = new LocationData();
+                        location.setLid(document.getString("lid"));
+                        location.setMid(document.getString("mid"));
+                        location.setLatitude(document.getDouble("latitude"));
+                        location.setLongitude(document.getDouble("longitude"));
+                        location.setName(document.getString("name"));
+                        callback.onLocationRetrieved(location);
+                    } else {
+                        callback.onLocationRetrieved(null);
+                    }
+                });
+    }
+
+    public void updateLocation(String mid, LocationData location, Runnable onSuccess) {
+        locationsRef.whereEqualTo("mid", mid)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        String lid = task.getResult().getDocuments().get(0).getId();
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("latitude", location.getLatitude());
+                        updates.put("longitude", location.getLongitude());
+                        updates.put("name", location.getName());
+
+                        locationsRef.document(lid)
+                                .update(updates)
+                                .addOnSuccessListener(aVoid -> onSuccess.run())
+                                .addOnFailureListener(e -> Log.e(TAG, "Error updating location", e));
+                    } else if (location != null) {
+                        addLocation(location, onSuccess);
+                    }
+                });
+    }
+
+    public void deleteLocation(String mid, Runnable onSuccess) {
+        locationsRef.whereEqualTo("mid", mid)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            locationsRef.document(document.getId()).delete();
+                        }
+                        onSuccess.run();
+                    }
+                });
+    }
+
+
 
 
 

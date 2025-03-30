@@ -443,7 +443,7 @@ public class MoodEvent implements Serializable {
         moodEventFields.put("privateMood",this.privacyOn);
         moodEventFields.put("datePosted", dateString);
         moodEventFields.put("timePosted", timeString);
-        moodEventFields.put("location", this.locationOn);
+        /*moodEventFields.put("location", this.locationOn);
 
         if (locationOn) {
             moodEventFields.put("latitude", this.latitude);
@@ -453,7 +453,7 @@ public class MoodEvent implements Serializable {
             moodEventFields.put("latitude", null);
             moodEventFields.put("longitude", null);
             moodEventFields.put("locationName", null);
-        }
+        }*/
 
 
 

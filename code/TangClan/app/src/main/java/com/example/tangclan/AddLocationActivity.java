@@ -132,17 +132,30 @@ public class AddLocationActivity extends AppCompatActivity {
             }
         });
 
+        // In nextButton.setOnClickListener:
         nextButton.setOnClickListener(v -> {
             if (lastSearchedPoint != null) {
+                // Create intent and add location data to bundle
                 Intent intent = new Intent(AddLocationActivity.this, ReviewDetailsActivity.class);
-
                 savedDetails.putDouble("latitude", lastSearchedPoint.getLatitude());
                 savedDetails.putDouble("longitude", lastSearchedPoint.getLongitude());
                 savedDetails.putString("locationName", searchBar.getText().toString());
+                savedDetails.putBoolean("hasLocation", true);
 
-                intent.putExtras(savedDetails);
-                startActivity(intent);
-                finish();
+                // Create and save LocationData
+                LocationData locationData = new LocationData(
+                        savedDetails.getString("mid"), // Make sure mid is in the bundle
+                        lastSearchedPoint.getLatitude(),
+                        lastSearchedPoint.getLongitude(),
+                        searchBar.getText().toString()
+                );
+
+                DatabaseBestie.getInstance().addLocation(locationData, () -> {
+                    // Location saved successfully, proceed to next activity
+                    intent.putExtras(savedDetails);
+                    startActivity(intent);
+                    finish();
+                });
             }
         });
     }
