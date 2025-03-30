@@ -31,7 +31,7 @@ import java.util.Locale;
 public class AddSocialSituationActivity extends AppCompatActivity {
 
     String[] settings = {"", "alone", "with one other person", "with two to several people", "with a crowd"};
-    private WizVIew wizVIew;  // ViewModel instance
+    //private WizVIew wizVIew;  // ViewModel instance
     private String socialSetting;
     private ArrayList<String> collaborators;
     @Override
@@ -45,7 +45,8 @@ public class AddSocialSituationActivity extends AppCompatActivity {
         ArrayList<String> followerBook = user.getFollowingBook().getFollowers();
 
         // Initialize ViewModel
-        wizVIew = new ViewModelProvider(this).get(WizVIew.class);
+        //
+        // wizVIew = new ViewModelProvider(this).get(WizVIew.class);
 
         // Initialize UI elements
         AutoCompleteTextView editTextSituation = findViewById(R.id.editTextSituation);
@@ -153,7 +154,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
             savedDetails.putStringArrayList("collaborators", collaborators);
 
             // Save the social situation in the ViewModel
-            wizVIew.setSocialSituation(collaborators);
+            // wizVIew.setSocialSituation(collaborators);
 
             // Create an intent to start the next activity
             Intent intent = new Intent(AddSocialSituationActivity.this, UploadPictureForMoodEventActivity.class);

@@ -32,6 +32,20 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
     private DatabaseBestie db;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh the list whenever the activity is resumed
+        Bundle profileDetails = getIntent().getExtras();
+        if (profileDetails != null) {
+            setUpProfileDetails(profileDetails);
+            otherUsersID = profileDetails.getString("uid");
+        }
+
+        loggedInUser = LoggedInUser.getInstance();
+        loggedInUser.initializeFollowingBookFromDatabase(db);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -103,7 +117,6 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
     }
 
     public void setFollowButtonText() {
-        loggedInUser.initializeFollowingBookFromDatabase(db);
         // Set button text depending on current relationship
         Button followBtn = findViewById(R.id.button_edit_profile);
         if (loggedInUser.getFollowingBook().getFollowers().contains(otherUsersID)) {

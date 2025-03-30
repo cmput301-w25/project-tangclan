@@ -48,7 +48,7 @@ public class SetupBirthdayActivity extends AppCompatActivity
             if (CalculateAge(yearGlobal,monthGlobal,dayGlobal)<18){
                 Log.d("TAgAGE","DisplayAge:"+CalculateAge(yearGlobal,monthGlobal,dayGlobal));
             }else{
-                Intent intent = new Intent(SetupBirthdayActivity.this, ProfileActivity.class);//TODO: CHANGE PROFILEACTIVITY.JAVA TO SETUP profile pic activity!!!
+                Intent intent = new Intent(SetupBirthdayActivity.this, ProfilePageActivity.class);//TODO: CHANGE PROFILEACTIVITY.JAVA TO SETUP profile pic activity!!!
                 startActivity(intent);
             }
 

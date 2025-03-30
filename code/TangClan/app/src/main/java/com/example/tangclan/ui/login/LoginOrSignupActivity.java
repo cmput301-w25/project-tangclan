@@ -1,4 +1,4 @@
-package com.example.tangclan;
+package com.example.tangclan.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,8 +7,7 @@ import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.tangclan.ui.login.LogIn;
-import com.example.tangclan.ui.login.SignUpActivity;
+import com.example.tangclan.R;
 
 /**
  * US 3.01.01
@@ -34,7 +33,7 @@ public class LoginOrSignupActivity extends AppCompatActivity {
 
         Button goToLogin = findViewById(R.id.login_button);
         goToLogin.setOnClickListener(view -> {
-            startActivity(new Intent(LoginOrSignupActivity.this, LogIn.class));
+            startActivity(new Intent(LoginOrSignupActivity.this, LogInActivity.class));
             finish();
         });
     }

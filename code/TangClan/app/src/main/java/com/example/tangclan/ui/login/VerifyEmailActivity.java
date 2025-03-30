@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tangclan.FeedActivity;
 import com.example.tangclan.R;
-import com.example.tangclan.TempFeedActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -23,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
  * Asks the user to verify their email, if their email is not yet verified.
  * Allows users to be directed to their Feed instead.
  */
-public class VerifyEmail extends AppCompatActivity {
+public class VerifyEmailActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseUser user;

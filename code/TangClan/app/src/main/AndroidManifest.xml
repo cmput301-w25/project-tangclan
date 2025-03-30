@@ -96,16 +96,16 @@
             android:name=".TempFeedActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.login.LogIn"
+            android:name=".ui.login.LogInActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.login.VerifyEmail"
+            android:name=".ui.login.VerifyEmailActivity"
             android:exported="false" />
         <activity
             android:name=".ui.login.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginOrSignupActivity"
+            android:name=".ui.login.LoginOrSignupActivity"
             android:exported="false" />
         <activity
             android:name=".FollowActivity"

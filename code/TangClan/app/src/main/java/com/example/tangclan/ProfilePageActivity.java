@@ -163,6 +163,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             ImageView pfp = findViewById(R.id.pfpView);
             byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
             BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            Log.d("PROFILEPIC","trying to set pfp");
             pfp.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
         }
         usernameTextView.setText(String.format("@%s", userProfile.getUsername()));
