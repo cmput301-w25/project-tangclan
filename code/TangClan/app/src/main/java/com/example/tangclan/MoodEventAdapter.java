@@ -77,21 +77,44 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
      * @param context The activity context
      * @param followingBook The FollowingBook containing users and their mood events
      */
+    /**
+     * Constructor for the MoodEventAdapter that takes a FollowingBook.
+     *
+     * @param context The activity context
+     * @param followingBook The FollowingBook containing users and their mood events
+     */
     public MoodEventAdapter(Context context, FollowingBook followingBook) {
         super(context, 0, new ArrayList<>());
         this.moodToUsernameMap = new HashMap<>();
 
-        DatabaseBestie bestie = new DatabaseBestie();
+        DatabaseBestie bestie = DatabaseBestie.getInstance();
 
-        // Placeholder implementation - in real app would get actual data from database
-        // Add dummy data for testing
-        Map<String, MoodEvent> events = followingBook.getRecentMoodEvents(bestie);
-        for (Map.Entry<String, MoodEvent> entry : events.entrySet()) {
-            add(entry.getValue());
-            moodToUsernameMap.put(entry.getValue(), "User_" + entry.getKey());
-        }
+        // Show loading state if needed (you might want to add this)
+        // ((Activity)context).findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 
+        followingBook.getRecentMoodEvents(bestie, new DatabaseBestie.MoodEventsCallback() {
+            @Override
+            public void onMoodEventsRetrieved(ArrayList<MoodEvent> events) {
+                // Hide loading state if needed
+                // ((Activity)context).findViewById(R.id.progressBar).setVisibility(View.GONE);
 
+                // Clear existing data
+                clear();
+
+                // Add new events
+                addAll(events);
+
+                // Update username mapping
+                moodToUsernameMap.clear();
+                for (MoodEvent event : events) {
+                    // This is a placeholder - in a real app you'd get the actual username from the database
+                    moodToUsernameMap.put(event, "User_" + events.indexOf(event));
+                }
+
+                // Notify adapter that data changed
+                notifyDataSetChanged();
+            }
+        });
     }
 
     /**

@@ -737,14 +737,10 @@ public class DatabaseBestie {
                     ArrayList<String> following = new ArrayList<>();
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            Map<String, Object> data = document.getData();
-                            following.add((String) data.get("uidFollowee"));
+                            following.add(document.getString("uidFollowee"));
                         }
-                        callback.onFollowingRetrieved(following);
-                    } else {
-                        Log.e(TAG, "Error getting following: ", task.getException());
-                        callback.onFollowingRetrieved(new ArrayList<>()); // Return empty list if error
                     }
+                    callback.onFollowingRetrieved(following);
                 });
     }
 

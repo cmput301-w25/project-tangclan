@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +46,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -81,6 +84,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
     private ArrayList<Profile> allUsers = new ArrayList<>();
     private com.google.android.material.button.MaterialButton button_moods;
     private com.google.android.material.button.MaterialButton buttonForYou;
+    private ProgressBar progressBar;
+
+    private DatabaseBestie db;
 
     /**
      * Initializes the activity, sets up the user interface, loads the mood event feed,
@@ -97,30 +103,35 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        if(currentUser == null) {
+        if (currentUser == null) {
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
+            return;
         }
 
-        DatabaseBestie db = new DatabaseBestie();
-
+        db = DatabaseBestie.getInstance();
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
 
-        db.getUser(currentUser.getUid(), user -> {
-            loggedInUser.setEmail(user.getEmail());
-            loggedInUser.setUsername(user.getUsername());
-            loggedInUser.setPassword(user.getPassword());
-            loggedInUser.setDisplayName(user.getDisplayName());
-            loggedInUser.setAge(user.getAge());
-            loggedInUser.setUid(currentUser.getUid());
-            loggedInUser.initializeMoodEventBookFromDatabase(db);
-            loggedInUser.initializeFollowingBookFromDatabase(db);
+        // Initialize with empty books first
+        feed = new Feed(new FollowingBook(), new MoodEventBook());
+        adapter = new MoodEventAdapter(this, new ArrayList<>());
+        listViewFeed.setAdapter(adapter);
 
-            Log.d("FINALDEBUG", user.getUsername());
-            Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
+        // Debug: Print current user ID
+        Log.d("FEED_DEBUG", "Current user ID: " + currentUser.getUid());
+
+        // Load following list FIRST
+        db.getFollowing(currentUser.getUid(), following -> {
+            Log.d("FEED_DEBUG", "Found " + following.size() + " followed users");
+            for (String uid : following) {
+                Log.d("FEED_DEBUG", "Following UID: " + uid);
+            }
+
+            loggedInUser.getFollowingBook().setFollowing(following);
+
+            // Now load the feed with this following list
+            loadFeed();
         });
-
-
     }
 
     @Override
@@ -134,6 +145,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         usersContainer = findViewById(R.id.users_container);
         button_moods = findViewById(R.id.button_moods);
         buttonForYou = findViewById(R.id.button_users);
+        progressBar = findViewById(R.id.progressBar);
 
         // Initialize adapters
         adapter = new MoodEventAdapter(this, new ArrayList<>());
@@ -218,11 +230,46 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
      *
      */
     private void loadFeed() {
-        feed.loadFeed();
-        FollowingBook followingBook = feed.getFollowingBook();  // Assuming you have this getter in Feed class.
+        progressBar.setVisibility(View.VISIBLE);
+        listViewFeed.setVisibility(View.GONE);
 
-        adapter = new MoodEventAdapter(this, followingBook);  // Pass followingBook instead of feedEvents
-        listViewFeed.setAdapter(adapter);
+        ArrayList<MoodEvent> allEvents = new ArrayList<>();
+        ArrayList<String> following = feed.getFollowingBook().getFollowing();
+
+        if (following.isEmpty()) {
+            Log.d("FEED_DEBUG", "No users being followed");
+            adapter.updateMoodEvents(new ArrayList<>());
+            progressBar.setVisibility(View.GONE);
+            listViewFeed.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(following.size());
+
+        for (String uid : following) {
+            Log.d("FEED_DEBUG", "Loading events for UID: " + uid);
+            db.getAllMoodEvents(uid, events -> {
+                Log.d("FEED_DEBUG", "Found " + events.size() + " events for UID: " + uid);
+
+                synchronized (allEvents) {
+                    allEvents.addAll(events);
+
+                    if (counter.decrementAndGet() == 0) {
+                        // Sort by date (newest first)
+                        Collections.sort(allEvents, (e1, e2) ->
+                                e2.getPostDate().compareTo(e1.getPostDate()));
+
+                        Log.d("FEED_DEBUG", "Total events to display: " + allEvents.size());
+
+                        runOnUiThread(() -> {
+                            adapter.updateMoodEvents(allEvents);
+                            progressBar.setVisibility(View.GONE);
+                            listViewFeed.setVisibility(View.VISIBLE);
+                        });
+                    }
+                }
+            });
+        }
     }
 
 

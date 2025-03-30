@@ -1,9 +1,11 @@
 package com.example.tangclan;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Represents the followers, following, and any outstanding follow requests of the session user
@@ -99,21 +101,37 @@ public class FollowingBook {
         return result;
     }
 
-    public Map<String, MoodEvent> getRecentMoodEvents(DatabaseBestie db) {
-        Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
+    public void getRecentMoodEvents(DatabaseBestie db, DatabaseBestie.MoodEventsCallback callback) {
+        ArrayList<MoodEvent> allEvents = new ArrayList<>();
+        AtomicInteger remaining = new AtomicInteger(following.size());
 
         if (following.isEmpty()) {
-            // Mock data
-            addMockMoodEvents(uidToMoodEvent);
-        } else {
-            // Real implementation
-            for (String followingUid : following) {
-                db.getLatestMoodEvent(followingUid, (latestEvent, emot) -> {
-                    uidToMoodEvent.put(followingUid, latestEvent);
-                });
-            }
+            callback.onMoodEventsRetrieved(new ArrayList<>());
+            return;
         }
-        return uidToMoodEvent;
+
+        for (String followingUid : following) {
+            db.getAllMoodEvents(followingUid, events -> {
+                synchronized (allEvents) {
+                    allEvents.addAll(events);
+
+                    if (remaining.decrementAndGet() == 0) {
+                        // Sort all events by date/time
+                        allEvents.sort(Comparator
+                                .comparing(MoodEvent::getPostDate, Comparator.reverseOrder())
+                                .thenComparing(MoodEvent::getPostTime, Comparator.reverseOrder()));
+
+                        // Take only the 3 most recent
+                        ArrayList<MoodEvent> recentEvents = new ArrayList<>();
+                        int limit = Math.min(3, allEvents.size());
+                        for (int i = 0; i < limit; i++) {
+                            recentEvents.add(allEvents.get(i));
+                        }
+                        callback.onMoodEventsRetrieved(recentEvents);
+                    }
+                }
+            });
+        }
     }
 
     private void addMockMoodEvents(Map<String, MoodEvent> uidToMoodEvent) {
