@@ -24,13 +24,16 @@ public class SearchOtherProfileAdapter extends RecyclerView.Adapter<SearchOtherP
     private Context context;
     private SelectProfileListener listener;
 
+    public interface SelectProfileListener {
+        void onItemClicked(int pos);
+    }
+
 
     // creating a constructor for our variables.
     public SearchOtherProfileAdapter(ArrayList<Profile> ProfileArrayList, Context context,SelectProfileListener listener) {
         this.ProfileArrayList = ProfileArrayList;
         this.context=context;
         this.listener=listener;
-
     }
 
 
@@ -62,11 +65,10 @@ public class SearchOtherProfileAdapter extends RecyclerView.Adapter<SearchOtherP
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                listener.onItemClicked(ProfileArrayList.get(holder.getAdapterPosition()));
+                listener.onItemClicked(position);
 //                Intent intent =new Intent(view.getContext(), ProfilePageActivity.class);
 //                intent.putExtra("KeySearchProfile", ProfileArrayList.get(holder.getAdapterPosition()));
 //                view.getContext().startActivity(intent);
-
             }
         });
 
@@ -90,13 +92,6 @@ public class SearchOtherProfileAdapter extends RecyclerView.Adapter<SearchOtherP
             ProfileUsernameForYouPage = itemView.findViewById(R.id.ProfileUsernameForYou);
             ProfileDisplayNameForYouPage = itemView.findViewById(R.id.ProfileDisplayNameForYou);
             cardview = itemView.findViewById(R.id.cardview);
-
-
         }
     }
-
-
-
-
-
 }

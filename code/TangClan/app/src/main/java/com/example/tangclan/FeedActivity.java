@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
  *      US 01.04.01
  */
 
-public class FeedActivity extends AppCompatActivity implements SelectProfileListener {
+public class FeedActivity extends AppCompatActivity implements SearchOtherProfileAdapter.SelectProfileListener {
     //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
@@ -138,7 +138,7 @@ public class FeedActivity extends AppCompatActivity implements SelectProfileList
         // Initialize user search components
         usersRecyclerView = usersContainer.findViewById(R.id.recyclerView_users);
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        usersAdapter = new SearchOtherProfileAdapter(allUsers, this,this);
+        usersAdapter = new SearchOtherProfileAdapter(allUsers, getApplicationContext(),this);
         usersRecyclerView.setAdapter(usersAdapter);
 
         // Set up back button in user search
@@ -412,8 +412,10 @@ public class FeedActivity extends AppCompatActivity implements SelectProfileList
         DatabaseBestie db = new DatabaseBestie();
         db.getAllUsers(users -> {
             allUsers.clear();
-            allUsers.addAll(users);
-            usersAdapter.notifyDataSetChanged();
+            for (Profile user: users) {
+                allUsers.add(user);
+                usersAdapter.notifyItemInserted(allUsers.size()-1);
+            }
         });
     }
 
@@ -452,7 +454,7 @@ public class FeedActivity extends AppCompatActivity implements SelectProfileList
                 ContextCompat.getColor(this, R.color.white)));
         buttonForYou.setBackgroundTintList(ColorStateList.valueOf(
                 ContextCompat.getColor(this, R.color.yellow)));
-        
+
         if (allUsers.isEmpty()) {
             loadUsers();
         }
@@ -464,34 +466,21 @@ public class FeedActivity extends AppCompatActivity implements SelectProfileList
 
 
     //Idea: after clicking on a profile on the search page for profiles it takes you to the users profile by passing in the profile object to the ProfilePageActivity
-
-    public void onItemClicked(Profile profile){
+    @Override
+    public void onItemClicked(int pos) {
+        Profile profile = allUsers.get(pos);
         Toast.makeText(this, "Clicked: " + profile.getUsername(), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(FeedActivity.this, ProfilePageActivity.class);
-        //intent.putExtra("KeySearchProfile",profile);
+        Intent intent = new Intent(FeedActivity.this, ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        profileDetails.putString("pfp",profile.getProfilePic());
 
-
-
-
-
-
-        //not getting profile object for ome reason
-        intent.putExtra("Username",profile.getUsername());
-        intent.putExtra("Email",profile.getEmail());
-        intent.putExtra("Age",profile.getAge());
-        intent.putExtra("DisplayName",profile.getDisplayName());
-        intent.putExtra("ProfilePic",profile.getProfilePic());
-        intent.putExtra("Password",profile.getPassword());
-
-
-
-
+        Log.d("PROFILEINFO","username is "+ profile.getUsername());
+        Log.d("PROFILEINFO","diplsay name is "+ profile.getDisplayName());
+        intent.putExtras(profileDetails);
         startActivity(intent);
+        finish();
     }
-
-
-
-
-
-
 }
