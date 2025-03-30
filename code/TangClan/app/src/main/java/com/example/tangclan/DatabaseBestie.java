@@ -958,6 +958,68 @@ public class DatabaseBestie {
         void onUsersLoaded(List<Profile> users);
     }
 
+    /**
+     * Retrieves the most recent mood events (up to specified count) for each followed user
+     *
+     * @param uid The user ID whose following list we want to check
+     * @param count The number of recent events to fetch per user
+     * @param callback Callback to handle the retrieved mood events
+     */
+    public void getRecentMoodEventsForFollowing(String uid, int count, MoodEventsCallback callback) {
+        getFollowing(uid, following -> {
+            if (following.isEmpty()) {
+                callback.onMoodEventsRetrieved(new ArrayList<>());
+                return;
+            }
+
+            AtomicInteger remainingQueries = new AtomicInteger(following.size());
+            ArrayList<MoodEvent> allEvents = new ArrayList<>();
+
+            for (String followedUid : following) {
+                db.collectionGroup("events")
+                        .whereEqualTo("postedBy", followedUid)
+                        .orderBy("datePosted", Query.Direction.DESCENDING)
+                        .orderBy("timePosted", Query.Direction.DESCENDING)
+                        .limit(count)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String mid = document.getString("mid");
+                                    String emotionalState = document.getString("emotionalState");
+                                    String reason = document.getString("reason");
+                                    ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
+                                    String postDate = document.getString("datePosted");
+                                    String postTime = document.getString("timePosted");
+                                    String imageString = document.getString("image");
+                                    Bitmap image = null;
+                                    if (imageString != null) {
+                                        byte[] imgByteArray = Base64.decode(imageString, Base64.DEFAULT);
+                                        image = BitmapFactory.decodeByteArray(imgByteArray, 0, imgByteArray.length);
+                                    }
+
+                                    MoodEvent moodEvent = new MoodEvent(emotionalState, collaborators, reason);
+                                    moodEvent.setMid(mid);
+                                    moodEvent.setPostDate(postDate);
+                                    moodEvent.setPostTime(postTime);
+                                    moodEvent.setImage(image);
+
+                                    allEvents.add(moodEvent);
+                                }
+                            }
+                            if (remainingQueries.decrementAndGet() == 0) {
+                                allEvents.sort((e1, e2) -> {
+                                    int dateCompare = e2.getPostDate().compareTo(e1.getPostDate());
+                                    if (dateCompare != 0) return dateCompare;
+                                    return e2.getPostTime().compareTo(e1.getPostTime());
+                                });
+                                callback.onMoodEventsRetrieved(allEvents);
+                            }
+                        });
+            }
+        });
+    }
+
 
 
 

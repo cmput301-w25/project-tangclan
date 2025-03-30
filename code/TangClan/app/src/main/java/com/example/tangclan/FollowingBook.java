@@ -144,4 +144,18 @@ public class FollowingBook {
         event.setCollaborators(new ArrayList<>(List.of(collaborator)));
         return event;
     }
+
+    public Map<String, List<MoodEvent>> getRecentMoodEventsPerUser(DatabaseBestie db, int count) {
+        Map<String, List<MoodEvent>> eventsPerUser = new HashMap<>();
+
+        for (String followedUid : getFollowing()) {
+            db.getRecentMoodEventsForFollowing(followedUid, count, moodEvents -> {
+                if (moodEvents != null && !moodEvents.isEmpty()) {
+                    eventsPerUser.put(followedUid, moodEvents);
+                }
+            });
+        }
+
+        return eventsPerUser;
+    }
 }

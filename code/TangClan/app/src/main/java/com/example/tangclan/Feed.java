@@ -139,4 +139,17 @@ public class Feed {
     public FollowingBook getFollowingBook() {
         return followingBook;
     }
+
+    public void loadFollowingFeed() {
+        feedEvents.clear();
+        DatabaseBestie db = new DatabaseBestie();
+        String currentUserUid = LoggedInUser.getInstance().getUid();
+
+        db.getRecentMoodEventsForFollowing(currentUserUid, 3, events -> {
+            feedEvents.addAll(events);
+            sortFeedByDateTime(); // Optional - events are already sorted but this ensures consistency
+        });
+    }
+
+
 }
