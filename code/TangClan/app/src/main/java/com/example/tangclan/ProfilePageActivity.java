@@ -1,20 +1,14 @@
 package com.example.tangclan;
-
-import static java.lang.Integer.parseInt;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +16,6 @@ import android.view.LayoutInflater;
 import android.transition.Slide;
 
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -59,8 +52,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     private ListView listViewFeed;
 
-    //private Profile profileSearch;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +80,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
 
         // Get current user profile
-
         getCurrentUserProfile();
         setupProfileListView();
 
@@ -119,7 +109,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         });
 
 
-
         // Process incoming mood event data if it exists
         processMoodEventData();
     }
@@ -128,14 +117,13 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     protected void onResume() {
         super.onResume();
         // Refresh the list whenever the activity is resumed
-
         getCurrentUserProfile();
         setupProfileListView();
         networkManager.registerNetworkMonitor();
     }
 
     @Override
-    protected void onPause()  {
+    protected void onPause() {
         networkManager.unregisterNetworkMonitor();
         super.onPause();
     }
@@ -150,45 +138,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private void getCurrentUserProfile() {
 
         // Retrieve the current logged-in user profile using the Singleton instance
+        userProfile = LoggedInUser.getInstance();
 
-        //Grabs profile object
-
-
-
-
-        //Intent intentSearchProfile = getIntent();
-        //Profile profileSearch = (Profile) intentSearchProfile.getSerializableExtra("KeySearchProfile");
-
-
-        //String username = profileSearch.getUsername();
-        //String email = profileSearch.getEmail();
-        //Toast.makeText(getApplicationContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
-
-
-        //if (profileSearch!=null){
-            //userProfile = profileSearch;
-        //}else{
-
-        if (getIntent()!=null && getIntent().getExtras()!=null && getIntent().getExtras().containsKey("User")){//change key if passing object
-
-            /*
-            String Username = getIntent().getStringExtra("Username");
-            String Email = getIntent().getStringExtra("Email");
-            String Age = getIntent().getStringExtra("Age");
-            String DisplayName = getIntent().getStringExtra("DisplayName");
-            String ProfilePic = getIntent().getStringExtra("ProfilePic");
-            String Password = getIntent().getStringExtra("Password");
-
-            Profile profileSearch= new Profile(DisplayName,Username,Password,Email,Age);
-
-            profileSearch.setProfilePic(ProfilePic);
-            */
-            //userProfile=profileSearch;
-            userProfile = LoggedInUser.getInstance();
-
-        }else {
-            userProfile = LoggedInUser.getInstance();
-        }
         // Initialize the mood event book if it doesn't exist
         if (userProfile.getMoodEventBook() == null) {
             userProfile.setMoodEventBook(new MoodEventBook());
@@ -249,7 +200,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             }
 
 
-
             // Adjust ListView height if needed
             //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
 
@@ -296,7 +246,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
 
 
-
                                         adapter.notifyDataSetChanged(); // Notify adapter of changes
 
                                         adapter.remove(post);
@@ -330,7 +279,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             // Create a new MoodEvent
 
 
-
             try {
                 MoodEvent newMoodEvent;
                 // Create the mood event based on available data
@@ -339,7 +287,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 } else {
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
-
 
 
                 // set setting
@@ -400,8 +347,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
 
-
-
     public void goToEditProfile() {
         // Handle edit profile button click
         Intent intent = new Intent(this, EditProfileActivity.class);
@@ -422,7 +367,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String mid = post.getMid();
         String month = post.userFormattedDate().substring(3);
         String emotion = post.getMoodEmotionalState();
-        String setting = post.getSetting();
+
         String collaborators = getStringOfCollaborators(post);
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
@@ -432,7 +377,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         args.putString("mid", mid);
         args.putString("month", month);
         args.putString("emotion", emotion);
-        args.putString("setting", setting);
+
         args.putString("social situation", collaborators);
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
@@ -445,7 +390,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         StringBuilder collaboratorsStr = new StringBuilder();
         Optional<ArrayList<String>> collaborators = post.getCollaborators();
         collaborators.ifPresent(list -> {
-            for (String item: list ) {
+            for (String item : list) {
                 collaboratorsStr.append(item);
                 collaboratorsStr.append(",");
             }
@@ -484,7 +429,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 event.setImage(updatedEvent.getImage());
                 event.setMood(emot);
                 event.setPrivacyOn(updatedEvent.isPrivacyOn());
-                adapter.insert(event,pos);
+                adapter.insert(event, pos);
             });
         }
         adapter.notifyDataSetChanged();
@@ -613,6 +558,4 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         adapter.addAll(filteredEvents);
         adapter.notifyDataSetChanged();
     }
-
-
 }
