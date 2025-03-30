@@ -146,7 +146,5 @@ public class SignUpActivityTest {
             }
         }
     }
-
-
 }
 
