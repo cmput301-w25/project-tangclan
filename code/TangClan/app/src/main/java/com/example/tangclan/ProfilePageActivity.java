@@ -158,12 +158,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         userProfile.initializeFollowingBookFromDatabase(databaseBestie);
         FollowingBook userFollowingBook = userProfile.getFollowingBook();
 
-        // This method should retrieve the current user's profile
-        // For now, we'll create a dummy profile for testing
-        //userProfile = LoggedInUser.getInstance();
-
-        // Initialize the mood event book if it doesn't exist
-
 
         // Set the user information in the UI
         String pfpStr = userProfile.getProfilePic();
@@ -279,11 +273,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             String image = bundle.getString("image");
             boolean privacy = bundle.getBoolean("privacy");
 
-
-            // Create a new MoodEvent
-
-
-
             try {
                 MoodEvent newMoodEvent;
                 // Create the mood event based on available data
@@ -370,21 +359,28 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     public Bundle getMoodEventBundle(MoodEvent post) {
+        ArrayList<String> collaborators;
         String mid = post.getMid();
         String month = post.userFormattedDate().substring(3);
         String emotion = post.getMoodEmotionalState();
         String setting = post.getSetting();
-        String collaborators = getStringOfCollaborators(post);
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
         boolean useLoc = false;  // TODO: implement location once MoodEvent has the field
+
+        if (post.getCollaborators().isEmpty()) {
+            collaborators = post.getCollaborators().get();
+        } else {
+            // handles null on the moodEventBundle
+            collaborators = new ArrayList<>();
+        }
 
         Bundle args = new Bundle();
         args.putString("mid", mid);
         args.putString("month", month);
         args.putString("emotion", emotion);
         args.putString("setting", setting);
-        args.putString("social situation", collaborators);
+        args.putStringArrayList("social situation", collaborators);
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
         args.putBoolean("location permission", useLoc);
@@ -392,6 +388,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         return args;
     }
 
+    //TODO: delete this function
     public String getStringOfCollaborators(MoodEvent post) {
         StringBuilder collaboratorsStr = new StringBuilder();
         Optional<ArrayList<String>> collaborators = post.getCollaborators();

@@ -58,7 +58,8 @@ public class EditFragment extends Fragment {
                         "surprised",
                         "terrified"};
     String[] socialSituations = {"", "alone", "with one other person", "with two to several people", "with a crowd"};
-    String mid, month, emotion, setting, situation, reason;
+    String mid, month, emotion, setting, reason;
+    ArrayList<String> situation;
     byte[] image;
     boolean locationPermission;
     private FragmentListener editFragmentListener;
@@ -68,6 +69,7 @@ public class EditFragment extends Fragment {
     private ImageButton imageButton;
     private Uri imageUri = null;
     private Bitmap selectedImage = null;
+    private LoggedInUser sessionUser;
 
 
     public interface FragmentListener {  // listens to when fragment finishes
@@ -102,11 +104,13 @@ public class EditFragment extends Fragment {
             month = getArguments().getString("month");
             emotion = getArguments().getString("emotion");
             setting = getArguments().getString("setting");
-            situation = getArguments().getString("social situation");
+            situation = getArguments().getStringArrayList("social situation");
             reason = getArguments().getString("reason");
             image = getArguments().getByteArray("image");
             locationPermission = getArguments().getBoolean("location permission");
         }
+
+        sessionUser = LoggedInUser.getInstance();
     }
 
     @Override
@@ -128,9 +132,24 @@ public class EditFragment extends Fragment {
 
 
         // set up collaborators
-        EditText editSocialSit = view.findViewById(R.id.edit_social_situation);
+        ArrayList<String> followerBook = sessionUser.getFollowingBook().getFollowers();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_1, followerBook);
+        AutoCompleteTextView editSocialSit = view.findViewById(R.id.edit_social_situation);
+        editSocialSit.setAdapter(adapter);
 
-        editSocialSit.setText(situation);
+        editSocialSit.setOnItemClickListener((adapterView, view1, pos, l) -> {
+            String collaborator = adapter.getItem(pos);
+
+            if (situation.contains(collaborator)) {
+                Toast.makeText(view.getContext(), collaborator + " is already tagged!", Toast.LENGTH_SHORT).show();
+                editSocialSit.setText("");
+            } else {
+                Toast.makeText(view.getContext(), collaborator + " successfully tagged!", Toast.LENGTH_SHORT).show();
+                situation.add(collaborator);
+                editSocialSit.setText("");
+            }
+        });
+
 
         // set saved reason text
         EditText editReason = view.findViewById(R.id.edit_reasonwhy);

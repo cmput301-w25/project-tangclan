@@ -48,7 +48,8 @@
         android:id="@+id/edit_details_q1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/inter_medium"
         android:text="How are you feeling?"
         android:textColor="@color/black"
@@ -58,6 +59,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
@@ -185,53 +187,64 @@
         android:id="@+id/edit_details_q2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"
         android:fontFamily="@font/inter_medium"
         android:text="Describe the social situation"
         android:textColor="@color/black"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="10dp"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp">
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:boxStrokeWidth="0dp">
 
         <AutoCompleteTextView
             android:id="@+id/choose_social_situation"
+            android:background="@drawable/edittext_round"
+            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:inputType="none" />
+
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+
+    <AutoCompleteTextView
+        android:id="@+id/edit_social_situation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp">
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="24dp"
+        android:hint="jpagcal1234"
+        android:textColorHint="@color/material_dynamic_neutral60"
+        android:fontFamily="@font/inter"
+        android:textSize="20sp"
+        android:letterSpacing="-0.03"
+        android:background="@drawable/edittext_round"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_social_situation"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:hint="I was with..." />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/edit_details_q3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
             android:fontFamily="@font/inter_medium"
             android:text="What made you feel this way?"
             android:textColor="@color/black"
@@ -242,6 +255,7 @@
             android:id="@+id/edit_reason_box"
             android:layout_width="match_parent"
             android:layout_height="75dp"
+            android:layout_marginHorizontal="24dp"
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
@@ -272,7 +286,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_width="341dp"
+        android:layout_marginHorizontal="24dp"
         android:layout_height="58dp"
         android:orientation="horizontal">
 
@@ -295,6 +312,8 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_width="340dp"
         android:layout_height="68dp"
         android:orientation="horizontal">
@@ -305,7 +324,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="20dp"
-            android:text="make event private?"
+            android:text="Make event private?"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
@@ -322,6 +341,7 @@
         android:id="@+id/submit_details"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginHorizontal="24dp"
         android:layout_marginTop="0dp"
         android:backgroundTint="@color/black"
         android:text="Confirm Details"
