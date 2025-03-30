@@ -35,8 +35,17 @@ public class User {
         this.followingBook = new FollowingBook();
         this.db = FirebaseFirestore.getInstance();
         this.followRequestsRef = db.collection("followRequests");
+        this.followingBook = new FollowingBook();
     }
 
+    /**
+     * Getter for the FollowingBook
+     * @return
+     *      the following book of the user
+     */
+    public FollowingBook getFollowingBook() {
+        return this.followingBook;
+    }
     /**
      * Getter for the uid
      * @return
@@ -116,10 +125,6 @@ public class User {
                 Log.d("User", "MoodEvent: " + event.getMoodEmotionalState() + ", Date: " + event.getPostDate());
             }
         });
-    }
-
-    public FollowingBook getFollowingBook() {
-        return followingBook;
     }
 
     public void setFollowingBook(FollowingBook followingBook) {

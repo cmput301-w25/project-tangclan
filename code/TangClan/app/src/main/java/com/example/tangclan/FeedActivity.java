@@ -114,6 +114,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             loggedInUser.setAge(user.getAge());
             loggedInUser.setUid(currentUser.getUid());
             loggedInUser.initializeMoodEventBookFromDatabase(db);
+            loggedInUser.initializeFollowingBookFromDatabase(db);
 
             Log.d("FINALDEBUG", user.getUsername());
             Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));

@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
+    xmlns:tools="http://schemas.android.com/tools"
+
     android:background="@drawable/blue_gradient_background"
+
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -20,7 +24,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
-            android:text="        moodly"
+            android:text="moodly"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -71,24 +75,31 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
         android:text="Add Social Situation"
         android:textColor="@color/black"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:focusable="false"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp">
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeColor="@android:color/transparent">
 
         <AutoCompleteTextView
             android:id="@+id/editTextSetting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/edittext_round"
             android:layout_marginTop="8dp"
             android:inputType="none" />
 
@@ -97,26 +108,39 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:text="Tag People"
+        android:layout_marginBottom="8dp"
+        android:text="Tag your followers"
         android:textColor="@color/black"
         android:textSize="18sp" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <AutoCompleteTextView
+        android:id="@+id/editTextSituation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp">
+        android:layout_marginHorizontal="24dp"
+        android:paddingVertical="16dp"
+        android:paddingHorizontal="20dp"
+        android:background="@drawable/edittext_round"
+        android:textColorHint="@color/material_dynamic_neutral60"
+        android:hint="jpagcal1234"
+        android:fontFamily="@font/inter"
+        android:textSize="20sp"
+        android:letterSpacing="-0.03"
+        android:contentDescription="Tag your followers" />
 
-        <EditText
-            android:id="@+id/editTextSituation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+    <TextView
+        android:id="@+id/taggedSoFar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textSize="16sp"
+        android:fontFamily="@font/inter"
+        android:letterSpacing="-0.02"
+        android:gravity="center"
+        android:text="3 people tagged so far" />
 
-    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Bottom row (Back, Save) -->
 

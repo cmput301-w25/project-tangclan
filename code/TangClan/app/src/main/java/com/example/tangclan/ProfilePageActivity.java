@@ -1,14 +1,20 @@
 package com.example.tangclan;
+
+import static java.lang.Integer.parseInt;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +22,7 @@ import android.view.LayoutInflater;
 import android.transition.Slide;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -109,6 +116,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         });
 
 
+
         // Process incoming mood event data if it exists
         processMoodEventData();
     }
@@ -123,7 +131,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()  {
         networkManager.unregisterNetworkMonitor();
         super.onPause();
     }
@@ -146,14 +154,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         }
 
         // Fetch the user's past mood events from the database
-        initializeMoodEventBookFromDatabase();
         userProfile.initializeFollowingBookFromDatabase(databaseBestie);
 
-        // This method should retrieve the current user's profile
-        // For now, we'll create a dummy profile for testing
-        //userProfile = LoggedInUser.getInstance();
-
-        // Initialize the mood event book if it doesn't exist
 
         // Set the user information in the UI
         String pfpStr = userProfile.getProfilePic();
@@ -169,16 +171,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String followingCt = String.valueOf(userProfile.getFollowingBook().getFollowingCount());
         followersTextView.setText(followerCt);
         followingTextView.setText(followingCt);
-
-        // Setup the ListView after profile is loaded
-        setupProfileListView();
-    }
-
-    private void initializeMoodEventBookFromDatabase() {
-        // Fetch the user's past mood events from the database
-        if (userProfile != null) {
-            userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
-        }
     }
 
     private void setupProfileListView() {
@@ -198,6 +190,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
                 adapter.notifyDataSetChanged();
             }
+
 
 
             // Adjust ListView height if needed
@@ -236,14 +229,14 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                     .setPositiveButton("Yes", (confirmDialog, confirmWhich) -> {
                                         // Remove item from the data list, NOT the ListView itself
 
+                                        userProfile.getMoodEventBook().deleteMoodEvent(post);
+                                        adapter.remove(post);
 
-                                        // delete from mood event book and database
-                                        databaseBestie.getMoodEventByMid(post.getMid(), month, (event, emot) -> {
-                                            userProfile.getMoodEventBook().deleteMoodEvent(event);
-                                        });
+                                        adapter.notifyDataSetChanged(); // Notify adapter of changes
 
                                         databaseBestie.deleteMoodEvent(post.getMid(), month);
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
+
 
 
                                         adapter.notifyDataSetChanged(); // Notify adapter of changes
@@ -275,10 +268,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             String image = bundle.getString("image");
             boolean privacy = bundle.getBoolean("privacy");
 
-
-            // Create a new MoodEvent
-
-
             try {
                 MoodEvent newMoodEvent;
                 // Create the mood event based on available data
@@ -287,6 +276,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 } else {
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
+
 
 
                 // set setting
@@ -330,10 +320,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 // Show success message
                 Toast.makeText(this, "Mood event added successfully!", Toast.LENGTH_SHORT).show();
 
-                // Log the number of mood events for debugging
-                int count = userProfile.getMoodEventBook().getMoodEventList().size();
-                Toast.makeText(this, "Total mood events: " + count, Toast.LENGTH_SHORT).show();
-
             } catch (IllegalArgumentException e) {
                 // Handle invalid input
                 Toast.makeText(this, "Error creating mood event: " + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -347,67 +333,43 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
 
+
+
     public void goToEditProfile() {
         // Handle edit profile button click
         Intent intent = new Intent(this, EditProfileActivity.class);
-        /*
-        Bundle profileDetails = new Bundle();
-        profileDetails.putString("pfp",userProfile.getProfilePic());
-        profileDetails.putString("displayName",userProfile.getDisplayName());
-        profileDetails.putString("username",userProfile.getUsername().trim());
-        profileDetails.putString("email",userProfile.getEmail().trim());
-        profileDetails.putString("password",userProfile.getPassword().trim());
-        intent.putExtras(profileDetails);
-         */
         startActivity(intent);
         finish();
     }
 
     public Bundle getMoodEventBundle(MoodEvent post) {
+        ArrayList<String> collaborators;
         String mid = post.getMid();
         String month = post.userFormattedDate().substring(3);
         String emotion = post.getMoodEmotionalState();
-
-        String collaborators = getStringOfCollaborators(post);
+        String setting = post.getSetting();
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
         boolean useLoc = false;  // TODO: implement location once MoodEvent has the field
+
+        if (post.getCollaborators().isEmpty()) {
+            collaborators = post.getCollaborators().get();
+        } else {
+            // handles null on the moodEventBundle
+            collaborators = new ArrayList<>();
+        }
 
         Bundle args = new Bundle();
         args.putString("mid", mid);
         args.putString("month", month);
         args.putString("emotion", emotion);
-
-        args.putString("social situation", collaborators);
+        args.putString("setting", setting);
+        args.putStringArrayList("social situation", collaborators);
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
         args.putBoolean("location permission", useLoc);
 
         return args;
-    }
-
-    public String getStringOfCollaborators(MoodEvent post) {
-        StringBuilder collaboratorsStr = new StringBuilder();
-        Optional<ArrayList<String>> collaborators = post.getCollaborators();
-        collaborators.ifPresent(list -> {
-            for (String item : list) {
-                collaboratorsStr.append(item);
-                collaboratorsStr.append(",");
-            }
-        });
-        return collaboratorsStr.toString();
-    }
-
-    public byte[] getImageBytes(Bitmap img) {
-        byte[] imageBytes;
-        if (img != null) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            img.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            imageBytes = outputStream.toByteArray();
-        } else {
-            imageBytes = null;
-        }
-        return imageBytes;
     }
 
     @Override
@@ -429,7 +391,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 event.setImage(updatedEvent.getImage());
                 event.setMood(emot);
                 event.setPrivacyOn(updatedEvent.isPrivacyOn());
-                adapter.insert(event, pos);
+                adapter.insert(event,pos);
             });
         }
         adapter.notifyDataSetChanged();
