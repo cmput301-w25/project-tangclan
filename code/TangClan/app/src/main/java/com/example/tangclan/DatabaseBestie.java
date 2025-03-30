@@ -2,10 +2,12 @@ package com.example.tangclan;
 
 import static java.lang.Integer.parseInt;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -782,10 +784,9 @@ public class DatabaseBestie {
         public String getUsername() { return username; }
     }
 
-    public void addComment(Comment comment, Runnable onSuccess) {
+    public void addComment(Comment comment, Context context, Runnable onSuccess) {
         generateCid(cid -> {
             comment.setCid(String.valueOf(cid));
-            // Convert to Map for Firestore
             Map<String, Object> commentData = new HashMap<>();
             commentData.put("cid", comment.getCid());
             commentData.put("mid", comment.getMid());
@@ -794,7 +795,14 @@ public class DatabaseBestie {
             commentData.put("timestamp", comment.getTimestamp());
 
             commentsRef.document(String.valueOf(cid)).set(commentData)
-                    .addOnSuccessListener(aVoid -> onSuccess.run())
+                    .addOnSuccessListener(aVoid -> {
+                        getUser(comment.getUid(), user -> {
+                            String username = user != null ? user.getUsername() : "Someone";
+                            Toast.makeText(context, username + " has added a comment",
+                                    Toast.LENGTH_SHORT).show();
+                            onSuccess.run();
+                        });
+                    })
                     .addOnFailureListener(e -> Log.e(TAG, "Error adding comment", e));
         });
     }

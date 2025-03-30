@@ -1,5 +1,7 @@
 package com.example.tangclan;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -208,8 +210,11 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
     }
 
     private void showCommentDialog(MoodEvent moodEvent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        Context context = getContext();
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.dialog_comments, null);
         builder.setView(dialogView);
 
@@ -219,7 +224,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         DatabaseBestie db = DatabaseBestie.getInstance();
         db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
-            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+            CommentAdapter adapter = new CommentAdapter(context, comments);
             commentsList.setAdapter(adapter);
         });
 
@@ -231,12 +236,16 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (currentUser != null) {
                     Comment comment = new Comment(moodEvent.getMid(), currentUser.getUid(), commentText);
-                    db.addComment(comment, () -> {
-                        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
-                            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
-                            commentsList.setAdapter(adapter);
-                            commentInput.setText("");
-                        });
+
+                    db.addComment(comment, context, new Runnable() {
+                        @Override
+                        public void run() {
+                            db.getCommentsForMoodEvent(moodEvent.getMid(), newComments -> {
+                                CommentAdapter adapter = new CommentAdapter(context, newComments);
+                                commentsList.setAdapter(adapter);
+                                commentInput.setText("");
+                            });
+                        }
                     });
                 }
             }

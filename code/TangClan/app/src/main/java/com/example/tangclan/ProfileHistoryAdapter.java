@@ -236,8 +236,11 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     }
 
     private void showCommentDialog(MoodEvent moodEvent) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = LayoutInflater.from(getContext());
+        Context context = getContext();
+        if (context == null) return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.dialog_comments, null);
         builder.setView(dialogView);
 
@@ -247,7 +250,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
         DatabaseBestie db = DatabaseBestie.getInstance();
         db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
-            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+            CommentAdapter adapter = new CommentAdapter(context, comments);
             commentsList.setAdapter(adapter);
         });
 
@@ -259,9 +262,10 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (currentUser != null) {
                     Comment comment = new Comment(moodEvent.getMid(), currentUser.getUid(), commentText);
-                    db.addComment(comment, () -> {
-                        db.getCommentsForMoodEvent(moodEvent.getMid(), comments -> {
-                            CommentAdapter adapter = new CommentAdapter(getContext(), comments);
+
+                    db.addComment(comment, context, () -> {
+                        db.getCommentsForMoodEvent(moodEvent.getMid(), newComments -> {
+                            CommentAdapter adapter = new CommentAdapter(context, newComments);
                             commentsList.setAdapter(adapter);
                             commentInput.setText("");
                         });
@@ -273,7 +277,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow()
                 .setBackgroundDrawable(ResourcesCompat
-                        .getDrawable(getContext().getResources(), R.drawable.dialog_round, null));
+                        .getDrawable(context.getResources(), R.drawable.dialog_round, null));
         dialog.show();
     }
 
