@@ -372,6 +372,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         return args;
     }
 
+    private byte[] getImageBytes(Bitmap image) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+        return outputStream.toByteArray();
+    }
+
     @Override
     public void onFragmentFinished() {
         userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
