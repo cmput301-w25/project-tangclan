@@ -718,6 +718,7 @@ public class DatabaseBestie {
                     if (task.isSuccessful()) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String, Object> data = document.getData();
+                            Log.d("PRINTING FOLLOWER", String.valueOf(document.get("uidFollower")));
                             followers.add((String) data.get("uidFollower"));
                         }
                     }
