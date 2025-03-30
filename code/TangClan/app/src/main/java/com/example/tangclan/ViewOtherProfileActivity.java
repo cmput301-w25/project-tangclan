@@ -70,6 +70,7 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
                 db.checkExistingRequest(loggedInUser.getUid(), otherUsersID, reqExists -> {
                     if (!reqExists) {
                         Log.d("VIEWINGPROFILEACTIVITY","request sent");
+                        Toast.makeText(getApplicationContext(), "Follow request sent!", Toast.LENGTH_SHORT).show();
                         db.sendFollowRequest(loggedInUser.getUid(), otherUsersID, requestProcessed -> {
                         });
                         setFollowButtonText();

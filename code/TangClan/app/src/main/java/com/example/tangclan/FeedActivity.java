@@ -208,41 +208,6 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             public void afterTextChanged(Editable s) {}
         });
 
-        // Follow button test code
-        DatabaseBestie db = new DatabaseBestie();
-        Button followBtn = findViewById(R.id.follow_test);
-        String testUserUID = "NZliQC89wvTSafYDeYsG7ke8kuO2";
-        LoggedInUser loggedInUser = LoggedInUser.getInstance();
-        loggedInUser.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        loggedInUser.initializeFollowingBookFromDatabase(db);
-
-        // simulate another user sending a request to the current logged in user
-        String CHANGEME = "qM5OwQrQYyQf5p13VfyDVibnuXd2";
-        db.checkExistingRequest(CHANGEME, loggedInUser.getUid(), reqExists -> {
-            if (!reqExists) {
-                loggedInUser.getFollowingBook().addRequestingFollower("qM5OwQrQYyQf5p13VfyDVibnuXd2");
-                db.sendFollowRequest(CHANGEME, loggedInUser.getUid(), requestProcessed -> {
-                    Toast.makeText(this, "Tom Cruise requested to follow you!", Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-
-        followBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Assumes that when clicking on a user to go to their profile,
-                // a bundle of their profile details is passed to the profile activity
-                db.checkExistingRequest(loggedInUser.getUid(), testUserUID, reqExists -> {
-                    if (!reqExists) {
-                        db.sendFollowRequest(loggedInUser.getUid(), testUserUID, requestProcessed -> {
-                            followBtn.setText("Pending");
-                        });
-                    }
-                });
-            }
-        });
-
         // NAVBAR
         NavBarHelper.setupNavBar(this);
     }
