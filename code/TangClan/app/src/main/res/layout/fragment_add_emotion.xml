@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/blue_gradient_background"
+    android:background="#f4f2e6"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -20,7 +20,7 @@
             android:gravity="center"
             android:text="       moodly"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="#d38c6f"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -46,19 +46,22 @@
             android:layout_height="206dp">
 
             <ImageView
-                android:layout_width="125dp"
-                android:layout_height="300dp"
+                android:layout_width="188dp"
+                android:layout_height="match_parent"
                 android:contentDescription="Owl icon"
                 android:src="@drawable/ic_owl" />
 
             <TextView
-                android:layout_width="363dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="50dp"
+                android:layout_marginLeft="80dp"
                 android:layout_marginTop="70dp"
-                android:fontFamily="@font/inter_medium"
+                android:layout_marginBottom="30dp"
+                android:fontFamily="casual"
                 android:paddingLeft="100dp"
-                android:text="Hey there, \nHow are you feeling?"
-                android:textColor="@color/black"
+                android:text="Hey there! \nHow are you feeling?"
+                android:textColor="#523427"
                 android:textSize="24sp" />
         </RelativeLayout>
     </LinearLayout>
@@ -67,6 +70,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="#C3BDA5"
+        android:backgroundTint="#E0DBCC"
         android:columnCount="4"
         android:rowCount="3">
 
@@ -207,7 +212,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="#d38c6f"
             android:text="Cancel"
             android:textSize="14sp"
             app:cornerRadius="16dp" />
@@ -217,7 +222,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="#d38c6f"
             android:text="Next"
             android:textSize="14sp"
             app:cornerRadius="16dp"
