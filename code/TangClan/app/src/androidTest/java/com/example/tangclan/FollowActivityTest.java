@@ -4,7 +4,14 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static org.hamcrest.Matchers.not;
+
+
 
 import android.app.Activity;
 import android.util.Log;
@@ -53,6 +60,44 @@ public class FollowActivityTest {
         frRef.document("2").set(fr2);
     }
 
+    @Test
+    public void testFollowRequestsDisplayed() {
+        // Check if RecyclerView is displayed
+        onView(withId(R.id.recyclerViewFollowRequests)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testAcceptFollowRequest() {
+        // Click the accept button for the first follow request
+        onView(withId(R.id.recyclerViewFollowRequests))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+
+        // Verify follow request is removed
+        onView(withId(R.id.recyclerViewFollowRequests))
+                .check(matches(not(hasDescendant(withText("xyz")))));
+    }
+
+    @Test
+    public void testDeclineFollowRequest() {
+        // Click the decline button for the first follow request
+        onView(withId(R.id.recyclerViewFollowRequests))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+
+        // Verify follow request is removed
+        onView(withId(R.id.recyclerViewFollowRequests))
+                .check(matches(not(hasDescendant(withText("xyz")))));
+    }
+
+    @Test
+    public void testSwipeToRefresh() {
+        // Perform swipe down gesture
+        onView(withId(R.id.swipeRefreshLayout)).perform(ViewActions.swipeDown());
+
+        // Verify RecyclerView is still displayed after refresh
+        onView(withId(R.id.recyclerViewFollowRequests)).check(matches(isDisplayed()));
+    }
+
+
     @BeforeClass
     public static void setup(){
         // Specific address for emulated device to access our localHost
@@ -62,6 +107,7 @@ public class FollowActivityTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
         FirebaseAuth.getInstance().useEmulator(androidLocalhost, portNumber);
     }
+
 
 
     @After
