@@ -34,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:backgroundTint="#D38C6F"
         android:text="Apply Filter"
         android:textColor="@android:color/white" />
 
@@ -42,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:backgroundTint="#D38C6F"
         android:text="Reset Filters"
         android:textColor="@android:color/white" />
 

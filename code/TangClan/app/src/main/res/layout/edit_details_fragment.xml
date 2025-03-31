@@ -368,6 +368,8 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="0dp"
+        android:background="#D38C6F"
+        android:backgroundTint="#D38C6F"
         android:text="Confirm Details"
         android:textSize="14sp"
         app:cornerRadius="16dp"
