@@ -53,13 +53,13 @@
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="64dp"
         android:layout_marginBottom="20dp"
         android:fontFamily="@font/inter_medium"
-        android:text="Would you like to talk about it over a moodle bowl?"
+        android:text="Would you like to attach a reason?"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="24sp" />
 
 
     <TextView
@@ -67,30 +67,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
+        android:layout_marginHorizontal="10dp"
         android:fontFamily="@font/inter"
-        android:text="You can write about you experience, or show it with a picture instead."
+        android:text="You can write about you experience, or attach a picture instead."
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text203"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:boxCornerRadiusBottomEnd="16dp"
-        app:boxCornerRadiusBottomStart="16dp"
-        app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-
             android:id="@+id/reason"
-
+            android:background="@drawable/edittext_round"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="112dp"
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="16dp"
             android:hint="What's going on?"
-            android:maxHeight="60dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:gravity="start"
+            android:textColorHint="@color/material_dynamic_neutral60"
+            android:fontFamily="@font/inter"
+            android:textSize="16sp"
+            android:letterSpacing="-0.03"
+            android:maxHeight="128dp" />
 
 
     <TextView
@@ -112,30 +110,37 @@
         android:padding="0dp"
         android:scaleType="centerCrop" />
 
-
-    <LinearLayout
+    <Button
+        android:id="@+id/btnNext"
         android:layout_width="match_parent"
+        android:paddingVertical="12dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center">
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@color/black"
+        android:text="Next"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/white"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="24dp"/>
 
-        <Button
-            android:id="@+id/btnBackEnvironment"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"
-            android:text="Back"
-            android:textSize="14sp"
-            app:cornerRadius="16dp" />
-
-        <Button
-            android:id="@+id/btnNext"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:backgroundTint="@color/black"
-            android:text="Review"
-            android:textSize="14sp"
-            app:cornerRadius="16dp" />
-    </LinearLayout>
+    <!-- Action Buttons -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBackEnvironment"
+        android:layout_width="match_parent"
+        android:paddingVertical="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@android:color/transparent"
+        android:text="Back"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/black"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="24dp" />
 </LinearLayout>

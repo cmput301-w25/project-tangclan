@@ -155,7 +155,6 @@ public class EditFragment extends Fragment {
         EditText editReason = view.findViewById(R.id.edit_reasonwhy);
         editReason.setText(reason);
 
-        // TODO: on text change listener, update character count
 
 
         imageButton = view.findViewById(R.id.image_reasonwhy);
@@ -185,10 +184,6 @@ public class EditFragment extends Fragment {
                     return;
                 }
 
-
-                // String newEmotion = getCheckedEmotionText(view, radioButtons);
-                ArrayList<String> newCollaborators = getEditTextCollaborators(editSocialSit);
-
                 // validate image
                 if (imageUri != null) {
                     // Using the static method from ImageValidator
@@ -212,7 +207,7 @@ public class EditFragment extends Fragment {
                 } else {
                     newImg = null;
                 }
-                saveEditsToDatabase(newEmotion[0], newReason, newCollaborators, newImg);  // TODO: add setting and permisisions
+                saveEditsToDatabase(newEmotion[0], newReason, situation, newImg);  // TODO: add setting and permisisions
 
                 finishFragment();
             }

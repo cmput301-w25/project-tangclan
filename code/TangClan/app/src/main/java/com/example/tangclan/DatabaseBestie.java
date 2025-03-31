@@ -678,14 +678,14 @@ public class DatabaseBestie {
                     moodEvent.setReason(reason);
                 }
 
-                if (location) {
-                    moodEvent.setGeolocation(location);
-                    moodEvent.setLatitude(lat);
-                    moodEvent.setLongitude(lon);
-                    moodEvent.setLocationName(locationName);
-                } else if (!location) {
-                    moodEvent.setGeolocation(location);
-                }
+                //if (location) {
+                //    moodEvent.setGeolocation(location);
+                //    moodEvent.setLatitude(lat);
+                //    moodEvent.setLongitude(lon);
+                //    moodEvent.setLocationName(locationName);
+                //} else if (!location) {
+                //    moodEvent.setGeolocation(location);
+                //}
                 callback.onMoodEventRetrieved(moodEvent, emotion);
             }
         });
