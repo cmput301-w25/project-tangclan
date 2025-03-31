@@ -110,24 +110,15 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             return;
         }
 
-
         db = DatabaseBestie.getInstance();
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
-
-        // Initialize with empty books first
-        FollowingBook followingBook = new FollowingBook();
-        MoodEventBook moodEventBook = new MoodEventBook();
-        feed = Feed.getInstance(followingBook, moodEventBook);
 
         // Debug: Check if feedEvents is empty before loading
         Log.d("FEED_DEBUG", "Feed events before load: " + feed.getFeedEvents().size());
 
+        // Clear existing events
         ArrayList<MoodEvent> allEvents = new ArrayList<>();
-        adapter = new MoodEventAdapter(this, allEvents);
-        listViewFeed.setAdapter(adapter);
-
-        // Debug: Print current user ID
-        Log.d("FEED_DEBUG", "Current user ID: " + currentUser.getUid());
+        adapter.updateMoodEvents(allEvents);
 
         // Load following list FIRST
         db.getFollowing(currentUser.getUid(), following -> {
@@ -141,11 +132,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
             // Now load the feed with this following list
             loadFeed(allEvents);
-
-            // Debug: Check if feedEvents is populated after loading
-            Log.d("FEED_DEBUG", "Feed events after load: " + feed.getFeedEvents().size());
         });
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
