@@ -3,6 +3,9 @@ package com.example.tangclan;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
@@ -26,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polygon;
 import org.osmdroid.views.overlay.infowindow.BasicInfoWindow;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
@@ -52,6 +56,8 @@ public class MapActivity extends AppCompatActivity {
 
     private List<String> currentEmotionalStateFilters = new ArrayList<>();
     private boolean filterByRecentWeek = false;
+    private double filterRadius = 5000; // Default 5km
+    private Polygon rangeCircle;
 
     private SparseBooleanArray lastCheckedStates = new SparseBooleanArray();
 
@@ -70,10 +76,11 @@ public class MapActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView);
         mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
         mapView.setMultiTouchControls(true);
+        mapView.setBuiltInZoomControls(true);
         filterExt.setOnClickListener(v -> showFilterPopup(v));
 
         // Set Initial Map Location (Edmonton)
-        mapView.getController().setZoom(12.0);
+        mapView.getController().setZoom(15.0);
         mapView.getController().setCenter(new GeoPoint(53.5461, -113.4938));
 
         // Request Permissions
@@ -127,6 +134,8 @@ public class MapActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 distanceLabel.setText("Filter Distance: " + progress + " km");
+                filterRadius = progress * 1000; // Convert km to meters
+                mapView.invalidate();
             }
 
             @Override
@@ -207,6 +216,8 @@ public class MapActivity extends AppCompatActivity {
                     getEmojiDrawableResId(validMoodEvent.getMood().getEmotion()), loggedInUser.getUsername());
 
             mapView.getController().setCenter(new GeoPoint(validMoodEvent.getLatitude(), validMoodEvent.getLongitude()));
+            // Draw range circle
+            drawRangeCircle(new GeoPoint(validMoodEvent.getLatitude(), validMoodEvent.getLongitude()));
         }
 
         // Get friends' filtered events
@@ -265,6 +276,17 @@ public class MapActivity extends AppCompatActivity {
         }
     }
 
+    private void drawRangeCircle(GeoPoint center) {
+        if (rangeCircle != null) mapView.getOverlays().remove(rangeCircle);
+
+        rangeCircle = new Polygon();
+        rangeCircle.setPoints(Polygon.pointsAsCircle(center, filterRadius));
+        rangeCircle.setStrokeColor(Color.RED);
+        rangeCircle.setStrokeWidth(8f);
+        rangeCircle.setFillColor(Color.TRANSPARENT);
+
+        mapView.getOverlays().add(rangeCircle);
+    }
 
     private void requestPermissionsIfNecessary(String[] permissions) {
         for (String permission : permissions) {
@@ -291,30 +313,41 @@ public class MapActivity extends AppCompatActivity {
     public void addMoodMarker(MapView mapView, double latitude, double longitude, String locationName, String mood, String timestamp, int emojiDrawableResId, String username) {
         // Create a new marker for the map
         Marker marker = new Marker(mapView);
+
         GeoPoint point = new GeoPoint(latitude, longitude);
         marker.setPosition(point);
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        // Set the title and snippet (this will appear in the info window)
-        marker.setTitle(mood); // Mood message (what the marker represents)
-        marker.setSubDescription(locationName);
-        marker.setSnippet(timestamp); // Timestamp for when the mood was recorded
+        marker.setTitle(mood); // The main text
+        marker.setSubDescription(locationName + "\n" + timestamp);
 
-        // Set a custom emoji as the marker icon
-        Drawable markerIcon = ContextCompat.getDrawable(this, emojiDrawableResId);
-        marker.setIcon(markerIcon);
+        // Load your drawable resource
+        Drawable drawable = ContextCompat.getDrawable(this, emojiDrawableResId);
 
-        // Add the username on top of the marker in the info window
-        marker.setInfoWindow(new BasicInfoWindow(R.layout.bonuspack_bubbl, mapView));
-        marker.setOnMarkerClickListener((clickedMarker, mapView1) -> {
-            if (username != null) {
-                clickedMarker.setSubDescription(username + "\n" + clickedMarker.getSubDescription()); // Add username above the info window
-            }
-            clickedMarker.showInfoWindow();
-            return true;
-        });
+// Convert it into a Bitmap
+        Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+
+// Scale the Bitmap
+        int newWidth = 45;
+        int newHeight = 50;
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
+
+// Convert the scaled Bitmap back to a Drawable
+        Drawable scaledDrawable = new BitmapDrawable(getResources(), scaledBitmap);
+
+// Set the scaled drawable as the marker icon
+        marker = new Marker(mapView);
+        marker.setIcon(scaledDrawable);
+        marker.setPosition(new GeoPoint(latitude, longitude));
 
         // Add the marker to the map
+        marker.setInfoWindow(new CustomInfoWindow(mapView, mood, timestamp, username));
+
+        marker.setOnMarkerClickListener((clickedMarker, mapVieww) -> {
+            clickedMarker.showInfoWindow();
+            return false;
+        });
+
         mapView.getOverlays().add(marker);
         mapView.invalidate();
     }

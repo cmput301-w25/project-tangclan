@@ -378,7 +378,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String emotion = post.getMoodEmotionalState();
         String setting = post.getSetting();
         String reason = post.getReason().orElse("");
-        byte[] imgBytes = getImageBytes(post.getImage());
+        byte[] imgBytes = null;
+        if (post.getImage() != null){
+            imgBytes = getImageBytes(post.getImage());}
         boolean useLoc = post.hasGeolocation();
         if (useLoc) {
             lat = post.getLatitude();
