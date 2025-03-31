@@ -59,6 +59,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     private ListView listViewFeed;
 
+    private List<String> selectedEmotionalStates = new ArrayList<>();
+    private boolean filterByRecentWeek = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -425,8 +428,25 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters);
 
         // Set up the emotional states list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.emotional_states));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice,
+                getResources().getStringArray(R.array.emotional_states));
         emotionalStatesList.setAdapter(adapter);
+        emotionalStatesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        // Restore previous selections
+        filterRecentWeekCheckbox.setChecked(filterByRecentWeek);
+
+        // Restore emotional state selections
+        String[] emotionalStates = getResources().getStringArray(R.array.emotional_states);
+        for (int i = 0; i < emotionalStates.length; i++) {
+            if (selectedEmotionalStates.contains(emotionalStates[i])) {
+                emotionalStatesList.setItemChecked(i, true);
+            }
+        }
+
+        // Update "Select All" checkbox based on current selections
+        selectAllCheckbox.setChecked(selectedEmotionalStates.size() == emotionalStates.length);
 
         // Set up the "Select All" checkbox
         selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -438,8 +458,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Set up the apply filter button
         applyFilterButton.setOnClickListener(v -> {
             // Get the selected emotional states
+            selectedEmotionalStates.clear();
             SparseBooleanArray checkedItems = emotionalStatesList.getCheckedItemPositions();
-            List<String> selectedEmotionalStates = new ArrayList<>();
             for (int i = 0; i < checkedItems.size(); i++) {
                 if (checkedItems.valueAt(i)) {
                     selectedEmotionalStates.add(emotionalStatesList.getItemAtPosition(checkedItems.keyAt(i)).toString());
@@ -447,7 +467,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             }
 
             // Get the "In the last week" filter value
-            boolean filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
+            filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
 
             // Apply the filters
             applyFilters(selectedEmotionalStates, filterByRecentWeek);
@@ -458,7 +478,18 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Set up the reset filters button
         resetFiltersButton.setOnClickListener(v -> {
-            // Reset the feed to its original state
+            // Reset the filter state
+            selectedEmotionalStates.clear();
+            filterByRecentWeek = false;
+
+            // Reset the UI
+            for (int i = 0; i < emotionalStatesList.getCount(); i++) {
+                emotionalStatesList.setItemChecked(i, false);
+            }
+            filterRecentWeekCheckbox.setChecked(false);
+            selectAllCheckbox.setChecked(false);
+
+            // Reset the feed
             resetFilters();
 
             // Dismiss the popup
@@ -495,18 +526,24 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void resetFilters() {
+        // Clear filter state
+        selectedEmotionalStates.clear();
+        filterByRecentWeek = false;
+
+        // Reset the adapter
         adapter.notifyDataSetChanged();
         adapter.clear();
         adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
         userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
 
-
+        // Clear the search field
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.setText("");
 
         // Notify the user that filters have been reset
         Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
+
 
     private void filterByKeyword(String keyword) {
         List<MoodEvent> filteredEvents = new ArrayList<>(userProfile.getMoodEventBook().getMoodEventList());
