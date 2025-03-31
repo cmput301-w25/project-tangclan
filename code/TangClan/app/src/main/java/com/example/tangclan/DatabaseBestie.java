@@ -678,6 +678,7 @@ public class DatabaseBestie {
                     moodEvent.setReason(reason);
                 }
 
+
                 if (location) {
                     moodEvent.setGeolocation(location);
                     moodEvent.setLatitude(lat);
@@ -686,6 +687,7 @@ public class DatabaseBestie {
                 } else if (!location) {
                     moodEvent.setGeolocation(location);
                 }
+
                 callback.onMoodEventRetrieved(moodEvent, emotion);
             }
         });

@@ -185,7 +185,7 @@
     <ListView
         android:id="@+id/listview_profile_history"
         android:layout_width="match_parent"
-        android:layout_height="544dp"
+        android:layout_height="604dp"
         android:layout_marginTop="16dp"
         android:dividerHeight="2dp"
         android:divider="@color/black"
