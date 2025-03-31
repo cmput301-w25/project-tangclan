@@ -2,10 +2,14 @@ package com.example.tangclan;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -14,10 +18,12 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -238,6 +244,11 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
             });
         }
 
+        tags.setOnItemClickListener((a, view, pos, l) -> {
+            Profile profile = adapter.getItem(pos);
+            goToUserProfile(profile);
+        });
+
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow()
@@ -289,5 +300,28 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     }
 
 
+    public void goToUserProfile(Profile profile) {
+        Intent intent = new Intent(getContext(), ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
 
+
+        profileDetails.putString("uid", profile.getUid());
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes != null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
+
+        intent.putExtras(profileDetails);
+        getContext().startActivity(intent);
+    }
 }
