@@ -70,45 +70,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
     public MoodEventAdapter(Context context, List<MoodEvent> moodEvents) {
         super(context, 0, moodEvents);
         this.moodToUsernameMap = new HashMap<>();
-
-        DatabaseBestie bestie = new DatabaseBestie();
-
-        // Associate mock usernames with each mood event for display purposes
-        // In a real implementation, these would come from the database
-        int userCounter = 1;
-        String month;
-        Log.d("MOODEVENTADAPTER", "where am i");
-        for (MoodEvent event : moodEvents) {
-            Log.d("MOODEVENTADAPTER", "where am i pt 2");
-            month = event.userFormattedDate().substring(3);
-            Log.d("MOODEVENTADAPTER", "current mid is" + event.getMid() + "and month is"+month);
-            bestie.getAuthorOfMoodEvent(event.getMid(), month, username -> {
-                moodToUsernameMap.put(event, username);
-            });
-        }
-    }
-
-    /**
-     * Constructor for the MoodEventAdapter that takes a FollowingBook.
-     *
-     * @param context The activity context
-     * @param followingBook The FollowingBook containing users and their mood events
-     */
-    public MoodEventAdapter(Context context, FollowingBook followingBook) {
-        super(context, 0, new ArrayList<>());
-        this.moodToUsernameMap = new HashMap<>();
-
-        DatabaseBestie bestie = new DatabaseBestie();
-
-        // Placeholder implementation - in real app would get actual data from database
-        // Add dummy data for testing
-        Map<String, MoodEvent> events = followingBook.getRecentMoodEvents(bestie);
-        for (Map.Entry<String, MoodEvent> entry : events.entrySet()) {
-            add(entry.getValue());
-            moodToUsernameMap.put(entry.getValue(), "User_" + entry.getKey());
-        }
-
-
     }
 
     /**
@@ -143,9 +104,16 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             showCommentDialog(moodEvent);
         });
 
+        DatabaseBestie db = new DatabaseBestie();
+        String month = moodEvent.userFormattedDate().substring(3);
+        db.getAuthorOfMoodEvent(moodEvent.getMid(), month, username -> {
+            moodToUsernameMap.put(moodEvent, username);
+
+            // call after grabbing username to change unknown to user
+            this.notifyDataSetChanged();
+        });
 
 
-        // Retrieve username for this mood event
         String username = moodToUsernameMap.getOrDefault(moodEvent, "Unknown");
 
         // Format the username and mood emotion
