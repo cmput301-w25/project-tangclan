@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_c">
+    android:background="#d38c6f">
 
     <View
         android:id="@+id/untitled_32"

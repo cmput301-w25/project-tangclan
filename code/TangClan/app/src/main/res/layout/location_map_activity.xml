@@ -37,23 +37,27 @@
             android:id="@+id/personalModeBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:backgroundTint="#D38C6F"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
             android:text="Personal"
             android:textColorLink="#FF5722"
             app:rippleColor="#CA6235"
-            android:layout_marginEnd="16dp"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="10dp"/>
+            app:strokeColor="#916350"
+            app:strokeWidth="2dp" />
 
         <Button
             android:id="@+id/friendsModeBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="#D38C6F"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"
             android:text="Friends"
             app:rippleColor="#CA6235"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="10dp"/>
+            app:strokeColor="#916350"
+            app:strokeWidth="2dp" />
     </LinearLayout>
 
     <!-- Navbar at the very bottom -->
@@ -78,18 +82,20 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp">
 
-    <TextView
-        android:id="@+id/distanceLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Filter Distance: 5 km" />
+        <TextView
+            android:id="@+id/distanceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter Distance: 5 km"
+            android:textColor="#916350" />
 
-    <SeekBar
-        android:id="@+id/distanceSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="5" />
+        <SeekBar
+            android:id="@+id/distanceSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="10"
+            android:progress="5"
+            android:progressTint="#916350" />
 </LinearLayout>
 
     </RelativeLayout>

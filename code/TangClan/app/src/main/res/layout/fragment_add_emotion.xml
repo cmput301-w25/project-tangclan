@@ -52,8 +52,8 @@
                 android:src="@drawable/ic_owl" />
 
             <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
+                android:layout_width="283dp"
+                android:layout_height="149dp"
                 android:layout_marginVertical="50dp"
                 android:layout_marginLeft="80dp"
                 android:layout_marginTop="70dp"

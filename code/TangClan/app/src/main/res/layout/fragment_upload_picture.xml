@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
 
 
-    android:background="@drawable/blue_gradient_background"
+    android:background="#F4F2E6"
 
-   
+
     android:elevation="2dp"
 
     android:orientation="vertical"
@@ -35,7 +35,8 @@
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:text="moodly"
-            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textColor="#D38C6F"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -58,7 +59,7 @@
         android:fontFamily="@font/inter_medium"
         android:text="Would you like to talk about it over a moodle bowl?"
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="20sp" />
 
 
@@ -70,13 +71,15 @@
         android:fontFamily="@font/inter"
         android:text="You can write about you experience, or show it with a picture instead."
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="16sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text203"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColorHint="#916350"
+        app:boxBackgroundColor="#EDE7DF"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
@@ -89,7 +92,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="What's going on?"
-            android:maxHeight="60dp" />
+            android:maxHeight="60dp"
+            android:textColor="#916350"
+            android:textColorHighlight="#FFFFFF"
+            android:textColorHint="#906F61" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -123,19 +129,25 @@
             android:id="@+id/btnBackEnvironment"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="#d38c6f"
+            android:outlineAmbientShadowColor="@color/black"
             android:text="Back"
             android:textSize="14sp"
-            app:cornerRadius="16dp" />
+            app:cornerRadius="16dp"
+            app:rippleColor="#F06539"
+            app:strokeColor="#916350"
+            app:strokeWidth="2sp" />
 
         <Button
             android:id="@+id/btnNext"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="#d38c6f"
             android:text="Review"
             android:textSize="14sp"
-            app:cornerRadius="16dp" />
+            app:cornerRadius="16dp"
+            app:strokeColor="#916350"
+            app:strokeWidth="2sp" />
     </LinearLayout>
 </LinearLayout>
