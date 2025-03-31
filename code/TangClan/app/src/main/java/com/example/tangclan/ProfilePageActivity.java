@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
@@ -170,6 +172,18 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String followingCt = String.valueOf(userProfile.getFollowingBook().getFollowingCount());
         followersTextView.setText(followerCt);
         followingTextView.setText(followingCt);
+
+        // mechanism to be able to see my followers list
+        followingTextView.setClickable(true);
+        followersTextView.setClickable(true);
+        followingTextView.setOnClickListener(view
+                -> showCollaborators(userProfile.getFollowingBook().getFollowingUsernames(), "Following"));
+        followersTextView.setOnClickListener(view
+                -> showCollaborators(userProfile.getFollowingBook().getFollowerUsernames(), "Followers"));
+
+        followingTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        followersTextView.setMovementMethod(LinkMovementMethod.getInstance());
+
     }
 
     private void setupProfileListView() {
@@ -524,5 +538,68 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         adapter.clear();
         adapter.addAll(filteredEvents);
         adapter.notifyDataSetChanged();
+    }
+
+    private void showCollaborators(ArrayList<String> usernames, String mode) {
+        Context context = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_tagged,null);
+        builder.setView(dialogView);
+
+        ListView tags = dialogView.findViewById(R.id.listview_tagged);
+        TextView title = dialogView.findViewById(R.id.title_tagged);
+
+        title.setText(mode);
+
+        DatabaseBestie db = new DatabaseBestie();
+        ArrayList<Profile> users = new ArrayList<>();
+
+        CollaboratorAdapter adapter = new CollaboratorAdapter(this, users);
+        tags.setAdapter(adapter);
+
+        for (String username : usernames) {
+            db.findProfileByUsername(username, profile -> {
+                users.add(profile);
+                adapter.notifyDataSetChanged();
+            });
+        }
+
+        tags.setOnItemClickListener((a, view, pos, l) -> {
+            Profile profile = adapter.getItem(pos);
+            goToUserProfile(profile);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(context.getResources(), R.drawable.dialog_round, null));
+        dialog.show();
+    }
+
+    public void goToUserProfile(Profile profile) {
+        Intent intent = new Intent(this, ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
+
+
+        profileDetails.putString("uid", profile.getUid());
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes != null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
+
+        intent.putExtras(profileDetails);
+        startActivity(intent);
     }
 }

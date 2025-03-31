@@ -100,7 +100,7 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
     }
 
     public void setUpProfileDetails(Bundle bundle) {
-        String uid = bundle.getString("uid");
+        String otherUsersID = bundle.getString("uid");
         String username = bundle.getString("username");
         String displayName = bundle.getString("displayName");
 
@@ -125,7 +125,7 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
             pfp.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
         }
 
-        setUpListView(username, uid);
+        setUpListView(username, otherUsersID);
     }
 
     public void setFollowButtonText() {
