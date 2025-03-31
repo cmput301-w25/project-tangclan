@@ -5,7 +5,8 @@
     android:background="@android:color/white"
     android:backgroundTint="#EDE7DF"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/filter_right">
 
     <!-- Select All CheckBox -->
     <CheckBox

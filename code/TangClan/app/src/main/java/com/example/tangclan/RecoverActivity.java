@@ -14,7 +14,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.tangclan.ui.login.LogIn;
+import com.example.tangclan.ui.login.LogInActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,7 +63,7 @@ public class RecoverActivity extends AppCompatActivity {
                                     public void onSuccess(Void unused) {
                                         Log.e(TAG,"password sent");
                                         Toast.makeText(RecoverActivity.this, "Reset Password link has been sent to your registered email", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(RecoverActivity.this, LogIn.class);
+                                        Intent intent = new Intent(RecoverActivity.this, LogInActivity.class);
                                         startActivity(intent);
                                     }
                                 })
@@ -81,7 +81,7 @@ public class RecoverActivity extends AppCompatActivity {
         backToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RecoverActivity.this, LogIn.class);
+                Intent intent = new Intent(RecoverActivity.this, LogInActivity.class);
                 startActivity(intent);
             }
         });
