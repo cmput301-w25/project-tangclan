@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.tangclan.ui.login.LogIn;
+import com.example.tangclan.ui.login.SignUpActivity;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -26,7 +30,9 @@ public class SetupBirthdayActivity extends AppCompatActivity
     private TextView dateText;
 
     private Button SetupBirthdayToSetupPFPButton;
-    int dayGlobal,monthGlobal,yearGlobal;
+    private int dayGlobal,monthGlobal,yearGlobal;
+    private int UsersAge;
+    private Profile userProfile;
 
 
     @Override
@@ -41,15 +47,20 @@ public class SetupBirthdayActivity extends AppCompatActivity
 
         dateText.setText(getTodaysDate());
 
-        //TODO:
-        //Hookup to database if needed
+
 
         SetupBirthdayToSetupPFPButton.setOnClickListener(view -> {
-            if (CalculateAge(yearGlobal,monthGlobal,dayGlobal)<18){
-                Log.d("TAgAGE","DisplayAge:"+CalculateAge(yearGlobal,monthGlobal,dayGlobal));
-            }else{
-                Intent intent = new Intent(SetupBirthdayActivity.this, ProfileActivity.class);//TODO: CHANGE PROFILEACTIVITY.JAVA TO SETUP profile pic activity!!!
+            UsersAge=CalculateAge(yearGlobal,monthGlobal,dayGlobal);
+            if (UsersAge<18){
+                Intent intent = new Intent(SetupBirthdayActivity.this, BackAgeActivity.class);
                 startActivity(intent);
+            }else{
+                Intent intent = new Intent(SetupBirthdayActivity.this, SignUpActivity.class);//TODO: CHANGE PROFILEACTIVITY.JAVA TO SETUP profile pic activity!!!
+                Bundle profileAge= new Bundle();
+                profileAge.putString("age",(String.valueOf(UsersAge)));
+                intent.putExtras(profileAge);
+                startActivity(intent);
+                finish();
             }
 
         });

@@ -28,7 +28,8 @@ public class LoginOrSignupActivity extends AppCompatActivity {
 
         Button goToSignUp = findViewById(R.id.signup_button);
         goToSignUp.setOnClickListener(view -> {
-            startActivity(new Intent(LoginOrSignupActivity.this, SignUpActivity.class));
+            startActivity(new Intent(LoginOrSignupActivity.this, SetupBirthdayActivity.class));
+
             finish();
         });
 

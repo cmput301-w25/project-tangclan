@@ -31,6 +31,9 @@
         android:theme="@style/Theme.TangClan"
         tools:targetApi="31">
         <activity
+            android:name=".BackAgeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ViewOtherProfileActivity"
             android:exported="false" />
         <activity
@@ -104,6 +107,11 @@
         <activity
             android:name=".ui.login.SignUpActivity"
             android:exported="false" />
+        <activity
+            android:name=".SetupBirthdayActivity"
+            android:exported="false">
+        </activity>
+
         <activity
             android:name=".LoginOrSignupActivity"
             android:exported="false" />
