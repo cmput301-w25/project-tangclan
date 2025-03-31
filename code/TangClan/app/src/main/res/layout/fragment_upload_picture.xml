@@ -56,11 +56,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:layout_marginBottom="20dp"
-        android:fontFamily="@font/inter_medium"
+        android:fontFamily="casual"
         android:text="Would you like to attach a reason?"
         android:textAlignment="center"
         android:textColor="#916350"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 
     <TextView
@@ -84,25 +85,25 @@
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
-        app:boxCornerRadiusTopStart="16dp">
+        app:boxCornerRadiusTopStart="16dp"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/reason"
-            android:background="@drawable/edittext_round"
-            android:layout_width="match_parent"
-            android:layout_height="112dp"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="16dp"
-            android:hint="What's going on?"
-            android:textColor="#916350"
-            android:textColorHighlight="#FFFFFF"
-            android:textColorHint="#906F61"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/reason"
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        android:background="#EDE7DF"
+        android:fontFamily="@font/inter"
+        android:gravity="start"
+        android:hint="What's going on?"
+        android:letterSpacing="-0.03"
+        android:maxHeight="128dp"
+        android:paddingHorizontal="24dp"
 
-            android:gravity="start"
-            android:fontFamily="@font/casual"
-            android:textSize="16sp"
-            android:letterSpacing="-0.03"
-            android:maxHeight="128dp" />
+        android:paddingVertical="16dp"
+        android:textColor="#916350"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#906F61"
+        android:textSize="16sp" />
 
 
     <TextView
@@ -123,23 +124,6 @@
         android:elevation="4dp"
         android:padding="0dp"
         android:scaleType="centerCrop" />
-
-    <Button
-        android:id="@+id/btnNext"
-        android:layout_width="match_parent"
-        android:paddingVertical="12dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="10dp"
-        android:backgroundTint="@color/black"
-        android:text="Next"
-        android:fontFamily="@font/inter_semibold"
-        android:letterSpacing="-0.03"
-        android:textColor="@color/white"
-        app:strokeWidth="2dp"
-        app:strokeColor="@color/black"
-        android:textSize="16sp"
-        app:cornerRadius="24dp"/>
 
         <Button
             android:id="@+id/btnBackEnvironment"
@@ -166,4 +150,3 @@
             app:strokeColor="#916350"
             app:strokeWidth="2sp" />
     </LinearLayout>
-</LinearLayout>
