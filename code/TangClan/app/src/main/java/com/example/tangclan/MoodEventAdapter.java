@@ -206,7 +206,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
             int numCollaborators = collaborators.size();
 
-            spannableUsernameEmotion.append(" with ");
+
 
             if (numCollaborators > 0) {
                 spannableUsernameEmotion.append(" with ");
