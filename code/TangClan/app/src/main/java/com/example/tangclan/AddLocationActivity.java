@@ -10,8 +10,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +37,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-
 public class AddLocationActivity extends AppCompatActivity {
     private MapView mapView;
     private AutoCompleteTextView searchBar;
@@ -48,20 +48,19 @@ public class AddLocationActivity extends AppCompatActivity {
     private ArrayList<String> suggestions = new ArrayList<>();
     private ArrayList<GeoPoint> suggestionCoords = new ArrayList<>();
     private OkHttpClient client = new OkHttpClient();
-    private Bundle savedDetailes;
+    private Bundle savedDetails;
     private long lastTypedTime = 0;
+    private ProgressBar loadingIndicator; // ProgressBar for loading state
 
     // RETURNED COORDINATES FROM THIS ACTIVITY (USER LOCATION) -------------------------------------
     private GeoPoint lastSearchedPoint;
     //----------------------------------------------------------------------------------------------
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Configuration.getInstance().load(getApplicationContext(), getSharedPreferences("osmdroid", MODE_PRIVATE));
         setContentView(R.layout.activity_add_location);
-
 
         mapView = findViewById(R.id.mapView);
         mapView.setMultiTouchControls(true);
@@ -75,7 +74,7 @@ public class AddLocationActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
-        Bundle savedDetails = getIntent().getExtras();
+        savedDetails = getIntent().getExtras();
 
         // Add compass
         CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this), mapView);
@@ -85,7 +84,7 @@ public class AddLocationActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.searchBar);
         searchButton = findViewById(R.id.searchButton);
         suggestionsList = findViewById(R.id.suggestionsList);
-
+        loadingIndicator = findViewById(R.id.loadingIndicator);
         nextButton = findViewById(R.id.nextButton);
         nextButton.setVisibility(View.GONE);
 
@@ -155,6 +154,7 @@ public class AddLocationActivity extends AppCompatActivity {
     }
 
     private void getAutocompleteResults(String query) {
+        loadingIndicator.setVisibility(View.VISIBLE); // Show loading indicator
         new Thread(() -> {
             String url = "https://nominatim.openstreetmap.org/search?format=json&q=" + query + "&limit=5&addressdetails=1";
             Request request = new Request.Builder().url(url).build();
@@ -181,10 +181,18 @@ public class AddLocationActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         adapter.notifyDataSetChanged();
                         suggestionsList.setVisibility(suggestions.isEmpty() ? View.GONE : View.VISIBLE);
+                        if (suggestions.isEmpty()) {
+                            Toast.makeText(AddLocationActivity.this, "No results found", Toast.LENGTH_SHORT).show();
+                        }
+                        loadingIndicator.setVisibility(View.GONE); // Hide loading indicator
                     });
                 }
             } catch (IOException | org.json.JSONException e) {
                 e.printStackTrace();
+                runOnUiThread(() -> {
+                    loadingIndicator.setVisibility(View.GONE); // Hide loading indicator
+                    Toast.makeText(AddLocationActivity.this, "Error fetching results", Toast.LENGTH_SHORT).show();
+                });
             }
         }).start();
     }
@@ -213,6 +221,7 @@ public class AddLocationActivity extends AppCompatActivity {
                             runOnUiThread(() -> placeMarker(lat, lon));
                         } else {
                             Log.d("LocationSearch", "No results found for query: " + query);
+                            runOnUiThread(() -> Toast.makeText(AddLocationActivity.this, "No results found", Toast.LENGTH_SHORT).show());
                         }
                     }
                 } catch (IOException | org.json.JSONException e) {
@@ -245,6 +254,8 @@ public class AddLocationActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             enableUserLocation();
+        } else {
+            Toast.makeText(this, "Permission denied, location functionality will be limited", Toast.LENGTH_SHORT).show();
         }
     }
 }
