@@ -1,6 +1,10 @@
 package com.example.tangclan;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
@@ -100,21 +104,44 @@ public class FollowActivity extends AppCompatActivity implements FollowRequestAd
     }
 
     @Override
-    public void onRequestHandled(int position, boolean accepted) {
+    public void onRequestHandled(int position, int mode) {
         String requesterUid = followRequestUids.get(position);
         requestList.remove(position);
         followRequestUids.remove(position);
         adapter.notifyItemRemoved(position);
 
-        if (accepted) {
+        if (mode == 1) {
             FollowRelationship relationship = new FollowRelationship(currentUser.getUid(), requesterUid);
             db.addFollowRelationship(relationship);
             followingBook.acceptFollowRequest(requesterUid);
             Toast.makeText(this, "Follow request accepted", Toast.LENGTH_SHORT).show();
-        } else {
+            db.deleteFollowRequest(requesterUid, currentUser.getUid());
+        } else if (mode == 2) {
             followingBook.declineFollowRequest(requesterUid);
             Toast.makeText(this, "Follow request declined", Toast.LENGTH_SHORT).show();
+            db.deleteFollowRequest(requesterUid, currentUser.getUid());
+        } else if (mode == 3) {
+            db.getUser(requesterUid, profile -> {
+                Intent intent = new Intent(FollowActivity.this, ViewOtherProfileActivity.class);
+                Bundle profileDetails = new Bundle();
+                profileDetails.putString("uid", profile.getUid());
+                profileDetails.putString("username",profile.getUsername());
+                profileDetails.putString("email",profile.getEmail());
+                profileDetails.putString("displayName",profile.getDisplayName());
+                String pfpStr = profile.getProfilePic();
+                if (pfpStr != null) {
+                    byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+                    Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+                    byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+                    if (pfpBytes != null) {
+                        profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+                    }
+                } else {
+                    profileDetails.putString("pfp", null);
+                }
+                intent.putExtras(profileDetails);
+                startActivity(intent);
+            });
         }
-        db.deleteFollowRequest(requesterUid, currentUser.getUid());
     }
 }
