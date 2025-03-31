@@ -17,6 +17,8 @@
             android:id="@+id/imgMap"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/baseline_location_on_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imgHome"

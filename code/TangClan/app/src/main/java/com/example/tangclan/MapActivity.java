@@ -88,7 +88,7 @@ public class MapActivity extends AppCompatActivity {
         distanceLabel = findViewById(R.id.distanceLabel);
         filterExt = findViewById(R.id.filterExt);
 
-        NavBarHelper.setupNavBar(this);
+
 
         db = new DatabaseBestie();
         personalModeBtn.setSelected(true);
@@ -125,6 +125,8 @@ public class MapActivity extends AppCompatActivity {
                 }
             }
         });
+
+        NavBarHelper.setupNavBar(this);
 
         loggedInUser = LoggedInUser.getInstance();
 

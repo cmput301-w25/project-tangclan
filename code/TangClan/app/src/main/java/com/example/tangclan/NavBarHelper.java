@@ -68,7 +68,7 @@ public class NavBarHelper {
             });
         }
         if (mapIcon != null){
-            notifIcon.setOnClickListener(v -> {
+            mapIcon.setOnClickListener(v -> {
                 navigateToActivity(activity, MapActivity.class);
             });
         }
