@@ -166,6 +166,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_new);
 
+
         // Initialize views
         listViewFeed = findViewById(R.id.listview_feed);
         feedContainer = findViewById(R.id.feed_container);
