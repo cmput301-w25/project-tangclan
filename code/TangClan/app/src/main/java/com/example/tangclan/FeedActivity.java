@@ -91,6 +91,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
     private DatabaseBestie db;
 
+    private List<String> selectedEmotionalStates = new ArrayList<>();
+    private boolean filterByRecentWeek = false;
+
     /**
      * Initializes the activity, sets up the user interface, loads the mood event feed,
      * and configures event listeners for adding and viewing mood events.
@@ -348,11 +351,28 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         CheckBox filterRecentWeekCheckbox = popupView.findViewById(R.id.filter_recent_week);
         ListView emotionalStatesList = popupView.findViewById(R.id.emotional_states_list);
         Button applyFilterButton = popupView.findViewById(R.id.apply_filter_button);
-        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters); // Reset Filters button
+        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters);
 
         // Set up the emotional states list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.emotional_states));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice,
+                getResources().getStringArray(R.array.emotional_states));
         emotionalStatesList.setAdapter(adapter);
+        emotionalStatesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        // Restore previous selections
+        filterRecentWeekCheckbox.setChecked(filterByRecentWeek);
+
+        // Restore emotional state selections
+        String[] emotionalStates = getResources().getStringArray(R.array.emotional_states);
+        for (int i = 0; i < emotionalStates.length; i++) {
+            if (selectedEmotionalStates.contains(emotionalStates[i])) {
+                emotionalStatesList.setItemChecked(i, true);
+            }
+        }
+
+        // Update "Select All" checkbox based on current selections
+        selectAllCheckbox.setChecked(selectedEmotionalStates.size() == emotionalStates.length);
 
         // Set up the "Select All" checkbox
         selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -364,8 +384,8 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         // Set up the apply filter button
         applyFilterButton.setOnClickListener(v -> {
             // Get the selected emotional states
+            selectedEmotionalStates.clear();
             SparseBooleanArray checkedItems = emotionalStatesList.getCheckedItemPositions();
-            List<String> selectedEmotionalStates = new ArrayList<>();
             for (int i = 0; i < checkedItems.size(); i++) {
                 if (checkedItems.valueAt(i)) {
                     selectedEmotionalStates.add(emotionalStatesList.getItemAtPosition(checkedItems.keyAt(i)).toString());
@@ -373,7 +393,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             }
 
             // Get the "In the last week" filter value
-            boolean filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
+            filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
 
             // Apply the filters
             applyFilters(selectedEmotionalStates, filterByRecentWeek);
@@ -384,8 +404,10 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
         // Set up the reset filters button
         resetFiltersButton.setOnClickListener(v -> {
+
             // Reset the feed to its original state
             resetFilters(allEvents);
+
 
             // Dismiss the popup
             popupWindow.dismiss();
@@ -436,7 +458,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         adapter.updateMoodEvents(filteredEvents);
     }
 
+
     private void resetFilters(ArrayList<MoodEvent>  allEvents) {
+
         // Reload the feed without applying any filters
         loadFeed(allEvents);
 
