@@ -132,7 +132,7 @@ public class EditFragment extends Fragment {
 
 
         // set up collaborators
-        ArrayList<String> followerBook = sessionUser.getFollowingBook().getFollowers();
+        ArrayList<String> followerBook = sessionUser.getFollowingBook().getFollowerUsernames();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_1, followerBook);
         AutoCompleteTextView editSocialSit = view.findViewById(R.id.edit_social_situation);
         editSocialSit.setAdapter(adapter);

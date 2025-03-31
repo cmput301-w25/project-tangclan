@@ -46,6 +46,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -116,6 +117,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             loggedInUser.setDisplayName(user.getDisplayName());
             loggedInUser.setAge(user.getAge());
             loggedInUser.setUid(currentUser.getUid());
+            loggedInUser.setProfilePic(user.getProfilePic());
             loggedInUser.initializeMoodEventBookFromDatabase(db);
             loggedInUser.initializeFollowingBookFromDatabase(db);
 
@@ -417,6 +419,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         db.getAllUsers(users -> {
             allUsers.clear();
             for (Profile user: users) {
+                if (Objects.equals(user.getUsername(), LoggedInUser.getInstance().getUsername())) {
+                    continue;
+                }
                 allUsers.add(user);
                 usersAdapter.notifyItemInserted(allUsers.size()-1);
             }
@@ -484,7 +489,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
             Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
             byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
-            if (pfpBytes == null) {
+            if (pfpBytes != null) {
                 profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
             }
         } else {
