@@ -135,6 +135,7 @@ public class AddLocationActivity extends AppCompatActivity {
             if (lastSearchedPoint != null) {
                 Intent intent = new Intent(AddLocationActivity.this, ReviewDetailsActivity.class);
 
+                savedDetails.putBoolean("location", true);
                 savedDetails.putDouble("latitude", lastSearchedPoint.getLatitude());
                 savedDetails.putDouble("longitude", lastSearchedPoint.getLongitude());
                 savedDetails.putString("locationName", searchBar.getText().toString());

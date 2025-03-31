@@ -92,6 +92,7 @@ public class ReviewDetailsActivity extends AppCompatActivity {
                                 // open the AddLocationActivity
 
                                 Intent intent = new Intent(ReviewDetailsActivity.this, AddLocationActivity.class);
+                                intent.putExtras(savedDetails);
                                 startActivity(intent);
                                 savedDetails.putBoolean("location", true);
 
