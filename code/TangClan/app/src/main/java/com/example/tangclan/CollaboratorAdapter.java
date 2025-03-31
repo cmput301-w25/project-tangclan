@@ -1,6 +1,9 @@
 package com.example.tangclan;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class CollaboratorAdapter extends ArrayAdapter<String> {
-    private ArrayList<String> userList;
-    public CollaboratorAdapter(Context context, ArrayList<String> userList) {
+public class CollaboratorAdapter extends ArrayAdapter<Profile> {
+    private ArrayList<Profile> userList;
+    public CollaboratorAdapter(Context context, ArrayList<Profile> userList) {
         super(context, 0, userList);
         this.userList = userList;
     }
@@ -33,9 +37,23 @@ public class CollaboratorAdapter extends ArrayAdapter<String> {
         TextView usernameTextView = view.findViewById(R.id.tag_username);
         ImageView pfpImageView = view.findViewById(R.id.tag_pfp);
 
-        String username = getItem(position);
+        Profile user = getItem(position);
 
-        usernameTextView.setText(username);
+        if (user == null) {
+            usernameTextView.setText("Unknown");
+            return view;
+        }
+
+        String username = user.getUsername();
+        String pfp = user.getProfilePic();
+
+        usernameTextView.setText(Objects.requireNonNullElse(username, "Unknown"));
+
+        if (pfp != null && !pfp.isEmpty()) {
+            byte[] pfpByteArray = Base64.decode(pfp, Base64.DEFAULT);
+            Bitmap pfpBitmap = BitmapFactory.decodeByteArray(pfpByteArray, 0, pfpByteArray.length);
+            pfpImageView.setImageBitmap(pfpBitmap);
+        }
 
         return view;
     }

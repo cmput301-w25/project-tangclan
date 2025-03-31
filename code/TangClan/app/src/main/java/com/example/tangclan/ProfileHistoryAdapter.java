@@ -224,8 +224,19 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         ListView tags = dialogView.findViewById(R.id.listview_tagged);
 
         ArrayList<String> collaborators = moodEvent.getCollaborators().get(); // non-null handled
-        CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaborators);
+
+        DatabaseBestie db = new DatabaseBestie();
+        ArrayList<Profile> users = new ArrayList<>();
+
+        CollaboratorAdapter adapter = new CollaboratorAdapter(context, users);
         tags.setAdapter(adapter);
+
+        for (String username : collaborators) {
+            db.findProfileByUsername(username, profile -> {
+                users.add(profile);
+                adapter.notifyDataSetChanged();
+            });
+        }
 
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);

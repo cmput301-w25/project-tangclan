@@ -1,6 +1,7 @@
 package com.example.tangclan;
 
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -51,6 +53,7 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
             otherUsersID = profileDetails.getString("uid");
         }
 
+
         // Get current users following book and initialize it
         loggedInUser = LoggedInUser.getInstance();
         loggedInUser.initializeFollowingBookFromDatabase(db);
@@ -72,6 +75,8 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
                         Log.d("VIEWINGPROFILEACTIVITY","request sent");
                         Toast.makeText(getApplicationContext(), "Follow request sent!", Toast.LENGTH_SHORT).show();
                         db.sendFollowRequest(loggedInUser.getUid(), otherUsersID, requestProcessed -> {
+                            loggedInUser.getFollowingBook().addMyRequest(otherUsersID);
+                            setFollowButtonText();
                         });
                         setFollowButtonText();
                     }
@@ -81,6 +86,7 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
     }
 
     public void setUpProfileDetails(Bundle bundle) {
+        otherUsersID = bundle.getString("uid");
         usernameTextView.setText(bundle.getString("username"));
         nameTextView.setText(bundle.getString("displayName"));
 
@@ -95,6 +101,7 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
         // set up profile picture
         String pfpStr = bundle.getString("pfp");
         if (pfpStr != null) {
+            Log.d("pfpstr", pfpStr);
             ImageView pfp = findViewById(R.id.pfpView);
             byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
             BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
@@ -103,13 +110,16 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
     }
 
     public void setFollowButtonText() {
-        loggedInUser.initializeFollowingBookFromDatabase(db);
         // Set button text depending on current relationship
         Button followBtn = findViewById(R.id.button_edit_profile);
         if (loggedInUser.getFollowingBook().getFollowers().contains(otherUsersID)) {
             followBtn.setText("  Following ");
-        } else if (loggedInUser.getFollowingBook().getFollowRequests().contains(otherUsersID)) {
+            followBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+            followBtn.setTextColor(Color.parseColor("#ffffff"));
+        } else if (loggedInUser.getFollowingBook().getMyFollowRequests().contains(otherUsersID)) {
             followBtn.setText("   Pending   ");
+            followBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
+            followBtn.setTextColor(Color.parseColor("#ffffff"));
         }
         else { followBtn.setText("   Follow   "); }
     }
