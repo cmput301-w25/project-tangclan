@@ -27,7 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * US 3.01.01
  * Shows the Login Form. Checks the username and password fields to allow user to Log In.
  */
-public class LogIn extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class LogIn extends AppCompatActivity {
         goToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signUp = new Intent(LogIn.this, SignUpActivity.class);
+                Intent signUp = new Intent(LogInActivity.this, SignUpActivity.class);
                 startActivity(signUp);
                 finish();
             }
@@ -53,7 +53,7 @@ public class LogIn extends AppCompatActivity {
         forgotPassText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent forgotPass = new Intent(LogIn.this, RecoverActivity.class);
+                Intent forgotPass = new Intent(LogInActivity.this, RecoverActivity.class);
                 startActivity(forgotPass);
                 finish();
             }
@@ -67,7 +67,7 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String username, password;
-                username = editUsername.getText().toString();
+                username = editUsername.getText().toString().toLowerCase();
                 password = editPassword.getText().toString();
 
                 if (TextUtils.isEmpty(username)) {
@@ -104,15 +104,18 @@ public class LogIn extends AppCompatActivity {
                                             loggedInUser.setAge(profile.getAge());
                                             loggedInUser.setProfilePic(profile.getProfilePic());
 
-                                            Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
+                                            Intent intent = new Intent(getApplicationContext(), VerifyEmailActivity.class);
                                             startActivity(intent);
                                             finish();
                                         } else {
-                                            Toast.makeText(LogIn.this, "Authentication failed.",
+                                            Toast.makeText(LogInActivity.this, "Authentication failed.",
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
+                        if (mAuth.getCurrentUser() == null) {
+                            editPassword.setError("Wrong Password");
+                        }
                     }
                 });
             }

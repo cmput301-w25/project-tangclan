@@ -1,12 +1,13 @@
 <!-- fragment_add_environment.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
 
-    android:background="@drawable/blue_gradient_background"
+    android:layout_height="match_parent"
+    android:id="@+id/SocialSituation"
+
+    android:background="#F4F2E6"
 
     android:orientation="vertical"
     android:padding="16dp">
@@ -25,7 +26,7 @@
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:text="moodly"
-            android:textColor="@color/black"
+            android:textColor="#D38C6F"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -54,11 +55,12 @@
         <TextView
             android:layout_width="363dp"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/inter_medium"
+            android:fontFamily="casual"
             android:gravity="center"
-            android:text="Attach a social situation\n to your mood event"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:text="Attach a social situation\n to your mood event!"
+            android:textColor="#916350"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -72,8 +74,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="48dp"
-        android:text="Add Social Situation"
-        android:textColor="@color/black"
+        android:text="Your social situation?"
+        android:textColor="#916350"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -86,16 +88,16 @@
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeColor="@android:color/transparent">
+        app:boxStrokeColor="@android:color/transparent"
+        app:boxStrokeWidth="0dp">
 
         <AutoCompleteTextView
             android:id="@+id/editTextSetting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/edittext_round"
             android:layout_marginTop="8dp"
+            android:background="#EDE7DF"
             android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -106,8 +108,8 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:text="Tag your followers"
-        android:textColor="@color/black"
+        android:text="Tag your followers:"
+        android:textColor="#916350"
         android:textSize="18sp" />
 
     <AutoCompleteTextView
@@ -115,60 +117,61 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
-        android:paddingVertical="16dp"
-        android:paddingHorizontal="20dp"
-        android:background="@drawable/edittext_round"
-        android:textColorHint="@color/material_dynamic_neutral60"
-        android:hint="jpagcal1234"
+        android:background="#EDE7DF"
+        android:contentDescription="Tag your followers"
         android:fontFamily="@font/inter"
-        android:textSize="20sp"
+        android:hint="jpagcal1234"
         android:letterSpacing="-0.03"
-        android:contentDescription="Tag your followers" />
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp"
+        android:textColorHint="@color/material_dynamic_neutral60"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/taggedSoFar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:textSize="16sp"
         android:fontFamily="@font/inter"
-        android:letterSpacing="-0.02"
         android:gravity="center"
-        android:text="3 people tagged so far" />
+        android:letterSpacing="-0.02"
+        android:text="3 people tagged so far"
+        android:textColor="#916350"
+        android:textSize="16sp" />
 
 
     <!-- Bottom row (Back, Save) -->
     <Button
         android:id="@+id/btnSaveEnvironment"
         android:layout_width="match_parent"
-        android:paddingVertical="12dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
         android:layout_marginHorizontal="10dp"
-        android:backgroundTint="@color/black"
-        android:text="Next"
+        android:layout_marginTop="64dp"
+        android:backgroundTint="#d38c6f"
         android:fontFamily="@font/inter_semibold"
         android:letterSpacing="-0.03"
+        android:paddingVertical="12dp"
+        android:text="Next"
         android:textColor="@color/white"
-        app:strokeWidth="2dp"
-        app:strokeColor="@color/black"
         android:textSize="16sp"
-        app:cornerRadius="24dp"/>
+        app:cornerRadius="24dp"
+        app:strokeColor="#615380"
+        app:strokeWidth="2dp" />
 
     <!-- Action Buttons -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnBackEnvironment"
         android:layout_width="match_parent"
-        android:paddingVertical="12dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:backgroundTint="@android:color/transparent"
-        android:text="Back"
         android:fontFamily="@font/inter_semibold"
         android:letterSpacing="-0.03"
+        android:paddingVertical="12dp"
+        android:text="Back"
         android:textColor="@color/black"
-        app:strokeWidth="2dp"
-        app:strokeColor="@color/black"
         android:textSize="16sp"
-        app:cornerRadius="24dp" />
+        app:cornerRadius="24dp"
+        app:strokeColor="@color/black"
+        app:strokeWidth="2dp" />
 </LinearLayout>

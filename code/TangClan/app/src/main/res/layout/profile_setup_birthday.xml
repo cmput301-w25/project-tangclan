@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#FFFFFF">
+    android:background="#f2f2e6">
 
     <TextView
         android:id="@+id/customize_y"
@@ -16,6 +16,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/customize_y"
         android:textAppearance="@style/customize_y"
+        android:textColor="#916350"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +31,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/when_is_you"
         android:textAppearance="@style/when_is_you"
+        android:textColor="#916350"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/customize_y" />
@@ -44,6 +46,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/you_must_be"
         android:textAppearance="@style/you_must_be"
+        android:textColor="#916350"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/when_is_you" />
@@ -58,6 +61,7 @@
         android:lineSpacingExtra="2sp"
         android:text="@string/label_text"
         android:textAppearance="@style/label_text"
+        android:textColor="#916350"
         android:translationY="-0.97sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/you_must_be" />
@@ -70,7 +74,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="22dp"
         android:alpha="0.6"
-        android:background="@drawable/form_email_"
+        android:background="#EDE7DF"
+        android:backgroundTint="#EDE7DF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="08/17/2025"
-            android:textColor="@android:color/black"
+            android:textColor="#916350"
             android:textSize="16sp" />
 
         <ImageButton
@@ -115,6 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
+        android:backgroundTint="#D38C6F"
         android:clipToOutline="true"
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="@id/supporting_"

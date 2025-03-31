@@ -57,6 +57,10 @@
         </provider>
 
         <activity
+            android:name=".MapActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ReviewDetailsActivity"
             android:exported="false" />
         <activity
@@ -99,10 +103,10 @@
             android:name=".TempFeedActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.login.LogIn"
+            android:name=".ui.login.LogInActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.login.VerifyEmail"
+            android:name=".ui.login.VerifyEmailActivity"
             android:exported="false" />
         <activity
             android:name=".ui.login.SignUpActivity"
@@ -119,6 +123,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

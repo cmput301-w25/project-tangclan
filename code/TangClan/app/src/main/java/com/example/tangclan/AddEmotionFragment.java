@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,14 +43,41 @@ public class AddEmotionFragment extends Fragment {
         ImageButton btnDisgusted = view.findViewById(R.id.emotionDisgusted);
         ImageButton btnAngry = view.findViewById(R.id.emotionAngry);
         ImageButton btnConfused = view.findViewById(R.id.emotionConfused);
+        TextView emotText = view.findViewById(R.id.emotionText);
+
+        emotText.setVisibility(View.GONE);
 
         // Click listeners to select an emotion
-        btnHappy.setOnClickListener(v -> selectedEmotion = "happy");
-        btnCalm.setOnClickListener(v -> selectedEmotion = "calm");
-        btnSurprised.setOnClickListener(v -> selectedEmotion = "surprised");
-        btnDisgusted.setOnClickListener(v -> selectedEmotion = "disgusted");
-        btnAngry.setOnClickListener(v -> selectedEmotion = "angry");
-        btnConfused.setOnClickListener(v -> selectedEmotion = "confused");
+        btnHappy.setOnClickListener(v ->  {
+            selectedEmotion = "happy";
+            emotText.setText("You are feeling happy!");
+            emotText.setVisibility(View.VISIBLE);
+        });
+        btnCalm.setOnClickListener(v -> {
+            selectedEmotion = "calm";
+            emotText.setText("You are feeling calm!");
+            emotText.setVisibility(View.VISIBLE);
+        });
+        btnSurprised.setOnClickListener(v -> {
+            selectedEmotion = "surprised";
+            emotText.setText("You are feeling surprised?!");
+            emotText.setVisibility(View.VISIBLE);
+        });
+        btnDisgusted.setOnClickListener(v -> {
+            selectedEmotion = "disgusted";
+            emotText.setText("You are feeling disgusted.");
+            emotText.setVisibility(View.VISIBLE);
+        });
+        btnAngry.setOnClickListener(v -> {
+            selectedEmotion = "angry";
+            emotText.setText("You are feeling angry!");
+            emotText.setVisibility(View.VISIBLE);
+        });
+        btnConfused.setOnClickListener(v -> {
+            selectedEmotion = "calm";
+            emotText.setText("You are feeling... confused?");
+            emotText.setVisibility(View.VISIBLE);
+        });
 
         // Bottom buttons
         Button btnCancel = view.findViewById(R.id.btnCancelEmotion);
@@ -63,6 +91,8 @@ public class AddEmotionFragment extends Fragment {
             }
             // Save selected emotion in ViewModel
             WizActivity activity = (WizActivity) requireActivity();
+            emotText.setText("You are feeling " + selectedEmotion + "!");
+            emotText.setVisibility(View.VISIBLE);
             activity.getWizardViewModel().setEmotionalState(selectedEmotion);
 
             // Move to triggers page

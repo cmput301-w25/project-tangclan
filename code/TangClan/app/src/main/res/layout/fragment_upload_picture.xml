@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
 
 
-    android:background="@drawable/blue_gradient_background"
+    android:background="#F4F2E6"
 
-   
+
     android:elevation="2dp"
 
     android:orientation="vertical"
@@ -35,7 +35,8 @@
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:text="moodly"
-            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textColor="#D38C6F"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -55,11 +56,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:layout_marginBottom="20dp"
-        android:fontFamily="@font/inter_medium"
+        android:fontFamily="casual"
         android:text="Would you like to attach a reason?"
         android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp" />
+        android:textColor="#916350"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 
     <TextView
@@ -71,24 +73,37 @@
         android:fontFamily="@font/inter"
         android:text="You can write about you experience, or attach a picture instead."
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="16sp" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text203"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="#916350"
+        app:boxBackgroundColor="#EDE7DF"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/reason"
-            android:background="@drawable/edittext_round"
-            android:layout_width="match_parent"
-            android:layout_height="112dp"
-            android:paddingHorizontal="24dp"
-            android:paddingVertical="16dp"
-            android:hint="What's going on?"
-            android:gravity="start"
-            android:textColorHint="@color/material_dynamic_neutral60"
-            android:fontFamily="@font/inter"
-            android:textSize="16sp"
-            android:letterSpacing="-0.03"
-            android:maxHeight="128dp" />
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/reason"
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        android:background="#EDE7DF"
+        android:fontFamily="@font/inter"
+        android:gravity="start"
+        android:hint="What's going on?"
+        android:letterSpacing="-0.03"
+        android:maxHeight="128dp"
+        android:paddingHorizontal="24dp"
+
+        android:paddingVertical="16dp"
+        android:textColor="#916350"
+        android:textColorHighlight="#FFFFFF"
+        android:textColorHint="#906F61"
+        android:textSize="16sp" />
 
 
     <TextView
@@ -110,37 +125,36 @@
         android:padding="0dp"
         android:scaleType="centerCrop" />
 
-    <Button
-        android:id="@+id/btnNext"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:paddingVertical="12dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="10dp"
-        android:backgroundTint="@color/black"
-        android:text="Next"
-        android:fontFamily="@font/inter_semibold"
-        android:letterSpacing="-0.03"
-        android:textColor="@color/white"
-        app:strokeWidth="2dp"
-        app:strokeColor="@color/black"
-        android:textSize="16sp"
-        app:cornerRadius="24dp"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
-    <!-- Action Buttons -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBackEnvironment"
-        android:layout_width="match_parent"
-        android:paddingVertical="12dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:backgroundTint="@android:color/transparent"
-        android:text="Back"
-        android:fontFamily="@font/inter_semibold"
-        android:letterSpacing="-0.03"
-        android:textColor="@color/black"
-        app:strokeWidth="2dp"
-        app:strokeColor="@color/black"
-        android:textSize="16sp"
-        app:cornerRadius="24dp" />
+        <Button
+            android:id="@+id/btnBackEnvironment"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#d38c6f"
+            android:outlineAmbientShadowColor="@color/black"
+            android:text="Back"
+            android:textSize="14sp"
+            app:cornerRadius="16dp"
+            app:rippleColor="#F06539"
+            app:strokeColor="#916350"
+            app:strokeWidth="2sp" />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:backgroundTint="#d38c6f"
+            android:text="Review"
+            android:textSize="14sp"
+            app:cornerRadius="16dp"
+            app:strokeColor="#916350"
+            app:strokeWidth="2sp" />
+    </LinearLayout>
+
 </LinearLayout>

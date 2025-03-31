@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_c">
+    android:background="#f4f2e6">
 
 
     <TextView
@@ -18,18 +18,18 @@
         android:letterSpacing="-0.05"
         android:text="@string/moodly"
         android:textAppearance="@style/moodly"
-        android:textColor="@color/black"
+        android:textColor="#d38c6f"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/form_full_n"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/edittext_round"
+        android:layout_width="364dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="12dp"
+        android:background="#EDE7DF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,11 +53,10 @@
 
     <RelativeLayout
         android:id="@+id/form_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext_round"
+        android:layout_width="364dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="12dp"
+        android:background="#EDE7DF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -81,11 +80,10 @@
 
     <RelativeLayout
         android:id="@+id/form_userna"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext_round"
+        android:layout_width="364dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="16dp"
+        android:background="#EDE7DF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -108,11 +106,10 @@
 
     <RelativeLayout
         android:id="@+id/form_passwo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext_round"
+        android:layout_width="364dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="16dp"
+        android:background="#EDE7DF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -136,11 +133,10 @@
 
     <RelativeLayout
         android:id="@+id/form_confir"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext_round"
+        android:layout_width="364dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="16dp"
+        android:background="#EDE7DF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -167,12 +163,10 @@
 
     <Button
         android:id="@+id/button_signup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:padding="16dp"
-        android:layout_marginHorizontal="24dp"
-        android:backgroundTint="@color/black"
+        android:layout_width="364dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#d38c6f"
         android:clickable="true"
         android:clipToOutline="true"
         android:fontFamily="@font/inter_semibold"
@@ -182,7 +176,9 @@
         app:cornerRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/form_confir" />
+        app:layout_constraintTop_toBottomOf="@id/form_confir"
+        app:strokeColor="#916350"
+        app:strokeWidth="2dp" />
 
     <TextView
         android:id="@+id/already_hav"
@@ -194,7 +190,7 @@
         android:gravity="center"
         android:text="@string/already_hav"
         android:textAppearance="@style/already_hav"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -193,6 +193,20 @@ public class MoodEventBook {
         // Return a copy of the list (already in reverse chronological order)
         return new ArrayList<>(moodEvents);
     }
+
+
+    public MoodEvent getMostRecentMoodEvent() {
+        // Sort the mood events in reverse chronological order
+        sortMoodEvents();
+
+        // Return the most recent mood event (first item in the sorted list)
+        if (moodEvents != null && !moodEvents.isEmpty()) {
+            return moodEvents.get(0);
+        }
+
+        // Return null if the list is empty
+        return null;
+    }
 }
 
 

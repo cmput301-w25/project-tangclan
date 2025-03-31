@@ -13,13 +13,14 @@
 
 ## Project Description
 
-This project is an android application for users to log and share mood events including details such as reason and social situation. Users are able to upload pictures with their mood events and also tag other users that they follow. The app provides a streamlined workflow for adding an emotion, declaring a social situation, and an optional reason and picture upload page. Users have the option of keeping their events public or private and attaching their location. A key feature in this app is allowing to tag other users in relation to your social situation.
+
+This project is an android application for users to log and share mood events including details such as reason and social situation. Users are able to upload pictures with their mood events and also tag other users that they follow. The app provides a streamlined workflow for adding an emotion, declaring a social situation, and an optional reason and picture upload page. Users have the option of keeping their events public or private and attaching their location. A key feature in this app is allowing to tag other users in relation to your social situation. 
 
 ## Key Features
 
-- [Feature 1]: This app includes custom emoticons drawn by hand.
+- [Feature 1]: This app includes custom emoticons drawn by hand. 
 - [Feature 2]: Tagging system - you can add people to your social situation, grab a list of people in the social situation, and go to their profile from the tagview
-- [Feature 3]: Brief description
+- [Feature 3]: 
 
 ## Setup Instructions
 
