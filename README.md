@@ -18,9 +18,9 @@ This project is an android application for users to log and share mood events in
 
 ## Key Features
 
-- [Feature 1]: This app includes custom emoticons drawn by hand. 
+- [Feature 1]: This app includes custom emoticons drawn by hand.
 - [Feature 2]: Tagging system - you can add people to your social situation, grab a list of people in the social situation, and go to their profile from the tagview
-- [Feature 3]: 
+- [Feature 3]: Brief description
 
 ## Setup Instructions
 
