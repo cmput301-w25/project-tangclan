@@ -50,6 +50,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.osmdroid)
+    implementation(libs.okhttp)
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.annotation)
     implementation(libs.lifecycle.livedata.ktx)

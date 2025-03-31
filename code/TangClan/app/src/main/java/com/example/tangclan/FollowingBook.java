@@ -13,6 +13,12 @@ public class FollowingBook {
     private ArrayList<String> followers = new ArrayList<>();
     private ArrayList<String> followRequests = new ArrayList<>();
 
+
+    private ArrayList<String> myFollowRequests = new ArrayList<>();
+
+    private Map<String, String> UIDtoFollowerUsername = new HashMap<>();
+    private Map<String, String> UIDtoFollowingUsername = new HashMap<>();
+
     public FollowingBook() {
         
     }
@@ -65,6 +71,10 @@ public class FollowingBook {
         return followRequests;
     }
 
+    public ArrayList<String> getMyFollowRequests() {
+        return myFollowRequests;
+    }
+
     public int getFollowerCount() {
         return followers.size();
     }
@@ -84,6 +94,26 @@ public class FollowingBook {
     public void setFollowRequests(Object followRequests) {
         this.followRequests = convertToArrayList(followRequests);
     }
+
+
+
+    public void setMyFollowRequests(ArrayList<String> myFollowRequests) {
+        this.myFollowRequests = myFollowRequests;
+    }
+
+    public void addMyRequest(String targetUid) {
+        myFollowRequests.add(targetUid);
+    }
+
+
+   public void addEntryToFollowerMap(String uid, String username) {
+        this.UIDtoFollowerUsername.put(uid, username);
+   }
+
+   public void addEntryToFollowingMap(String uid, String username) {
+        this.UIDtoFollowingUsername.put(uid, username);
+   }
+
 
     private ArrayList<String> convertToArrayList(Object input) {
         ArrayList<String> result = new ArrayList<>();
@@ -114,6 +144,32 @@ public class FollowingBook {
             }
         }
         return uidToMoodEvent;
+    }
+
+    /**
+     * Gets the usernames of all user followers
+     * @return
+     *      An ArrayList of all follower usernames
+     */
+    public ArrayList<String> getFollowerUsernames() {
+        return new ArrayList<>(this.UIDtoFollowerUsername.values());
+    }
+
+    /**
+     * Gets the usernames of all following
+     * @return
+     *      An ArrayList of all following usernames
+     */
+    public ArrayList<String> getFollowingUsernames() {
+        return new ArrayList<>(this.UIDtoFollowingUsername.values());
+    }
+
+    public void resetFollowingUsernames() {
+        this.UIDtoFollowingUsername = new HashMap<>();
+    }
+
+    public void resetFollowerUsernames() {
+        this.UIDtoFollowerUsername = new HashMap<>();
     }
 
     private void addMockMoodEvents(Map<String, MoodEvent> uidToMoodEvent) {

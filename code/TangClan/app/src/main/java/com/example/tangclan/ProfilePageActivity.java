@@ -13,6 +13,7 @@ import android.os.Bundle;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.util.Base64;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -35,12 +36,12 @@ import android.widget.Toast;
 import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -58,6 +59,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private NetworkManager networkManager;
 
     private ListView listViewFeed;
+
+    private List<String> selectedEmotionalStates = new ArrayList<>();
+    private boolean filterByRecentWeek = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,6 +176,18 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String followingCt = String.valueOf(userProfile.getFollowingBook().getFollowingCount());
         followersTextView.setText(followerCt);
         followingTextView.setText(followingCt);
+
+        // mechanism to be able to see my followers list
+        followingTextView.setClickable(true);
+        followersTextView.setClickable(true);
+        followingTextView.setOnClickListener(view
+                -> showCollaborators(userProfile.getFollowingBook().getFollowingUsernames(), "Following"));
+        followersTextView.setOnClickListener(view
+                -> showCollaborators(userProfile.getFollowingBook().getFollowerUsernames(), "Followers"));
+
+        followingTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        followersTextView.setMovementMethod(LinkMovementMethod.getInstance());
+
     }
 
     private void setupProfileListView() {
@@ -426,8 +442,25 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters);
 
         // Set up the emotional states list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.emotional_states));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice,
+                getResources().getStringArray(R.array.emotional_states));
         emotionalStatesList.setAdapter(adapter);
+        emotionalStatesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        // Restore previous selections
+        filterRecentWeekCheckbox.setChecked(filterByRecentWeek);
+
+        // Restore emotional state selections
+        String[] emotionalStates = getResources().getStringArray(R.array.emotional_states);
+        for (int i = 0; i < emotionalStates.length; i++) {
+            if (selectedEmotionalStates.contains(emotionalStates[i])) {
+                emotionalStatesList.setItemChecked(i, true);
+            }
+        }
+
+        // Update "Select All" checkbox based on current selections
+        selectAllCheckbox.setChecked(selectedEmotionalStates.size() == emotionalStates.length);
 
         // Set up the "Select All" checkbox
         selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -439,8 +472,8 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         // Set up the apply filter button
         applyFilterButton.setOnClickListener(v -> {
             // Get the selected emotional states
+            selectedEmotionalStates.clear();
             SparseBooleanArray checkedItems = emotionalStatesList.getCheckedItemPositions();
-            List<String> selectedEmotionalStates = new ArrayList<>();
             for (int i = 0; i < checkedItems.size(); i++) {
                 if (checkedItems.valueAt(i)) {
                     selectedEmotionalStates.add(emotionalStatesList.getItemAtPosition(checkedItems.keyAt(i)).toString());
@@ -448,7 +481,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             }
 
             // Get the "In the last week" filter value
-            boolean filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
+            filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
 
             // Apply the filters
             applyFilters(selectedEmotionalStates, filterByRecentWeek);
@@ -459,7 +492,18 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Set up the reset filters button
         resetFiltersButton.setOnClickListener(v -> {
-            // Reset the feed to its original state
+            // Reset the filter state
+            selectedEmotionalStates.clear();
+            filterByRecentWeek = false;
+
+            // Reset the UI
+            for (int i = 0; i < emotionalStatesList.getCount(); i++) {
+                emotionalStatesList.setItemChecked(i, false);
+            }
+            filterRecentWeekCheckbox.setChecked(false);
+            selectAllCheckbox.setChecked(false);
+
+            // Reset the feed
             resetFilters();
 
             // Dismiss the popup
@@ -496,18 +540,24 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void resetFilters() {
+        // Clear filter state
+        selectedEmotionalStates.clear();
+        filterByRecentWeek = false;
+
+        // Reset the adapter
         adapter.notifyDataSetChanged();
         adapter.clear();
         adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
         userProfile.initializeMoodEventBookFromDatabase(databaseBestie);
 
-
+        // Clear the search field
         EditText searchEditText = findViewById(R.id.editText_search);
         searchEditText.setText("");
 
         // Notify the user that filters have been reset
         Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
+
 
     private void filterByKeyword(String keyword) {
         List<MoodEvent> filteredEvents = new ArrayList<>(userProfile.getMoodEventBook().getMoodEventList());
@@ -526,5 +576,68 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         adapter.clear();
         adapter.addAll(filteredEvents);
         adapter.notifyDataSetChanged();
+    }
+
+    private void showCollaborators(ArrayList<String> usernames, String mode) {
+        Context context = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.dialog_tagged,null);
+        builder.setView(dialogView);
+
+        ListView tags = dialogView.findViewById(R.id.listview_tagged);
+        TextView title = dialogView.findViewById(R.id.title_tagged);
+
+        title.setText(mode);
+
+        DatabaseBestie db = new DatabaseBestie();
+        ArrayList<Profile> users = new ArrayList<>();
+
+        CollaboratorAdapter adapter = new CollaboratorAdapter(this, users);
+        tags.setAdapter(adapter);
+
+        for (String username : usernames) {
+            db.findProfileByUsername(username, profile -> {
+                users.add(profile);
+                adapter.notifyDataSetChanged();
+            });
+        }
+
+        tags.setOnItemClickListener((a, view, pos, l) -> {
+            Profile profile = adapter.getItem(pos);
+            goToUserProfile(profile);
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.getWindow()
+                .setBackgroundDrawable(ResourcesCompat
+                        .getDrawable(context.getResources(), R.drawable.dialog_round, null));
+        dialog.show();
+    }
+
+    public void goToUserProfile(Profile profile) {
+        Intent intent = new Intent(this, ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
+
+
+        profileDetails.putString("uid", profile.getUid());
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes != null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
+
+        intent.putExtras(profileDetails);
+        startActivity(intent);
     }
 }

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -234,6 +235,30 @@ public class DatabaseBestie {
         void onEmailFound(String email);
     }
 
+    /**
+     * Grabs the username by UID
+     * @param uid
+     *      The uid of the username
+     * @param callback
+     *      Callback to handle when username found
+     */
+    public void findUsernameByUID(String uid, findUsernameCallback callback) {
+        usersRef.document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String username = documentSnapshot.get("username", String.class);
+
+                    callback.onUsernameFound(username);
+                });
+    }
+
+    /**
+     * Callback function for when username is successfully found
+     */
+    public interface findUsernameCallback {
+        void onUsernameFound(String username);
+    }
+
     public void findProfileByUsername(String username, findProfileCallback callback) {
         usersRef.whereEqualTo("username", username)
                 .get()
@@ -406,6 +431,34 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating photo", e));
     }
 
+    public void updateLocation(String mid, String month, boolean location, Double lat, Double lon, String name) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("location", location)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Location tracking bool updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating location tracking bool", e));
+        if (location) {
+            event.update("latitude", lat)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Latitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating latitude", e));
+            event.update("longitude", lon)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Longitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating longitude", e));
+            event.update("locationName", name)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Location name updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating location name", e));
+        } else {
+            event.update("latitude", null)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Latitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating latitude", e));
+            event.update("longitude", null)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Longitude updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating longitude", e));
+            event.update("locationName", null)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Location name updated successfully"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Error updating location name", e));
+        }
+    }
+
 
     /**
      * This removes an existing mood event from the "moodEvents" collection
@@ -442,6 +495,10 @@ public class DatabaseBestie {
                             ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
+                            Boolean location = document.getBoolean("location");
+                            Double lat = document.getDouble("latitude");
+                            Double lon = document.getDouble("longitude");
+                            String locationName = document.getString("locationName");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
@@ -457,6 +514,16 @@ public class DatabaseBestie {
                             moodEvent.setPostDate(postDate);
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
+
+                            /*
+                            if (location) {
+                                moodEvent.setGeolocation(location);
+                                moodEvent.setLatitude(lat);
+                                moodEvent.setLongitude(lon);
+                                moodEvent.setLocationName(locationName);
+                            } else if (!location) {
+                                moodEvent.setGeolocation(location);
+                            }*/
 
 
                             events.add(moodEvent);
@@ -494,6 +561,10 @@ public class DatabaseBestie {
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
                             Boolean privateMood = document.getBoolean("privateMood");
+                            Boolean location = document.getBoolean("location");
+                            Double lat = document.getDouble("latitude");
+                            Double lon = document.getDouble("longitude");
+                            String locationName = document.getString("locationName");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");
@@ -516,6 +587,16 @@ public class DatabaseBestie {
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
                             moodEvent.setPrivacyOn(privateMood != null && privateMood);
+
+                            /*
+                            if (location) {
+                                moodEvent.setGeolocation(location);
+                                moodEvent.setLatitude(lat);
+                                moodEvent.setLongitude(lon);
+                                moodEvent.setLocationName(locationName);
+                            } else if (!location) {
+                                moodEvent.setGeolocation(location);
+                            }*/
 
 
                             moodEvents.add(moodEvent);
@@ -579,6 +660,10 @@ public class DatabaseBestie {
                 ArrayList<String> collabs = (ArrayList<String>) documentSnapshot.get("collaborators");
                 String reason = documentSnapshot.getString("reason");
                 String img = documentSnapshot.getString("image");
+                Boolean location = documentSnapshot.getBoolean("location");
+                Double lat = documentSnapshot.getDouble("latitude");
+                Double lon = documentSnapshot.getDouble("longitude");
+                String locationName = documentSnapshot.getString("locationName");
 
                 MoodEvent moodEvent = new MoodEvent(emotion, collabs);
                 moodEvent.setMid(id);
@@ -592,10 +677,37 @@ public class DatabaseBestie {
                 if (reason != null) {
                     moodEvent.setReason(reason);
                 }
+
+                if (location) {
+                    moodEvent.setGeolocation(location);
+                    moodEvent.setLatitude(lat);
+                    moodEvent.setLongitude(lon);
+                    moodEvent.setLocationName(locationName);
+                } else if (!location) {
+                    moodEvent.setGeolocation(location);
+                }
                 callback.onMoodEventRetrieved(moodEvent, emotion);
             }
         });
     }
+
+    public void getAuthorOfMoodEvent(String mid, String month, MoodEventAuthorCallback callback) {
+        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String authorId = documentSnapshot.getString("postedBy");
+                findUsernameByUID(authorId, username -> {
+                    callback.onEventAuthorRetrieved(username);
+                });
+            }
+        });
+    }
+
+    public interface MoodEventAuthorCallback {
+        void onEventAuthorRetrieved(String username);
+    }
+
+
 
 
     /**
@@ -621,6 +733,10 @@ public class DatabaseBestie {
                         ArrayList<String> collaborators = (ArrayList<String>) document.get("collaborators");
                         String postDate = document.getString("datePosted");
                         String postTime = document.getString("timePosted");
+                        Boolean location = document.getBoolean("location");
+                        Double lat = document.getDouble("latitude");
+                        Double lon = document.getDouble("longitude");
+                        String locationName = document.getString("locationName");
 
                         // mechanism to revert a string back into the bitmap
                         String imageString = document.getString("image");
@@ -636,6 +752,15 @@ public class DatabaseBestie {
                         moodEvent.setPostDate(postDate);
                         moodEvent.setPostTime(postTime);
                         moodEvent.setImage(image);
+
+                        if (location) {
+                            moodEvent.setGeolocation(location);
+                            moodEvent.setLatitude(lat);
+                            moodEvent.setLongitude(lon);
+                            moodEvent.setLocationName(locationName);
+                        } else if (!location) {
+                            moodEvent.setGeolocation(location);
+                        }
 
                         callback.onMoodEventRetrieved(moodEvent, emotionalState);
                     }
@@ -885,6 +1010,24 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error updating follow request", e);
                     callback.onFollowRequestProcessed(false);
+                });
+    }
+
+    public void getMyPendingFollowRequests(String requesterUid, FollowRequestsCallback callback) {
+        followRequestsRef.whereEqualTo("requesterUid", requesterUid)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<FollowRequest> requests = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            requests.add(document.toObject(FollowRequest.class));
+                        }
+                        callback.onFollowRequestsRetrieved(requests);
+                    } else {
+                        Log.e(TAG, "Error getting follow requests", task.getException());
+                        callback.onFollowRequestsRetrieved(new ArrayList<>());
+                    }
                 });
     }
 

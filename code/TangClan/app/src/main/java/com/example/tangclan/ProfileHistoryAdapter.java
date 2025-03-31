@@ -2,10 +2,14 @@ package com.example.tangclan;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -14,10 +18,12 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -66,20 +72,20 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     public ProfileHistoryAdapter(Context context, Profile profile) {
         super(context, 0, new ArrayList<MoodEvent>());
 
-        moodToUsernameMap = new HashMap<>();
-        List<MoodEvent> moodEvents = new ArrayList<>();
+        List<MoodEvent> moodEvents;
+        moodEvents = profile.getMoodEventBook().getAllMoodEvents();
 
         // Get the username
         this.username = profile.getUsername();
 
-        // Populate mood events and map usernames
-        for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
-            moodEvents.add(moodEvent);
-            moodToUsernameMap.put(moodEvent, profile.getUsername());
-        }
-
         // Add the mood events to the adapter's data source
         addAll(moodEvents);
+    }
+
+    public ProfileHistoryAdapter(Context context, ArrayList<MoodEvent> events, String username) {
+        super(context, 0, events);
+
+        this.username = username;
     }
 
 
@@ -118,7 +124,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
 
         if (username == null) {
-            username = LoggedInUser.getInstance().getUsername();
+            username = "Unknown";
         }
         //  Log.d("DEBUG PROFILEHISTORYADAPTER", username);
         SpannableString spannableUsername = new SpannableString(username);
@@ -224,8 +230,24 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         ListView tags = dialogView.findViewById(R.id.listview_tagged);
 
         ArrayList<String> collaborators = moodEvent.getCollaborators().get(); // non-null handled
-        CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaborators);
+
+        DatabaseBestie db = new DatabaseBestie();
+        ArrayList<Profile> users = new ArrayList<>();
+
+        CollaboratorAdapter adapter = new CollaboratorAdapter(context, users);
         tags.setAdapter(adapter);
+
+        for (String username : collaborators) {
+            db.findProfileByUsername(username, profile -> {
+                users.add(profile);
+                adapter.notifyDataSetChanged();
+            });
+        }
+
+        tags.setOnItemClickListener((a, view, pos, l) -> {
+            Profile profile = adapter.getItem(pos);
+            goToUserProfile(profile);
+        });
 
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
@@ -278,5 +300,28 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     }
 
 
+    public void goToUserProfile(Profile profile) {
+        Intent intent = new Intent(getContext(), ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
 
+
+        profileDetails.putString("uid", profile.getUid());
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes != null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
+
+        intent.putExtras(profileDetails);
+        getContext().startActivity(intent);
+    }
 }

@@ -3,8 +3,11 @@ package com.example.tangclan;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +45,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
         // get the session user (for followingbook)
         //TODO: make sure that followingbook is up to date for everything
         LoggedInUser user = LoggedInUser.getInstance();
-        ArrayList<String> followerBook = user.getFollowingBook().getFollowers();
+        ArrayList<String> followerBook = user.getFollowingBook().getFollowerUsernames();
 
         // Initialize ViewModel
         //
@@ -183,8 +186,18 @@ public class AddSocialSituationActivity extends AppCompatActivity {
 
         ListView tags = dialogView.findViewById(R.id.listview_tagged);
 
-        CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaborators);
+        DatabaseBestie db = new DatabaseBestie();
+        ArrayList<Profile> users = new ArrayList<>();
+
+        CollaboratorAdapter adapter = new CollaboratorAdapter(context, users);
         tags.setAdapter(adapter);
+
+        for (String username : collaborators) {
+            db.findProfileByUsername(username, profile -> {
+                users.add(profile);
+                adapter.notifyDataSetChanged();
+            });
+        }
 
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);

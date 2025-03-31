@@ -25,6 +25,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+//import android.widget.ProgressBar;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -35,13 +38,24 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.example.tangclan.ui.login.LoginOrSignupActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.w3c.dom.Comment;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import java.util.Objects;
+
 import java.util.stream.Collectors;
 
 
@@ -66,7 +80,6 @@ import java.util.stream.Collectors;
  */
 
 public class FeedActivity extends AppCompatActivity implements SearchOtherProfileAdapter.SelectProfileListener {
-    //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
@@ -77,6 +90,12 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
     private ArrayList<Profile> allUsers = new ArrayList<>();
     private com.google.android.material.button.MaterialButton button_moods;
     private com.google.android.material.button.MaterialButton buttonForYou;
+    //private ProgressBar progressBar;
+
+    private DatabaseBestie db;
+
+    private List<String> selectedEmotionalStates = new ArrayList<>();
+    private boolean filterByRecentWeek = false;
 
     /**
      * Initializes the activity, sets up the user interface, loads the mood event feed,
@@ -93,14 +112,18 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        if(currentUser == null) {
+        if (currentUser == null) {
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
+            return;
         }
 
-        DatabaseBestie db = new DatabaseBestie();
-
+        db = DatabaseBestie.getInstance();
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
+
+
+        // Debug: Check if feedEvents is empty before loading
+        Log.d("FEED_DEBUG", "Feed events before load: " + feed.getFeedEvents().size());
 
         db.getUser(currentUser.getUid(), user -> {
             loggedInUser.setEmail(user.getEmail());
@@ -109,6 +132,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             loggedInUser.setDisplayName(user.getDisplayName());
             loggedInUser.setAge(user.getAge());
             loggedInUser.setUid(currentUser.getUid());
+            loggedInUser.setProfilePic(user.getProfilePic());
             loggedInUser.initializeMoodEventBookFromDatabase(db);
             loggedInUser.initializeFollowingBookFromDatabase(db);
 
@@ -117,12 +141,31 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         });
 
 
+        // Clear existing events
+        ArrayList<MoodEvent> allEvents = new ArrayList<>();
+        adapter.updateMoodEvents(allEvents);
+
+        // Load following list FIRST
+        db.getFollowing(currentUser.getUid(), following -> {
+            Log.d("FEED_DEBUG", "Found " + following.size() + " followed users");
+            for (String uid : following) {
+                Log.d("FEED_DEBUG", "Following UID: " + uid);
+            }
+
+            loggedInUser.getFollowingBook().setFollowing(following);
+            feed.getFollowingBook().setFollowing(following);
+
+            // Now load the feed with this following list
+            loadFeed(allEvents);
+        });
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_new);
+
 
         // Initialize views
         listViewFeed = findViewById(R.id.listview_feed);
@@ -130,9 +173,11 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         usersContainer = findViewById(R.id.users_container);
         button_moods = findViewById(R.id.button_moods);
         buttonForYou = findViewById(R.id.button_users);
+        //progressBar = findViewById(R.id.progressBar);
 
         // Initialize adapters
-        adapter = new MoodEventAdapter(this, new ArrayList<>());
+        ArrayList<MoodEvent>  allEvents = new ArrayList<>();
+        adapter = new MoodEventAdapter(this, allEvents);
         listViewFeed.setAdapter(adapter);
 
         // Initialize user search components
@@ -166,7 +211,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
         // Set up the filter ImageView
         ImageView filterImageView = findViewById(R.id.filter);
-        filterImageView.setOnClickListener(v -> showFilterPopup(v));
+        filterImageView.setOnClickListener(v -> showFilterPopup(v, allEvents));
 
         // Initialize the feed
         FollowingBook followingBook = new FollowingBook();
@@ -174,7 +219,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         feed = new Feed(followingBook, moodEventBook);
 
         // Load the feed
-        loadFeed();
+        loadFeed(allEvents);
 
         // Set up the "Add Emotion" button
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
@@ -213,12 +258,67 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
      * Loads the mood event feed and updates the list adapter.
      *
      */
-    private void loadFeed() {
-        feed.loadFeed();
-        FollowingBook followingBook = feed.getFollowingBook();  // Assuming you have this getter in Feed class.
+    private void loadFeed(ArrayList<MoodEvent> allEvents) {
+        listViewFeed.setVisibility(View.GONE);
+        ArrayList<String> following = feed.getFollowingBook().getFollowing();
 
-        adapter = new MoodEventAdapter(this, followingBook);  // Pass followingBook instead of feedEvents
-        listViewFeed.setAdapter(adapter);
+        if (following.isEmpty()) {
+            Log.d("FEED_DEBUG", "No users being followed");
+            adapter.updateMoodEvents(new ArrayList<>());
+            listViewFeed.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(following.size());
+        // Map to store the 3 most recent events for each user
+        Map<String, List<MoodEvent>> recentEventsByUser = new HashMap<>();
+
+        for (String uid : following) {
+            Log.d("FEED_DEBUG", "Loading events for UID: " + uid);
+            db.getAllMoodEvents(uid, events -> {
+                Log.d("FEED_DEBUG", "Found " + events.size() + " events for UID: " + uid);
+
+                synchronized (recentEventsByUser) {
+                    // Sort events by date (newest first)
+                    Collections.sort(events, (e1, e2) -> e2.getPostDate().compareTo(e1.getPostDate()));
+
+                    // Take only the 3 most recent events
+                    List<MoodEvent> recentEvents = events.stream()
+                            .limit(3)
+                            .collect(Collectors.toList());
+
+                    // Store in the map
+                    recentEventsByUser.put(uid, recentEvents);
+
+                    if (counter.decrementAndGet() == 0) {
+                        // All users processed, combine and sort all events
+                        ArrayList<MoodEvent> combinedEvents = new ArrayList<>();
+                        for (List<MoodEvent> userEvents : recentEventsByUser.values()) {
+                            combinedEvents.addAll(userEvents);
+                        }
+
+                        // Sort all events by date (newest first)
+                        Collections.sort(combinedEvents, (e1, e2) ->
+                                e2.getPostDate().compareTo(e1.getPostDate()));
+
+                        Log.d("FEED_DEBUG", "Total events to display: " + combinedEvents.size());
+
+                        // Update both the adapter AND the feed's events list
+                        feed.getFeedEvents().clear();
+                        feed.getFeedEvents().addAll(combinedEvents);
+
+                        runOnUiThread(() -> {
+                            adapter.updateMoodEvents(combinedEvents);
+                            listViewFeed.setVisibility(View.VISIBLE);
+                            adapter.notifyDataSetChanged();
+
+                            // Debug: Verify UI update
+                            Log.d("FEED_DEBUG", "Adapter count: " + adapter.getCount());
+                        });
+                    }
+                }
+            });
+        }
     }
 
 
@@ -241,7 +341,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         }
 
         if (moodEvent.hasGeolocation()) {
-            details.append("Location: Lat: ").append(moodEvent.getLatitude()).append(", Lon: ").append(moodEvent.getLongitude()).append("\n");
+            details.append("Location: ").append(moodEvent.getLocationName()).append("\n");
         } else {
             details.append("Location: N/A\n");
         }
@@ -253,7 +353,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
                 .show();
     }
 
-    public void showFilterPopup(View view) {
+    public void showFilterPopup(View view, ArrayList<MoodEvent>  allEvents) {
         // Inflate the popup layout
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.filter_popup, null);
@@ -272,11 +372,28 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         CheckBox filterRecentWeekCheckbox = popupView.findViewById(R.id.filter_recent_week);
         ListView emotionalStatesList = popupView.findViewById(R.id.emotional_states_list);
         Button applyFilterButton = popupView.findViewById(R.id.apply_filter_button);
-        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters); // Reset Filters button
+        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters);
 
         // Set up the emotional states list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.emotional_states));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice,
+                getResources().getStringArray(R.array.emotional_states));
         emotionalStatesList.setAdapter(adapter);
+        emotionalStatesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        // Restore previous selections
+        filterRecentWeekCheckbox.setChecked(filterByRecentWeek);
+
+        // Restore emotional state selections
+        String[] emotionalStates = getResources().getStringArray(R.array.emotional_states);
+        for (int i = 0; i < emotionalStates.length; i++) {
+            if (selectedEmotionalStates.contains(emotionalStates[i])) {
+                emotionalStatesList.setItemChecked(i, true);
+            }
+        }
+
+        // Update "Select All" checkbox based on current selections
+        selectAllCheckbox.setChecked(selectedEmotionalStates.size() == emotionalStates.length);
 
         // Set up the "Select All" checkbox
         selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -288,8 +405,8 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         // Set up the apply filter button
         applyFilterButton.setOnClickListener(v -> {
             // Get the selected emotional states
+            selectedEmotionalStates.clear();
             SparseBooleanArray checkedItems = emotionalStatesList.getCheckedItemPositions();
-            List<String> selectedEmotionalStates = new ArrayList<>();
             for (int i = 0; i < checkedItems.size(); i++) {
                 if (checkedItems.valueAt(i)) {
                     selectedEmotionalStates.add(emotionalStatesList.getItemAtPosition(checkedItems.keyAt(i)).toString());
@@ -297,7 +414,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             }
 
             // Get the "In the last week" filter value
-            boolean filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
+            filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
 
             // Apply the filters
             applyFilters(selectedEmotionalStates, filterByRecentWeek);
@@ -308,8 +425,10 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
         // Set up the reset filters button
         resetFiltersButton.setOnClickListener(v -> {
+
             // Reset the feed to its original state
-            resetFilters();
+            resetFilters(allEvents);
+
 
             // Dismiss the popup
             popupWindow.dismiss();
@@ -360,9 +479,11 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         adapter.updateMoodEvents(filteredEvents);
     }
 
-    private void resetFilters() {
+
+    private void resetFilters(ArrayList<MoodEvent>  allEvents) {
+
         // Reload the feed without applying any filters
-        loadFeed();
+        loadFeed(allEvents);
 
         // Clear the search EditText
         EditText searchEditText = findViewById(R.id.editText_search);
@@ -378,6 +499,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         db.getAllUsers(users -> {
             allUsers.clear();
             for (Profile user: users) {
+                if (Objects.equals(user.getUsername(), LoggedInUser.getInstance().getUsername())) {
+                    continue;
+                }
                 allUsers.add(user);
                 usersAdapter.notifyItemInserted(allUsers.size()-1);
             }
@@ -445,7 +569,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
             Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
             byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
-            if (pfpBytes == null) {
+            if (pfpBytes != null) {
                 profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
             }
         } else {

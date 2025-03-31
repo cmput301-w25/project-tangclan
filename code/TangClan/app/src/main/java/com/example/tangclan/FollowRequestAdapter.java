@@ -16,7 +16,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
     private handleFollowRequest listener;
 
     public interface handleFollowRequest {
-        void onRequestHandled(int position, boolean accepted);
+        void onRequestHandled(int position, int mode);
     }
 
     /**
@@ -56,7 +56,7 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         // Accept button logic
         holder.buttonAccept.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onRequestHandled(position, true);
+                listener.onRequestHandled(position, 1);  // accept mode
             } else {
                 // Fallback to direct handling if no listener
                 followingBook.acceptFollowRequest(uid);
@@ -68,13 +68,17 @@ public class FollowRequestAdapter extends RecyclerView.Adapter<FollowRequestAdap
         // Decline button logic
         holder.buttonDecline.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onRequestHandled(position, false);
+                listener.onRequestHandled(position, 2);  // decline mode
             } else {
                 // Fallback to direct handling if no listener
                 followingBook.declineFollowRequest(uid);
                 followRequests.remove(uid);
                 notifyDataSetChanged();
             }
+        });
+
+        holder.textViewUsername.setOnClickListener(v -> {
+            listener.onRequestHandled(position, 3);  // view profile mode
         });
     }
 

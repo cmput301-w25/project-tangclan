@@ -4,7 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+
+import android.os.Bundle;
+
+import android.graphics.drawable.Drawable;
+
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -13,6 +20,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,11 +71,20 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         super(context, 0, moodEvents);
         this.moodToUsernameMap = new HashMap<>();
 
+        DatabaseBestie bestie = new DatabaseBestie();
+
         // Associate mock usernames with each mood event for display purposes
         // In a real implementation, these would come from the database
         int userCounter = 1;
+        String month;
+        Log.d("MOODEVENTADAPTER", "where am i");
         for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
+            Log.d("MOODEVENTADAPTER", "where am i pt 2");
+            month = event.userFormattedDate().substring(3);
+            Log.d("MOODEVENTADAPTER", "current mid is" + event.getMid() + "and month is"+month);
+            bestie.getAuthorOfMoodEvent(event.getMid(), month, username -> {
+                moodToUsernameMap.put(event, username);
+            });
         }
     }
 
@@ -159,6 +176,21 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
+        ImageView emoticonView = view.findViewById(R.id.emoticon);
+
+        try {
+            Drawable emoticon = mood.getEmoticon(getContext());
+            if (emoticon != null) {
+                emoticonView.setImageDrawable(emoticon);
+                emoticonView.setVisibility(View.VISIBLE);
+            } else {
+                emoticonView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            emoticonView.setVisibility(View.GONE);
+            Log.e("MoodEventAdapter", "Error loading emoticon", e);
+        }
+
         // Set username and emotion on the TextView
         TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
 
@@ -174,7 +206,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
             int numCollaborators = collaborators.size();
 
-            spannableUsernameEmotion.append(" with ");
+
 
             if (numCollaborators > 0) {
                 spannableUsernameEmotion.append(" with ");
@@ -249,9 +281,20 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         // Reset username mapping
         moodToUsernameMap.clear();
+
+        DatabaseBestie bestie = new DatabaseBestie();
+
+        // Associate mock usernames with each mood event for display purposes
+        // In a real implementation, these would come from the database
         int userCounter = 1;
+        String month;
         for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
+            Log.d("MOODEVENTADAPTER", "where am i pt 2");
+            month = event.userFormattedDate().substring(3);
+            Log.d("MOODEVENTADAPTER", "current mid is" + event.getMid() + "and month is"+month);
+            bestie.getAuthorOfMoodEvent(event.getMid(), month, username -> {
+                moodToUsernameMap.put(event, username);
+            });
         }
 
         notifyDataSetChanged();
@@ -307,8 +350,25 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         ListView tags = dialogView.findViewById(R.id.listview_tagged);
 
         ArrayList<String> collaborators = moodEvent.getCollaborators().get(); // non-null handled
-        CollaboratorAdapter adapter = new CollaboratorAdapter(context, collaborators);
+
+        DatabaseBestie db = new DatabaseBestie();
+        ArrayList<Profile> users = new ArrayList<>();
+
+        CollaboratorAdapter adapter = new CollaboratorAdapter(context, users);
         tags.setAdapter(adapter);
+
+        for (String username : collaborators) {
+            db.findProfileByUsername(username, profile -> {
+                users.add(profile);
+                adapter.notifyDataSetChanged();
+            });
+        }
+
+
+        tags.setOnItemClickListener((a, view, pos, l) -> {
+            Profile profile = adapter.getItem(pos);
+            goToUserProfile(profile);
+        });
 
         AlertDialog dialog = builder.create();
         dialog.setCanceledOnTouchOutside(true);
@@ -316,5 +376,30 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 .setBackgroundDrawable(ResourcesCompat
                         .getDrawable(context.getResources(), R.drawable.dialog_round, null));
         dialog.show();
+    }
+
+    public void goToUserProfile(Profile profile) {
+        Intent intent = new Intent(getContext(), ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
+
+
+        profileDetails.putString("uid", profile.getUid());
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes != null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
+
+        intent.putExtras(profileDetails);
+        getContext().startActivity(intent);
     }
 }
