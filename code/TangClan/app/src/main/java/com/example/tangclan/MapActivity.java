@@ -62,6 +62,7 @@ public class MapActivity extends AppCompatActivity {
 
         // Initialize OSMDroid
         Configuration.getInstance().load(getApplicationContext(), getPreferences(MODE_PRIVATE));
+        filterExt = findViewById(R.id.filterExt);
 
 
 
@@ -86,7 +87,7 @@ public class MapActivity extends AppCompatActivity {
         friendsModeBtn = findViewById(R.id.friendsModeBtn);
         distanceSeekBar = findViewById(R.id.distanceSeekBar);
         distanceLabel = findViewById(R.id.distanceLabel);
-        filterExt = findViewById(R.id.filterExt);
+
 
 
 
