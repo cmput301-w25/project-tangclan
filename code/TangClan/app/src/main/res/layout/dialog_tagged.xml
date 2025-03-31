@@ -25,7 +25,9 @@
 
     <ListView
         android:id="@+id/listview_tagged"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:background="#F4F2E6"
+        android:backgroundTint="#F4F2E6" />
 
 </LinearLayout>

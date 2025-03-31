@@ -6,7 +6,7 @@
     android:layout_margin="0dp"
     android:layout_marginHorizontal="30dp"
     android:layout_marginVertical="100dp"
-    android:background="@drawable/blue_gradient_background"
+    android:background="#f4f2e6"
     android:elevation="10dp"
     android:orientation="vertical"
     android:outlineAmbientShadowColor="#000000"
@@ -31,7 +31,7 @@
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:text="moodly"
-            android:textColor="@color/black"
+            android:textColor="#d38c6f"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -52,7 +52,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/inter_medium"
         android:text="How are you feeling?"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -60,11 +60,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
+        app:boxBackgroundColor="#EDE7DF"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeColor="@color/black">
+        app:boxStrokeColor="#00FFFFFF">
 
         <AutoCompleteTextView
             android:id="@+id/choose_emotion"
@@ -187,11 +188,11 @@
         android:id="@+id/edit_details_q2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/inter_medium"
         android:text="Describe the social situation"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -200,19 +201,20 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="10dp"
+        app:boxBackgroundColor="#EDE7DF"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:boxStrokeWidth="0dp">
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp">
 
         <AutoCompleteTextView
             android:id="@+id/choose_social_situation"
-            android:background="@drawable/edittext_round"
-            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="54dp"
+            android:layout_gravity="center_vertical"
+            android:background="#EDE7DF"
             android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -222,16 +224,16 @@
         android:id="@+id/edit_social_situation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         android:layout_marginHorizontal="24dp"
-        android:hint="jpagcal1234"
-        android:textColorHint="@color/material_dynamic_neutral60"
+        android:layout_marginTop="12dp"
+        android:background="#EDE7DF"
         android:fontFamily="@font/inter"
-        android:textSize="20sp"
+        android:hint="jpagcal1234"
         android:letterSpacing="-0.03"
-        android:background="@drawable/edittext_round"
         android:paddingHorizontal="20dp"
-        android:paddingVertical="16dp"/>
+        android:paddingVertical="16dp"
+        android:textColorHint="@color/material_dynamic_neutral60"
+        android:textSize="20sp" />
 
 
     <LinearLayout
@@ -247,7 +249,7 @@
             android:layout_marginHorizontal="32dp"
             android:fontFamily="@font/inter_medium"
             android:text="What made you feel this way?"
-            android:textColor="@color/black"
+            android:textColor="#916350"
             android:textSize="18sp" />
 
 
@@ -265,6 +267,7 @@
                 android:id="@+id/edit_reasonwhy"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
+                android:background="#EDE7DF"
                 android:hint="200 characters" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -286,11 +289,11 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_gravity="center"
-        android:gravity="center"
         android:layout_width="341dp"
-        android:layout_marginHorizontal="24dp"
         android:layout_height="58dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="24dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <TextView
@@ -300,7 +303,7 @@
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="20dp"
             android:text="Share your location?"
-            android:textColor="@color/black"
+            android:textColor="#916350"
             android:textSize="18sp" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -316,8 +319,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/location_display"
@@ -334,10 +337,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_gravity="center"
-        android:gravity="center"
         android:layout_width="340dp"
         android:layout_height="68dp"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <TextView
@@ -347,7 +350,7 @@
             android:fontFamily="@font/inter_medium"
             android:paddingEnd="20dp"
             android:text="Make event private?"
-            android:textColor="@color/black"
+            android:textColor="#916350"
             android:textSize="18sp" />
 
 
@@ -365,8 +368,9 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="0dp"
-        android:backgroundTint="@color/black"
         android:text="Confirm Details"
         android:textSize="14sp"
-        app:cornerRadius="16dp" />
+        app:cornerRadius="16dp"
+        app:strokeColor="#916350"
+        app:strokeWidth="2sp" />
 </LinearLayout>

@@ -104,7 +104,6 @@
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
-            app:boxStrokeColor="@color/black"
             app:boxStrokeWidth="2dp"
             app:placeholderTextColor="#916350">
 
@@ -112,6 +111,7 @@
                 android:id="@+id/edit_name_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#EDE7DF"
                 android:fontFamily="@font/inter_medium"
                 android:hint="hint"
                 android:textColor="#916350"
@@ -154,6 +154,7 @@
                 android:id="@+id/edit_email_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#EDE7DF"
                 android:clickable="false"
                 android:fontFamily="@font/inter_medium"
                 android:hint="hint"
@@ -197,6 +198,7 @@
                 android:id="@+id/new_username_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#EDE7DF"
                 android:fontFamily="@font/inter_medium"
                 android:hint="hint"
                 android:textColor="@color/black"
@@ -227,6 +229,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#EDE7DF"
             android:forceDarkAllowed="false"
             app:boxBackgroundColor="#00000000"
             app:boxCornerRadiusBottomEnd="16dp"
@@ -240,6 +243,7 @@
                 android:id="@+id/new_password_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#EDE7DF"
                 android:fontFamily="@font/inter_medium"
                 android:hint="hint"
                 android:inputType="textPassword"
@@ -276,6 +280,7 @@
                 android:id="@+id/confirm_new_input"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="#EDE7DF"
                 android:fontFamily="@font/inter_medium"
                 android:hint="hint"
                 android:inputType="textPassword"
@@ -292,18 +297,26 @@
         android:layout_width="140dp"
         android:layout_height="50dp"
         android:layout_marginTop="80dp"
-        android:backgroundTint="@color/black"
+        android:background="#d38c6f"
+        android:backgroundTint="#d38c6f"
         android:fontFamily="@font/inter_medium"
         android:text="Save Edits"
         android:textSize="14dp"
-        app:cornerRadius="16dp" />
+        app:cornerRadius="16dp"
+        app:rippleColor="#FF5722"
+        app:strokeColor="#816350"
+        app:strokeWidth="2sp" />
 
     <Button
         android:id="@+id/logout_button"
         android:layout_width="wrap_content"
         android:layout_height="42dp"
-        android:backgroundTint="#1010100D"
+        android:background="#EDE7DF"
+        android:backgroundTint="#EDE7DF"
         android:text="Logout"
-        app:cornerRadius="12dp" />
+        android:textColor="#916350"
+        app:cornerRadius="12dp"
+        app:strokeColor="#916350"
+        app:strokeWidth="2sp" />
 
 </LinearLayout>
