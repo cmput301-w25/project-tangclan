@@ -37,6 +37,16 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
     private DatabaseBestie db;
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Bundle profileDetails = getIntent().getExtras();
+        if (profileDetails != null) {
+            setUpProfileDetails(profileDetails);
+            otherUsersID = profileDetails.getString("uid");
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -131,7 +141,7 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
     public void setFollowButtonText() {
         // Set button text depending on current relationship
         Button followBtn = findViewById(R.id.button_edit_profile);
-        if (loggedInUser.getFollowingBook().getFollowers().contains(otherUsersID)) {
+        if (loggedInUser.getFollowingBook().getFollowing().contains(otherUsersID)) {
             followBtn.setText("  Following ");
             followBtn.setBackgroundTintList(ContextCompat.getColorStateList(this, R.color.black));
             followBtn.setTextColor(Color.parseColor("#ffffff"));
