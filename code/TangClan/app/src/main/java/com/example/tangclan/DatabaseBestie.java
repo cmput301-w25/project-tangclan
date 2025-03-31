@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -926,6 +927,24 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error updating follow request", e);
                     callback.onFollowRequestProcessed(false);
+                });
+    }
+
+    public void getMyPendingFollowRequests(String requesterUid, FollowRequestsCallback callback) {
+        followRequestsRef.whereEqualTo("requesterUid", requesterUid)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<FollowRequest> requests = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            requests.add(document.toObject(FollowRequest.class));
+                        }
+                        callback.onFollowRequestsRetrieved(requests);
+                    } else {
+                        Log.e(TAG, "Error getting follow requests", task.getException());
+                        callback.onFollowRequestsRetrieved(new ArrayList<>());
+                    }
                 });
     }
 

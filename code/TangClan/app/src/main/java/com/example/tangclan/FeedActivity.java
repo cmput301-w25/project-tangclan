@@ -50,8 +50,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import java.util.Objects;
+
 import java.util.stream.Collectors;
 
 
@@ -76,7 +80,6 @@ import java.util.stream.Collectors;
  */
 
 public class FeedActivity extends AppCompatActivity implements SearchOtherProfileAdapter.SelectProfileListener {
-    //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
@@ -118,8 +121,25 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         db = DatabaseBestie.getInstance();
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
 
+
         // Debug: Check if feedEvents is empty before loading
         Log.d("FEED_DEBUG", "Feed events before load: " + feed.getFeedEvents().size());
+
+        db.getUser(currentUser.getUid(), user -> {
+            loggedInUser.setEmail(user.getEmail());
+            loggedInUser.setUsername(user.getUsername());
+            loggedInUser.setPassword(user.getPassword());
+            loggedInUser.setDisplayName(user.getDisplayName());
+            loggedInUser.setAge(user.getAge());
+            loggedInUser.setUid(currentUser.getUid());
+            loggedInUser.setProfilePic(user.getProfilePic());
+            loggedInUser.initializeMoodEventBookFromDatabase(db);
+            loggedInUser.initializeFollowingBookFromDatabase(db);
+
+            Log.d("FINALDEBUG", user.getUsername());
+            Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
+        });
+
 
         // Clear existing events
         ArrayList<MoodEvent> allEvents = new ArrayList<>();
@@ -478,6 +498,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         db.getAllUsers(users -> {
             allUsers.clear();
             for (Profile user: users) {
+                if (Objects.equals(user.getUsername(), LoggedInUser.getInstance().getUsername())) {
+                    continue;
+                }
                 allUsers.add(user);
                 usersAdapter.notifyItemInserted(allUsers.size()-1);
             }
@@ -545,7 +568,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
             Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
             byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
-            if (pfpBytes == null) {
+            if (pfpBytes != null) {
                 profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
             }
         } else {

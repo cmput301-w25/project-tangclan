@@ -171,6 +171,7 @@ public class User {
             User.this.followingBook.setFollowRequests(requestingFollowerIds);
         });
 
+
     }
 
     /**
