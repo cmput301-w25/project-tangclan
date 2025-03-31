@@ -429,7 +429,7 @@ public class MapActivity extends AppCompatActivity {
             }
             selectAllCheckbox.setChecked(false);
             filterRecentWeekCheckbox.setChecked(false);
-            
+
             if (personalModeBtn.isSelected()) {
                 switchToPersonalMode();
             } else {
