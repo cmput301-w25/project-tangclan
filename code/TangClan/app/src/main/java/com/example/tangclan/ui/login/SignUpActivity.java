@@ -53,7 +53,7 @@ public class SignUpActivity extends AppCompatActivity {
         goToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent logIn = new Intent(SignUpActivity.this, LogIn.class);
+                Intent logIn = new Intent(SignUpActivity.this, LogInActivity.class);
                 startActivity(logIn);
                 finish();
             }
@@ -71,8 +71,8 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String displayName, email, password, username;
                 displayName = editName.getText().toString();
-                email = editEmail.getText().toString();
-                username = editUsername.getText().toString();
+                email = editEmail.getText().toString().toLowerCase();
+                username = editUsername.getText().toString().toLowerCase();
                 password = editPassword.getText().toString();
                 if (TextUtils.isEmpty(email)) {
                     editEmail.setError("Enter email");
@@ -98,7 +98,7 @@ public class SignUpActivity extends AppCompatActivity {
                     editPassword.setError("Enter password");
                     return;
                 }
-                if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
+                if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!#$%^&*|])[A-Za-z\\d!#$%^&*|]{8,}$")) {
                     editPassword.setError("Password must be at least 8 characters long and must contain one of each:\n" +
                             " - Capital letter\n" +
                             " - Lowercase letter\n" +
@@ -140,7 +140,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                                                     Toast.makeText(SignUpActivity.this, "Welcome to Moodly!",
                                                             Toast.LENGTH_SHORT).show();
-                                                    Intent intent = new Intent(getApplicationContext(), VerifyEmail.class);
+                                                    Intent intent = new Intent(getApplicationContext(), VerifyEmailActivity.class);
                                                     startActivity(intent);
                                                 } else {
                                                     // Could not create account
