@@ -35,15 +35,15 @@
         <EditText
             android:id="@+id/username"
             android:layout_width="match_parent"
-            android:padding="16dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:hint="@string/username"
-            android:textColorHint="@color/material_dynamic_neutral60"
-            android:textAppearance="@style/username" />
+            android:padding="0dp"
+            android:textAppearance="@style/username"
+            android:textColorHint="@color/material_dynamic_neutral60" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -61,16 +61,16 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="@color/material_dynamic_neutral60"
-            android:padding="16dp"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:fontFamily="@font/inter_medium"
-            android:textSize="16sp"
             android:gravity="center"
             android:hint="@string/password"
+            android:padding="0dp"
             android:password="true"
-            android:textAppearance="@style/password" />
+            android:textAppearance="@style/password"
+            android:textColorHint="@color/material_dynamic_neutral60"
+            android:textSize="16sp" />
     </RelativeLayout>
 
 
