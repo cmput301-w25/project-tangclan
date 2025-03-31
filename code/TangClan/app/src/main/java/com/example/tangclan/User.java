@@ -171,15 +171,6 @@ public class User {
             User.this.followingBook.setFollowRequests(requestingFollowerIds);
         });
 
-        db.getMyPendingFollowRequests(this.uid, requests -> {
-            ArrayList<String> myFollowRequests = new ArrayList<>();
-
-            for (FollowRequest req : requests) {
-                myFollowRequests.add(req.getTargetUid());
-            }
-
-            User.this.followingBook.setMyFollowRequests(myFollowRequests);
-        });
 
     }
 

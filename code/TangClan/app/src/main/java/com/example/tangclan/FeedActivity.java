@@ -25,6 +25,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+//import android.widget.ProgressBar;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,8 +47,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import java.util.Objects;
+
 import java.util.stream.Collectors;
 
 
@@ -81,6 +90,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
     private ArrayList<Profile> allUsers = new ArrayList<>();
     private com.google.android.material.button.MaterialButton button_moods;
     private com.google.android.material.button.MaterialButton buttonForYou;
+    //private ProgressBar progressBar;
+
+    private DatabaseBestie db;
 
     private List<String> selectedEmotionalStates = new ArrayList<>();
     private boolean filterByRecentWeek = false;
@@ -100,14 +112,18 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        if(currentUser == null) {
+        if (currentUser == null) {
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
+            return;
         }
 
-        DatabaseBestie db = new DatabaseBestie();
-
+        db = DatabaseBestie.getInstance();
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
+
+
+        // Debug: Check if feedEvents is empty before loading
+        Log.d("FEED_DEBUG", "Feed events before load: " + feed.getFeedEvents().size());
 
         db.getUser(currentUser.getUid(), user -> {
             loggedInUser.setEmail(user.getEmail());
@@ -125,7 +141,25 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         });
 
 
+        // Clear existing events
+        ArrayList<MoodEvent> allEvents = new ArrayList<>();
+        adapter.updateMoodEvents(allEvents);
+
+        // Load following list FIRST
+        db.getFollowing(currentUser.getUid(), following -> {
+            Log.d("FEED_DEBUG", "Found " + following.size() + " followed users");
+            for (String uid : following) {
+                Log.d("FEED_DEBUG", "Following UID: " + uid);
+            }
+
+            loggedInUser.getFollowingBook().setFollowing(following);
+            feed.getFollowingBook().setFollowing(following);
+
+            // Now load the feed with this following list
+            loadFeed(allEvents);
+        });
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,9 +172,11 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         usersContainer = findViewById(R.id.users_container);
         button_moods = findViewById(R.id.button_moods);
         buttonForYou = findViewById(R.id.button_users);
+        //progressBar = findViewById(R.id.progressBar);
 
         // Initialize adapters
-        adapter = new MoodEventAdapter(this, new ArrayList<>());
+        ArrayList<MoodEvent>  allEvents = new ArrayList<>();
+        adapter = new MoodEventAdapter(this, allEvents);
         listViewFeed.setAdapter(adapter);
 
         // Initialize user search components
@@ -174,7 +210,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
         // Set up the filter ImageView
         ImageView filterImageView = findViewById(R.id.filter);
-        filterImageView.setOnClickListener(v -> showFilterPopup(v));
+        filterImageView.setOnClickListener(v -> showFilterPopup(v, allEvents));
 
         // Initialize the feed
         FollowingBook followingBook = new FollowingBook();
@@ -182,7 +218,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         feed = new Feed(followingBook, moodEventBook);
 
         // Load the feed
-        loadFeed();
+        loadFeed(allEvents);
 
         // Set up the "Add Emotion" button
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
@@ -221,12 +257,67 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
      * Loads the mood event feed and updates the list adapter.
      *
      */
-    private void loadFeed() {
-        feed.loadFeed();
-        FollowingBook followingBook = feed.getFollowingBook();  // Assuming you have this getter in Feed class.
+    private void loadFeed(ArrayList<MoodEvent> allEvents) {
+        listViewFeed.setVisibility(View.GONE);
+        ArrayList<String> following = feed.getFollowingBook().getFollowing();
 
-        adapter = new MoodEventAdapter(this, followingBook);  // Pass followingBook instead of feedEvents
-        listViewFeed.setAdapter(adapter);
+        if (following.isEmpty()) {
+            Log.d("FEED_DEBUG", "No users being followed");
+            adapter.updateMoodEvents(new ArrayList<>());
+            listViewFeed.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(following.size());
+        // Map to store the 3 most recent events for each user
+        Map<String, List<MoodEvent>> recentEventsByUser = new HashMap<>();
+
+        for (String uid : following) {
+            Log.d("FEED_DEBUG", "Loading events for UID: " + uid);
+            db.getAllMoodEvents(uid, events -> {
+                Log.d("FEED_DEBUG", "Found " + events.size() + " events for UID: " + uid);
+
+                synchronized (recentEventsByUser) {
+                    // Sort events by date (newest first)
+                    Collections.sort(events, (e1, e2) -> e2.getPostDate().compareTo(e1.getPostDate()));
+
+                    // Take only the 3 most recent events
+                    List<MoodEvent> recentEvents = events.stream()
+                            .limit(3)
+                            .collect(Collectors.toList());
+
+                    // Store in the map
+                    recentEventsByUser.put(uid, recentEvents);
+
+                    if (counter.decrementAndGet() == 0) {
+                        // All users processed, combine and sort all events
+                        ArrayList<MoodEvent> combinedEvents = new ArrayList<>();
+                        for (List<MoodEvent> userEvents : recentEventsByUser.values()) {
+                            combinedEvents.addAll(userEvents);
+                        }
+
+                        // Sort all events by date (newest first)
+                        Collections.sort(combinedEvents, (e1, e2) ->
+                                e2.getPostDate().compareTo(e1.getPostDate()));
+
+                        Log.d("FEED_DEBUG", "Total events to display: " + combinedEvents.size());
+
+                        // Update both the adapter AND the feed's events list
+                        feed.getFeedEvents().clear();
+                        feed.getFeedEvents().addAll(combinedEvents);
+
+                        runOnUiThread(() -> {
+                            adapter.updateMoodEvents(combinedEvents);
+                            listViewFeed.setVisibility(View.VISIBLE);
+                            adapter.notifyDataSetChanged();
+
+                            // Debug: Verify UI update
+                            Log.d("FEED_DEBUG", "Adapter count: " + adapter.getCount());
+                        });
+                    }
+                }
+            });
+        }
     }
 
 
@@ -261,7 +352,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
                 .show();
     }
 
-    public void showFilterPopup(View view) {
+    public void showFilterPopup(View view, ArrayList<MoodEvent>  allEvents) {
         // Inflate the popup layout
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.filter_popup, null);
@@ -333,19 +424,10 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
         // Set up the reset filters button
         resetFiltersButton.setOnClickListener(v -> {
-            // Reset the filter state
-            selectedEmotionalStates.clear();
-            filterByRecentWeek = false;
 
-            // Reset the UI
-            for (int i = 0; i < emotionalStatesList.getCount(); i++) {
-                emotionalStatesList.setItemChecked(i, false);
-            }
-            filterRecentWeekCheckbox.setChecked(false);
-            selectAllCheckbox.setChecked(false);
+            // Reset the feed to its original state
+            resetFilters(allEvents);
 
-            // Reset the feed
-            resetFilters();
 
             // Dismiss the popup
             popupWindow.dismiss();
@@ -396,13 +478,11 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         adapter.updateMoodEvents(filteredEvents);
     }
 
-    private void resetFilters() {
-        // Clear filter state
-        selectedEmotionalStates.clear();
-        filterByRecentWeek = false;
+
+    private void resetFilters(ArrayList<MoodEvent>  allEvents) {
 
         // Reload the feed without applying any filters
-        loadFeed();
+        loadFeed(allEvents);
 
         // Clear the search EditText
         EditText searchEditText = findViewById(R.id.editText_search);
