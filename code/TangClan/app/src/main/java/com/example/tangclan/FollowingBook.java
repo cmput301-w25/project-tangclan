@@ -12,7 +12,10 @@ public class FollowingBook {
     private ArrayList<String> following = new ArrayList<>();
     private ArrayList<String> followers = new ArrayList<>();
     private ArrayList<String> followRequests = new ArrayList<>();
+
+
     private ArrayList<String> myFollowRequests = new ArrayList<>();
+
     private Map<String, String> UIDtoFollowerUsername = new HashMap<>();
     private Map<String, String> UIDtoFollowingUsername = new HashMap<>();
 
@@ -92,6 +95,8 @@ public class FollowingBook {
         this.followRequests = convertToArrayList(followRequests);
     }
 
+
+
     public void setMyFollowRequests(ArrayList<String> myFollowRequests) {
         this.myFollowRequests = myFollowRequests;
     }
@@ -100,6 +105,7 @@ public class FollowingBook {
         myFollowRequests.add(targetUid);
     }
 
+
    public void addEntryToFollowerMap(String uid, String username) {
         this.UIDtoFollowerUsername.put(uid, username);
    }
@@ -107,6 +113,7 @@ public class FollowingBook {
    public void addEntryToFollowingMap(String uid, String username) {
         this.UIDtoFollowingUsername.put(uid, username);
    }
+
 
     private ArrayList<String> convertToArrayList(Object input) {
         ArrayList<String> result = new ArrayList<>();

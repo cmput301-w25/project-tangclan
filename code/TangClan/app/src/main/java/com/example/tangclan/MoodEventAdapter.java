@@ -7,7 +7,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+
 import android.os.Bundle;
+
+import android.graphics.drawable.Drawable;
+
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -67,11 +71,20 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         super(context, 0, moodEvents);
         this.moodToUsernameMap = new HashMap<>();
 
+        DatabaseBestie bestie = new DatabaseBestie();
+
         // Associate mock usernames with each mood event for display purposes
         // In a real implementation, these would come from the database
         int userCounter = 1;
+        String month;
+        Log.d("MOODEVENTADAPTER", "where am i");
         for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
+            Log.d("MOODEVENTADAPTER", "where am i pt 2");
+            month = event.userFormattedDate().substring(3);
+            Log.d("MOODEVENTADAPTER", "current mid is" + event.getMid() + "and month is"+month);
+            bestie.getAuthorOfMoodEvent(event.getMid(), month, username -> {
+                moodToUsernameMap.put(event, username);
+            });
         }
     }
 
@@ -163,6 +176,21 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
 
+        ImageView emoticonView = view.findViewById(R.id.emoticon);
+
+        try {
+            Drawable emoticon = mood.getEmoticon(getContext());
+            if (emoticon != null) {
+                emoticonView.setImageDrawable(emoticon);
+                emoticonView.setVisibility(View.VISIBLE);
+            } else {
+                emoticonView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            emoticonView.setVisibility(View.GONE);
+            Log.e("MoodEventAdapter", "Error loading emoticon", e);
+        }
+
         // Set username and emotion on the TextView
         TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
 
@@ -253,9 +281,20 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         // Reset username mapping
         moodToUsernameMap.clear();
+
+        DatabaseBestie bestie = new DatabaseBestie();
+
+        // Associate mock usernames with each mood event for display purposes
+        // In a real implementation, these would come from the database
         int userCounter = 1;
+        String month;
         for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
+            Log.d("MOODEVENTADAPTER", "where am i pt 2");
+            month = event.userFormattedDate().substring(3);
+            Log.d("MOODEVENTADAPTER", "current mid is" + event.getMid() + "and month is"+month);
+            bestie.getAuthorOfMoodEvent(event.getMid(), month, username -> {
+                moodToUsernameMap.put(event, username);
+            });
         }
 
         notifyDataSetChanged();
