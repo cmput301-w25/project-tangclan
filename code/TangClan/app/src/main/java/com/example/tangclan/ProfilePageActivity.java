@@ -382,7 +382,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         byte[] imgBytes = getImageBytes(post.getImage());
         boolean privacy = post.isPrivacyOn();  // TODO: implement location once MoodEvent has the field
 
+
         //byte[] imgBytes = null;
+
+
         if (post.getImage() != null){
             imgBytes = getImageBytes(post.getImage());}
         boolean useLoc = post.hasGeolocation();
