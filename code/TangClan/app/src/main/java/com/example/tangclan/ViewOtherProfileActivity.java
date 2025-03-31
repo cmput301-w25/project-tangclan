@@ -21,6 +21,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class ViewOtherProfileActivity extends AppCompatActivity {
 
     private TextView usernameTextView;
@@ -85,10 +88,24 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
         });
     }
 
+    public void setUpListView(String username, String uid) {
+        ListView moodEventsListView = findViewById(R.id.listview_profile_history);
+        db = DatabaseBestie.getInstance();
+
+        db.getAllMoodEvents(uid, events -> {
+            Collections.reverse(events);
+            ProfileHistoryAdapter adapter = new ProfileHistoryAdapter(this, events, username);
+            moodEventsListView.setAdapter(adapter);
+        });
+    }
+
     public void setUpProfileDetails(Bundle bundle) {
-        otherUsersID = bundle.getString("uid");
-        usernameTextView.setText(bundle.getString("username"));
-        nameTextView.setText(bundle.getString("displayName"));
+        String uid = bundle.getString("uid");
+        String username = bundle.getString("username");
+        String displayName = bundle.getString("displayName");
+
+        usernameTextView.setText(username);
+        nameTextView.setText(displayName);
 
         // use db to get the follower and following count of a user
         db.getFollowers(otherUsersID, fllwers -> {
@@ -107,6 +124,8 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
             BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
             pfp.setImageBitmap(BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length));
         }
+
+        setUpListView(username, uid);
     }
 
     public void setFollowButtonText() {

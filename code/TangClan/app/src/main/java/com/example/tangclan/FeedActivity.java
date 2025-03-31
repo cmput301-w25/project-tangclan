@@ -71,7 +71,6 @@ import java.util.stream.Collectors;
  */
 
 public class FeedActivity extends AppCompatActivity implements SearchOtherProfileAdapter.SelectProfileListener {
-    //feed activitysssnn
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
