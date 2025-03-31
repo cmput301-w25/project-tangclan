@@ -48,7 +48,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -233,44 +235,56 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
      *
      */
     private void loadFeed(ArrayList<MoodEvent> allEvents) {
-        //progressBar.setVisibility(View.VISIBLE);
         listViewFeed.setVisibility(View.GONE);
-
-
         ArrayList<String> following = feed.getFollowingBook().getFollowing();
 
         if (following.isEmpty()) {
             Log.d("FEED_DEBUG", "No users being followed");
             adapter.updateMoodEvents(new ArrayList<>());
-            //progressBar.setVisibility(View.GONE);
             listViewFeed.setVisibility(View.VISIBLE);
             return;
         }
 
         AtomicInteger counter = new AtomicInteger(following.size());
+        // Map to store the 3 most recent events for each user
+        Map<String, List<MoodEvent>> recentEventsByUser = new HashMap<>();
 
         for (String uid : following) {
             Log.d("FEED_DEBUG", "Loading events for UID: " + uid);
             db.getAllMoodEvents(uid, events -> {
                 Log.d("FEED_DEBUG", "Found " + events.size() + " events for UID: " + uid);
 
-                synchronized (allEvents) {
-                    allEvents.addAll(events);
+                synchronized (recentEventsByUser) {
+                    // Sort events by date (newest first)
+                    Collections.sort(events, (e1, e2) -> e2.getPostDate().compareTo(e1.getPostDate()));
+
+                    // Take only the 3 most recent events
+                    List<MoodEvent> recentEvents = events.stream()
+                            .limit(3)
+                            .collect(Collectors.toList());
+
+                    // Store in the map
+                    recentEventsByUser.put(uid, recentEvents);
 
                     if (counter.decrementAndGet() == 0) {
-                        // Sort by date (newest first)
-                        Collections.sort(allEvents, (e1, e2) ->
+                        // All users processed, combine and sort all events
+                        ArrayList<MoodEvent> combinedEvents = new ArrayList<>();
+                        for (List<MoodEvent> userEvents : recentEventsByUser.values()) {
+                            combinedEvents.addAll(userEvents);
+                        }
+
+                        // Sort all events by date (newest first)
+                        Collections.sort(combinedEvents, (e1, e2) ->
                                 e2.getPostDate().compareTo(e1.getPostDate()));
 
-                        Log.d("FEED_DEBUG", "Total events to display: " + allEvents.size());
+                        Log.d("FEED_DEBUG", "Total events to display: " + combinedEvents.size());
 
                         // Update both the adapter AND the feed's events list
                         feed.getFeedEvents().clear();
-                        feed.getFeedEvents().addAll(allEvents);
+                        feed.getFeedEvents().addAll(combinedEvents);
 
                         runOnUiThread(() -> {
-                            adapter.updateMoodEvents(allEvents);
-                            //progressBar.setVisibility(View.GONE);
+                            adapter.updateMoodEvents(combinedEvents);
                             listViewFeed.setVisibility(View.VISIBLE);
                             adapter.notifyDataSetChanged();
 
