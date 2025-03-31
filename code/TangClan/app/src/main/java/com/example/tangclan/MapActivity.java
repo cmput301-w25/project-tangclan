@@ -1,11 +1,21 @@
 package com.example.tangclan;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.SparseBooleanArray;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +31,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import org.osmdroid.views.overlay.compass.CompassOverlay;
 import org.osmdroid.util.GeoPoint;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +50,11 @@ public class MapActivity extends AppCompatActivity {
     private LoggedInUser loggedInUser;
     private ImageView filterExt;
 
+    private List<String> currentEmotionalStateFilters = new ArrayList<>();
+    private boolean filterByRecentWeek = false;
+
+    private SparseBooleanArray lastCheckedStates = new SparseBooleanArray();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +63,13 @@ public class MapActivity extends AppCompatActivity {
         // Initialize OSMDroid
         Configuration.getInstance().load(getApplicationContext(), getPreferences(MODE_PRIVATE));
 
+
+
         // Map View
         mapView = findViewById(R.id.mapView);
         mapView.setTileSource(org.osmdroid.tileprovider.tilesource.TileSourceFactory.MAPNIK);
         mapView.setMultiTouchControls(true);
+        filterExt.setOnClickListener(v -> showFilterPopup(v));
 
         // Set Initial Map Location (Edmonton)
         mapView.getController().setZoom(12.0);
@@ -130,12 +149,14 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void switchToPersonalMode() {
-        Toast.makeText(this, "Switched to Personal Mode", Toast.LENGTH_SHORT).show();
         mapView.getOverlays().clear();
+        setupLocationOverlay(); // Re-add location overlay
 
         MoodEventBook moodEventBook = loggedInUser.getMoodEventBook();
-        for (MoodEvent event : moodEventBook.getAllMoodEvents()) {
-            if (event.hasGeolocation() && isWithinDistance(event.getLatitude(), event.getLongitude())) { // Filter by distance
+        List<MoodEvent> filteredEvents = applyFiltersToEvents(moodEventBook.getAllMoodEvents());
+
+        for (MoodEvent event : filteredEvents) {
+            if (event.hasGeolocation() && isWithinDistance(event.getLatitude(), event.getLongitude())) {
                 addMoodMarker(mapView,
                         event.getLatitude(), event.getLongitude(),
                         event.getLocationName(),
@@ -145,18 +166,18 @@ public class MapActivity extends AppCompatActivity {
                         loggedInUser.getUsername());
             }
         }
-        mapView.invalidate(); // Refresh the map
+        mapView.invalidate();
     }
-
     private void switchToFriendsMode() {
-        Toast.makeText(this, "Switched to Friends Mode", Toast.LENGTH_SHORT).show();
         mapView.getOverlays().clear();
+        setupLocationOverlay(); // Re-add location overlay
 
-        // Get the most recent mood event with a location for the logged-in user
+        // Get filtered events for logged-in user
         MoodEventBook moodEventBook = loggedInUser.getMoodEventBook();
-        MoodEvent validMoodEvent = getMostRecentMoodEventWithLocation(moodEventBook.getAllMoodEvents());
+        List<MoodEvent> filteredUserEvents = applyFiltersToEvents(moodEventBook.getAllMoodEvents());
+        MoodEvent validMoodEvent = getMostRecentMoodEventWithLocation((ArrayList<MoodEvent>) filteredUserEvents);
 
-        if (validMoodEvent != null) {
+        if (validMoodEvent != null && isWithinDistance(validMoodEvent.getLatitude(), validMoodEvent.getLongitude())) {
             addMoodMarker(mapView, validMoodEvent.getLatitude(), validMoodEvent.getLongitude(),
                     validMoodEvent.getLocationName(), "You were feeling " + validMoodEvent.getMood().getEmotion(),
                     validMoodEvent.getPostDate() + " " + validMoodEvent.getPostTime(),
@@ -165,7 +186,7 @@ public class MapActivity extends AppCompatActivity {
             mapView.getController().setCenter(new GeoPoint(validMoodEvent.getLatitude(), validMoodEvent.getLongitude()));
         }
 
-        // Get friends' most recent mood events with location
+        // Get friends' filtered events
         FollowingBook followingBook = loggedInUser.getFollowingBook();
         final AtomicInteger counter = new AtomicInteger(followingBook.getFollowing().size());
         final Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
@@ -173,7 +194,8 @@ public class MapActivity extends AppCompatActivity {
         for (String followingUid : followingBook.getFollowing()) {
             db.getAllMoodEvents(followingUid, (moodEventBookFriend) -> {
                 if (moodEventBookFriend != null) {
-                    MoodEvent mostRecentValidEvent = getMostRecentMoodEventWithLocation(moodEventBookFriend);
+                    List<MoodEvent> filteredFriendEvents = applyFiltersToEvents(moodEventBookFriend);
+                    MoodEvent mostRecentValidEvent = getMostRecentMoodEventWithLocation((ArrayList<MoodEvent>) filteredFriendEvents);
                     if (mostRecentValidEvent != null && isWithinDistance(mostRecentValidEvent.getLatitude(), mostRecentValidEvent.getLongitude())) {
                         uidToMoodEvent.put(followingUid, mostRecentValidEvent);
                     }
@@ -185,6 +207,25 @@ public class MapActivity extends AppCompatActivity {
             });
         }
     }
+
+    private List<MoodEvent> applyFiltersToEvents(List<MoodEvent> events) {
+        List<MoodEvent> filteredEvents = new ArrayList<>(events);
+
+        // Apply emotional state filters
+        if (!currentEmotionalStateFilters.isEmpty()) {
+            filteredEvents = Filter.filterByEmotionalState(filteredEvents, currentEmotionalStateFilters);
+        }
+
+        // Apply time filter
+        if (filterByRecentWeek) {
+            LocalDate oneWeekAgo = LocalDate.now().minusWeeks(1);
+            filteredEvents = Filter.filterByTimeRange(filteredEvents, oneWeekAgo, LocalDate.now());
+        }
+
+        return filteredEvents;
+    }
+
+
 
     // This method will be called when all mood events have been fetched
     private void onAllMoodEventsFetched(Map<String, MoodEvent> uidToMoodEvent) {
@@ -308,12 +349,94 @@ public class MapActivity extends AppCompatActivity {
         ArrayList<MoodEvent> events = moodEventBook;
         if (events == null || events.isEmpty()) return null;
 
-        for (int i = events.size() - 1; i >= 0; i--) { // Start from most recent
+        for (int i = events.size() - 1; i >= 0; i--) {
             MoodEvent event = events.get(i);
             if (event.hasGeolocation()) {
                 return event;
             }
         }
-        return null; // No valid event found
+        return null;
+    }
+
+    private void showFilterPopup(View view) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.filter_popup, null);
+
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        CheckBox selectAllCheckbox = popupView.findViewById(R.id.select_all_checkbox);
+        CheckBox filterRecentWeekCheckbox = popupView.findViewById(R.id.filter_recent_week);
+        ListView emotionalStatesList = popupView.findViewById(R.id.emotional_states_list);
+        Button applyFilterButton = popupView.findViewById(R.id.apply_filter_button);
+        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters);
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_multiple_choice,
+                getResources().getStringArray(R.array.emotional_states));
+        emotionalStatesList.setAdapter(adapter);
+
+
+        filterRecentWeekCheckbox.setChecked(filterByRecentWeek);
+
+
+        String[] emotionalStates = getResources().getStringArray(R.array.emotional_states);
+        for (int i = 0; i < emotionalStates.length; i++) {
+            emotionalStatesList.setItemChecked(i, currentEmotionalStateFilters.contains(emotionalStates[i]));
+        }
+
+
+        selectAllCheckbox.setChecked(currentEmotionalStateFilters.size() == emotionalStates.length);
+
+        selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            for (int i = 0; i < emotionalStatesList.getCount(); i++) {
+                emotionalStatesList.setItemChecked(i, isChecked);
+            }
+        });
+
+        applyFilterButton.setOnClickListener(v -> {
+            currentEmotionalStateFilters.clear();
+            SparseBooleanArray checkedItems = emotionalStatesList.getCheckedItemPositions();
+            for (int i = 0; i < emotionalStatesList.getCount(); i++) {
+                if (emotionalStatesList.isItemChecked(i)) {
+                    currentEmotionalStateFilters.add(emotionalStatesList.getItemAtPosition(i).toString());
+                }
+            }
+
+            filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
+
+            if (personalModeBtn.isSelected()) {
+                switchToPersonalMode();
+            } else {
+                switchToFriendsMode();
+            }
+
+            popupWindow.dismiss();
+        });
+
+        resetFiltersButton.setOnClickListener(v -> {
+            currentEmotionalStateFilters.clear();
+            filterByRecentWeek = false;
+
+            for (int i = 0; i < emotionalStatesList.getCount(); i++) {
+                emotionalStatesList.setItemChecked(i, false);
+            }
+            selectAllCheckbox.setChecked(false);
+            filterRecentWeekCheckbox.setChecked(false);
+            
+            if (personalModeBtn.isSelected()) {
+                switchToPersonalMode();
+            } else {
+                switchToFriendsMode();
+            }
+
+            Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
+        });
     }
 }

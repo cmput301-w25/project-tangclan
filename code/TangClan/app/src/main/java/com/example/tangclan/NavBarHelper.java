@@ -2,7 +2,6 @@ package com.example.tangclan;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -19,6 +18,8 @@ public class NavBarHelper {
 
     private static final int TAB_FOLLOW=3;
 
+    private static final int TAB_LOCATION = 4;
+
 
     public static void setupNavBar(Activity activity) {
         // Find all navbar items
@@ -26,6 +27,7 @@ public class NavBarHelper {
         ImageView profileIcon = activity.findViewById(R.id.imgProfile);
         ImageView addIcon = activity.findViewById(R.id.fabAdd);
         ImageView notifIcon = activity.findViewById(R.id.imgNotification);
+        ImageView mapIcon = activity.findViewById(R.id.imgMap);
 
         Class<?> activityClass = activity.getClass();
         if (activityClass.equals(FeedActivity.class)) {
@@ -36,9 +38,11 @@ public class NavBarHelper {
             currentActiveTab = TAB_ADD;
         } else if (activityClass.equals(FollowActivity.class)) {
             currentActiveTab= TAB_FOLLOW;
+        } else if (activityClass.equals(MapActivity.class)){
+            currentActiveTab = TAB_LOCATION;
         }
 
-        updateIcons(homeIcon, profileIcon, addIcon, notifIcon);
+        updateIcons(homeIcon, profileIcon, addIcon, notifIcon, mapIcon);
 
 
         if (homeIcon != null) {
@@ -63,10 +67,15 @@ public class NavBarHelper {
                 navigateToActivity(activity, FollowActivity.class);
             });
         }
+        if (mapIcon != null){
+            notifIcon.setOnClickListener(v -> {
+                navigateToActivity(activity, MapActivity.class);
+            });
+        }
 
     }
 
-    private static void updateIcons(ImageView homeIcon, ImageView profileIcon, ImageView addIcon, ImageView notifIcon) {
+    private static void updateIcons(ImageView homeIcon, ImageView profileIcon, ImageView addIcon, ImageView notifIcon, ImageView mapIcon) {
         if (homeIcon != null) {
             homeIcon.setImageResource(
                     currentActiveTab == TAB_HOME ?
@@ -97,6 +106,14 @@ public class NavBarHelper {
                             R.drawable.outline_notifications_24 :
                             R.drawable.baseline_notifications_24
 
+            );
+        }
+
+        if (mapIcon != null){
+            mapIcon.setImageResource(
+                    currentActiveTab == TAB_LOCATION ?
+                            R.drawable.outline_location_on_24 :
+                            R.drawable.baseline_location_on_24
             );
         }
     }
