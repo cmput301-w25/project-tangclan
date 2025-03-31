@@ -210,7 +210,7 @@ public class MapActivity extends AppCompatActivity {
         }
 
         // Get friends' filtered events
-        followingBook = loggedInUser.getFollowingBook();
+        FollowingBook followingBook = loggedInUser.getFollowingBook();
         final AtomicInteger counter = new AtomicInteger(followingBook.getFollowing().size());
         final Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
 
