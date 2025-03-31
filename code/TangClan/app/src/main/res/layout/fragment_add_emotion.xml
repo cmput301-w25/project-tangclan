@@ -37,36 +37,42 @@
     <!-- Emotion Buttons Grid -->
     <LinearLayout
         android:layout_width="390dp"
-        android:layout_height="226dp"
+        android:layout_height="275dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="363dp"
-            android:layout_height="206dp">
 
             <ImageView
-                android:layout_width="125dp"
-                android:layout_height="300dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:contentDescription="Owl icon"
                 android:src="@drawable/ic_owl" />
 
             <TextView
                 android:layout_width="363dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
+                android:gravity="center"
                 android:fontFamily="@font/inter_medium"
-                android:paddingLeft="100dp"
+                android:letterSpacing="-0.03"
                 android:text="Hey there, \nHow are you feeling?"
                 android:textColor="@color/black"
                 android:textSize="24sp" />
-        </RelativeLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Choose an emoticon to describe how you feel"
+        android:textSize="16sp"
+        android:letterSpacing="-0.03"
+        android:fontFamily="@font/inter"
+        android:gravity="center"/>
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:columnCount="4"
         android:rowCount="3">
 
@@ -195,32 +201,38 @@
             android:src="@drawable/ic_emotion_no_idea" />
     </GridLayout>
 
-    <!-- Action Buttons -->
-    <LinearLayout
+
+    <Button
+        android:id="@+id/btnNextEmotion"
         android:layout_width="match_parent"
+        android:paddingVertical="12dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="77dp"
-        android:gravity="center">
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@color/black"
+        android:text="Next"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/white"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="24dp"/>
 
-        <Button
-            android:id="@+id/btnCancelEmotion"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/black"
-            android:text="Cancel"
-            android:textSize="14sp"
-            app:cornerRadius="16dp" />
-
-        <Button
-            android:id="@+id/btnNextEmotion"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:backgroundTint="@color/black"
-            android:text="Next"
-            android:textSize="14sp"
-            app:cornerRadius="16dp"
-            app:iconPadding="8dp" />
-    </LinearLayout>
+    <!-- Action Buttons -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelEmotion"
+        android:layout_width="match_parent"
+        android:paddingVertical="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@android:color/transparent"
+        android:text="Cancel"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/black"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="24dp" />
 </LinearLayout>

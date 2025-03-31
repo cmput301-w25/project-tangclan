@@ -40,31 +40,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="275dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_width="125dp"
-                android:layout_height="300dp"
-                android:contentDescription="Owl icon"
-                android:src="@drawable/ic_owl" />
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:contentDescription="Owl icon"
+            android:src="@drawable/ic_owl" />
 
-            <TextView
-                android:layout_width="363dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="120dp"
-                android:fontFamily="@font/inter_medium"
-                android:paddingLeft="100dp"
-                android:text="Where are you feeling like this?"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+        <TextView
+            android:layout_width="363dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:gravity="center"
+            android:text="Attach a social situation\n to your mood event"
+            android:textColor="@color/black"
+            android:textSize="24sp" />
 
-        </RelativeLayout>
     </LinearLayout>
 
     <!-- Question -->
@@ -76,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="48dp"
         android:text="Add Social Situation"
         android:textColor="@color/black"
         android:textSize="18sp" />
@@ -143,31 +138,37 @@
 
 
     <!-- Bottom row (Back, Save) -->
-
-    <LinearLayout
+    <Button
+        android:id="@+id/btnSaveEnvironment"
         android:layout_width="match_parent"
+        android:paddingVertical="12dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="76dp"
-        android:gravity="center">
+        android:layout_marginTop="64dp"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@color/black"
+        android:text="Next"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/white"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="24dp"/>
 
-        <Button
-            android:id="@+id/btnBackEnvironment"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/black"
-            android:text="Back"
-            android:textSize="14sp"
-            app:cornerRadius="16dp" />
-
-        <Button
-            android:id="@+id/btnSaveEnvironment"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:backgroundTint="@color/black"
-            android:text="Save"
-            android:textSize="14sp"
-            app:cornerRadius="16dp" />
-    </LinearLayout>
+    <!-- Action Buttons -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnBackEnvironment"
+        android:layout_width="match_parent"
+        android:paddingVertical="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@android:color/transparent"
+        android:text="Back"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/black"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="24dp" />
 </LinearLayout>
