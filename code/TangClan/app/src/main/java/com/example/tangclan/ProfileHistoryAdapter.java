@@ -66,20 +66,20 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
     public ProfileHistoryAdapter(Context context, Profile profile) {
         super(context, 0, new ArrayList<MoodEvent>());
 
-        moodToUsernameMap = new HashMap<>();
-        List<MoodEvent> moodEvents = new ArrayList<>();
+        List<MoodEvent> moodEvents;
+        moodEvents = profile.getMoodEventBook().getAllMoodEvents();
 
         // Get the username
         this.username = profile.getUsername();
 
-        // Populate mood events and map usernames
-        for (MoodEvent moodEvent : profile.getMoodEventBook().getMoodEventList()) {
-            moodEvents.add(moodEvent);
-            moodToUsernameMap.put(moodEvent, profile.getUsername());
-        }
-
         // Add the mood events to the adapter's data source
         addAll(moodEvents);
+    }
+
+    public ProfileHistoryAdapter(Context context, ArrayList<MoodEvent> events, String username) {
+        super(context, 0, events);
+
+        this.username = username;
     }
 
 
@@ -118,7 +118,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
 
 
         if (username == null) {
-            username = LoggedInUser.getInstance().getUsername();
+            username = "Unknown";
         }
         //  Log.d("DEBUG PROFILEHISTORYADAPTER", username);
         SpannableString spannableUsername = new SpannableString(username);
