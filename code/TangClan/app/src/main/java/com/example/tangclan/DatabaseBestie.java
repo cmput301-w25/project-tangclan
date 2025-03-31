@@ -366,6 +366,26 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating password", e));
     }
 
+    public void updateMoodEventPrivacy(String mid, String month, boolean isPrivate) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("moodEvents")
+                .document(month)
+                .collection("events")
+                .document(mid)
+                .update("privacy", isPrivate);
+    }
+
+    public void updateMoodEventSetting(String mid, String month, String setting) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("moodEvents")
+                .document(month)
+                .collection("events")
+                .document(mid)
+                .update("setting", setting);
+    }
+
+
+
 
 
     // MOODEVENTS COLLECTION METHODS ---------------------------------------------------------------
@@ -561,10 +581,10 @@ public class DatabaseBestie {
                             String postDate = document.getString("datePosted");
                             String postTime = document.getString("timePosted");
                             Boolean privateMood = document.getBoolean("privateMood");
-                            Boolean location = document.getBoolean("location");
-                            Double lat = document.getDouble("latitude");
-                            Double lon = document.getDouble("longitude");
-                            String locationName = document.getString("locationName");
+                            //Boolean location = document.getBoolean("location");
+                            //Double lat = document.getDouble("latitude");
+                            //Double lon = document.getDouble("longitude");
+                            //String locationName = document.getString("locationName");
 
                             // mechanism to revert a string back into the bitmap
                             String imageString = document.getString("image");

@@ -36,6 +36,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -70,6 +71,14 @@ public class EditFragment extends Fragment {
     private Uri imageUri = null;
     private Bitmap selectedImage = null;
     private LoggedInUser sessionUser;
+
+    private SwitchCompat privacySwitch;
+
+    private boolean privacy;
+
+    private String location;
+
+    private SwitchCompat useLocation;
 
 
     public interface FragmentListener {  // listens to when fragment finishes
@@ -108,6 +117,7 @@ public class EditFragment extends Fragment {
             reason = getArguments().getString("reason");
             image = getArguments().getByteArray("image");
             locationPermission = getArguments().getBoolean("location permission");
+            //location = getArguments().getString("location", "");
         }
 
         sessionUser = LoggedInUser.getInstance();
@@ -169,6 +179,17 @@ public class EditFragment extends Fragment {
             imageHelper.showImagePickerDialog();
         });
 
+        privacySwitch = view.findViewById(R.id.privacy_toggle);
+
+        if (getArguments() != null) {
+            privacy = getArguments().getBoolean("privacy", false);
+            privacySwitch.setChecked(privacy);
+        }
+
+        privacySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            privacy = isChecked;
+        });
+
         // set saved location permission
         SwitchCompat useLocation = view.findViewById(R.id.use_location_switch);
         useLocation.setChecked(locationPermission);
@@ -212,10 +233,12 @@ public class EditFragment extends Fragment {
                 } else {
                     newImg = null;
                 }
+
                 saveEditsToDatabase(newEmotion[0], newReason, newCollaborators, newImg);  // TODO: add setting and permisisions
 
                 finishFragment();
             }
+
         });
 
         // Implement Cancel Button
@@ -301,6 +324,8 @@ public class EditFragment extends Fragment {
         db.updateMoodEventReason(mid,month, reason);
         db.updateMoodEventCollaborators(mid, month, socialSit);
         db.updateMoodEventPhoto(mid,month,image);
+        db.updateMoodEventPrivacy(mid, month, privacy);
+        db.updateMoodEventSetting(mid, month, setting);
     }
 
     private void finishFragment() {

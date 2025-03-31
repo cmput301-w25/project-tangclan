@@ -366,6 +366,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String setting = post.getSetting();
         String reason = post.getReason().orElse("");
         byte[] imgBytes = getImageBytes(post.getImage());
+        boolean privacy = post.isPrivacyOn();
         boolean useLoc = false;  // TODO: implement location once MoodEvent has the field
 
         if (post.getCollaborators().isEmpty()) {
@@ -384,11 +385,16 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
         args.putBoolean("location permission", useLoc);
+        args.putBoolean("privacy", privacy);
 
         return args;
     }
 
     private byte[] getImageBytes(Bitmap image) {
+
+        if (image == null) {
+            return null;
+        }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
         return outputStream.toByteArray();
