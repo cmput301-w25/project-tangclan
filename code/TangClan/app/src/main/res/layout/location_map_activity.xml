@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapActivity">
+
+    <!-- Map View -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Mode Selection Buttons -->
+    <LinearLayout
+        android:id="@+id/modeSelectionLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/personalModeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#D38C6F"
+            android:text="Personal"
+            android:textColorLink="#FF5722"
+            app:rippleColor="#CA6235"
+            android:layout_marginEnd="16dp"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"/>
+
+        <Button
+            android:id="@+id/friendsModeBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#D38C6F"
+            android:text="Friends"
+            app:rippleColor="#CA6235"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp"/>
+    </LinearLayout>
+
+    <!-- Distance Filter -->
+    <LinearLayout
+        android:id="@+id/distanceFilterLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:padding="8dp"
+        android:elevation="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:id="@+id/distanceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter Distance: 5 km" />
+
+        <SeekBar
+            android:id="@+id/distanceSeekBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="10"
+            android:progress="5" />
+    </LinearLayout>
+
+</RelativeLayout>

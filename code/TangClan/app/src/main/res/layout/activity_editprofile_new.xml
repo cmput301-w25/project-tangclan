@@ -5,6 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F4F2E6"
+    android:backgroundTint="#F4F2E6"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="16dp">
@@ -29,7 +31,7 @@
             android:gravity="center"
             android:text="moodly   "
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="#D38C6F"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -51,8 +53,9 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="0dp"
-            android:src="@drawable/default_pfp"
-            android:contentDescription="@string/pfp_desc" />
+            android:backgroundTint="#926451"
+            android:contentDescription="@string/pfp_desc"
+            android:src="@drawable/default_pfp" />
 
     </androidx.cardview.widget.CardView>
 
@@ -62,7 +65,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter_semibold"
         android:letterSpacing="-0.05"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="24sp"
         tools:text="Julian" />
 
@@ -73,7 +76,7 @@
         android:layout_marginTop="-4dp"
         android:fontFamily="@font/inter"
         android:letterSpacing="-0.03"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="16sp"
         tools:text="\@julianpagcaliwagan" />
 
@@ -90,7 +93,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:text="@string/display_name"
-            android:textColor="@color/black" />
+            android:textColor="#916350" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -102,7 +105,8 @@
             app:boxCornerRadiusTopEnd="16dp"
             app:boxCornerRadiusTopStart="16dp"
             app:boxStrokeColor="@color/black"
-            app:boxStrokeWidth="2dp">
+            app:boxStrokeWidth="2dp"
+            app:placeholderTextColor="#916350">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_name_input"
@@ -110,9 +114,9 @@
                 android:layout_height="match_parent"
                 android:fontFamily="@font/inter_medium"
                 android:hint="hint"
-                android:textColor="@color/black"
-                android:textColorHighlight="@color/black"
-                android:textColorHint="@color/black" />
+                android:textColor="#916350"
+                android:textColorHighlight="#916350"
+                android:textColorHint="#916350" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -131,7 +135,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:text="@string/email_addre"
-            android:textColor="@color/black" />
+            android:textColor="#916350" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -174,7 +178,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:text="@string/username"
-            android:textColor="@color/black" />
+            android:textColor="#916350" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -217,7 +221,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_medium"
             android:text="@string/password"
-            android:textColor="@color/black" />
+            android:textColor="#916350" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -300,7 +304,6 @@
         android:layout_height="42dp"
         android:backgroundTint="#1010100D"
         android:text="Logout"
-        android:textColor="@color/black"
         app:cornerRadius="12dp" />
 
 </LinearLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#f4f2e6">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mood Title"
+        android:textColor="#916350"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/subDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location"
+        android:textColor="#96d289"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/snippet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Timestamp"
+        android:textColor="#916350"
+        android:textSize="12sp" />
+
+</LinearLayout>

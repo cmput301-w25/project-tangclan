@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="30dp">
+    android:layout_marginTop="30dp"
+    android:backgroundTint="#F4F2E6">
 
     <!-- Search Bar for location -->
     <TextView
@@ -12,6 +13,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
         android:text="Add Location"
+        android:textColor="#916350"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -25,7 +27,8 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="15dp"
-        android:hint="University of Alberta, Edmonton" />
+        android:hint="University of Alberta, Edmonton"
+        android:textColor="#916350" />
 
     <!-- ListView for autocomplete suggestions -->
     <ListView
@@ -47,6 +50,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="20dp"
+        android:backgroundTint="#D38C6F"
         android:text="Search" />
 
     <!-- Next Button -->
@@ -57,6 +61,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
+        android:backgroundTint="#d38c6f"
         android:text="Next"
         android:visibility="visible" />
 
@@ -65,10 +70,10 @@
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/searchButton"
-        android:layout_marginBottom="15dp"
         android:layout_above="@id/nextButton"
-        android:layout_marginTop="16dp"/>
+        android:layout_below="@id/searchButton"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="15dp" />
 
 </RelativeLayout>
 

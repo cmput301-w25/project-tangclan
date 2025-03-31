@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_c">
+    android:background="#f4f2e6">
 
     <TextView
         android:id="@+id/moodly"
@@ -16,7 +16,7 @@
         android:letterSpacing="-0.05"
         android:text="@string/moodly"
         android:textAppearance="@style/moodly"
-        android:textColor="@color/black"
+        android:textColor="#d38c6f"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -80,7 +80,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/forgot_pass"
         android:textAppearance="@style/forgot_pass"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         app:layout_constraintEnd_toEndOf="@+id/form_passwo"
         app:layout_constraintTop_toBottomOf="@+id/form_passwo" />
 
@@ -89,7 +89,7 @@
         android:layout_width="386dp"
         android:layout_height="61dp"
         android:layout_marginTop="15dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="#d38c6f"
         android:clickable="true"
         android:clipToOutline="true"
         android:fontFamily="@font/inter_medium"
@@ -111,7 +111,7 @@
         android:gravity="center"
         android:text="@string/don_t_have_"
         android:textAppearance="@style/don_t_have_"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
