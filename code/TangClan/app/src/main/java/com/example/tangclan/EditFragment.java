@@ -61,7 +61,7 @@ public class EditFragment extends Fragment {
     String mid, month, emotion, setting, reason;
     ArrayList<String> situation;
     byte[] image;
-    boolean locationPermission;
+    boolean privacy;
     private FragmentListener editFragmentListener;
     private ImageView imageView;
 
@@ -107,7 +107,7 @@ public class EditFragment extends Fragment {
             situation = getArguments().getStringArrayList("social situation");
             reason = getArguments().getString("reason");
             image = getArguments().getByteArray("image");
-            locationPermission = getArguments().getBoolean("location permission");
+            privacy = getArguments().getBoolean("privacy");
         }
 
         sessionUser = LoggedInUser.getInstance();
@@ -168,9 +168,9 @@ public class EditFragment extends Fragment {
             imageHelper.showImagePickerDialog();
         });
 
-        // set saved location permission
-        SwitchCompat useLocation = view.findViewById(R.id.use_location_switch);
-        useLocation.setChecked(locationPermission);
+        // set privacy setting
+        SwitchCompat privacySetting = view.findViewById(R.id.privacy_toggle);
+        privacySetting.setChecked(privacy);
 
         // implement submit button
         Button submitButt = view.findViewById(R.id.submit_details);

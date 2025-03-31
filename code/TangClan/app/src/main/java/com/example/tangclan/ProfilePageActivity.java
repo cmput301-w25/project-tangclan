@@ -378,6 +378,10 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         String emotion = post.getMoodEmotionalState();
         String setting = post.getSetting();
         String reason = post.getReason().orElse("");
+
+        byte[] imgBytes = getImageBytes(post.getImage());
+        boolean privacy = post.isPrivacyOn();  // TODO: implement location once MoodEvent has the field
+
         byte[] imgBytes = null;
         if (post.getImage() != null){
             imgBytes = getImageBytes(post.getImage());}
@@ -387,6 +391,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             lon = post.getLongitude();
             locationName = post.getLocationName();
         }
+
 
         if (post.getCollaborators().isPresent()) {
             collaborators = post.getCollaborators().get();
@@ -403,12 +408,16 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         args.putStringArrayList("social situation", collaborators);
         args.putString("reason", reason);
         args.putByteArray("image", imgBytes);
+
+        args.putBoolean("privacy", privacy);
+
         args.putBoolean("location permission", useLoc);
         if (useLoc) {
             args.putDouble("latitude", lat);
             args.putDouble("longitude", lon);
             args.putString("location name", locationName);
         }
+
 
         return args;
     }
