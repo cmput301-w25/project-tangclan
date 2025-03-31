@@ -3,8 +3,11 @@ package com.example.tangclan;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +45,7 @@ public class AddSocialSituationActivity extends AppCompatActivity {
         // get the session user (for followingbook)
         //TODO: make sure that followingbook is up to date for everything
         LoggedInUser user = LoggedInUser.getInstance();
-        ArrayList<String> followerBook = user.getFollowingBook().getFollowingUsernames();
+        ArrayList<String> followerBook = user.getFollowingBook().getFollowerUsernames();
 
         // Initialize ViewModel
         wizVIew = new ViewModelProvider(this).get(WizVIew.class);
