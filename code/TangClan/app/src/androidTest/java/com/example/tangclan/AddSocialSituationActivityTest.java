@@ -19,6 +19,7 @@ import android.os.Bundle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 //import androidx.test.espresso.contrib.PickerActions;
+//import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Before;
@@ -80,19 +81,10 @@ public class AddSocialSituationActivityTest {
 
         onView(withId(R.id.editTextSituation))
                 .perform(typeText("user1"), closeSoftKeyboard());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        onView(withText("user1"))
-                .inRoot(isPlatformPopup())
-                .perform(click());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        onView(withText("user1")).perform(click());
+
+        // Verify the collaborator was added
         onView(withId(R.id.taggedSoFar))
                 .check(matches(withText("1 tagged")));
     }
@@ -131,21 +123,12 @@ public class AddSocialSituationActivityTest {
         // Open dropdown
         onView(withId(R.id.editTextSetting)).perform(click());
 
-        // Wait for dropdown to appear
-        try {
-            Thread.sleep(500); // Small delay for dropdown to render
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // Select an option
+        onView(withText("alone")).perform(click());
 
-        // Select an option from dropdown
-        onView(withText("alone"))
-                .inRoot(isPlatformPopup()) // This is crucial for dropdown items
-                .perform(click());
-
-        // Verify selection by checking hint (since AutoCompleteTextView uses hint)
+        // Verify selection
         onView(withId(R.id.editTextSetting))
-                .check(matches(withHint(containsString("alone"))));
+                .check(matches(withText("alone")));
     }
 
     @Test
