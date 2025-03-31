@@ -75,6 +75,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
         android:text="Add Social Situation"
         android:textColor="@color/black"
@@ -84,6 +85,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
         android:focusable="false"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
@@ -96,6 +98,7 @@
             android:id="@+id/editTextSetting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/edittext_round"
             android:layout_marginTop="8dp"
             android:inputType="none" />
@@ -105,8 +108,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
         android:layout_marginTop="16dp"
-        android:text="Tag People"
+        android:layout_marginBottom="8dp"
+        android:text="Tag your followers"
         android:textColor="@color/black"
         android:textSize="18sp" />
 
@@ -114,6 +119,7 @@
         android:id="@+id/editTextSituation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
         android:paddingVertical="16dp"
         android:paddingHorizontal="20dp"
         android:background="@drawable/edittext_round"

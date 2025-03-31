@@ -56,11 +56,13 @@ public class AddLocationActivity extends AppCompatActivity {
     private GeoPoint lastSearchedPoint;
     //----------------------------------------------------------------------------------------------
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Configuration.getInstance().load(getApplicationContext(), getSharedPreferences("osmdroid", MODE_PRIVATE));
         setContentView(R.layout.activity_add_location);
+
 
         mapView = findViewById(R.id.mapView);
         mapView.setMultiTouchControls(true);
@@ -74,8 +76,8 @@ public class AddLocationActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
 
-        savedDetails = getIntent().getExtras();
-
+        Bundle savedDetails = getIntent().getExtras();
+        
         // Add compass
         CompassOverlay compassOverlay = new CompassOverlay(this, new InternalCompassOrientationProvider(this), mapView);
         compassOverlay.enableCompass();
@@ -222,7 +224,7 @@ public class AddLocationActivity extends AppCompatActivity {
                             runOnUiThread(() -> placeMarker(lat, lon));
                         } else {
                             Log.d("LocationSearch", "No results found for query: " + query);
-                            runOnUiThread(() -> Toast.makeText(AddLocationActivity.this, "No results found", Toast.LENGTH_SHORT).show());
+                            runOnUiThread(() -> Toast.makeText(AddLocationActivity.this, "No results found!", Toast.LENGTH_SHORT).show());
                         }
                     }
                 } catch (IOException | org.json.JSONException e) {

@@ -8,7 +8,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Holds additional data tied to a user
@@ -139,8 +141,27 @@ public class User {
      *      for a user
      */
     public void initializeFollowingBookFromDatabase(DatabaseBestie db) {
-        db.getFollowers(this.uid, followers -> User.this.followingBook.setFollowers(followers));
-        db.getFollowing(this.uid, following -> User.this.followingBook.setFollowing(following));
+        db.getFollowers(this.uid, followers -> {
+            User.this.followingBook.setFollowers(followers);
+
+            User.this.followingBook.resetFollowerUsernames();
+            for (String uid : User.this.followingBook.getFollowers()) {
+               db.findUsernameByUID(uid, username -> {
+                   User.this.getFollowingBook().addEntryToFollowerMap(uid, username);
+               });
+            }
+        });
+        db.getFollowing(this.uid, following -> {
+            User.this.followingBook.setFollowing(following);
+
+            User.this.followingBook.resetFollowingUsernames();
+            for (String uid : User.this.followingBook.getFollowing()) {
+                db.findUsernameByUID(uid, username -> {
+                    User.this.getFollowingBook().addEntryToFollowingMap(uid, username);
+                });
+            }
+
+        });
 
         db.getPendingFollowRequests(this.uid, requests -> {
             ArrayList<String> requestingFollowerIds = new ArrayList<>();
@@ -149,6 +170,8 @@ public class User {
             }
             User.this.followingBook.setFollowRequests(requestingFollowerIds);
         });
+
+
     }
 
     /**

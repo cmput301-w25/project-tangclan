@@ -1,13 +1,15 @@
 package com.example.tangclan;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Gravity;
@@ -23,14 +25,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+//import android.widget.ProgressBar;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,8 +47,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import java.util.Objects;
+
 import java.util.stream.Collectors;
+
 
 //part of US 01.01.01, US 01.04.01, US 01.05.01 and US 01.06.01
 
@@ -50,19 +65,21 @@ import java.util.stream.Collectors;
  * The class is responsible for displaying the mood event feed to the user.
  * It allows users to view the most recent mood events from participants they follow,
  * add a new mood event, and view detailed information about any mood event in the feed.
+
  */
 
 //TODO make sure this screen is updated after the addition of a mood event from the add emotion fragments
 
 //TODO fix the bug for loadfeed because of the List<MoodEvent> to following book, cause runtime error
 
+
 /**
  * Represents the activity feed, with all MoodEvents of users that the session user follows
  * USER STORIES:
  *      US 01.04.01
  */
-public class FeedActivity extends AppCompatActivity {
-    //feed activitysssnn
+
+public class FeedActivity extends AppCompatActivity implements SearchOtherProfileAdapter.SelectProfileListener {
     private ListView listViewFeed;
     private Feed feed;
     private MoodEventAdapter adapter;
@@ -73,6 +90,12 @@ public class FeedActivity extends AppCompatActivity {
     private ArrayList<Profile> allUsers = new ArrayList<>();
     private com.google.android.material.button.MaterialButton button_moods;
     private com.google.android.material.button.MaterialButton buttonForYou;
+    //private ProgressBar progressBar;
+
+    private DatabaseBestie db;
+
+    private List<String> selectedEmotionalStates = new ArrayList<>();
+    private boolean filterByRecentWeek = false;
 
     /**
      * Initializes the activity, sets up the user interface, loads the mood event feed,
@@ -89,14 +112,18 @@ public class FeedActivity extends AppCompatActivity {
         super.onStart();
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-        if(currentUser == null) {
+        if (currentUser == null) {
             startActivity(new Intent(FeedActivity.this, LoginOrSignupActivity.class));
             finish();
+            return;
         }
 
-        DatabaseBestie db = new DatabaseBestie();
-
+        db = DatabaseBestie.getInstance();
         LoggedInUser loggedInUser = LoggedInUser.getInstance();
+
+
+        // Debug: Check if feedEvents is empty before loading
+        Log.d("FEED_DEBUG", "Feed events before load: " + feed.getFeedEvents().size());
 
         db.getUser(currentUser.getUid(), user -> {
             loggedInUser.setEmail(user.getEmail());
@@ -105,17 +132,40 @@ public class FeedActivity extends AppCompatActivity {
             loggedInUser.setDisplayName(user.getDisplayName());
             loggedInUser.setAge(user.getAge());
             loggedInUser.setUid(currentUser.getUid());
+            loggedInUser.setProfilePic(user.getProfilePic());
             loggedInUser.initializeMoodEventBookFromDatabase(db);
+            loggedInUser.initializeFollowingBookFromDatabase(db);
 
             Log.d("FINALDEBUG", user.getUsername());
             Log.d("FINALDEBUG", String.valueOf(loggedInUser.getMoodEventBook().getMoodEventCount()));
         });
+
+
+        // Clear existing events
+        ArrayList<MoodEvent> allEvents = new ArrayList<>();
+        adapter.updateMoodEvents(allEvents);
+
+        // Load following list FIRST
+        db.getFollowing(currentUser.getUid(), following -> {
+            Log.d("FEED_DEBUG", "Found " + following.size() + " followed users");
+            for (String uid : following) {
+                Log.d("FEED_DEBUG", "Following UID: " + uid);
+            }
+
+            loggedInUser.getFollowingBook().setFollowing(following);
+            feed.getFollowingBook().setFollowing(following);
+
+            // Now load the feed with this following list
+            loadFeed(allEvents);
+        });
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_new);
+
 
         // Initialize views
         listViewFeed = findViewById(R.id.listview_feed);
@@ -123,15 +173,17 @@ public class FeedActivity extends AppCompatActivity {
         usersContainer = findViewById(R.id.users_container);
         button_moods = findViewById(R.id.button_moods);
         buttonForYou = findViewById(R.id.button_users);
+        //progressBar = findViewById(R.id.progressBar);
 
         // Initialize adapters
-        adapter = new MoodEventAdapter(this, new ArrayList<>());
+        ArrayList<MoodEvent>  allEvents = new ArrayList<>();
+        adapter = new MoodEventAdapter(this, allEvents);
         listViewFeed.setAdapter(adapter);
 
         // Initialize user search components
         usersRecyclerView = usersContainer.findViewById(R.id.recyclerView_users);
         usersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        usersAdapter = new SearchOtherProfileAdapter(allUsers, this);
+        usersAdapter = new SearchOtherProfileAdapter(allUsers, getApplicationContext(),this);
         usersRecyclerView.setAdapter(usersAdapter);
 
         // Set up back button in user search
@@ -159,7 +211,7 @@ public class FeedActivity extends AppCompatActivity {
 
         // Set up the filter ImageView
         ImageView filterImageView = findViewById(R.id.filter);
-        filterImageView.setOnClickListener(v -> showFilterPopup(v));
+        filterImageView.setOnClickListener(v -> showFilterPopup(v, allEvents));
 
         // Initialize the feed
         FollowingBook followingBook = new FollowingBook();
@@ -167,7 +219,7 @@ public class FeedActivity extends AppCompatActivity {
         feed = new Feed(followingBook, moodEventBook);
 
         // Load the feed
-        loadFeed();
+        loadFeed(allEvents);
 
         // Set up the "Add Emotion" button
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
@@ -198,41 +250,6 @@ public class FeedActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Follow button test code
-        DatabaseBestie db = new DatabaseBestie();
-        Button followBtn = findViewById(R.id.follow_test);
-        String testUserUID = "NZliQC89wvTSafYDeYsG7ke8kuO2";
-        LoggedInUser loggedInUser = LoggedInUser.getInstance();
-        loggedInUser.setUid(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        loggedInUser.initializeFollowingBookFromDatabase(db);
-
-        // simulate another user sending a request to the current logged in user
-        String CHANGEME = "qM5OwQrQYyQf5p13VfyDVibnuXd2";
-        db.checkExistingRequest(CHANGEME, loggedInUser.getUid(), reqExists -> {
-            if (!reqExists) {
-                loggedInUser.getFollowingBook().addRequestingFollower("qM5OwQrQYyQf5p13VfyDVibnuXd2");
-                db.sendFollowRequest(CHANGEME, loggedInUser.getUid(), requestProcessed -> {
-                    Toast.makeText(this, "Tom Cruise requested to follow you!", Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-
-        followBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Assumes that when clicking on a user to go to their profile,
-                // a bundle of their profile details is passed to the profile activity
-                db.checkExistingRequest(loggedInUser.getUid(), testUserUID, reqExists -> {
-                    if (!reqExists) {
-                        db.sendFollowRequest(loggedInUser.getUid(), testUserUID, requestProcessed -> {
-                            followBtn.setText("Pending");
-                        });
-                    }
-                });
-            }
-        });
-
         // NAVBAR
         NavBarHelper.setupNavBar(this);
     }
@@ -241,19 +258,76 @@ public class FeedActivity extends AppCompatActivity {
      * Loads the mood event feed and updates the list adapter.
      *
      */
-    private void loadFeed() {
-        feed.loadFeed();
-        FollowingBook followingBook = feed.getFollowingBook();  // Assuming you have this getter in Feed class.
+    private void loadFeed(ArrayList<MoodEvent> allEvents) {
+        listViewFeed.setVisibility(View.GONE);
+        ArrayList<String> following = feed.getFollowingBook().getFollowing();
 
-        adapter = new MoodEventAdapter(this, followingBook);  // Pass followingBook instead of feedEvents
-        listViewFeed.setAdapter(adapter);
+        if (following.isEmpty()) {
+            Log.d("FEED_DEBUG", "No users being followed");
+            adapter.updateMoodEvents(new ArrayList<>());
+            listViewFeed.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        AtomicInteger counter = new AtomicInteger(following.size());
+        // Map to store the 3 most recent events for each user
+        Map<String, List<MoodEvent>> recentEventsByUser = new HashMap<>();
+
+        for (String uid : following) {
+            Log.d("FEED_DEBUG", "Loading events for UID: " + uid);
+            db.getAllMoodEvents(uid, events -> {
+                Log.d("FEED_DEBUG", "Found " + events.size() + " events for UID: " + uid);
+
+                synchronized (recentEventsByUser) {
+                    // Sort events by date (newest first)
+                    Collections.sort(events, (e1, e2) -> e2.getPostDate().compareTo(e1.getPostDate()));
+
+                    // Take only the 3 most recent events
+                    List<MoodEvent> recentEvents = events.stream()
+                            .limit(3)
+                            .collect(Collectors.toList());
+
+                    // Store in the map
+                    recentEventsByUser.put(uid, recentEvents);
+
+                    if (counter.decrementAndGet() == 0) {
+                        // All users processed, combine and sort all events
+                        ArrayList<MoodEvent> combinedEvents = new ArrayList<>();
+                        for (List<MoodEvent> userEvents : recentEventsByUser.values()) {
+                            combinedEvents.addAll(userEvents);
+                        }
+
+                        // Sort all events by date (newest first)
+                        Collections.sort(combinedEvents, (e1, e2) ->
+                                e2.getPostDate().compareTo(e1.getPostDate()));
+
+                        Log.d("FEED_DEBUG", "Total events to display: " + combinedEvents.size());
+
+                        // Update both the adapter AND the feed's events list
+                        feed.getFeedEvents().clear();
+                        feed.getFeedEvents().addAll(combinedEvents);
+
+                        runOnUiThread(() -> {
+                            adapter.updateMoodEvents(combinedEvents);
+                            listViewFeed.setVisibility(View.VISIBLE);
+                            adapter.notifyDataSetChanged();
+
+                            // Debug: Verify UI update
+                            Log.d("FEED_DEBUG", "Adapter count: " + adapter.getCount());
+                        });
+                    }
+                }
+            });
+        }
     }
+
 
     /**
      * Displays the details of a selected mood event in an alert dialog.
      *
      * @param moodEvent The mood event whose details are to be displayed.
      */
+
     private void showMoodEventDetails(MoodEvent moodEvent) {
         StringBuilder details = new StringBuilder();
         details.append("Emotional State: ").append(moodEvent.getMoodEmotionalState()).append("\n");
@@ -279,7 +353,7 @@ public class FeedActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void showFilterPopup(View view) {
+    public void showFilterPopup(View view, ArrayList<MoodEvent>  allEvents) {
         // Inflate the popup layout
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.filter_popup, null);
@@ -298,11 +372,28 @@ public class FeedActivity extends AppCompatActivity {
         CheckBox filterRecentWeekCheckbox = popupView.findViewById(R.id.filter_recent_week);
         ListView emotionalStatesList = popupView.findViewById(R.id.emotional_states_list);
         Button applyFilterButton = popupView.findViewById(R.id.apply_filter_button);
-        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters); // Reset Filters button
+        Button resetFiltersButton = popupView.findViewById(R.id.button_reset_filters);
 
         // Set up the emotional states list
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, getResources().getStringArray(R.array.emotional_states));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_multiple_choice,
+                getResources().getStringArray(R.array.emotional_states));
         emotionalStatesList.setAdapter(adapter);
+        emotionalStatesList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        // Restore previous selections
+        filterRecentWeekCheckbox.setChecked(filterByRecentWeek);
+
+        // Restore emotional state selections
+        String[] emotionalStates = getResources().getStringArray(R.array.emotional_states);
+        for (int i = 0; i < emotionalStates.length; i++) {
+            if (selectedEmotionalStates.contains(emotionalStates[i])) {
+                emotionalStatesList.setItemChecked(i, true);
+            }
+        }
+
+        // Update "Select All" checkbox based on current selections
+        selectAllCheckbox.setChecked(selectedEmotionalStates.size() == emotionalStates.length);
 
         // Set up the "Select All" checkbox
         selectAllCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -314,8 +405,8 @@ public class FeedActivity extends AppCompatActivity {
         // Set up the apply filter button
         applyFilterButton.setOnClickListener(v -> {
             // Get the selected emotional states
+            selectedEmotionalStates.clear();
             SparseBooleanArray checkedItems = emotionalStatesList.getCheckedItemPositions();
-            List<String> selectedEmotionalStates = new ArrayList<>();
             for (int i = 0; i < checkedItems.size(); i++) {
                 if (checkedItems.valueAt(i)) {
                     selectedEmotionalStates.add(emotionalStatesList.getItemAtPosition(checkedItems.keyAt(i)).toString());
@@ -323,7 +414,7 @@ public class FeedActivity extends AppCompatActivity {
             }
 
             // Get the "In the last week" filter value
-            boolean filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
+            filterByRecentWeek = filterRecentWeekCheckbox.isChecked();
 
             // Apply the filters
             applyFilters(selectedEmotionalStates, filterByRecentWeek);
@@ -334,8 +425,10 @@ public class FeedActivity extends AppCompatActivity {
 
         // Set up the reset filters button
         resetFiltersButton.setOnClickListener(v -> {
+
             // Reset the feed to its original state
-            resetFilters();
+            resetFilters(allEvents);
+
 
             // Dismiss the popup
             popupWindow.dismiss();
@@ -372,9 +465,9 @@ public class FeedActivity extends AppCompatActivity {
         // Update the adapter with the filtered events
         adapter.updateMoodEvents(filteredEvents);
     }
-
     private void filterByKeyword(String keyword) {
         List<MoodEvent> filteredEvents = new ArrayList<>(feed.getFeedEvents());
+
 
         if (!keyword.isEmpty()) {
             List<String> keywords = new ArrayList<>();
@@ -382,12 +475,15 @@ public class FeedActivity extends AppCompatActivity {
             filteredEvents = Filter.filterByKeywords(filteredEvents, keywords);
         }
 
+
         adapter.updateMoodEvents(filteredEvents);
     }
 
-    private void resetFilters() {
+
+    private void resetFilters(ArrayList<MoodEvent>  allEvents) {
+
         // Reload the feed without applying any filters
-        loadFeed();
+        loadFeed(allEvents);
 
         // Clear the search EditText
         EditText searchEditText = findViewById(R.id.editText_search);
@@ -396,13 +492,19 @@ public class FeedActivity extends AppCompatActivity {
         // Notify the user that filters have been reset
         Toast.makeText(this, "Filters reset", Toast.LENGTH_SHORT).show();
     }
+    //need to account for multiple moods being selected
 
     private void loadUsers() {
         DatabaseBestie db = new DatabaseBestie();
         db.getAllUsers(users -> {
             allUsers.clear();
-            allUsers.addAll(users);
-            usersAdapter.notifyDataSetChanged();
+            for (Profile user: users) {
+                if (Objects.equals(user.getUsername(), LoggedInUser.getInstance().getUsername())) {
+                    continue;
+                }
+                allUsers.add(user);
+                usersAdapter.notifyItemInserted(allUsers.size()-1);
+            }
         });
     }
 
@@ -433,7 +535,8 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void showUserSearch() {
-        feedContainer.setVisibility(View.GONE);
+
+        feedContainer.setVisibility(View.INVISIBLE);
         usersContainer.setVisibility(View.VISIBLE);
 
         button_moods.setBackgroundTintList(ColorStateList.valueOf(
@@ -447,5 +550,37 @@ public class FeedActivity extends AppCompatActivity {
 
         EditText searchUsers = usersContainer.findViewById(R.id.editText_search_users);
         searchUsers.requestFocus();
+    }
+
+
+
+    //Idea: after clicking on a profile on the search page for profiles it takes you to the users profile by passing in the profile object to the ProfilePageActivity
+    @Override
+    public void onItemClicked(Profile profile) {
+        // Toast.makeText(this, "Clicked: " + profile.getUsername(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(FeedActivity.this, ViewOtherProfileActivity.class);
+        Bundle profileDetails = new Bundle();
+        profileDetails.putString("uid", profile.getUid());
+        profileDetails.putString("username",profile.getUsername());
+        profileDetails.putString("email",profile.getEmail());
+        profileDetails.putString("displayName",profile.getDisplayName());
+        String pfpStr = profile.getProfilePic();
+        if (pfpStr != null) {
+            byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
+            Bitmap toCompress = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+            byte[] pfpBytes = ImageValidator.compressBitmapToSize(toCompress);
+            if (pfpBytes != null) {
+                profileDetails.putString("pfp", Base64.encodeToString(pfpBytes, Base64.DEFAULT));
+            }
+        } else {
+            profileDetails.putString("pfp", null);
+        }
+
+        Log.d("PROFILEINFO","uid is "+ profile.getUid());
+        Log.d("PROFILEINFO","username is "+ profile.getUsername());
+        Log.d("PROFILEINFO","diplsay name is "+ profile.getDisplayName());
+        intent.putExtras(profileDetails);
+        startActivity(intent);
+
     }
 }

@@ -144,7 +144,7 @@
         android:id="@+id/filter"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:clickable="true"
         android:contentDescription="@string/filter_mood_events"
@@ -158,13 +158,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:backgroundTint="#D38C6F"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
         android:fontFamily="@font/inter_semibold"
         android:letterSpacing="-0.03"
         android:onClick="goToEditProfile"
         android:text="@string/edit_profile_text"
         android:textColor="@color/white"
         android:textSize="16sp"
-        app:cornerRadius="16dp"
+        app:cornerRadius="24dp"
         app:layout_constraintEnd_toStartOf="@+id/filter"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -175,6 +177,8 @@
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/button_edit_profile"
         app:dividerColor="@color/black"
         app:dividerThickness="4dp"
         app:layout_constraintTop_toBottomOf="@id/button_edit_profile" />
@@ -183,13 +187,20 @@
     <ListView
         android:id="@+id/listview_profile_history"
         android:layout_width="match_parent"
-        android:layout_height="600dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="544dp"
+        android:layout_marginTop="16dp"
+        android:dividerHeight="2dp"
         android:divider="@color/black"
         android:dividerHeight="2dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_edit_profile" />
+        app:layout_constraintTop_toBottomOf="@id/button_edit_profile"/>
+    <FrameLayout
+        android:id="@+id/edit_form_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </FrameLayout>
 
 
     <EditText
@@ -218,16 +229,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/edit_form_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

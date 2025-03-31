@@ -7,9 +7,11 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -27,6 +30,7 @@ import com.google.firebase.firestore.FieldValue;
 import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 
 public class ReviewDetailsActivity extends AppCompatActivity {
@@ -54,7 +58,7 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         // find Views
         AutoCompleteTextView emotionTextView = findViewById(R.id.choose_emotion);
         AutoCompleteTextView settingTextView = findViewById(R.id.choose_social_situation);
-        EditText collaboratorTextView = findViewById(R.id.edit_social_situation);
+        AutoCompleteTextView collaboratorTextView = findViewById(R.id.edit_social_situation);
         EditText reasonTextView = findViewById(R.id.edit_reasonwhy);
         ImageButton imageView = findViewById(R.id.image_reasonwhy);
         SwitchCompat privacyToggle = findViewById(R.id.privacy_toggle);
@@ -177,13 +181,10 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         }
 
         if (collaborators != null) {
-            StringBuilder s = new StringBuilder();
-            if (!collaborators.get(0).isEmpty()) {
-                for (String collaborator : collaborators) {
-                    s.append(collaborator.trim()).append(", ");
-                }
-            }
-            collaboratorTextView.setText(s);
+            int numCollaborators = collaborators.size();
+            collaboratorTextView.setHint(String.format(Locale.CANADA, "%d tagged", numCollaborators));
+        } else {
+            collaboratorTextView.setHint("No one tagged");
         }
 
         if (reasonText != null){

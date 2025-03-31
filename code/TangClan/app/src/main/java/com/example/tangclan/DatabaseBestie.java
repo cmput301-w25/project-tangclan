@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -232,6 +233,30 @@ public class DatabaseBestie {
      */
     public interface findEmailCallback {
         void onEmailFound(String email);
+    }
+
+    /**
+     * Grabs the username by UID
+     * @param uid
+     *      The uid of the username
+     * @param callback
+     *      Callback to handle when username found
+     */
+    public void findUsernameByUID(String uid, findUsernameCallback callback) {
+        usersRef.document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String username = documentSnapshot.get("username", String.class);
+
+                    callback.onUsernameFound(username);
+                });
+    }
+
+    /**
+     * Callback function for when username is successfully found
+     */
+    public interface findUsernameCallback {
+        void onUsernameFound(String username);
     }
 
     public void findProfileByUsername(String username, findProfileCallback callback) {
@@ -664,6 +689,24 @@ public class DatabaseBestie {
         });
     }
 
+    public void getAuthorOfMoodEvent(String mid, String month, MoodEventAuthorCallback callback) {
+        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String authorId = documentSnapshot.getString("postedBy");
+                findUsernameByUID(authorId, username -> {
+                    callback.onEventAuthorRetrieved(username);
+                });
+            }
+        });
+    }
+
+    public interface MoodEventAuthorCallback {
+        void onEventAuthorRetrieved(String username);
+    }
+
+
+
 
     /**
      * Given the uid of a user, retrieve their latest MoodEvent
@@ -964,6 +1007,24 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error updating follow request", e);
                     callback.onFollowRequestProcessed(false);
+                });
+    }
+
+    public void getMyPendingFollowRequests(String requesterUid, FollowRequestsCallback callback) {
+        followRequestsRef.whereEqualTo("requesterUid", requesterUid)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<FollowRequest> requests = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            requests.add(document.toObject(FollowRequest.class));
+                        }
+                        callback.onFollowRequestsRetrieved(requests);
+                    } else {
+                        Log.e(TAG, "Error getting follow requests", task.getException());
+                        callback.onFollowRequestsRetrieved(new ArrayList<>());
+                    }
                 });
     }
 

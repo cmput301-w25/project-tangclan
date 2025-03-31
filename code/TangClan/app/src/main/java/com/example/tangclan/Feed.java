@@ -3,9 +3,7 @@ package com.example.tangclan;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -19,6 +17,9 @@ public class Feed {
     private FollowingBook followingBook;
     private MoodEventBook moodEventBook;
     private List<MoodEvent> feedEvents;
+    private DatabaseBestie db;
+
+    private static Feed instance;
 
     /**
      *  Constructor for the feed class
@@ -27,43 +28,46 @@ public class Feed {
      * @param moodEventBook
      *      moodEventBook of the current user
      */
-    public Feed(FollowingBook followingBook, MoodEventBook moodEventBook) {
+    Feed(FollowingBook followingBook, MoodEventBook moodEventBook) {
         this.followingBook = followingBook;
         this.moodEventBook = moodEventBook;
         this.feedEvents = new ArrayList<>();
+        this.db = DatabaseBestie.getInstance();
+    }
+
+    public static synchronized Feed getInstance(FollowingBook followingBook, MoodEventBook moodEventBook) {
+        if (instance == null) {
+            instance = new Feed(followingBook, moodEventBook);
+        }
+        return instance;
     }
 
     /**
      * Adds all feed events to a list, and sorts by date and time
      */
-    public void loadFeed() {
+    /*public void loadFeed(DatabaseBestie.MoodEventsCallback callback) {
         feedEvents.clear();
-        feedEvents.addAll(followingBook.getRecentMoodEvents(new DatabaseBestie()).values());
-        feedEvents.addAll(moodEventBook.getAllMoodEvents());
-        sortFeedByDateTime();
-    }
+        DatabaseBestie db = new DatabaseBestie();
+
+        // Only load mood events from followed users
+        followingBook.getRecentMoodEvents(db, followingEvents -> {
+            feedEvents.addAll(followingEvents);
+            sortFeedByDateTime();
+            callback.onMoodEventsRetrieved((ArrayList<MoodEvent>) feedEvents);
+        });
+    }*/
 
     /**
      * Loads only the 3 most recent mood events from followed users
      * Sorts by date and time in reverse chronological order
      */
-    public void loadRecentFollowingFeed() {
+    /*public void loadRecentFollowingFeed(DatabaseBestie instance, DatabaseBestie.MoodEventsCallback callback) {
         feedEvents.clear();
-
-        // Get mood events from following users
-        Map<String, MoodEvent> followingEvents = followingBook.getRecentMoodEvents(new DatabaseBestie());
-        List<MoodEvent> sortedEvents = new ArrayList<>(followingEvents.values());
-
-        // Sort by date and time
-        sortedEvents.sort(Comparator.comparing(MoodEvent::getPostDate, Comparator.reverseOrder())
-                .thenComparing(MoodEvent::getPostTime, Comparator.reverseOrder()));
-
-        // Take only the 3 most recent events
-        int limit = Math.min(3, sortedEvents.size());
-        for (int i = 0; i < limit; i++) {
-            feedEvents.add(sortedEvents.get(i));
-        }
-    }
+        followingBook.getRecentMoodEvents(db, events -> {
+            feedEvents.addAll(events);
+            callback.onMoodEventsRetrieved((ArrayList<MoodEvent>) feedEvents);
+        });
+    }*/
 
     /**
      * Sorts the feedEvents list by Date and Time
