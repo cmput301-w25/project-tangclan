@@ -388,7 +388,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             locationName = post.getLocationName();
         }
 
-        if (post.getCollaborators().isEmpty()) {
+        if (post.getCollaborators().isPresent()) {
             collaborators = post.getCollaborators().get();
         } else {
             // handles null on the moodEventBundle
@@ -414,9 +414,13 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private byte[] getImageBytes(Bitmap image) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        return outputStream.toByteArray();
+        if (image != null) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            return outputStream.toByteArray();
+        }
+
+        return null;
     }
 
     @Override

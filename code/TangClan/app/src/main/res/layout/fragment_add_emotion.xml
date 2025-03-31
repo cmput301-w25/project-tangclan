@@ -37,17 +37,14 @@
     <!-- Emotion Buttons Grid -->
     <LinearLayout
         android:layout_width="390dp"
-        android:layout_height="226dp"
+        android:layout_height="275dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="363dp"
-            android:layout_height="206dp">
 
             <ImageView
-                android:layout_width="188dp"
-                android:layout_height="match_parent"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:contentDescription="Owl icon"
                 android:src="@drawable/ic_owl" />
 
@@ -63,8 +60,17 @@
                 android:text="Hey there! \nHow are you feeling?"
                 android:textColor="#523427"
                 android:textSize="24sp" />
-        </RelativeLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Choose an emoticon to describe how you feel"
+        android:textSize="16sp"
+        android:letterSpacing="-0.03"
+        android:fontFamily="@font/inter"
+        android:gravity="center"/>
 
     <GridLayout
         android:layout_width="match_parent"
@@ -200,12 +206,23 @@
             android:src="@drawable/ic_emotion_no_idea" />
     </GridLayout>
 
-    <!-- Action Buttons -->
-    <LinearLayout
+
+    <Button
+        android:id="@+id/btnNextEmotion"
         android:layout_width="match_parent"
+        android:paddingVertical="12dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="77dp"
-        android:gravity="center">
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@color/black"
+        android:text="Next"
+        android:fontFamily="@font/inter_semibold"
+        android:letterSpacing="-0.03"
+        android:textColor="@color/white"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/black"
+        android:textSize="16sp"
+        app:cornerRadius="24dp"/>
 
         <Button
             android:id="@+id/btnCancelEmotion"
