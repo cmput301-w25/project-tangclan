@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -167,6 +168,21 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         spannableEmotionalState.setSpan(new ForegroundColorSpan(color), 0, spannableEmotionalState.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         spannableUsernameEmotion.append(spannableUsername).append(" is feeling ").append(spannableEmotionalState);
+
+        ImageView emoticonView = view.findViewById(R.id.emoticon);
+
+        try {
+            Drawable emoticon = mood.getEmoticon(getContext());
+            if (emoticon != null) {
+                emoticonView.setImageDrawable(emoticon);
+                emoticonView.setVisibility(View.VISIBLE);
+            } else {
+                emoticonView.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            emoticonView.setVisibility(View.GONE);
+            Log.e("MoodEventAdapter", "Error loading emoticon", e);
+        }
 
         // Set username and emotion on the TextView
         TextView usernameEmotion = view.findViewById(R.id.username_emotional_state);
