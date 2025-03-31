@@ -62,6 +62,7 @@ public class MapActivity extends AppCompatActivity {
 
         // Initialize OSMDroid
         Configuration.getInstance().load(getApplicationContext(), getPreferences(MODE_PRIVATE));
+        filterExt = findViewById(R.id.filterExt);
 
 
 
@@ -86,9 +87,9 @@ public class MapActivity extends AppCompatActivity {
         friendsModeBtn = findViewById(R.id.friendsModeBtn);
         distanceSeekBar = findViewById(R.id.distanceSeekBar);
         distanceLabel = findViewById(R.id.distanceLabel);
-        filterExt = findViewById(R.id.filterExt);
 
-        NavBarHelper.setupNavBar(this);
+
+
 
         db = new DatabaseBestie();
 
@@ -142,6 +143,17 @@ public class MapActivity extends AppCompatActivity {
             }
         });
 
+        NavBarHelper.setupNavBar(this);
+
+        loggedInUser = LoggedInUser.getInstance();
+
+        // Initialize the mood event book if it doesn't exist
+        if (loggedInUser.getMoodEventBook() == null) {
+            loggedInUser.setMoodEventBook(new MoodEventBook());
+        }
+
+        // Fetch the user's following data from the database
+        loggedInUser.initializeFollowingBookFromDatabase(db);
     }
 
     private void setupLocationOverlay() {

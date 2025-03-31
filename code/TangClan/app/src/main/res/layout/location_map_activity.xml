@@ -56,7 +56,15 @@
             android:paddingVertical="10dp"/>
     </LinearLayout>
 
-    <!-- Distance Filter -->
+    <!-- Navbar at the very bottom -->
+    <include
+        android:id="@+id/navbarContainer"
+        layout="@layout/navbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
+
+    <!-- Distance Filter - Now appears ABOVE the navbar -->
     <LinearLayout
         android:id="@+id/distanceFilterLayout"
         android:layout_width="match_parent"
@@ -65,21 +73,23 @@
         android:background="@android:color/white"
         android:padding="8dp"
         android:elevation="4dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="16dp">
+        android:layout_above="@id/navbarContainer"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp">
 
-        <TextView
-            android:id="@+id/distanceLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Filter Distance: 5 km" />
+    <TextView
+        android:id="@+id/distanceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter Distance: 5 km" />
 
-        <SeekBar
-            android:id="@+id/distanceSeekBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="10"
-            android:progress="5" />
-    </LinearLayout>
+    <SeekBar
+        android:id="@+id/distanceSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="10"
+        android:progress="5" />
+</LinearLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
