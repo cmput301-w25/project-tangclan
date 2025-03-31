@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class MapActivity extends AppCompatActivity {
     private TextView distanceLabel;
     private DatabaseBestie db;
     private LoggedInUser loggedInUser;
+    private ImageView filterExt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +67,8 @@ public class MapActivity extends AppCompatActivity {
         friendsModeBtn = findViewById(R.id.friendsModeBtn);
         distanceSeekBar = findViewById(R.id.distanceSeekBar);
         distanceLabel = findViewById(R.id.distanceLabel);
+        filterExt = findViewById(R.id.filterExt);
+
         NavBarHelper.setupNavBar(this);
 
         db = new DatabaseBestie();
@@ -112,7 +116,6 @@ public class MapActivity extends AppCompatActivity {
 
         // Fetch the user's following data from the database
         loggedInUser.initializeFollowingBookFromDatabase(db);
-        FollowingBook userFollowingBook = loggedInUser.getFollowingBook();
     }
 
     private void setupLocationOverlay() {

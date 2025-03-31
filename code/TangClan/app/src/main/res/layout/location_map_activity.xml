@@ -26,6 +26,13 @@
         android:padding="8dp"
         android:gravity="center">
 
+        <ImageView
+            android:id="@+id/filterExt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/filter_filled" />
+
         <Button
             android:id="@+id/personalModeBtn"
             android:layout_width="wrap_content"
