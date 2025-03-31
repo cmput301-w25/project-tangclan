@@ -341,12 +341,12 @@ public class MapActivity extends AppCompatActivity {
         marker.setPosition(new GeoPoint(latitude, longitude));
 
         // Add the marker to the map
-        marker.setInfoWindow(new CustomInfoWindow(mapView, mood, timestamp, username));
+        //marker.setInfoWindow(new CustomInfoWindow(mapView, mood, timestamp, username));
 
-        marker.setOnMarkerClickListener((clickedMarker, mapVieww) -> {
-            clickedMarker.showInfoWindow();
-            return false;
-        });
+        //marker.setOnMarkerClickListener((clickedMarker, mapVieww) -> {
+        //    clickedMarker.showInfoWindow();
+        //    return false;
+        //});
 
         mapView.getOverlays().add(marker);
         mapView.invalidate();
