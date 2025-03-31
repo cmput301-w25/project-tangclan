@@ -122,7 +122,8 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         // Debug: Check if feedEvents is empty before loading
         Log.d("FEED_DEBUG", "Feed events before load: " + feed.getFeedEvents().size());
 
-        adapter = new MoodEventAdapter(this, new ArrayList<>());
+        ArrayList<MoodEvent> allEvents = new ArrayList<>();
+        adapter = new MoodEventAdapter(this, allEvents);
         listViewFeed.setAdapter(adapter);
 
         // Debug: Print current user ID
@@ -139,7 +140,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
             feed.getFollowingBook().setFollowing(following);
 
             // Now load the feed with this following list
-            loadFeed();
+            loadFeed(allEvents);
 
             // Debug: Check if feedEvents is populated after loading
             Log.d("FEED_DEBUG", "Feed events after load: " + feed.getFeedEvents().size());
@@ -160,7 +161,8 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         //progressBar = findViewById(R.id.progressBar);
 
         // Initialize adapters
-        adapter = new MoodEventAdapter(this, new ArrayList<>());
+        ArrayList<MoodEvent>  allEvents = new ArrayList<>();
+        adapter = new MoodEventAdapter(this, allEvents);
         listViewFeed.setAdapter(adapter);
 
         // Initialize user search components
@@ -194,7 +196,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
 
         // Set up the filter ImageView
         ImageView filterImageView = findViewById(R.id.filter);
-        filterImageView.setOnClickListener(v -> showFilterPopup(v));
+        filterImageView.setOnClickListener(v -> showFilterPopup(v, allEvents));
 
         // Initialize the feed
         FollowingBook followingBook = new FollowingBook();
@@ -202,7 +204,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         feed = new Feed(followingBook, moodEventBook);
 
         // Load the feed
-        loadFeed();
+        loadFeed(allEvents);
 
         // Set up the "Add Emotion" button
         ImageButton addEmotionButton = findViewById(R.id.fabAdd);
@@ -241,11 +243,11 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
      * Loads the mood event feed and updates the list adapter.
      *
      */
-    private void loadFeed() {
+    private void loadFeed(ArrayList<MoodEvent> allEvents) {
         //progressBar.setVisibility(View.VISIBLE);
         listViewFeed.setVisibility(View.GONE);
 
-        ArrayList<MoodEvent> allEvents = new ArrayList<>();
+
         ArrayList<String> following = feed.getFollowingBook().getFollowing();
 
         if (following.isEmpty()) {
@@ -281,6 +283,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
                             adapter.updateMoodEvents(allEvents);
                             //progressBar.setVisibility(View.GONE);
                             listViewFeed.setVisibility(View.VISIBLE);
+                            adapter.notifyDataSetChanged();
 
                             // Debug: Verify UI update
                             Log.d("FEED_DEBUG", "Adapter count: " + adapter.getCount());
@@ -323,7 +326,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
                 .show();
     }
 
-    public void showFilterPopup(View view) {
+    public void showFilterPopup(View view, ArrayList<MoodEvent>  allEvents) {
         // Inflate the popup layout
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.filter_popup, null);
@@ -379,7 +382,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         // Set up the reset filters button
         resetFiltersButton.setOnClickListener(v -> {
             // Reset the feed to its original state
-            resetFilters();
+            resetFilters(allEvents);
 
             // Dismiss the popup
             popupWindow.dismiss();
@@ -430,9 +433,9 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
         adapter.updateMoodEvents(filteredEvents);
     }
 
-    private void resetFilters() {
+    private void resetFilters(ArrayList<MoodEvent>  allEvents) {
         // Reload the feed without applying any filters
-        loadFeed();
+        loadFeed(allEvents);
 
         // Clear the search EditText
         EditText searchEditText = findViewById(R.id.editText_search);

@@ -621,6 +621,24 @@ public class DatabaseBestie {
         });
     }
 
+    public void getAuthorOfMoodEvent(String mid, String month, MoodEventAuthorCallback callback) {
+        DocumentReference eventRef = moodEventsRef.document(month).collection("events").document(mid);
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String authorId = documentSnapshot.getString("postedBy");
+                findUsernameByUID(authorId, username -> {
+                    callback.onEventAuthorRetrieved(username);
+                });
+            }
+        });
+    }
+
+    public interface MoodEventAuthorCallback {
+        void onEventAuthorRetrieved(String username);
+    }
+
+
+
 
     /**
      * Given the uid of a user, retrieve their latest MoodEvent

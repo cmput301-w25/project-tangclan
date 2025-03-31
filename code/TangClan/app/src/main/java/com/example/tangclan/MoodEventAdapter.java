@@ -63,11 +63,20 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         super(context, 0, moodEvents);
         this.moodToUsernameMap = new HashMap<>();
 
+        DatabaseBestie bestie = new DatabaseBestie();
+
         // Associate mock usernames with each mood event for display purposes
         // In a real implementation, these would come from the database
         int userCounter = 1;
+        String month;
+        Log.d("MOODEVENTADAPTER", "where am i");
         for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
+            Log.d("MOODEVENTADAPTER", "where am i pt 2");
+            month = event.userFormattedDate().substring(3);
+            Log.d("MOODEVENTADAPTER", "current mid is" + event.getMid() + "and month is"+month);
+            bestie.getAuthorOfMoodEvent(event.getMid(), month, username -> {
+                moodToUsernameMap.put(event, username);
+            });
         }
     }
 
@@ -249,9 +258,20 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         // Reset username mapping
         moodToUsernameMap.clear();
+
+        DatabaseBestie bestie = new DatabaseBestie();
+
+        // Associate mock usernames with each mood event for display purposes
+        // In a real implementation, these would come from the database
         int userCounter = 1;
+        String month;
         for (MoodEvent event : moodEvents) {
-            moodToUsernameMap.put(event, "User" + userCounter++);
+            Log.d("MOODEVENTADAPTER", "where am i pt 2");
+            month = event.userFormattedDate().substring(3);
+            Log.d("MOODEVENTADAPTER", "current mid is" + event.getMid() + "and month is"+month);
+            bestie.getAuthorOfMoodEvent(event.getMid(), month, username -> {
+                moodToUsernameMap.put(event, username);
+            });
         }
 
         notifyDataSetChanged();
