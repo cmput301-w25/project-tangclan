@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_c">
+    android:background="#f4f2e6">
 
     <TextView
         android:id="@+id/moodly"
@@ -15,18 +15,17 @@
         android:gravity="center_horizontal|top"
         android:letterSpacing="-0.05"
         android:text="@string/moodly"
-        android:textColor="@color/black"
-        android:textSize="64sp"
+        android:textAppearance="@style/moodly"
+        android:textColor="#d38c6f"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/form_userna"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:background="@drawable/edittext_round"
+        android:layout_width="386dp"
+        android:layout_height="39dp"
+        android:background="#EDE7DF"
         android:clipToOutline="true"
         app:circularflow_defaultRadius="24dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,11 +48,10 @@
 
     <RelativeLayout
         android:id="@+id/form_passwo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/edittext_round"
+        android:layout_width="386dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="32dp"
+        android:background="#EDE7DF"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +85,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/forgot_pass"
         android:textAppearance="@style/forgot_pass"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         app:layout_constraintEnd_toEndOf="@+id/form_passwo"
         app:layout_constraintTop_toBottomOf="@+id/form_passwo" />
 
@@ -98,9 +96,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="24dp"
-        android:padding="16dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="#d38c6f"
         android:clickable="true"
         android:clipToOutline="true"
         android:fontFamily="@font/inter_medium"
@@ -123,7 +119,7 @@
         android:gravity="center"
         android:text="@string/don_t_have_"
         android:textAppearance="@style/don_t_have_"
-        android:textColor="@color/black"
+        android:textColor="#916350"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

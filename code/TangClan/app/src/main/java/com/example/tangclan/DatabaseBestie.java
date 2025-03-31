@@ -515,7 +515,6 @@ public class DatabaseBestie {
                             moodEvent.setPostTime(postTime);
                             moodEvent.setImage(image);
 
-                            /*
                             if (location) {
                                 moodEvent.setGeolocation(location);
                                 moodEvent.setLatitude(lat);
@@ -523,7 +522,7 @@ public class DatabaseBestie {
                                 moodEvent.setLocationName(locationName);
                             } else if (!location) {
                                 moodEvent.setGeolocation(location);
-                            }*/
+                            }
 
 
                             events.add(moodEvent);
@@ -588,7 +587,6 @@ public class DatabaseBestie {
                             moodEvent.setImage(image);
                             moodEvent.setPrivacyOn(privateMood != null && privateMood);
 
-                            /*
                             if (location) {
                                 moodEvent.setGeolocation(location);
                                 moodEvent.setLatitude(lat);
@@ -596,7 +594,7 @@ public class DatabaseBestie {
                                 moodEvent.setLocationName(locationName);
                             } else if (!location) {
                                 moodEvent.setGeolocation(location);
-                            }*/
+                            }
 
 
                             moodEvents.add(moodEvent);

@@ -40,6 +40,8 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -184,6 +186,9 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         TextView timeTextView = view.findViewById(R.id.time_text);
         ImageView moodImageView = view.findViewById(R.id.mood_event_image);
         ImageView moodIcon = view.findViewById(R.id.emoticon); // Emoticon ImageView
+        ImageView geolocation = view.findViewById(R.id.imageView3);
+        TextView locationName = view.findViewById(R.id.location_string);
+        LinearLayout locationView = view.findViewById(R.id.locationText);
 
         // Set the emoticon for the mood
         Drawable emoticonDrawable = moodEvent.getMood().getEmoticon(getContext());
@@ -214,6 +219,11 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
         } else {
             moodImageView.setVisibility(View.GONE); // Hide image if not available
         }
+
+        if (moodEvent.hasGeolocation()) {
+            locationName.setText(moodEvent.getLocationName());
+            locationView.setVisibility(view.VISIBLE);
+        } else { locationView.setVisibility(view.GONE); }
 
 
 

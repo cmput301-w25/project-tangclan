@@ -3,6 +3,7 @@ package com.example.tangclan;
 import static android.view.View.FIND_VIEWS_WITH_TEXT;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,12 +16,18 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+
+import com.google.firebase.firestore.FieldValue;
+
+import org.osmdroid.util.GeoPoint;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -34,6 +41,9 @@ public class ReviewDetailsActivity extends AppCompatActivity {
     String reasonImage;
 
     boolean privacyOn;
+    boolean locationOn;
+    GeoPoint receivedPoint;
+    String locationString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +62,13 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         EditText reasonTextView = findViewById(R.id.edit_reasonwhy);
         ImageButton imageView = findViewById(R.id.image_reasonwhy);
         SwitchCompat privacyToggle = findViewById(R.id.privacy_toggle);
-        // TODO: save location: toggle state to enable permission, editText with address or both??
+        TextView locationDisplay = findViewById(R.id.location_display);
+        SwitchCompat locationToggle = findViewById(R.id.use_location_switch);
+
         Button confirmButton = findViewById(R.id.submit_details);
         ImageView closeIcon = findViewById(R.id.closeIcon);
 
-        setDetails(emotionTextView, settingTextView, collaboratorTextView, reasonTextView, imageView, privacyToggle);
+        setDetails(emotionTextView, settingTextView, collaboratorTextView, reasonTextView, imageView, privacyToggle, locationToggle, locationDisplay);
 
         // Listen for toggle
         privacyToggle.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +77,51 @@ public class ReviewDetailsActivity extends AppCompatActivity {
                 privacyOn = !privacyOn; // switch
                 privacyToggle.setChecked(privacyOn);
                 savedDetails.putBoolean("privacy", privacyOn); // update bundle
+            }
+        });
+
+        locationToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // turn it all on
+                locationOn = !locationOn;
+                locationToggle.setChecked(locationOn);
+
+                if (locationToggle.isChecked()) { // If the toggle is turned on
+                    // Show a prompt to confirm
+                    new AlertDialog.Builder(ReviewDetailsActivity.this)  // Use the current activity context
+                            .setMessage("Attach location to mood event?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                // If user selects Yes, don't change previous settings
+                                // open the AddLocationActivity
+
+                                Intent intent = new Intent(ReviewDetailsActivity.this, AddLocationActivity.class);
+                                intent.putExtras(savedDetails);
+                                startActivity(intent);
+
+                                savedDetails.putBoolean("location", true);
+                                String locationName = savedDetails.getString("locationName");
+
+                                if (locationName != null) {
+                                    locationDisplay.setText(locationName);
+                                    locationDisplay.setVisibility(View.VISIBLE);
+                                } else {
+                                    locationDisplay.setVisibility(View.GONE);
+                                }
+                            })
+                            .setNegativeButton("No", (dialog, which) -> {
+                                // If user selects No, turn off the toggle and locationOn
+                                locationToggle.setChecked(false);
+                                locationOn = !locationOn;
+                                savedDetails.putBoolean("location", false);
+                                locationDisplay.setVisibility(View.GONE);
+                            })
+                            .show();
+                } else {
+                    // If toggle is turned off (user clicked "No" or it was toggled off)
+                    savedDetails.putBoolean("location", false);
+                    locationDisplay.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -100,6 +157,13 @@ public class ReviewDetailsActivity extends AppCompatActivity {
             reasonText = savedDetails.getString("reason");
             reasonImage = savedDetails.getString("image");
             privacyOn = savedDetails.getBoolean("privacy");
+            locationOn = savedDetails.getBoolean("location");
+
+            double lat = savedDetails.getDouble("latitude");
+            double lon = savedDetails.getDouble("longitude");
+            receivedPoint = new GeoPoint(lat, lon);
+
+            locationString = savedDetails.getString("locationName");
         }
     }
 
@@ -108,7 +172,9 @@ public class ReviewDetailsActivity extends AppCompatActivity {
                            EditText collaboratorTextView,
                            EditText reasonTextView,
                            ImageButton imageView,
-                           SwitchCompat privacyToggle) {
+                           SwitchCompat privacyToggle,
+                           SwitchCompat locationToggle,
+                           TextView locationDisplay) {
         emotionTextView.setText(selectedEmotion);
         if (selectedSetting != null) {
             settingTextView.setText(selectedSetting);
@@ -132,5 +198,11 @@ public class ReviewDetailsActivity extends AppCompatActivity {
         }
 
         privacyToggle.setChecked(privacyOn);
+
+        locationToggle.setChecked(locationOn);
+
+        if (locationString != null && locationToggle.isChecked()) {
+            locationDisplay.setText(locationString);
+        }
     }
 }

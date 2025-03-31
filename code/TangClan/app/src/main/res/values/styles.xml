@@ -18,7 +18,7 @@
     <style name="moodly">
         <item name="android:textSize">35sp</item>
         <item name="android:letterSpacing">-0.1</item>
-        <item name="android:textColor">#FFD261</item>
+        <item name="android:textColor">#D38C6F</item>
     </style>
 
     <style name="name">

@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#B4B19E"
+    android:backgroundTint="#F4F2E6"
     android:longClickable="true"
     android:padding="24dp">
     <!--Text viewn-->
@@ -13,8 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/locationText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/reason"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -37,6 +39,39 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/locationText"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="15dp"
+        android:background="#f4f2e6"
+        android:backgroundTint="#f4f2e6"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/reason"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container_drawable_name_emotional_state">
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="0.1"
+            android:paddingLeft="5dp"
+            app:srcCompat="@drawable/baseline_location_on_24" />
+
+        <TextView
+            android:id="@+id/location_string"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_weight="1"
+            android:text="Somewhere over the rainbow..."
+            android:textAlignment="viewStart"
+            android:textColor="#72875B" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/reason"
         android:layout_width="match_parent"
@@ -44,10 +79,10 @@
         android:fontFamily="@font/inter"
         android:letterSpacing="-0.02"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/mood_event_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/container_drawable_name_emotional_state"
-        app:layout_constraintBottom_toTopOf="@id/mood_event_image"
+        app:layout_constraintTop_toBottomOf="@id/locationText"
         tools:text="@string/placeholder_situation" />
 
     <ImageView
@@ -55,19 +90,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:contentDescription="Mood Event Image"
         android:adjustViewBounds="true"
+        android:contentDescription="Mood Event Image"
+        app:layout_constraintBottom_toTopOf="@id/container_date_time"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/container_date_time"
         app:layout_constraintTop_toBottomOf="@id/reason" />
 
     <LinearLayout
         android:id="@+id/container_date_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginVertical="16dp"
+        android:background="#f4f2e6"
+        android:backgroundTint="#f4f2e6"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mood_event_image">

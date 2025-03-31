@@ -12,7 +12,7 @@
         android:id="@+id/bottomNavBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#f1ffa1"
+        android:background="#d38c6f"
         android:outlineAmbientShadowColor="@color/material_dynamic_neutral80"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -20,6 +20,8 @@
             android:id="@+id/imgMap"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:clickable="true"
+            android:focusable="true"
             android:src="@drawable/baseline_location_on_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/imgHome"
@@ -41,7 +43,7 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginBottom="10dp"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="#d38c6f"
             android:contentDescription="add post"
             android:src="@drawable/outline_add_box_24"
             app:borderWidth="1dp"
