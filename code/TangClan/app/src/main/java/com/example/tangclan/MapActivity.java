@@ -91,6 +91,18 @@ public class MapActivity extends AppCompatActivity {
         NavBarHelper.setupNavBar(this);
 
         db = new DatabaseBestie();
+
+        loggedInUser = LoggedInUser.getInstance();
+
+        // Initialize the mood event book if it doesn't exist
+        if (loggedInUser.getMoodEventBook() == null) {
+            loggedInUser.setMoodEventBook(new MoodEventBook());
+        }
+
+        // Fetch the user's following data from the database
+        loggedInUser.initializeFollowingBookFromDatabase(db);
+        FollowingBook followingBook = loggedInUser.getFollowingBook();
+
         personalModeBtn.setSelected(true);
         switchToPersonalMode();
 
@@ -101,9 +113,13 @@ public class MapActivity extends AppCompatActivity {
         });
 
         friendsModeBtn.setOnClickListener(v -> {
+            if (followingBook.getFollowerCount() != 0) {
             personalModeBtn.setSelected(false);
             friendsModeBtn.setSelected(true);
-            switchToFriendsMode();
+            switchToFriendsMode();}
+            else {
+                Toast.makeText(this, "Follow your friends to see their moods!", Toast.LENGTH_LONG).show();
+            }
         });
 
         distanceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -126,15 +142,6 @@ public class MapActivity extends AppCompatActivity {
             }
         });
 
-        loggedInUser = LoggedInUser.getInstance();
-
-        // Initialize the mood event book if it doesn't exist
-        if (loggedInUser.getMoodEventBook() == null) {
-            loggedInUser.setMoodEventBook(new MoodEventBook());
-        }
-
-        // Fetch the user's following data from the database
-        loggedInUser.initializeFollowingBookFromDatabase(db);
     }
 
     private void setupLocationOverlay() {
@@ -155,6 +162,10 @@ public class MapActivity extends AppCompatActivity {
         MoodEventBook moodEventBook = loggedInUser.getMoodEventBook();
         List<MoodEvent> filteredEvents = applyFiltersToEvents(moodEventBook.getAllMoodEvents());
 
+        if (moodEventBook.getMoodEventCount() == 0) {
+            Toast.makeText(this, "You haven't shared any moods yet. Come back here once you do to see them!", Toast.LENGTH_LONG).show();
+        } else {
+
         for (MoodEvent event : filteredEvents) {
             if (event.hasGeolocation() && isWithinDistance(event.getLatitude(), event.getLongitude())) {
                 addMoodMarker(mapView,
@@ -165,7 +176,7 @@ public class MapActivity extends AppCompatActivity {
                         getEmojiDrawableResId(event.getMood().getEmotion()),
                         loggedInUser.getUsername());
             }
-        }
+        }}
         mapView.invalidate();
     }
     private void switchToFriendsMode() {
@@ -187,7 +198,7 @@ public class MapActivity extends AppCompatActivity {
         }
 
         // Get friends' filtered events
-        FollowingBook followingBook = loggedInUser.getFollowingBook();
+        followingBook = loggedInUser.getFollowingBook();
         final AtomicInteger counter = new AtomicInteger(followingBook.getFollowing().size());
         final Map<String, MoodEvent> uidToMoodEvent = new HashMap<>();
 
