@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/blue_gradient_background"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/addemotion">
 
     <!-- Top bar -->
     <LinearLayout

@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
+    android:id="@+id/filter_right"
     android:background="@android:color/white">
 
     <!-- Select All CheckBox -->
