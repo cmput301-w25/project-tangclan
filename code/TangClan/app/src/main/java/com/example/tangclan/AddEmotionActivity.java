@@ -2,12 +2,20 @@ package com.example.tangclan;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Objects;
 
 public class AddEmotionActivity extends AppCompatActivity {
 
@@ -110,8 +118,36 @@ public class AddEmotionActivity extends AppCompatActivity {
         button.setBackgroundResource(R.drawable.selected_button_background); // Use a custom background to highlight
 
         selectedEmotion = emotion;
+        if (Objects.equals(emotion, "no_idea")) {
+            selectedEmotion = "no idea";
+        }
         savedDetails.putString("emotion", selectedEmotion); // update bundle
         selectedButton = button;  // Keep track of the selected button
+
+        TextView emotionTxt = findViewById(R.id.emotionText);
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
+
+        if (emotion != "no_idea") {
+            Mood mood = new Mood(emotion);
+            SpannableString text = new SpannableString("You are feeling ");
+            stringBuilder.append(text);
+            SpannableString emotionString = new SpannableString(emotion);
+            emotionString.setSpan(new ForegroundColorSpan(mood.getColor(this)), 0, emotionString.length(), 33);
+            stringBuilder.append(emotionString);
+        } else {
+            Mood mood = new Mood("no idea");
+            SpannableString textBeforeEmotion = new SpannableString("You have ");
+            SpannableString textAfterEmotion = new SpannableString(" how you're feeling");
+            Spannable noIdeaString = new SpannableString("no idea");
+            noIdeaString.setSpan(new ForegroundColorSpan(mood.getColor(this)), 0, noIdeaString.length(), 33);
+            stringBuilder.append(textBeforeEmotion)
+                    .append(noIdeaString)
+                    .append(textAfterEmotion);
+        }
+
+
+        emotionTxt.setText(stringBuilder);
+        emotionTxt.setVisibility(View.VISIBLE);
     }
 
     private int getButtonIndex(String emotion) {
