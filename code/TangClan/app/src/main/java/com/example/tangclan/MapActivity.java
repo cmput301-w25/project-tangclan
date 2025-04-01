@@ -210,10 +210,13 @@ public class MapActivity extends AppCompatActivity {
         MoodEvent validMoodEvent = getMostRecentMoodEventWithLocation((ArrayList<MoodEvent>) filteredUserEvents);
 
         if (validMoodEvent != null && isWithinDistance(validMoodEvent.getLatitude(), validMoodEvent.getLongitude())) {
-            addMoodMarker(mapView, validMoodEvent.getLatitude(), validMoodEvent.getLongitude(),
-                    validMoodEvent.getLocationName(), "You were feeling " + validMoodEvent.getMood().getEmotion(),
+            addMoodMarker(mapView,
+                    validMoodEvent.getLatitude(), validMoodEvent.getLongitude(),
+                    validMoodEvent.getLocationName(),
+                    "You were feeling " + validMoodEvent.getMood().getEmotion(),
                     validMoodEvent.getPostDate() + " " + validMoodEvent.getPostTime(),
-                    getEmojiDrawableResId(validMoodEvent.getMood().getEmotion()), loggedInUser.getUsername());
+                    getEmojiDrawableResId(validMoodEvent.getMood().getEmotion()),
+                    loggedInUser.getUsername());
 
             mapView.getController().setCenter(new GeoPoint(validMoodEvent.getLatitude(), validMoodEvent.getLongitude()));
             // Draw range circle
@@ -236,7 +239,7 @@ public class MapActivity extends AppCompatActivity {
                 }
 
                 if (counter.decrementAndGet() == 0) {
-                    onAllMoodEventsFetched(uidToMoodEvent);
+                    onAllMoodEventsFetched(uidToMoodEvent, followingBook);
                 }
             });
         }
@@ -262,10 +265,10 @@ public class MapActivity extends AppCompatActivity {
 
 
     // This method will be called when all mood events have been fetched
-    private void onAllMoodEventsFetched(Map<String, MoodEvent> uidToMoodEvent) {
+    private void onAllMoodEventsFetched(Map<String, MoodEvent> uidToMoodEvent, FollowingBook f) {
         // Iterate through the map of followed users' most recent mood events
         for (Map.Entry<String, MoodEvent> entry : uidToMoodEvent.entrySet()) {
-            String username =  entry.getKey();
+            String username =  f.getUIDtoFollowingUsername(entry.getKey());
             MoodEvent event = entry.getValue();
 
             if (event != null) {

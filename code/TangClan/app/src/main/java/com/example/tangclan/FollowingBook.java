@@ -164,6 +164,10 @@ public class FollowingBook {
         return new ArrayList<>(this.UIDtoFollowingUsername.values());
     }
 
+    /**
+     * Resets the followed and following data
+     */
+
     public void resetFollowingUsernames() {
         this.UIDtoFollowingUsername = new HashMap<>();
     }
@@ -171,6 +175,24 @@ public class FollowingBook {
     public void resetFollowerUsernames() {
         this.UIDtoFollowerUsername = new HashMap<>();
     }
+
+
+    /**
+     Gets the username attached to a give uid
+     * @return
+     *      A String that is the username associated with a uid
+     */
+    public String getUIDtoFollowingUsername(String uid) {
+        Map<String, String> moodmap = UIDtoFollowingUsername;
+        return moodmap.get(uid);
+    }
+
+    public String getUIDtoFollowerUsername(String uid) {
+        Map<String, String> moodmap = UIDtoFollowerUsername;
+        return moodmap.get(uid);
+    }
+
+
 
     private void addMockMoodEvents(Map<String, MoodEvent> uidToMoodEvent) {
         MoodEvent event1 = createMockEvent("happy", "1000", "2025-03-18", "12:29:39.673202",
