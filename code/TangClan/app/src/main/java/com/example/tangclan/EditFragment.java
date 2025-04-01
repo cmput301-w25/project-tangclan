@@ -172,6 +172,11 @@ public class EditFragment extends Fragment {
         SwitchCompat privacySetting = view.findViewById(R.id.privacy_toggle);
         privacySetting.setChecked(privacy);
 
+        privacySetting.setOnClickListener(v -> {
+            privacy = !privacy;
+            privacySetting.setChecked(privacy);
+        });
+
         // implement submit button
         Button submitButt = view.findViewById(R.id.submit_details);
         submitButt.setOnClickListener(new View.OnClickListener() {
@@ -179,7 +184,7 @@ public class EditFragment extends Fragment {
             public void onClick(View view) {
                 String newReason = editReason.getText().toString();
 
-                if (newReason.length() > 200) { // hi alissa
+                if (newReason.length() > 200) {
                     editReason.setError("Text is over 200 characters!");
                     return;
                 }
@@ -207,7 +212,10 @@ public class EditFragment extends Fragment {
                 } else {
                     newImg = null;
                 }
-                saveEditsToDatabase(newEmotion[0], newReason, situation, newImg);  // TODO: add setting and permisisions
+
+                String newSetting = editSocialSit.getText().toString();
+                boolean privateMood = privacySetting.isChecked();
+                saveEditsToDatabase(newEmotion[0], newReason, newSetting, situation, newImg, privateMood);  // TODO: add setting and permisisions
 
                 finishFragment();
             }
@@ -236,6 +244,7 @@ public class EditFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 saved[0] = adapterView.getItemAtPosition(i).toString();
+                autoCompleteView.setText(adapterView.getItemAtPosition(i).toString());
                 autoCompleteView.setHint(adapterView.getItemAtPosition(i).toString());
             }
         });
@@ -290,12 +299,14 @@ public class EditFragment extends Fragment {
                 }
             });
 
-    public void saveEditsToDatabase(String emotion, String reason, ArrayList<String> socialSit, String image) {
+    public void saveEditsToDatabase(String emotion, String reason, String newSetting, ArrayList<String> socialSit, String image, boolean privacySet) {
         DatabaseBestie db = new DatabaseBestie();
         db.updateMoodEventEmotionalState(mid, month, emotion.toLowerCase());
         db.updateMoodEventReason(mid,month, reason);
         db.updateMoodEventCollaborators(mid, month, socialSit);
+        db.updateMoodEventSetting(mid,month,newSetting);
         db.updateMoodEventPhoto(mid,month,image);
+        db.updateMoodEventPrivacy(mid,month,privacySet);
     }
 
     private void finishFragment() {

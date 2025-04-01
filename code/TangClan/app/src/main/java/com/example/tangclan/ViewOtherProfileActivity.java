@@ -37,6 +37,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ViewOtherProfileActivity extends AppCompatActivity {
@@ -156,7 +157,18 @@ public class ViewOtherProfileActivity extends AppCompatActivity {
         db.getAllMoodEvents(uid, events -> {
             Collections.reverse(events);
             userMoodEvents = new ArrayList<>(events); // Store the original events
-            adapter = new ProfileHistoryAdapter(this, events, username); // Initialize the class field
+            if (!Objects.equals(username, loggedInUser.getUsername())) {
+                ArrayList<MoodEvent> events1 = new ArrayList<>();
+                for (MoodEvent event: events) {
+                    if (!event.isPrivacyOn()) {
+                        events1.add(event);
+                    }
+                }
+                adapter = new ProfileHistoryAdapter(this, events1, username);
+            } else {
+                adapter = new ProfileHistoryAdapter(this, events, username);
+            }
+            // Initialize the class field
             moodEventsListView.setAdapter(adapter);
         });
     }

@@ -62,8 +62,10 @@ public class MoodEventBook {
                 db.getMoodEventByMid(id, month, (updatedEvent, emot) -> {
                     event.setMood(emot);
                     event.setCollaborators(updatedEvent.getCollaborators().orElse(new ArrayList<>()));
+                    event.setSetting(updatedEvent.getSetting());
                     event.setReason(updatedEvent.getReason().orElse(""));
                     event.setImage(updatedEvent.getImage());
+                    event.setPrivacyOn(updatedEvent.isPrivacyOn());
                 });
             }
         }

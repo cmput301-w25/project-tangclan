@@ -33,7 +33,7 @@ import java.util.Locale;
 
 public class AddSocialSituationActivity extends AppCompatActivity {
 
-    String[] settings = {"", "alone", "with one other person", "with two to several people", "with a crowd"};
+    String[] settings = {"", " alone", "with one other person", "with two to several people", "with a crowd"};
     private WizVIew wizVIew;  // ViewModel instance
     private String socialSetting;
     private ArrayList<String> collaborators;
