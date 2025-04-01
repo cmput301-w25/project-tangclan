@@ -211,7 +211,7 @@ public class MapActivity extends AppCompatActivity {
 
         if (validMoodEvent != null && isWithinDistance(validMoodEvent.getLatitude(), validMoodEvent.getLongitude())) {
             addMoodMarker(mapView, validMoodEvent.getLatitude(), validMoodEvent.getLongitude(),
-                    validMoodEvent.getLocationName(), "You were feeling " + validMoodEvent.getMood().getEmotion() + " on " + validMoodEvent.getPostTime(),
+                    validMoodEvent.getLocationName(), "You were feeling " + validMoodEvent.getMood().getEmotion(),
                     validMoodEvent.getPostDate() + " " + validMoodEvent.getPostTime(),
                     getEmojiDrawableResId(validMoodEvent.getMood().getEmotion()), loggedInUser.getUsername());
 
@@ -265,7 +265,7 @@ public class MapActivity extends AppCompatActivity {
     private void onAllMoodEventsFetched(Map<String, MoodEvent> uidToMoodEvent) {
         // Iterate through the map of followed users' most recent mood events
         for (Map.Entry<String, MoodEvent> entry : uidToMoodEvent.entrySet()) {
-            String username = entry.getKey();
+            String username =  entry.getKey();
             MoodEvent event = entry.getValue();
 
             if (event != null) {
