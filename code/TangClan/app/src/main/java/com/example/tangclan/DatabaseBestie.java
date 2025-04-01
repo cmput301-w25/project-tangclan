@@ -431,6 +431,20 @@ public class DatabaseBestie {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error updating photo", e));
     }
 
+    public void updateMoodEventPrivacy(String mid, String month, boolean privacy) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("privateMood", privacy)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Privacy setting updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating privacy setting", e));
+    }
+
+    public void updateMoodEventSetting(String mid, String month, String setting) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("setting", setting)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "setting updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updatingsetting", e));
+    }
+
     public void updateLocation(String mid, String month, boolean location, Double lat, Double lon, String name) {
         DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
         event.update("location", location)
