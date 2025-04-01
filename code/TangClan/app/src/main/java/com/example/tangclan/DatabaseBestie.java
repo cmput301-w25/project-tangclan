@@ -677,12 +677,12 @@ public class DatabaseBestie {
                 }
 
 
-                if (location != null && location) {
+                if (location) {
                     moodEvent.setGeolocation(location);
                     moodEvent.setLatitude(lat);
                     moodEvent.setLongitude(lon);
                     moodEvent.setLocationName(locationName);
-                } else if (location != null && !location) {
+                } else if (!location) {
                     moodEvent.setGeolocation(location);
                 }
 
