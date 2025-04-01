@@ -587,12 +587,12 @@ public class DatabaseBestie {
                             moodEvent.setImage(image);
                             moodEvent.setPrivacyOn(privateMood != null && privateMood);
 
-                            if (location) {
+                            if (location!=null && location==true) {
                                 moodEvent.setGeolocation(location);
                                 moodEvent.setLatitude(lat);
                                 moodEvent.setLongitude(lon);
                                 moodEvent.setLocationName(locationName);
-                            } else if (!location) {
+                            } else if (location!=null && location==false) {
                                 moodEvent.setGeolocation(location);
                             }
 
