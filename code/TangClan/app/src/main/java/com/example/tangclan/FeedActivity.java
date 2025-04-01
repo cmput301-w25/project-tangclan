@@ -287,7 +287,7 @@ public class FeedActivity extends AppCompatActivity implements SearchOtherProfil
                             .limit(3)
                             .collect(Collectors.toList());
 
-                    // filter out private events
+                    // filter out private events /
                     ArrayList<MoodEvent> publicRecentEvents = new ArrayList<>();
                     for (MoodEvent event: recentEvents) {
                         if (!event.isPrivacyOn()) {
