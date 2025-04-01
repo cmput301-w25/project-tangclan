@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -53,6 +54,8 @@ public class CollaboratorAdapter extends ArrayAdapter<Profile> {
             byte[] pfpByteArray = Base64.decode(pfp, Base64.DEFAULT);
             Bitmap pfpBitmap = BitmapFactory.decodeByteArray(pfpByteArray, 0, pfpByteArray.length);
             pfpImageView.setImageBitmap(pfpBitmap);
+        } else {
+            pfpImageView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.default_pfp));
         }
 
         return view;

@@ -167,7 +167,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         if (moodEvent.getCollaborators().isPresent()) {
             collaborators = moodEvent.getCollaborators().get();
-            Log.d("test1", collaborators.get(0));
 
             // remove all empty tags, if any
             //collaborators.removeAll(Collections.singleton(""));
