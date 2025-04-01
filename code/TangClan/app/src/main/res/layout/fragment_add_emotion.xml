@@ -219,11 +219,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_weight="1"
-        android:text="You are feeling so joyous."
+        android:letterSpacing="-0.03"
+        android:fontFamily="@font/inter"
+        android:text="You are feeling"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:visibility="gone" />
+        android:visibility="invisible"/>
 
     <LinearLayout
 
