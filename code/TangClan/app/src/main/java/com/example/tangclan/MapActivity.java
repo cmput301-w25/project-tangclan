@@ -211,7 +211,7 @@ public class MapActivity extends AppCompatActivity {
 
         if (validMoodEvent != null && isWithinDistance(validMoodEvent.getLatitude(), validMoodEvent.getLongitude())) {
             addMoodMarker(mapView, validMoodEvent.getLatitude(), validMoodEvent.getLongitude(),
-                    validMoodEvent.getLocationName(), "You were feeling " + validMoodEvent.getMood().getEmotion(),
+                    validMoodEvent.getLocationName(), "You were feeling " + validMoodEvent.getMood().getEmotion() + " on " + validMoodEvent.getPostTime(),
                     validMoodEvent.getPostDate() + " " + validMoodEvent.getPostTime(),
                     getEmojiDrawableResId(validMoodEvent.getMood().getEmotion()), loggedInUser.getUsername());
 
@@ -270,7 +270,7 @@ public class MapActivity extends AppCompatActivity {
 
             if (event != null) {
                 addMoodMarker(mapView, event.getLatitude(), event.getLongitude(), event.getLocationName(),
-                        "Feeling " + event.getMood().getEmotion(), event.getPostDate() + " " + event.getPostTime(),
+                        username + " is feeling " + event.getMood().getEmotion(), event.getPostDate() + " " + event.getPostTime(),
                         getEmojiDrawableResId(event.getMood().getEmotion()), username);
             }
         }
@@ -319,7 +319,7 @@ public class MapActivity extends AppCompatActivity {
         marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
         marker.setTitle(mood); // The main text
-        marker.setSubDescription(locationName + "\n" + timestamp);
+        marker.setSubDescription(locationName);
 
         // Load your drawable resource
         Drawable drawable = ContextCompat.getDrawable(this, emojiDrawableResId);
@@ -336,9 +336,7 @@ public class MapActivity extends AppCompatActivity {
         Drawable scaledDrawable = new BitmapDrawable(getResources(), scaledBitmap);
 
 // Set the scaled drawable as the marker icon
-        marker = new Marker(mapView);
         marker.setIcon(scaledDrawable);
-        marker.setPosition(new GeoPoint(latitude, longitude));
 
         // Add the marker to the map
         //marker.setInfoWindow(new CustomInfoWindow(mapView, mood, timestamp, username));
