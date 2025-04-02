@@ -26,7 +26,7 @@ This project is an android application for users to log and share mood events in
 
 1. Clone the respective repo (project-tangclan)
 2. Open repo in Android Studio
-3. Run the code and witness the app in the emulator
+3. Run the code and witness the app in the emulator (preferably on the Medium Phone API 35)
 
 ## Documentation
 
