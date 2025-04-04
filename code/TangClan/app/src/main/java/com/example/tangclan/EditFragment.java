@@ -294,14 +294,14 @@ public class EditFragment extends Fragment {
         DatabaseBestie db = new DatabaseBestie();
         db.updateMoodEventEmotionalState(mid, month, emotion.toLowerCase());
         db.updateMoodEventReason(mid,month, reason);
+        AutoCompleteTextView settingView = getView().findViewById(R.id.choose_social_situation);
+        db.updateMoodEventSetting(mid, month, settingView.getText().toString());
         db.updateMoodEventCollaborators(mid, month, socialSit);
         db.updateMoodEventPhoto(mid,month,image);
 
         SwitchCompat privacySetting = getView().findViewById(R.id.privacy_toggle);
         db.updateMoodEventPrivacy(mid, month, privacySetting.isChecked());
 
-        AutoCompleteTextView settingView = getView().findViewById(R.id.choose_social_situation);
-        db.updateMoodEventSetting(mid, month, settingView.getText().toString());
     }
 
     private void finishFragment() {

@@ -127,7 +127,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         });
 
 
-
         // Process incoming mood event data if it exists
         processMoodEventData();
     }
@@ -142,7 +141,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     @Override
-    protected void onPause()  {
+    protected void onPause() {
         networkManager.unregisterNetworkMonitor();
         super.onPause();
     }
@@ -215,7 +214,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
             }
 
 
-
             // Adjust ListView height if needed
             //ViewGroup.LayoutParams params = profileArrayListView.getLayoutParams();
 
@@ -261,7 +259,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                                         Toast.makeText(view.getContext(), "Mood Event Deleted", Toast.LENGTH_SHORT).show();
 
 
-
                                         adapter.notifyDataSetChanged(); // Notify adapter of changes
 
                                         adapter.remove(post);
@@ -303,7 +300,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                 } else {
                     newMoodEvent = new MoodEvent(selectedEmotion);
                 }
-
 
 
                 // set setting
@@ -365,8 +361,6 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
 
-
-
     public void goToEditProfile() {
         // Handle edit profile button click
         Intent intent = new Intent(this, EditProfileActivity.class);
@@ -393,8 +387,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         //byte[] imgBytes = null;
 
 
-        if (post.getImage() != null){
-            imgBytes = getImageBytes(post.getImage());}
+        if (post.getImage() != null) {
+            imgBytes = getImageBytes(post.getImage());
+        }
         boolean useLoc = post.hasGeolocation();
         if (useLoc) {
             lat = post.getLatitude();
@@ -444,7 +439,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
     @Override
     public void onFragmentFinished() {
-        userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
+        /*userProfile.getMoodEventBook().updateMoodEvents(); // update mood event book
         // update adapter
         String event_id, event_month;
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -467,11 +462,12 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                     event.setLongitude(updatedEvent.getLongitude());
                     event.setLocationName(updatedEvent.getLocationName());
                 }
-                adapter.insert(event,pos);
+                adapter.insert(event, pos);
                 //adapter.notifyDataSetChanged();
+                //refreshData();
             });
         }
-        adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();*/
         refreshData();
     }
 
@@ -637,7 +633,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
         Context context = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);
-        View dialogView = inflater.inflate(R.layout.dialog_tagged,null);
+        View dialogView = inflater.inflate(R.layout.dialog_tagged, null);
         builder.setView(dialogView);
 
         ListView tags = dialogView.findViewById(R.id.listview_tagged);
@@ -677,9 +673,9 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
 
         profileDetails.putString("uid", profile.getUid());
-        profileDetails.putString("username",profile.getUsername());
-        profileDetails.putString("email",profile.getEmail());
-        profileDetails.putString("displayName",profile.getDisplayName());
+        profileDetails.putString("username", profile.getUsername());
+        profileDetails.putString("email", profile.getEmail());
+        profileDetails.putString("displayName", profile.getDisplayName());
         String pfpStr = profile.getProfilePic();
         if (pfpStr != null) {
             byte[] decodedBytes = Base64.decode(pfpStr, Base64.DEFAULT);
@@ -697,36 +693,26 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     }
 
     private void refreshData() {
-        // Show refresh animation
         swipeRefreshLayout.setRefreshing(true);
 
-        // Force reload from database
-        userProfile.initializeFollowingBookFromDatabase(databaseBestie);
-
-        // Get updated mood events
         databaseBestie.getAllMoodEvents(userProfile.getUid(), new DatabaseBestie.MoodEventsCallback() {
             @Override
             public void onMoodEventsRetrieved(ArrayList<MoodEvent> events) {
                 runOnUiThread(() -> {
+                    // Update the MoodEventBook with new data and ensure sorting
+                    userProfile.getMoodEventBook().setMoodEvents(events);
+
+                    // Update the adapter
                     if (adapter != null) {
                         adapter.clear();
-                        adapter.addAll(events);
+                        adapter.addAll(userProfile.getMoodEventBook().getMoodEventList());
                         adapter.notifyDataSetChanged();
                     }
 
-                    // Also update follower/following counts
+                    // Update UI
                     followersTextView.setText(String.valueOf(userProfile.getFollowingBook().getFollowerCount()));
                     followingTextView.setText(String.valueOf(userProfile.getFollowingBook().getFollowingCount()));
-
-                    // Hide refresh animation
                     swipeRefreshLayout.setRefreshing(false);
-                });
-            }
-            public void onError(String error) {
-                runOnUiThread(() -> {
-                    swipeRefreshLayout.setRefreshing(false);
-                    Toast.makeText(ProfilePageActivity.this,
-                            "Refresh failed: " + error, Toast.LENGTH_SHORT).show();
                 });
             }
         });
