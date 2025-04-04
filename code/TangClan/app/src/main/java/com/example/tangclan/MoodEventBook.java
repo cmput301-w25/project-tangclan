@@ -95,10 +95,17 @@ public class MoodEventBook {
      * Sorts the mood events in reverse chronological order based on date and time.
      */
     public void sortMoodEvents() {
-        moodEvents.sort(Comparator
-                .comparing(MoodEvent::getPostDate, Comparator.nullsLast(Comparator.reverseOrder()))
-                .thenComparing(MoodEvent::getPostTime, Comparator.nullsLast(Comparator.reverseOrder()))
-        );
+        if (moodEvents != null) {
+            moodEvents.sort((e1, e2) -> {
+                // Compare dates first
+                int dateCompare = e2.getPostDate().compareTo(e1.getPostDate());
+                if (dateCompare != 0) {
+                    return dateCompare;
+                }
+                // If dates are equal, compare times
+                return e2.getPostTime().compareTo(e1.getPostTime());
+            });
+        }
     }
 
     /**
@@ -208,5 +215,4 @@ public class MoodEventBook {
         return null;
     }
 }
-
 
