@@ -3,6 +3,7 @@ package com.example.tangclan;
 import static android.view.View.FIND_VIEWS_WITH_TEXT;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -43,6 +45,7 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.osmdroid.util.GeoPoint;
 
 public class EditFragment extends Fragment {
 
@@ -71,6 +74,11 @@ public class EditFragment extends Fragment {
     private Bitmap selectedImage = null;
     private LoggedInUser sessionUser;
 
+    private boolean locationOn;
+    private SwitchCompat locationToggle;
+    private TextView locationDisplay;
+    private String locationName;
+    private double lat, lon;
 
     public interface FragmentListener {  // listens to when fragment finishes
         void onFragmentFinished();
@@ -108,6 +116,13 @@ public class EditFragment extends Fragment {
             reason = getArguments().getString("reason");
             image = getArguments().getByteArray("image");
             privacy = getArguments().getBoolean("privacy");
+
+            locationOn = getArguments().getBoolean("location");
+            if (locationOn) {
+                lat = getArguments().getDouble("latitude");
+                lon = getArguments().getDouble("longitude");
+                locationName = getArguments().getString("locationName");
+            }
         }
 
         sessionUser = LoggedInUser.getInstance();
@@ -154,6 +169,39 @@ public class EditFragment extends Fragment {
         // set saved reason text
         EditText editReason = view.findViewById(R.id.edit_reasonwhy);
         editReason.setText(reason);
+        locationToggle = view.findViewById(R.id.use_location_switch);
+        locationDisplay = view.findViewById(R.id.location_display);
+
+        locationToggle.setChecked(locationOn);
+        if (locationOn && locationName != null) {
+            locationDisplay.setText(locationName);
+            locationDisplay.setVisibility(View.VISIBLE);
+        } else {
+            locationDisplay.setVisibility(View.GONE);
+        }
+
+        locationToggle.setOnClickListener(v -> {
+            locationOn = !locationOn;
+            locationToggle.setChecked(locationOn);
+
+            if (locationToggle.isChecked()) {
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Attach location to mood event?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            Intent intent = new Intent(getActivity(), AddLocationActivity.class);
+                            intent.putExtras(getArguments());
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            locationToggle.setChecked(false);
+                            locationOn = !locationOn;
+                            locationDisplay.setVisibility(View.GONE);
+                        })
+                        .show();
+            } else {
+                locationDisplay.setVisibility(View.GONE);
+            }
+        });
 
 
 
@@ -298,6 +346,7 @@ public class EditFragment extends Fragment {
         db.updateMoodEventSetting(mid, month, settingView.getText().toString());
         db.updateMoodEventCollaborators(mid, month, socialSit);
         db.updateMoodEventPhoto(mid,month,image);
+        db.updateLocation(mid, month, locationOn, locationOn ? lat : null, locationOn ? lon : null, locationOn ? locationName : null);
 
         SwitchCompat privacySetting = getView().findViewById(R.id.privacy_toggle);
         db.updateMoodEventPrivacy(mid, month, privacySetting.isChecked());
