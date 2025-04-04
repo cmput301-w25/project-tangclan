@@ -47,16 +47,16 @@ import java.util.Arrays;
 public class EditFragment extends Fragment {
 
     String[] emotions = {"happy",
-                        "sad",
-                        "angry",
-                        "anxious",
-                        "ashamed",
-                        "calm",
-                        "confused",
-                        "disgusted",
-                        "no idea",
-                        "surprised",
-                        "terrified"};
+            "sad",
+            "angry",
+            "anxious",
+            "ashamed",
+            "calm",
+            "confused",
+            "disgusted",
+            "no idea",
+            "surprised",
+            "terrified"};
     String[] socialSituations = {"", "alone", "with one other person", "with two to several people", "with a crowd"};
     String mid, month, emotion, setting, reason;
     ArrayList<String> situation;
@@ -296,6 +296,12 @@ public class EditFragment extends Fragment {
         db.updateMoodEventReason(mid,month, reason);
         db.updateMoodEventCollaborators(mid, month, socialSit);
         db.updateMoodEventPhoto(mid,month,image);
+
+        SwitchCompat privacySetting = getView().findViewById(R.id.privacy_toggle);
+        db.updateMoodEventPrivacy(mid, month, privacySetting.isChecked());
+
+        AutoCompleteTextView settingView = getView().findViewById(R.id.choose_social_situation);
+        db.updateMoodEventSetting(mid, month, settingView.getText().toString());
     }
 
     private void finishFragment() {

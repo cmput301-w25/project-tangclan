@@ -37,6 +37,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
@@ -59,6 +60,7 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
     private NetworkManager networkManager;
 
     private ListView listViewFeed;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private List<String> selectedEmotionalStates = new ArrayList<>();
     private boolean filterByRecentWeek = false;
@@ -88,6 +90,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         // Initialize database helper
         databaseBestie = new DatabaseBestie();
+
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshData();
+        });
 
 
         // Get current user profile
@@ -461,9 +468,11 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
                     event.setLocationName(updatedEvent.getLocationName());
                 }
                 adapter.insert(event,pos);
+                //adapter.notifyDataSetChanged();
             });
         }
         adapter.notifyDataSetChanged();
+        refreshData();
     }
 
     private void showFilterPopup(View view) {
@@ -685,5 +694,41 @@ public class ProfilePageActivity extends AppCompatActivity implements EditFragme
 
         intent.putExtras(profileDetails);
         startActivity(intent);
+    }
+
+    private void refreshData() {
+        // Show refresh animation
+        swipeRefreshLayout.setRefreshing(true);
+
+        // Force reload from database
+        userProfile.initializeFollowingBookFromDatabase(databaseBestie);
+
+        // Get updated mood events
+        databaseBestie.getAllMoodEvents(userProfile.getUid(), new DatabaseBestie.MoodEventsCallback() {
+            @Override
+            public void onMoodEventsRetrieved(ArrayList<MoodEvent> events) {
+                runOnUiThread(() -> {
+                    if (adapter != null) {
+                        adapter.clear();
+                        adapter.addAll(events);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    // Also update follower/following counts
+                    followersTextView.setText(String.valueOf(userProfile.getFollowingBook().getFollowerCount()));
+                    followingTextView.setText(String.valueOf(userProfile.getFollowingBook().getFollowingCount()));
+
+                    // Hide refresh animation
+                    swipeRefreshLayout.setRefreshing(false);
+                });
+            }
+            public void onError(String error) {
+                runOnUiThread(() -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(ProfilePageActivity.this,
+                            "Refresh failed: " + error, Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 }

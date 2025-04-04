@@ -952,6 +952,20 @@ public class DatabaseBestie {
                 });
     }
 
+    public void updateMoodEventPrivacy(String mid, String month, boolean isPrivate) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("privateMood", isPrivate)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Privacy updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating privacy", e));
+    }
+
+    public void updateMoodEventSetting(String mid, String month, String newSetting) {
+        DocumentReference event = moodEventsRef.document(month).collection("events").document(mid);
+        event.update("setting", newSetting)
+                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Setting updated successfully"))
+                .addOnFailureListener(e -> Log.e("Firestore", "Error updating setting", e));
+    }
+
     private void fetchUsernamesForComments(List<Comment> comments, CommentsCallback callback) {
         List<CommentWithUsername> result = new ArrayList<>();
         AtomicInteger counter = new AtomicInteger(comments.size());
@@ -980,7 +994,7 @@ public class DatabaseBestie {
         generateUniqueId(followRequestCounterRef, "last_rid", callback);
     }
 
-    
+
     public interface FollowRequestCallback {
         void onFollowRequestProcessed(boolean success);
     }
