@@ -118,14 +118,13 @@ public class EditFragment extends Fragment {
             image = getArguments().getByteArray("image");
             privacy = getArguments().getBoolean("privacy");
 
-            locationOn = getArguments().getBoolean("location");
+            locationOn = getArguments().getBoolean("location permission"); // Make sure this key matches what you use when creating the bundle
             if (locationOn) {
                 lat = getArguments().getDouble("latitude");
                 lon = getArguments().getDouble("longitude");
-                locationName = getArguments().getString("locationName");
+                locationName = getArguments().getString("location name");
             }
         }
-
         sessionUser = LoggedInUser.getInstance();
     }
 
@@ -188,33 +187,34 @@ public class EditFragment extends Fragment {
         // set privacy setting
         SwitchCompat privacySetting = view.findViewById(R.id.privacy_toggle);
         privacySetting.setChecked(privacy);
+        // In EditFragment.java, modify the location toggle setup in onCreateView:
+
+// Set up location toggle
         locationToggle = view.findViewById(R.id.use_location_switch);
         locationDisplay = view.findViewById(R.id.location_display);
 
-        locationToggle.setChecked(locationOn);
+// Initialize with bundle data first
         if (locationOn && locationName != null) {
+            locationToggle.setChecked(true);
             locationDisplay.setText(locationName);
             locationDisplay.setVisibility(View.VISIBLE);
         } else {
+            locationToggle.setChecked(false);
             locationDisplay.setVisibility(View.GONE);
         }
 
         locationToggle.setOnClickListener(v -> {
-            locationOn = !locationOn;
-            locationToggle.setChecked(locationOn);
-
-            if (locationToggle.isChecked()) {
+            boolean newLocationState = locationToggle.isChecked();
+            if (newLocationState) {
                 new AlertDialog.Builder(getContext())
                         .setMessage("Attach location to mood event?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             // Create intent with current mood event details
                             Intent intent = new Intent(getActivity(), AddLocationActivity.class);
-
-                            // Pass the existing mood event details
                             Bundle args = new Bundle();
                             args.putString("mid", mid);
                             args.putString("month", month);
-                            args.putBoolean("fromEdit", true); // Flag to indicate this is an edit
+                            args.putBoolean("fromEdit", true);
 
                             // Pass existing location if available
                             if (locationOn && locationName != null) {
@@ -228,12 +228,13 @@ public class EditFragment extends Fragment {
                         })
                         .setNegativeButton("No", (dialog, which) -> {
                             locationToggle.setChecked(false);
-                            locationOn = !locationOn;
+                            locationOn = false;
                             locationDisplay.setVisibility(View.GONE);
                         })
                         .show();
             } else {
                 // Clear location data when toggled off
+                locationOn = false;
                 locationDisplay.setVisibility(View.GONE);
                 lat = 0;
                 lon = 0;
