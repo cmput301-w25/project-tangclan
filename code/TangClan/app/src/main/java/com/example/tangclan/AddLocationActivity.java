@@ -50,6 +50,7 @@ public class AddLocationActivity extends AppCompatActivity {
     private OkHttpClient client = new OkHttpClient();
     private Bundle savedDetails;
     private long lastTypedTime = 0;
+    private static final String EXTRA_FROM_EDIT = "fromEdit";
     private ProgressBar loadingIndicator; // ProgressBar for loading state
 
     // RETURNED COORDINATES FROM THIS ACTIVITY (USER LOCATION) -------------------------------------
@@ -135,16 +136,30 @@ public class AddLocationActivity extends AppCompatActivity {
 
         nextButton.setOnClickListener(v -> {
             if (lastSearchedPoint != null) {
-                Intent intent = new Intent(AddLocationActivity.this, ReviewDetailsActivity.class);
+                // Check if this is an edit operation
+                boolean fromEdit = getIntent().getBooleanExtra(EXTRA_FROM_EDIT, false);
 
-                savedDetails.putBoolean("location", true);
-                savedDetails.putDouble("latitude", lastSearchedPoint.getLatitude());
-                savedDetails.putDouble("longitude", lastSearchedPoint.getLongitude());
-                savedDetails.putString("locationName", searchBar.getText().toString());
+                if (fromEdit) {
+                    // Return the location data to EditFragment
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("latitude", lastSearchedPoint.getLatitude());
+                    resultIntent.putExtra("longitude", lastSearchedPoint.getLongitude());
+                    resultIntent.putExtra("locationName", searchBar.getText().toString());
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                } else {
+                    // Original behavior for new mood events
+                    Intent intent = new Intent(AddLocationActivity.this, ReviewDetailsActivity.class);
 
-                intent.putExtras(savedDetails);
-                startActivity(intent);
-                finish();
+                    savedDetails.putBoolean("location", true);
+                    savedDetails.putDouble("latitude", lastSearchedPoint.getLatitude());
+                    savedDetails.putDouble("longitude", lastSearchedPoint.getLongitude());
+                    savedDetails.putString("locationName", searchBar.getText().toString());
+
+                    intent.putExtras(savedDetails);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
     }
