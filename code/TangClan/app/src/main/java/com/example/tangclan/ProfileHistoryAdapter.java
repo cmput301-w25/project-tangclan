@@ -169,7 +169,7 @@ public class ProfileHistoryAdapter extends ArrayAdapter<MoodEvent> {
                 // set the onClick/onTouch listener for the tags
                 spannableUsernameEmotion.append(spannableSituation);
             } else {
-                spannableUsernameEmotion.append("alone");
+                spannableUsernameEmotion.append(" alone");
             }
         } else {
             if (setting != null && !setting.isEmpty()) {
