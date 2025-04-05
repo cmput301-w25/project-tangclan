@@ -91,6 +91,15 @@
             android:name=".FeedActivity"
             android:exported="false" />
         <activity
+            android:name=".SetupBirthdayActivity"
+            android:exported="false">
+        </activity>
+        <activity
+            android:name=".BackAgeActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
             android:name=".RecoverActivity"
             android:exported="false" />
         <activity

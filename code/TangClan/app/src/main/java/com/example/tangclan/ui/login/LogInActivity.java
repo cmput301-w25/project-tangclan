@@ -17,6 +17,7 @@ import com.example.tangclan.DatabaseBestie;
 import com.example.tangclan.LoggedInUser;
 import com.example.tangclan.R;
 import com.example.tangclan.RecoverActivity;
+import com.example.tangclan.SetupBirthdayActivity;
 import com.example.tangclan.TempFeedActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,7 +44,7 @@ public class LogInActivity extends AppCompatActivity {
         goToSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent signUp = new Intent(LogInActivity.this, SignUpActivity.class);
+                Intent signUp = new Intent(LogInActivity.this, SetupBirthdayActivity.class);
                 startActivity(signUp);
                 finish();
             }
