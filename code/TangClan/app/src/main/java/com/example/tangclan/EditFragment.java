@@ -65,6 +65,7 @@ public class EditFragment extends Fragment {
     ArrayList<String> situation;
     byte[] image;
     boolean privacy;
+    private static final int REQUEST_EDIT_LOCATION = 1001;
     private FragmentListener editFragmentListener;
     private ImageView imageView;
 
@@ -117,14 +118,13 @@ public class EditFragment extends Fragment {
             image = getArguments().getByteArray("image");
             privacy = getArguments().getBoolean("privacy");
 
-            locationOn = getArguments().getBoolean("location");
+            locationOn = getArguments().getBoolean("location permission"); // Make sure this key matches what you use when creating the bundle
             if (locationOn) {
                 lat = getArguments().getDouble("latitude");
                 lon = getArguments().getDouble("longitude");
-                locationName = getArguments().getString("locationName");
+                locationName = getArguments().getString("location name");
             }
         }
-
         sessionUser = LoggedInUser.getInstance();
     }
 
@@ -169,39 +169,7 @@ public class EditFragment extends Fragment {
         // set saved reason text
         EditText editReason = view.findViewById(R.id.edit_reasonwhy);
         editReason.setText(reason);
-        locationToggle = view.findViewById(R.id.use_location_switch);
-        locationDisplay = view.findViewById(R.id.location_display);
 
-        locationToggle.setChecked(locationOn);
-        if (locationOn && locationName != null) {
-            locationDisplay.setText(locationName);
-            locationDisplay.setVisibility(View.VISIBLE);
-        } else {
-            locationDisplay.setVisibility(View.GONE);
-        }
-
-        locationToggle.setOnClickListener(v -> {
-            locationOn = !locationOn;
-            locationToggle.setChecked(locationOn);
-
-            if (locationToggle.isChecked()) {
-                new AlertDialog.Builder(getContext())
-                        .setMessage("Attach location to mood event?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            Intent intent = new Intent(getActivity(), AddLocationActivity.class);
-                            intent.putExtras(getArguments());
-                            startActivity(intent);
-                        })
-                        .setNegativeButton("No", (dialog, which) -> {
-                            locationToggle.setChecked(false);
-                            locationOn = !locationOn;
-                            locationDisplay.setVisibility(View.GONE);
-                        })
-                        .show();
-            } else {
-                locationDisplay.setVisibility(View.GONE);
-            }
-        });
 
 
 
@@ -219,6 +187,60 @@ public class EditFragment extends Fragment {
         // set privacy setting
         SwitchCompat privacySetting = view.findViewById(R.id.privacy_toggle);
         privacySetting.setChecked(privacy);
+        // In EditFragment.java, modify the location toggle setup in onCreateView:
+
+// Set up location toggle
+        locationToggle = view.findViewById(R.id.use_location_switch);
+        locationDisplay = view.findViewById(R.id.location_display);
+
+// Initialize with bundle data first
+        if (locationOn && locationName != null) {
+            locationToggle.setChecked(true);
+            locationDisplay.setText(locationName);
+            locationDisplay.setVisibility(View.VISIBLE);
+        } else {
+            locationToggle.setChecked(false);
+            locationDisplay.setVisibility(View.GONE);
+        }
+
+        locationToggle.setOnClickListener(v -> {
+            boolean newLocationState = locationToggle.isChecked();
+            if (newLocationState) {
+                new AlertDialog.Builder(getContext())
+                        .setMessage("Attach location to mood event?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            // Create intent with current mood event details
+                            Intent intent = new Intent(getActivity(), AddLocationActivity.class);
+                            Bundle args = new Bundle();
+                            args.putString("mid", mid);
+                            args.putString("month", month);
+                            args.putBoolean("fromEdit", true);
+
+                            // Pass existing location if available
+                            if (locationOn && locationName != null) {
+                                args.putDouble("latitude", lat);
+                                args.putDouble("longitude", lon);
+                                args.putString("locationName", locationName);
+                            }
+
+                            intent.putExtras(args);
+                            startActivityForResult(intent, REQUEST_EDIT_LOCATION);
+                        })
+                        .setNegativeButton("No", (dialog, which) -> {
+                            locationToggle.setChecked(false);
+                            locationOn = false;
+                            locationDisplay.setVisibility(View.GONE);
+                        })
+                        .show();
+            } else {
+                // Clear location data when toggled off
+                locationOn = false;
+                locationDisplay.setVisibility(View.GONE);
+                lat = 0;
+                lon = 0;
+                locationName = null;
+            }
+        });
 
         // implement submit button
         Button submitButt = view.findViewById(R.id.submit_details);
@@ -346,10 +368,10 @@ public class EditFragment extends Fragment {
         db.updateMoodEventSetting(mid, month, settingView.getText().toString());
         db.updateMoodEventCollaborators(mid, month, socialSit);
         db.updateMoodEventPhoto(mid,month,image);
-        db.updateLocation(mid, month, locationOn, locationOn ? lat : null, locationOn ? lon : null, locationOn ? locationName : null);
 
         SwitchCompat privacySetting = getView().findViewById(R.id.privacy_toggle);
         db.updateMoodEventPrivacy(mid, month, privacySetting.isChecked());
+        db.updateLocation(mid, month, locationOn, locationOn ? lat : null, locationOn ? lon : null, locationOn ? locationName : null);
 
     }
 
@@ -359,4 +381,25 @@ public class EditFragment extends Fragment {
         }
         getParentFragmentManager().beginTransaction().remove(this).commit(); // Remove Fragment
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_EDIT_LOCATION && resultCode == Activity.RESULT_OK && data != null) {
+            Bundle extras = data.getExtras();
+            if (extras != null) {
+                // Update location data from the result
+                lat = extras.getDouble("latitude");
+                lon = extras.getDouble("longitude");
+                locationName = extras.getString("locationName");
+
+                // Update UI
+                locationDisplay.setText(locationName);
+                locationDisplay.setVisibility(View.VISIBLE);
+                locationToggle.setChecked(true);
+                locationOn = true;
+            }
+        }
+    }
+
 }
