@@ -382,21 +382,42 @@ public class MapActivity extends AppCompatActivity {
         return R.drawable.ic_emotion_no_idea;
     }
 
-    private boolean isWithinDistance(double latitude, double longitude) {
-        GeoPoint userLocation;
+    private boolean isWithinDistance(Double latitude, Double longitude) {
 
-        if (myLocationOverlay.getMyLocation() != null) {
-            userLocation = myLocationOverlay.getMyLocation(); // Device location
-        } else {
-            MoodEvent mostRecentEvent = loggedInUser.getMoodEventBook().getMostRecentMoodEvent();
-            if (mostRecentEvent == null) return false;
-            userLocation = new GeoPoint(mostRecentEvent.getLatitude(), mostRecentEvent.getLongitude());
+        if (latitude == null || longitude == null) {
+            return false;
         }
 
-        GeoPoint eventLocation = new GeoPoint(latitude, longitude);
-        double distance = userLocation.distanceToAsDouble(eventLocation) / 1000; // Convert to kilometers
 
-        return distance <= distanceSeekBar.getProgress();
+        boolean hasLocationReference = false;
+        GeoPoint userLocation = null;
+
+        if (myLocationOverlay != null && myLocationOverlay.getMyLocation() != null) {
+            userLocation = myLocationOverlay.getMyLocation();
+            hasLocationReference = true;
+        }
+
+        if (userLocation == null) {
+            MoodEvent mostRecentEvent = loggedInUser.getMoodEventBook().getMostRecentMoodEvent();
+            if (mostRecentEvent != null && mostRecentEvent.hasGeolocation()) {
+                userLocation = new GeoPoint(mostRecentEvent.getLatitude(), mostRecentEvent.getLongitude());
+                hasLocationReference = true;
+            }
+        }
+
+        if (!hasLocationReference) {
+            return true;
+        }
+
+        try {
+            GeoPoint eventLocation = new GeoPoint(latitude, longitude);
+            double distance = userLocation.distanceToAsDouble(eventLocation) / 1000;
+            int maxDistance = distanceSeekBar != null ? distanceSeekBar.getProgress() : 5;
+            return distance <= maxDistance;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true; 
+        }
     }
 
 
