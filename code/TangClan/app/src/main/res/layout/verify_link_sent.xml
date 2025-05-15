@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f4f2e6"
+    android:background="@color/white"
     android:padding="16dp">
 
     <LinearLayout
@@ -24,7 +24,7 @@
             android:gravity="center"
             android:text="moodly"
             android:textAlignment="center"
-            android:textColor="#d38c6f"
+            android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -41,7 +41,7 @@
         android:gravity="center_horizontal|top"
         android:text="Maybe Later"
         android:textAppearance="@style/resend_code"
-        android:textColor="#D3907C"
+        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
         android:fontFamily="@font/inter_medium"
         android:gravity="center_horizontal|top"
         android:textAppearance="@style/a_verificat"
-        android:textColor="#916350"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
         android:layout_width="172dp"
         android:layout_height="61dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="#d38c6f"
+        android:backgroundTint="@color/black"
         android:elevation="12dp"
         android:fontFamily="@font/inter_semibold"
         android:text="Verify My Email"

@@ -72,6 +72,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/untitled_33"
         app:layout_constraintVertical_bias="0.43"
-        android:backgroundTint="#D38C6F" />
+        android:backgroundTint="@color/black" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

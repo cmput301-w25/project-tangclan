@@ -4,24 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="0dp"
-    android:layout_marginHorizontal="20dp"
-    android:layout_marginVertical="80dp"
-    android:background="#f4f2e6"
-    android:elevation="8dp"
+    android:layout_marginHorizontal="30dp"
+    android:layout_marginVertical="100dp"
+    android:background="@drawable/blue_gradient_background"
+    android:elevation="10dp"
     android:orientation="vertical"
     android:outlineAmbientShadowColor="#000000"
     android:outlineSpotShadowColor="#000000"
-    android:padding="12dp">
+    android:padding="15dp">
 
-    <!-- Header with logo and close icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:contentDescription="Owl icon"
             android:src="@drawable/ic_owl" />
 
@@ -32,182 +31,294 @@
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:text="moodly"
-            android:textColor="#d38c6f"
-            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/closeIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="Close"
             android:src="@drawable/baseline_cancel_24" />
     </LinearLayout>
 
-    <!-- Feeling question -->
+
     <TextView
         android:id="@+id/edit_details_q1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/inter_medium"
         android:text="How are you feeling?"
-        android:textColor="#916350"
-        android:textSize="16sp" />
+        android:textColor="@color/black"
+        android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        app:boxBackgroundColor="#EDE7DF"
-        app:boxCornerRadiusBottomEnd="14dp"
-        app:boxCornerRadiusBottomStart="14dp"
-        app:boxCornerRadiusTopEnd="14dp"
-        app:boxCornerRadiusTopStart="14dp"
-        app:boxStrokeColor="#00FFFFFF">
+        android:layout_marginHorizontal="24dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeColor="@color/black">
 
         <AutoCompleteTextView
             android:id="@+id/choose_emotion"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="54dp"
             android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
+    <!--
+    <RadioGroup
+        android:id="@+id/emotion_selection"
+        android:layout_width="380dp"
+        android:layout_height="215dp"
+        android:elevation="1dp">
 
-    <!-- Social situation question -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#0D000000"
+            android:outlineAmbientShadowColor="#000000">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radioNoIdea"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="No Idea" />
+
+                <RadioButton
+                    android:id="@+id/radioHappy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Happy" />
+
+                <RadioButton
+                    android:id="@+id/radioAngry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Angry" />
+
+                <RadioButton
+                    android:id="@+id/radioAnxious"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Anxious" />
+
+                <RadioButton
+                    android:id="@+id/radioAshamed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Ashamed" />
+
+                <RadioButton
+                    android:id="@+id/radioCalm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Calm" />
+
+                <RadioButton
+                    android:id="@+id/radioConfused"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Confused" />
+
+                <RadioButton
+                    android:id="@+id/radioDisgust"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Disgusted" />
+
+                <RadioButton
+                    android:id="@+id/radioSad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Sad" />
+
+                <RadioButton
+                    android:id="@+id/radioSurprised"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Surprised" />
+
+                <RadioButton
+                    android:id="@+id/radioTerrified"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/inter_medium"
+                    android:text="Terrified" />
+            </LinearLayout>
+        </ScrollView>
+
+    </RadioGroup>
+    -->
+
     <TextView
         android:id="@+id/edit_details_q2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="32dp"
         android:fontFamily="@font/inter_medium"
         android:text="Describe the social situation"
-        android:textColor="#916350"
-        android:textSize="16sp" />
+        android:textColor="@color/black"
+        android:textSize="18sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="8dp"
-        app:boxBackgroundColor="#EDE7DF"
-        app:boxCornerRadiusBottomEnd="14dp"
-        app:boxCornerRadiusBottomStart="14dp"
-        app:boxCornerRadiusTopEnd="14dp"
-        app:boxCornerRadiusTopStart="14dp"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp">
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="10dp"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:boxStrokeWidth="0dp">
 
         <AutoCompleteTextView
             android:id="@+id/choose_social_situation"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:background="@drawable/edittext_round"
             android:layout_gravity="center_vertical"
-            android:background="#EDE7DF"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
             android:inputType="none" />
+
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <AutoCompleteTextView
         android:id="@+id/edit_social_situation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp"
-        android:background="#EDE7DF"
-        android:fontFamily="@font/inter"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="24dp"
         android:hint="jpagcal1234"
-        android:letterSpacing="-0.03"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp"
         android:textColorHint="@color/material_dynamic_neutral60"
-        android:textSize="18sp" />
+        android:fontFamily="@font/inter"
+        android:textSize="20sp"
+        android:letterSpacing="-0.03"
+        android:background="@drawable/edittext_round"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp"/>
 
-    <!-- Reason why section -->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/edit_details_q3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="32dp"
             android:fontFamily="@font/inter_medium"
             android:text="What made you feel this way?"
-            android:textColor="#916350"
-            android:textSize="16sp" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edit_reason_box"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginHorizontal="20dp"
-            app:boxCornerRadiusBottomEnd="14dp"
-            app:boxCornerRadiusBottomStart="14dp"
-            app:boxCornerRadiusTopEnd="14dp"
-            app:boxCornerRadiusTopStart="14dp">
+            android:layout_height="75dp"
+            android:layout_marginHorizontal="24dp"
+            app:boxCornerRadiusBottomEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusTopStart="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_reasonwhy"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#EDE7DF"
+                android:layout_height="55dp"
                 android:hint="200 characters" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/image_reasonwhy"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="218dp"
+                android:layout_height="218dp"
                 android:background="#0D0D0000" />
+
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Toggle sections with consistent alignment -->
+    <LinearLayout
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="341dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_height="58dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/edit_details_q4"
+            android:layout_width="265dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:paddingEnd="20dp"
+            android:text="Share your location?"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/use_location_switch"
+            android:layout_width="74dp"
+            android:layout_height="wrap_content"
+            android:textOff="no"
+            android:textOn="yes" />
+
+    </LinearLayout>
+
+    <!-- NEW: Separate LinearLayout for Location Name -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="5dp">
 
-        <!-- Share location toggle -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/edit_details_q4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/inter_medium"
-                android:text="Share your location?"
-                android:textColor="#916350"
-                android:textSize="16sp" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/use_location_switch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textOff="no"
-                android:textOn="yes" />
-        </LinearLayout>
-
-        <!-- Location display text -->
         <TextView
             android:id="@+id/location_display"
             android:layout_width="match_parent"
@@ -217,45 +328,45 @@
             android:text="No location selected"
             android:textAlignment="center"
             android:textColor="@android:color/holo_green_dark"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:visibility="gone" />
-
-        <!-- Privacy toggle -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/edit_details_q5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:fontFamily="@font/inter_medium"
-                android:text="Make event private?"
-                android:textColor="#916350"
-                android:textSize="16sp" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/privacy_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+            android:visibility="gone" /> <!-- Initially hidden -->
     </LinearLayout>
 
-    <!-- Submit button -->
+    <LinearLayout
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="340dp"
+        android:layout_height="68dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/edit_details_q5"
+            android:layout_width="265dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_medium"
+            android:paddingEnd="20dp"
+            android:text="Make event private?"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/privacy_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/submit_details"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginHorizontal="20dp"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="24dp"
         android:layout_marginTop="0dp"
-        android:backgroundTint="#D38C6F"
+        android:backgroundTint="@color/black"
         android:text="Confirm Details"
-        android:textSize="13sp"
-        app:cornerRadius="14dp"
-        app:strokeColor="#916350"
-        app:strokeWidth="1sp" />
+        android:textSize="14sp"
+        app:cornerRadius="16dp" />
 </LinearLayout>

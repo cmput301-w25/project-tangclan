@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B4B19E"
-    android:backgroundTint="#F4F2E6"
+    android:background="#FFFFFF"
+    android:backgroundTint="#FFFFFF"
     android:longClickable="true"
     android:padding="24dp">
     <!--Text viewn-->
@@ -45,8 +45,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="15dp"
-        android:background="#f4f2e6"
-        android:backgroundTint="#f4f2e6"
+        android:background="@drawable/edittext_round"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/reason"
         app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +68,7 @@
             android:layout_weight="1"
             android:text="Somewhere over the rainbow..."
             android:textAlignment="viewStart"
-            android:textColor="#72875B" />
+            android:textColor="@color/black" />
     </LinearLayout>
 
     <TextView
@@ -102,8 +101,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
-        android:background="#f4f2e6"
-        android:backgroundTint="#f4f2e6"
+        android:background="@drawable/edittext_round"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

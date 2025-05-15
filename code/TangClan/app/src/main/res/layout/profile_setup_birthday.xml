@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f2f2e6">
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/customize_y"
@@ -16,7 +16,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/customize_y"
         android:textAppearance="@style/customize_y"
-        android:textColor="#916350"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/when_is_you"
         android:textAppearance="@style/when_is_you"
-        android:textColor="#916350"
+        android:textColor="#020101"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/customize_y" />
@@ -46,7 +46,7 @@
         android:gravity="center_horizontal|top"
         android:text="@string/you_must_be"
         android:textAppearance="@style/you_must_be"
-        android:textColor="#916350"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/when_is_you" />
@@ -61,7 +61,7 @@
         android:lineSpacingExtra="2sp"
         android:text="@string/label_text"
         android:textAppearance="@style/label_text"
-        android:textColor="#916350"
+        android:textColor="@color/black"
         android:translationY="-0.97sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/you_must_be" />
@@ -74,8 +74,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="22dp"
         android:alpha="0.6"
-        android:background="#EDE7DF"
-        android:backgroundTint="#EDE7DF"
+        android:background="@drawable/edittext_round"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="08/17/2025"
-            android:textColor="#916350"
+            android:textColor="@color/black"
             android:textSize="16sp" />
 
         <ImageButton
@@ -104,9 +103,9 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="13dp"
             android:layout_toEndOf="@+id/date_text"
+            android:onClick="openDatePicker"
             android:src="@android:drawable/ic_menu_today"
-            app:tint="@android:color/black"
-            android:onClick="openDatePicker"/>
+            app:tint="@android:color/black" />
     </RelativeLayout>
 
     <TextView
@@ -118,7 +117,9 @@
         android:gravity="top"
         android:lineSpacingExtra="2sp"
         android:text="@string/supporting_"
+        android:textAlignment="textStart"
         android:textAppearance="@style/supporting_"
+        android:textColor="@color/black"
         android:translationY="-0.97sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/form_date_" />
@@ -128,7 +129,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:backgroundTint="#D38C6F"
+        android:backgroundTint="@color/black"
         android:clipToOutline="true"
         android:text="Next"
         app:layout_constraintBottom_toBottomOf="@id/supporting_"

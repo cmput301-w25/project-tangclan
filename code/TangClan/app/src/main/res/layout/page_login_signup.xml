@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f2f2e6"
+    android:background="@drawable/page_login_"
     android:paddingStart="16dp"
     android:paddingEnd="16dp">
 
@@ -17,8 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="128dp"
-        android:layout_marginBottom="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,14 +24,13 @@
         <TextView
             android:id="@+id/logo_text"
             android:layout_width="293dp"
-            android:layout_height="128dp"
-            android:fontFamily="@font/inter_semibold"
+            android:layout_height="96dp"
+            android:fontFamily="@font/inter_medium"
             android:gravity="center_horizontal|top"
             android:letterSpacing="-0.05"
             android:text="@string/moodly"
             android:textAppearance="@style/moodly"
-            android:textColor="#d38c6f"
-            android:textStyle="bold" />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/tagline_text"
@@ -42,61 +39,56 @@
             android:layout_below="@id/logo_text"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
-            android:fontFamily="casual"
+            android:fontFamily="@font/inter_medium"
             android:text="Mood sharing for everyone."
-            android:textColor="#916350"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="0dp"
         android:layout_height="62dp"
-        android:backgroundTint="#d38c6f"
+        android:backgroundTint="@color/black"
         android:fontFamily="@font/inter_semibold"
         android:padding="16dp"
         android:text="Already a user? Log in!"
         android:textColor="#FFFFFF"
         android:textSize="16dp"
-        app:cornerRadius="24dp"
-        android:letterSpacing="-0.03"
+        app:cornerRadius="16dp"
         app:layout_constraintBottom_toTopOf="@+id/signup_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo_container"
-        app:rippleColor="#FF5722"
-        app:strokeColor="#916350"
-        app:strokeWidth="2sp" />
+        app:strokeColor="#000000" />
 
     <Button
         android:id="@+id/signup_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="39dp"
         android:backgroundTint="#00FFFFFF"
         android:fontFamily="@font/inter_semibold"
         android:padding="16dp"
         android:text="New to moodly? Sign up!"
-        android:textColor="#916350"
+        android:textColor="@color/black"
         android:textSize="16dp"
         app:cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_button"
-        app:rippleColor="#EDE7DF"
-        app:strokeColor="#916350"
-        app:strokeWidth="2dp" />
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp" />
 
     <ImageView
         android:id="@+id/bottom_illustration"
-        android:layout_width="541dp"
-        android:layout_height="614dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="359dp"
+        android:layout_height="410dp"
+        android:layout_marginTop="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/moodly_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.349"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/signup_button" />
 

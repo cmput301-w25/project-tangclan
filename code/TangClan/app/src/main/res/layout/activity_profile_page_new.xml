@@ -5,8 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F2E6"
-    android:backgroundTint="#F4F2E6"
+    android:background="#FFFFFF"
     tools:context=".ProfilePageActivity">
 
 
@@ -51,7 +50,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter_semibold"
             android:letterSpacing="-0.05"
-            android:textColor="#916350"
+            android:textColor="@color/black"
             android:textSize="24sp"
             tools:text="Julian" />
 
@@ -62,7 +61,7 @@
             android:layout_marginTop="-4dp"
             android:fontFamily="@font/inter"
             android:letterSpacing="-0.03"
-            android:textColor="#916350"
+            android:textColor="@color/black"
             android:textSize="16sp"
             tools:text="\@julianpagcaliwagan" />
 
@@ -86,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_semibold"
                     android:letterSpacing="-0.03"
-                    android:textColor="#916350"
+                    android:textColor="@color/black"
                     android:textSize="20sp"
                     tools:text="256" />
 
@@ -98,7 +97,7 @@
                     android:fontFamily="@font/inter_semibold"
                     android:letterSpacing="-0.03"
                     android:text="@string/followers_text"
-                    android:textColor="#DE9E8074"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
 
@@ -116,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_semibold"
                     android:letterSpacing="-0.03"
-                    android:textColor="#916350"
+                    android:textColor="@color/black"
                     android:textSize="20sp"
                     tools:text="27" />
 
@@ -128,7 +127,7 @@
                     android:fontFamily="@font/inter_semibold"
                     android:letterSpacing="-0.03"
                     android:text="@string/following_text"
-                    android:textColor="#DE9E8074"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
 
@@ -157,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:backgroundTint="#D38C6F"
+        android:backgroundTint="@color/black"
         android:layout_marginTop="8dp"
         android:clickable="true"
         android:fontFamily="@font/inter_semibold"
@@ -170,7 +169,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_pfp"
-        app:strokeColor="#916350"
         app:strokeWidth="2dp" />
 
     <com.google.android.material.divider.MaterialDivider
@@ -209,8 +207,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="20dp"
         android:autofillHints="username"
-        android:background="#F4F2E6"
-        android:backgroundTint="#EDE7DF"
+        android:background="@drawable/edittext_round"
         android:fontFamily="@font/inter"
         android:hint="@string/search_mood_text"
         android:inputType="text"
@@ -233,6 +230,7 @@
         android:id="@+id/edit_form_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

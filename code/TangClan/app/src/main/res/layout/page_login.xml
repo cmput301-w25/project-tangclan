@@ -4,19 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f4f2e6">
+    android:background="@drawable/splash_c">
 
     <TextView
         android:id="@+id/moodly"
         android:layout_width="293dp"
-        android:layout_height="128dp"
-        android:layout_marginTop="228dp"
-        android:fontFamily="@font/inter_semibold"
+        android:layout_height="96dp"
+        android:layout_marginTop="128dp"
+        android:fontFamily="@font/inter_medium"
         android:gravity="center_horizontal|top"
         android:letterSpacing="-0.05"
         android:text="@string/moodly"
         android:textAppearance="@style/moodly"
-        android:textColor="#d38c6f"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -25,9 +25,9 @@
         android:id="@+id/form_userna"
         android:layout_width="386dp"
         android:layout_height="39dp"
-        android:background="#EDE7DF"
+        android:background="@drawable/form_userna"
         android:clipToOutline="true"
-        app:circularflow_defaultRadius="24dp"
+        app:circularflow_defaultRadius="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/moodly">
@@ -35,15 +35,13 @@
         <EditText
             android:id="@+id/username"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:hint="@string/username"
-            android:padding="0dp"
-            android:textAppearance="@style/username"
-            android:textColorHint="@color/material_dynamic_neutral60" />
+            android:textAppearance="@style/username" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -51,7 +49,7 @@
         android:layout_width="386dp"
         android:layout_height="39dp"
         android:layout_marginTop="32dp"
-        android:background="#EDE7DF"
+        android:background="@drawable/form_passwo"
         android:clipToOutline="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,17 +58,14 @@
         <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:background="@android:color/transparent"
             android:fontFamily="@font/inter_medium"
             android:gravity="center"
             android:hint="@string/password"
-            android:padding="0dp"
             android:password="true"
-            android:textAppearance="@style/password"
-            android:textColorHint="@color/material_dynamic_neutral60"
-            android:textSize="16sp" />
+            android:textAppearance="@style/password" />
     </RelativeLayout>
 
 
@@ -85,27 +80,23 @@
         android:gravity="center_horizontal|top"
         android:text="@string/forgot_pass"
         android:textAppearance="@style/forgot_pass"
-        android:textColor="#916350"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="@+id/form_passwo"
         app:layout_constraintTop_toBottomOf="@+id/form_passwo" />
 
     <Button
         android:id="@+id/login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginStart="12dp"
+        android:layout_width="386dp"
+        android:layout_height="61dp"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="12dp"
-        android:backgroundTint="#d38c6f"
+        android:backgroundTint="@color/black"
         android:clickable="true"
         android:clipToOutline="true"
         android:fontFamily="@font/inter_medium"
         android:gravity="center"
         android:text="Log in"
         android:textAppearance="@style/sign_up"
-        android:textSize="16sp"
-        app:cornerRadius="24dp"
+        app:cornerRadius="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/forgot_pass" />
@@ -120,7 +111,7 @@
         android:gravity="center"
         android:text="@string/don_t_have_"
         android:textAppearance="@style/don_t_have_"
-        android:textColor="#916350"
+        android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -145,7 +136,7 @@
         android:id="@+id/untitled_32"
         android:layout_width="569dp"
         android:layout_height="496dp"
-        android:layout_marginTop="138dp"
+        android:layout_marginTop="204dp"
         android:background="@drawable/own_picture_signup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

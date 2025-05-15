@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-  
+
     <style name="following">
         <item name="android:textSize">20sp</item>
         <item name="android:letterSpacing">-0.03</item>
@@ -18,7 +18,7 @@
     <style name="moodly">
         <item name="android:textSize">35sp</item>
         <item name="android:letterSpacing">-0.1</item>
-        <item name="android:textColor">#D38C6F</item>
+        <item name="android:textColor">#FFD261</item>
     </style>
 
     <style name="name">

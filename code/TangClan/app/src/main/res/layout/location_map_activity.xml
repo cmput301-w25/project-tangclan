@@ -38,25 +38,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:backgroundTint="#D38C6F"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
             android:paddingHorizontal="20dp"
             android:paddingVertical="10dp"
             android:text="Personal"
-            android:textColorLink="#FF5722"
-            app:rippleColor="#CA6235"
-            app:strokeColor="#916350"
+            android:textColorLink="@color/black"
             app:strokeWidth="2dp" />
 
         <Button
             android:id="@+id/friendsModeBtn"
             android:layout_width="wrap_content"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"
             android:layout_height="wrap_content"
-            android:backgroundTint="#D38C6F"
             android:paddingHorizontal="20dp"
             android:paddingVertical="10dp"
             android:text="Friends"
-            app:rippleColor="#CA6235"
-            app:strokeColor="#916350"
             app:strokeWidth="2dp" />
     </LinearLayout>
 
@@ -87,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Filter Distance: 5 km"
-            android:textColor="#916350" />
+            android:textColor="@color/black" />
 
         <SeekBar
             android:id="@+id/distanceSeekBar"
@@ -95,7 +93,7 @@
             android:layout_height="wrap_content"
             android:max="10"
             android:progress="5"
-            android:progressTint="#916350" />
+            android:progressTint="@color/black"/>
 </LinearLayout>
 
     </RelativeLayout>

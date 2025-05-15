@@ -2,18 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="happy">#D0AF41</color>
-    <color name="sad">#6887A9</color>
-    <color name="angry">#BD5050</color>
-    <color name="calm">#88AFBF</color>
-    <color name="surprised">#80683F</color>
-    <color name="terrified">#C14A72</color>
-    <color name="ashamed">#C86F52</color>
+    <color name="happy">#00FF1A</color>
+    <color name="sad">#0015FF</color>
+    <color name="angry">#FF0000</color>
+    <color name="calm">#72A0FF</color>
+    <color name="surprised">#724F00</color>
+    <color name="terrified">#D900FF</color>
+    <color name="ashamed">#FF6700</color>
     <color name="no_idea">#858585</color>
     <color name="confused">#D0C77D</color>
-    <color name="disgusted">#59895A</color>
-    <color name="anxious">#825192</color>
-    <color name="fragment_background">#F4F2E6</color>
-    <color name="dark_brown">#916350</color>
+    <color name="disgusted">#C2CF86</color>
+    <color name="anxious">#7A189A</color>
+    <color name="fragment_background">#FFB8EEFF</color>
+    <color name="dark_brown">#49311E</color>
     <color name="yellow">#f1ffa1</color>
 </resources>

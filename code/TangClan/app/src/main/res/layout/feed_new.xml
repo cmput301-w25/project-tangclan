@@ -2,16 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F4F2E6"
-    android:id="@+id/feed">
+    android:layout_height="match_parent">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:backgroundTint="#F4F2E6"
         app:layout_constraintBottom_toTopOf="@+id/navbarContainer"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -31,7 +28,6 @@
                 android:layout_marginBottom="32dp"
                 android:autofillHints="username"
                 android:background="@drawable/edittext_round"
-                android:backgroundTint="#EDE7DF"
                 android:fontFamily="@font/inter"
                 android:hint="@string/search_mood_text"
                 android:inputType="text"
@@ -61,10 +57,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:backgroundTint="#d38c6f"
+                    android:backgroundTint="#f1ffa1"
                     android:gravity="center"
                     android:text="@string/following_text_feed"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="20sp"
                     app:cornerRadius="20dp"
                     app:strokeColor="@color/black"
@@ -74,10 +70,10 @@
                     android:id="@+id/button_users"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#d38c6f"
+                    android:backgroundTint="#ffffff"
                     android:gravity="center"
                     android:text="@string/for_you_text_feed"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="20sp"
                     app:cornerRadius="20dp"
                     app:strokeColor="@color/black"

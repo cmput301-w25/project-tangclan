@@ -8,26 +8,23 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#d38c6f">
+        android:backgroundTint="#f1ffa1">
 
         <TextView
             android:id="@+id/title_tagged"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_marginVertical="16dp"
-            android:fontFamily="@font/inter_semibold"
-            android:gravity="center"
-            android:letterSpacing="-0.03"
             android:text="Tagged Users"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:gravity="center"
+            android:fontFamily="@font/inter_semibold"
+            android:textSize="20sp"
+            android:letterSpacing="-0.03"/>
     </androidx.cardview.widget.CardView>
 
     <ListView
         android:id="@+id/listview_tagged"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#F4F2E6"
-        android:backgroundTint="#F4F2E6" />
+        android:layout_width="match_parent" />
 
 </LinearLayout>
