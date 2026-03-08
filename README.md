@@ -1,4 +1,7 @@
-# CMPUT 301 W25 - Team TangClan
+# Moodly Application
+
+<img width="341" height="726" alt="Screenshot 2025-03-31 at 12 22 14 AM" src="https://github.com/user-attachments/assets/4769f05a-0ebf-429a-bfb1-c35d376ee362" />
+
 
 ## Team Members
 
